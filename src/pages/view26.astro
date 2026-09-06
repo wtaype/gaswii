@@ -1,0 +1,2030 @@
+---
+// src/pages/view26.astro
+// 🔥 Solgas Surquillo | Portal Maestro CRO de Alta Conversión y Venta Directa
+// Conectado directamente a la Central Oficial: +51 936 369 384
+// Sede Central Física: Jr. Dante 260, Surquillo, Lima 15047 | Google Maps Integrado
+// Arquitectura CRO: [Problema Real] -> [Solución Inmediata] -> [Balanza Primero] -> [Catálogo]
+// Modal Pedido Express en 2 y 3 Columnas (Cero Scroll) + Modal Login Premium
+// Max-Width: 85vw estricto, unidades fluidas vw/vh, Font Awesome en todo
+// Solo Moneda Oficial en Soles (S/.), Bilingüe (Español / English), Doble Tema (Luz / Futuro)
+// Abre en: http://localhost:4321/view26
+
+const datosNegocio = {
+  nombre: "Solgas Surquillo",
+  autorizacion: "Distribuidor Autorizado OSINERGMIN Reg. 208492",
+  marcaRespaldo: "Solgas S.A.",
+  experienciaAnos: 25,
+  telefonoMostrado: "+51 936 369 384",
+  telefonoLimpio: "51936369384",
+  direccionSede: "Jr. Dante 260, Surquillo, Lima 15047",
+  mapsUrl: "https://maps.app.goo.gl/s86EmxowFcKetJWL8",
+  coordenadas: "-12.1177408,-77.0226796",
+  horario: "Lunes a Domingo: 6:00 a.m. a 11:00 p.m. (365 días)",
+  distritos: [
+    { nombre: "Surquillo", tiempo: "12 - 18 min", sede: true, tag: "Sede Central Express" },
+    { nombre: "Miraflores", tiempo: "15 - 20 min", sede: false, tag: "Ruta Directa" },
+    { nombre: "San Borja", tiempo: "15 - 22 min", sede: false, tag: "Ruta Directa" },
+    { nombre: "San Isidro", tiempo: "18 - 25 min", sede: false, tag: "Ruta Directa" }
+  ],
+  productos: [
+    {
+      id: "solgas-10kg",
+      nombre: "Balón SOLGAS de 10 kg",
+      badge: "⭐ El Más Pedido en Hogares",
+      tagClase: "badge-fire",
+      tipoUso: "Doméstico Premium",
+      capacidad: "10 kg GLP Neto",
+      pesoTotal: "22.5 kg (Tara 12.5 + Gas 10)",
+      valvula: "Click-On (Acople Rápido) o Rosca",
+      precioPEN: 48.00,
+      ahorro: "Ahorra S/ 4.00 este mes",
+      imagen: "/imgwii/productos/BALON-10KG.webp",
+      caracteristicas: [
+        "Válvula de seguridad antifugas original",
+        "Precinto de garantía termocontraíble Osinergmin",
+        "Pesaje digital obligatorio frente a tu puerta",
+        "Inspección gratuita de fugas en cada entrega"
+      ]
+    },
+    {
+      id: "solgas-45kg",
+      nombre: "Balón SOLGAS de 45 kg",
+      badge: "🏭 Alta Demanda / Restaurantes",
+      tagClase: "badge-blue",
+      tipoUso: "Comercial e Industrial",
+      capacidad: "45 kg GLP Neto",
+      pesoTotal: "95.0 kg aprox.",
+      valvula: "Rosca Industrial de Alta Presión",
+      precioPEN: 215.00,
+      ahorro: "Tarifa especial negocios",
+      imagen: "/imgwii/productos/BALON-45KG.webp",
+      caracteristicas: [
+        "Poder calórico superior para cocinas de alto tráfico",
+        "Certificación industrial y factura electrónica",
+        "Atención prioritaria y cambio de batería programado",
+        "Transporte seguro y anclaje por personal calificado"
+      ]
+    },
+    {
+      id: "masgas-10kg",
+      nombre: "Balón MASGAS de 10 kg",
+      badge: "💰 Máximo Ahorro Garantizado",
+      tagClase: "badge-emerald",
+      tipoUso: "Doméstico Económico",
+      capacidad: "10 kg GLP Neto",
+      pesoTotal: "22.4 kg garantizado",
+      valvula: "Rosca Estándar / Universal",
+      precioPEN: 44.00,
+      ahorro: "Opción más económica",
+      imagen: "/imgwii/productos/MASGAS-10KG.webp",
+      caracteristicas: [
+        "Misma garantía de peso exacto con balanza",
+        "Llama azul constante y duradera",
+        "Cilindro inspeccionado libre de corrosión",
+        "Entrega inmediata sin costo de flete"
+      ]
+    },
+    {
+      id: "regulador-solgas",
+      nombre: "Regulador Premium SOLGAS",
+      badge: "🛡️ Seguridad Antifugas 100%",
+      tagClase: "badge-gold",
+      tipoUso: "Accesorio Crítico de Seguridad",
+      capacidad: "Universal para Balones de 10 kg",
+      pesoTotal: "0.85 kg bronce macizo",
+      valvula: "Sistema Click-On de Traba Automática",
+      precioPEN: 38.00,
+      ahorro: "Instalación y prueba GRATIS",
+      imagen: "/imgwii/productos/REGULADOR.webp",
+      caracteristicas: [
+        "Bloqueo instantáneo ante rotura de manguera",
+        "Cuerpo de aleación anti-deflagrante",
+        "Cumple Norma Técnica Peruana ITINTEC / Osinergmin",
+        "Instalado por nuestro técnico sin costo adicional"
+      ]
+    }
+  ]
+};
+---
+
+<!DOCTYPE html>
+<html lang="es" data-theme="futuro" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <title>Solgas Surquillo | Balón Lleno con Peso Exacto en 15-20 min - Tel. 936 369 384</title>
+  <meta name="description" content="¿Cansado de balones que duran poco? En Solgas Surquillo (Jr. Dante 260) pesamos tu balón frente a tus ojos con balanza digital. Despacho en 15-20 min a Surquillo, Miraflores, San Borja y San Isidro." />
+
+  <!-- Fuentes Locales y FontAwesome -->
+  <link rel="preload" href="/google/Outfit-600.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="/google/Outfit-700.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="/google/Poppins-400.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="/google/Poppins-500.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="/google/Poppins-600.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="/google/Poppins-700.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/google/fonts.css" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+
+  <!-- Anti-FOUC Inmediato -->
+  <script is:inline>
+    (function() {
+      try {
+        const guardado = localStorage.getItem('wiTema_gaswii_view26');
+        const sistema = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'futuro' : 'luz';
+        document.documentElement.dataset.theme = guardado || sistema || 'futuro';
+      } catch (e) {}
+    })();
+  </script>
+
+  <style is:global>
+    /* ==========================================================================
+       VARIABLES Y SISTEMA DE DISEÑO DUAL (FUTURO / LUZ) - SOLGAS SURQUILLO
+       ========================================================================== */
+    :root[data-theme="futuro"] {
+      --bg-body: #060913;
+      --bg-surface: #0a0f1f;
+      --bg-surface-elevated: #0f172e;
+      --bg-card: #0d1428;
+      --bg-card-hover: #131c38;
+      --bg-subtle: rgba(255, 255, 255, 0.04);
+      --border-card: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(255, 102, 0, 0.5);
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-bright: #ffffff;
+      
+      --brand-orange: #ff6600;
+      --brand-orange-hover: #ff771a;
+      --brand-blue: #0284c7;
+      --brand-blue-hover: #0369a1;
+      --brand-glow-orange: rgba(255, 102, 0, 0.35);
+      --brand-glow-blue: rgba(2, 132, 199, 0.35);
+      
+      --primary: #ff6600;
+      --accent-cyan: #06b6d4;
+      --accent-gold: #f59e0b;
+      --accent-emerald: #10b981;
+      --wa-green: #25d366;
+      --wa-hover: #1ebd5b;
+      
+      --header-bg: rgba(6, 9, 19, 0.95);
+      --topbar-bg: linear-gradient(90deg, #ff6600 0%, #0284c7 50%, #ff6600 100%);
+      --shadow-card: 0 1vh 3vh rgba(0, 0, 0, 0.45);
+      --shadow-hover: 0 1.8vh 4.5vh rgba(0, 0, 0, 0.65);
+      --modal-bg: #0c1326;
+    }
+
+    :root[data-theme="luz"] {
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8faff;
+      --bg-subtle: rgba(15, 23, 42, 0.03);
+      --border-card: rgba(15, 23, 42, 0.09);
+      --border-accent: rgba(224, 86, 0, 0.5);
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --text-bright: #0f172a;
+      
+      --brand-orange: #e05600;
+      --brand-orange-hover: #c44b00;
+      --brand-blue: #0369a1;
+      --brand-blue-hover: #075985;
+      --brand-glow-orange: rgba(224, 86, 0, 0.20);
+      --brand-glow-blue: rgba(3, 105, 161, 0.20);
+      
+      --primary: #e05600;
+      --accent-cyan: #0284c7;
+      --accent-gold: #d97706;
+      --accent-emerald: #059669;
+      --wa-green: #16a34a;
+      --wa-hover: #15803d;
+      
+      --header-bg: rgba(255, 255, 255, 0.96);
+      --topbar-bg: linear-gradient(90deg, #e05600 0%, #0369a1 50%, #e05600 100%);
+      --shadow-card: 0 0.8vh 2.5vh rgba(15, 23, 42, 0.06);
+      --shadow-hover: 0 1.5vh 4vh rgba(15, 23, 42, 0.12);
+      --modal-bg: #ffffff;
+    }
+
+    /* Reset y Tipografía */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      padding-bottom: 11vh;
+    }
+
+    h1, h2, h3, h4, h5, h6, .font-heading {
+      font-family: 'Outfit', 'Poppins', sans-serif;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text-bright);
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* CONTENEDOR EXIGIDO: MAX-WIDTH 85VW */
+    .page-container {
+      width: 100%;
+      max-width: 85vw;
+      margin: 0 auto;
+    }
+
+    /* Tarjetas Limpias */
+    .clean-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 1.2vh;
+      box-shadow: var(--shadow-card);
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .clean-card:hover {
+      border-color: var(--border-accent);
+      background: var(--bg-card-hover);
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-0.35vh);
+    }
+
+    /* Botones Profesionales */
+    .btn-fire {
+      background: linear-gradient(135deg, var(--brand-orange) 0%, #ff8800 100%);
+      color: #ffffff !important;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6vw;
+      border-radius: 1vh;
+      padding: 1.2vh 1.6vw;
+      box-shadow: 0 0.8vh 2.5vh var(--brand-glow-orange);
+      transition: all 0.22s ease;
+      font-size: clamp(0.88rem, 0.95vw, 1.12rem);
+    }
+
+    .btn-fire:hover {
+      transform: translateY(-0.25vh);
+      box-shadow: 0 1.2vh 3.2vh var(--brand-glow-orange);
+      filter: brightness(1.08);
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(135deg, var(--wa-green) 0%, #1ebd5b 100%);
+      color: #ffffff !important;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6vw;
+      border-radius: 1vh;
+      padding: 1.2vh 1.6vw;
+      box-shadow: 0 0.8vh 2.5vh rgba(37, 211, 102, 0.35);
+      transition: all 0.22s ease;
+      font-size: clamp(0.88rem, 0.95vw, 1.12rem);
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-0.25vh);
+      box-shadow: 0 1.2vh 3.2vh rgba(37, 211, 102, 0.5);
+      filter: brightness(1.06);
+    }
+
+    .btn-call {
+      background: linear-gradient(135deg, var(--brand-blue) 0%, #0ea5e9 100%);
+      color: #ffffff !important;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6vw;
+      border-radius: 1vh;
+      padding: 1.2vh 1.6vw;
+      box-shadow: 0 0.8vh 2.5vh var(--brand-glow-blue);
+      transition: all 0.22s ease;
+      font-size: clamp(0.88rem, 0.95vw, 1.12rem);
+    }
+
+    .btn-call:hover {
+      transform: translateY(-0.25vh);
+      box-shadow: 0 1.2vh 3.2vh var(--brand-glow-blue);
+      filter: brightness(1.08);
+    }
+
+    .btn-outline {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-card);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5vw;
+      border-radius: 1vh;
+      padding: 1vh 1.2vw;
+      transition: all 0.2s ease;
+      font-size: clamp(0.82rem, 0.88vw, 0.98rem);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-0.2vh);
+    }
+
+    /* Badges */
+    .badge-fire {
+      background: rgba(255, 102, 0, 0.12);
+      border: 1px solid rgba(255, 102, 0, 0.35);
+      color: var(--brand-orange);
+      padding: 0.4vh 0.8vw;
+      border-radius: 999px;
+      font-size: clamp(0.72rem, 0.78vw, 0.85rem);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4vw;
+    }
+
+    .badge-blue {
+      background: rgba(2, 132, 199, 0.12);
+      border: 1px solid rgba(2, 132, 199, 0.35);
+      color: var(--brand-blue);
+      padding: 0.4vh 0.8vw;
+      border-radius: 999px;
+      font-size: clamp(0.72rem, 0.78vw, 0.85rem);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4vw;
+    }
+
+    .badge-emerald {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--accent-emerald);
+      padding: 0.4vh 0.8vw;
+      border-radius: 999px;
+      font-size: clamp(0.72rem, 0.78vw, 0.85rem);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4vw;
+    }
+
+    .badge-gold {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: var(--accent-gold);
+      padding: 0.4vh 0.8vw;
+      border-radius: 999px;
+      font-size: clamp(0.72rem, 0.78vw, 0.85rem);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4vw;
+    }
+
+    /* Switcher Idioma y Tema */
+    .pill-group {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-card);
+      border-radius: 999px;
+      padding: 0.3vh 0.3vw;
+      gap: 0.2vw;
+    }
+
+    .pill-btn {
+      border: none;
+      background: transparent;
+      padding: 0.5vh 0.8vw;
+      border-radius: 999px;
+      font-size: clamp(0.72rem, 0.78vw, 0.85rem);
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pill-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 0.3vh 1vh var(--brand-glow-orange);
+    }
+
+    /* ==========================================================================
+       MODAL LOGIN Y MODAL PEDIDO EXPRESS EN 2 Y 3 COLUMNAS (CERO SCROLL)
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 20000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2vh 3vw;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    /* Modal Login Compacto */
+    .modal-login-box {
+      background: var(--modal-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 1.5vh;
+      max-width: 460px;
+      width: 100%;
+      padding: 3.5vh 2.5vw;
+      box-shadow: 0 2vh 6vh rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    /* Modal Pedido Ancho en 2 y 3 Columnas */
+    .modal-pedido-box {
+      background: var(--modal-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 1.5vh;
+      max-width: 820px;
+      width: 100%;
+      max-height: 94vh;
+      overflow-y: auto;
+      padding: 3vh 2.2vw;
+      box-shadow: 0 2.5vh 7vh rgba(0, 0, 0, 0.7);
+      position: relative;
+    }
+
+    
+    .address-subgrid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 0.6vw;
+    }
+    @media (max-width: 767px) {
+      .address-subgrid {
+        grid-template-columns: 1fr !important;
+        gap: 1vh !important;
+      }
+    }
+
+    /* Cuadrícula Multicolumna para Formulario de Pedido */
+    .modal-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1vw;
+      margin-bottom: 1.6vh;
+    }
+
+    .modal-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1vw;
+      margin-bottom: 1.6vh;
+    }
+
+    .form-group {
+      margin-bottom: 0;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: clamp(0.78rem, 0.82vw, 0.92rem);
+      font-weight: 700;
+      margin-bottom: 0.5vh;
+      color: var(--text-bright);
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 1.1vh 1vw;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-card);
+      border-radius: 0.8vh;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: clamp(0.88rem, 0.9vw, 1rem);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    @media (max-width: 767px) {
+      .form-input, .form-select, .form-textarea {
+        font-size: 16px !important; /* Evita zoom automático molesto en iOS */
+        padding: 12px 14px !important;
+        border-radius: 8px !important;
+      }
+      .modal-pedido-box {
+        padding: 2.5vh 4.5vw !important;
+        max-height: 92vh !important;
+        border-radius: 16px !important;
+      }
+      .btn-fire, .btn-whatsapp, .btn-call {
+        min-height: 48px !important;
+      }
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary);
+    }
+
+    /* Barra Sticky Móvil Inferior Premium */
+    .mobile-sticky-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: var(--header-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-card);
+      padding: 1.2vh 3.5vw;
+      display: flex;
+      gap: 2.5vw;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 -0.8vh 3vh rgba(0, 0, 0, 0.45);
+    }
+
+    /* Drawer Móvil */
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 78vw;
+      max-width: 360px;
+      height: 100vh;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-card);
+      z-index: 10001;
+      padding: 4vh 6vw;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5vh;
+      box-shadow: -1vw 0 4vw rgba(0, 0, 0, 0.5);
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .mobile-drawer.open {
+      right: 0;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      display: none;
+    }
+
+    .drawer-backdrop.active {
+      display: block;
+    }
+
+    /* ==========================================================================
+       MEDIA QUERIES RESPONSIVAS
+       ========================================================================== */
+    @media (max-width: 767px) {
+      .desktop-only { display: none !important; }
+      .mobile-only { display: flex !important; }
+      .hero-layout { grid-template-columns: 1fr !important; gap: 4vh !important; }
+      .catalog-grid { grid-template-columns: 1fr !important; gap: 3vh !important; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 2vh !important; }
+      .split-grid { grid-template-columns: 1fr !important; gap: 3.5vh !important; }
+      .hero-img-box { height: 35vh !important; }
+      .map-container { height: 38vh !important; }
+      .modal-grid-3, .modal-grid-2 { grid-template-columns: 1fr !important; gap: 1.5vh !important; }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .desktop-only { display: none !important; }
+      .mobile-only { display: flex !important; }
+      .hero-layout { grid-template-columns: 1fr !important; gap: 4vh !important; }
+      .catalog-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 2.5vh !important; }
+      .stats-grid { grid-template-columns: repeat(4, 1fr) !important; }
+      .split-grid { grid-template-columns: 1fr !important; gap: 3.5vh !important; }
+      .hero-img-box { height: 42vh !important; }
+      .map-container { height: 45vh !important; }
+      .modal-grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
+    @media (min-width: 1025px) {
+      .mobile-only { display: none !important; }
+      .desktop-only { display: flex !important; }
+      .mobile-sticky-bar { display: none !important; }
+      body { padding-bottom: 0 !important; }
+      .hero-layout { grid-template-columns: 1.15fr 0.85fr !important; gap: 3.5vw !important; }
+      .catalog-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 1.6vw !important; }
+      .stats-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 1.5vw !important; }
+      .split-grid { grid-template-columns: 1fr 1fr !important; gap: 3.5vw !important; }
+      .hero-img-box { height: 48vh !important; }
+      .map-container { height: 55vh !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- BACKDROP PARA DRAWER MÓVIL -->
+  <div class="drawer-backdrop" id="drawerBackdrop" onclick="cerrarDrawer()"></div>
+
+  <!-- DRAWER MÓVIL INTERACTIVO -->
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-card); padding-bottom: 2vh;">
+      <div style="display: flex; align-items: center; gap: 2vw;">
+        <img src="/imgwii/logo.webp" alt="Logo Solgas" style="height: 4.5vh; border-radius: 0.8vh; background: #ffffff; padding: 0.3vh;" />
+        <span style="font-weight: 800; font-size: 1.1rem; color: var(--text-bright);">MENÚ</span>
+      </div>
+      <button onclick="cerrarDrawer()" style="background: none; border: none; font-size: 1.4rem; color: var(--text-main); cursor: pointer;">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Navegación Drawer -->
+    <nav style="display: flex; flex-direction: column; gap: 1.8vh; font-size: 1.05rem; font-weight: 600;">
+      <a href="#productos" onclick="cerrarDrawer()"><i class="fas fa-burn" style="color: var(--primary); margin-right: 2vw;"></i> <span data-i18n="nav_products">Productos</span></a>
+      <a href="#pesaje" onclick="cerrarDrawer()"><i class="fas fa-balance-scale" style="color: var(--brand-blue); margin-right: 2vw;"></i> <span data-i18n="nav_weight">Balanza Digital</span></a>
+      <a href="#seguridad" onclick="cerrarDrawer()"><i class="fas fa-shield-virus" style="color: var(--accent-emerald); margin-right: 2vw;"></i> <span data-i18n="nav_safety">Cero Fugas</span></a>
+      <a href="#calculadora" onclick="cerrarDrawer()"><i class="fas fa-calculator" style="color: var(--accent-gold); margin-right: 2vw;"></i> <span data-i18n="nav_calc">Calculadora</span></a>
+      <a href="#mapa-sede" onclick="cerrarDrawer()"><i class="fas fa-map-marked-alt" style="color: var(--brand-blue); margin-right: 2vw;"></i> <span data-i18n="nav_map">Ubicación</span></a>
+      <a href="#nosotros" onclick="cerrarDrawer()"><i class="fas fa-building" style="color: var(--primary); margin-right: 2vw;"></i> <span data-i18n="nav_about">Nosotros</span></a>
+    </nav>
+
+    <!-- Botones en Drawer Móvil -->
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 1.5vh;">
+      <button onclick="cerrarDrawer(); abrirModalLogin();" class="btn-outline" style="width: 100%; justify-content: center;">
+        <i class="fas fa-user-circle"></i> <span data-i18n="btn_login">Iniciar Sesión</span>
+      </button>
+      <button onclick="cerrarDrawer(); abrirModalPedido();" class="btn-fire" style="width: 100%; justify-content: center;">
+        <i class="fas fa-shopping-cart"></i> <span data-i18n="btn_order_now_modal">Pedir Balón Express</span>
+      </button>
+      <a href="tel:+51936369384" class="btn-call" style="width: 100%; justify-content: center;">
+        <i class="fas fa-phone-alt"></i> <span>936 369 384</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- 1. TOP BAR OFICIAL -->
+  <div style="background: var(--topbar-bg); color: #ffffff; font-size: clamp(0.72rem, 0.78vw, 0.85rem); font-weight: 700; padding: 0.8vh 0;">
+    <div class="page-container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1vw;">
+      <div style="display: flex; align-items: center; gap: 1vw;">
+        <span style="background: rgba(0,0,0,0.25); padding: 0.2vh 0.6vw; border-radius: 0.5vh;">
+          <i class="fas fa-shield-alt"></i> OSINERGMIN Reg. 208492
+        </span>
+        <span data-i18n="topbar_coverage">Sede Central: Jr. Dante 260, Surquillo • Despacho en 15 - 20 min</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 1.5vw;">
+        <span data-i18n="topbar_time"><i class="far fa-clock"></i> 365 días del año</span>
+        <a href="tel:+51936369384" style="color: #ffffff; text-decoration: underline; font-weight: 800;">
+          <i class="fas fa-phone-alt"></i> 936 369 384
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. HEADER CON BOTONES LOGIN Y PEDIR GAS -->
+  <header style="position: sticky; top: 0; z-index: 1000; background: var(--header-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border-card); padding: 1.2vh 0;">
+    <div class="page-container" style="display: flex; align-items: center; justify-content: space-between;">
+      
+      <!-- Logo y Título -->
+      <a href="#hero" style="display: flex; align-items: center; gap: 1vw;">
+        <img 
+          src="/imgwii/logo.webp" 
+          alt="Solgas Surquillo" 
+          style="height: 5.2vh; width: auto; object-fit: contain; border-radius: 0.8vh; background: #ffffff; padding: 0.2vh; border: 1px solid var(--border-card);"
+        />
+        <div>
+          <span style="font-size: clamp(1.05rem, 1.2vw, 1.35rem); font-weight: 800; font-family: 'Outfit', sans-serif; display: block; color: var(--text-bright); line-height: 1.1;">
+            SOLGAS <span style="color: var(--brand-orange);">SURQUILLO</span>
+          </span>
+          <span class="desktop-only" style="font-size: clamp(0.68rem, 0.72vw, 0.8rem); color: var(--text-muted); font-weight: 500;">
+             Envios a dominicilio y trabajo 
+          </span>
+        </div>
+      </a>
+
+      <!-- Navegación Desktop -->
+      <nav class="desktop-only" style="align-items: center; gap: 1.8vw; font-weight: 600; font-size: clamp(0.85rem, 0.9vw, 1rem);">
+        <a href="#pesaje" style="color: var(--text-main); transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-main)'" data-i18n="nav_weight">Balanza Digital</a>
+        <a href="#productos" style="color: var(--text-main); transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-main)'" data-i18n="nav_products">Productos</a>
+        <a href="#seguridad" style="color: var(--text-main); transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-main)'" data-i18n="nav_safety">Cero Fugas</a>
+        <a href="#calculadora" style="color: var(--text-main); transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-main)'" data-i18n="nav_calc">Calculadora</a>
+        <a href="#mapa-sede" style="color: var(--text-main); transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-main)'" data-i18n="nav_map">Ubicación</a>
+      </nav>
+
+      <!-- Controles: Idioma, Tema, Botón Login y Botón Pedir -->
+      <div style="display: flex; align-items: center; gap: 0.8vw;">
+        
+        <!-- Switcher Idioma (ES / EN) -->
+        <div class="pill-group" id="langSwitcher" title="Idioma / Language">
+          <button class="pill-btn active" data-lang="es">ES</button>
+          <button class="pill-btn" data-lang="en">EN</button>
+        </div>
+
+        <!-- Switcher Tema (Luz / Futuro) -->
+        <button id="themeToggleBtn" aria-label="Cambiar tema" style="background: var(--bg-subtle); border: 1px solid var(--border-card); color: var(--text-main); width: 4.2vh; height: 4.2vh; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+          <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+
+        <!-- Botón LOGIN (Abre Modal de Login) -->
+        <button onclick="abrirModalLogin()" class="btn-outline desktop-only" style="padding: 1vh 1.2vw; font-size: clamp(0.8rem, 0.85vw, 0.95rem);" title="Iniciar Sesión">
+          <i class="fas fa-user-circle"></i> <span data-i18n="btn_login">Login</span>
+        </button>
+
+        <!-- Botón PEDIR GAS (Abre Modal Multicolumna) -->
+        <button onclick="abrirModalPedido()" class="btn-fire desktop-only" style="padding: 1vh 1.4vw; font-size: clamp(0.85rem, 0.9vw, 1rem);" title="Hacer Pedido Express">
+          <i class="fas fa-paper-plane"></i> <span data-i18n="btn_header_order">Pedir Gas</span>
+        </button>
+
+        <!-- Botón Hamburguesa Móvil -->
+        <button class="mobile-only" onclick="abrirDrawer()" aria-label="Abrir Menú" style="background: var(--bg-subtle); border: 1px solid var(--border-card); color: var(--text-bright); width: 4.5vh; height: 4.5vh; border-radius: 0.8vh; cursor: pointer; align-items: center; justify-content: center; font-size: 1.2rem;">
+          <i class="fas fa-bars"></i>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- 2. HERO SECTION: NARRATIVA CRO [PROBLEMA REAL] ➔ [SOLUCIÓN INMEDIATA] -->
+  <section id="hero" style="padding: 5vh 0 6vh; background: var(--bg-surface);">
+    <div class="page-container">
+      <div style="display: grid; align-items: center;" class="hero-layout">
+        
+        <!-- Columna Izquierda: Problema ➔ Solución -->
+        <div>
+          <!-- Pre-badge Amigable y Cercano -->
+          <div style="margin-bottom: 1.6vh;">
+            <span class="badge-fire" style="font-size: clamp(0.74rem, 0.82vw, 0.9rem); padding: 0.55vh 1.1vw;">
+              <i class="fas fa-smile-beam"></i> <span data-i18n="hero_health_badge">👋 ¡HOLA VECINO! CUIDAMOS LA SALUD Y TRANQUILIDAD DE TU HOGAR</span>
+            </span>
+          </div>
+
+          <!-- Título Principal en Texto Grande -->
+          <h1 style="font-size: clamp(2.1rem, 3.3vw, 4rem); margin-bottom: 2.2vh; letter-spacing: -0.02em; line-height: 1.1;">
+            <span data-i18n="hero_title_1">¿Cansado de Balones que</span><br />
+            <span style="background: linear-gradient(135deg, var(--brand-orange) 0%, #ff9900 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" data-i18n="hero_title_highlight">
+              Duran Poco o Huelen a Gas?
+            </span>
+          </h1>
+
+          <!-- Bajada Servicial y Cercana -->
+          <p style="font-size: clamp(0.98rem, 1.1vw, 1.22rem); color: var(--text-muted); margin-bottom: 3vh; max-width: 550px; line-height: 1.6;" data-i18n="hero_subtitle">
+            ¡Estamos para servirte con una sonrisa! <strong>Recibe tu Balón Solgas 100% Lleno, sellado e instalado en tu cocina en 15 a 20 minutos</strong>. Despachamos con cariño desde nuestra base en <strong>Jr. Dante 260, Surquillo</strong> hacia <strong>Miraflores, San Borja y San Isidro</strong>. Pesamos tu balón con balanza digital frente a tus ojos y realizamos la prueba de cero fugas totalmente gratis.
+          </p>
+
+          <!-- Selector Dinámico de Distrito -->
+          <div class="clean-card" style="padding: 2vh 1.8vw; margin-bottom: 3vh; border-left: 0.5vw solid var(--primary);">
+            <div style="font-size: clamp(0.78rem, 0.85vw, 0.95rem); font-weight: 700; text-transform: uppercase; color: var(--primary); margin-bottom: 1.2vh;" data-i18n="hero_zone_select_title">
+              <i class="fas fa-map-marker-alt"></i> ¿Dónde te encuentras ahora mismo?
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.8vw;" id="districtSelector">
+              {datosNegocio.distritos.map((dist, idx) => (
+                <button 
+                  class={`district-btn pill-btn ${idx === 0 ? 'active' : ''}`}
+                  data-district={dist.nombre}
+                  data-time={dist.tiempo}
+                  style="border: 1px solid var(--border-card); padding: 1vh 0.6vw; border-radius: 0.8vh; text-align: center; cursor: pointer; transition: all 0.2s;"
+                >
+                  <div style="font-weight: 700; font-size: clamp(0.8rem, 0.85vw, 0.95rem);">{dist.nombre}</div>
+                  <div style="font-size: clamp(0.68rem, 0.72vw, 0.8rem); opacity: 0.85;">⚡ {dist.tiempo}</div>
+                </button>
+              ))}
+            </div>
+
+            <div style="margin-top: 1.4vh; font-size: clamp(0.75rem, 0.82vw, 0.9rem); color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8vw;">
+              <span><i class="fas fa-motorcycle" style="color: var(--primary);"></i> <span id="distritoActualInfo" data-i18n="hero_zone_eta">Despachando desde Jr. Dante 260 (Surquillo): 12 - 18 min</span></span>
+              <span style="color: var(--accent-emerald); font-weight: 700;"><i class="fas fa-check"></i> <span data-i18n="hero_free_delivery">¡Envío sin recargo!</span></span>
+            </div>
+          </div>
+
+          <!-- Botones Principales -->
+          <div style="display: flex; gap: 1.2vw; flex-wrap: wrap;">
+            <button onclick="abrirModalPedido()" class="btn-fire" style="flex: 1 1 240px; padding: 1.4vh 2vw;">
+              <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
+              <div style="text-align: left; line-height: 1.2;">
+                <span style="display: block; font-size: clamp(0.68rem, 0.72vw, 0.8rem); font-weight: 500; text-transform: uppercase;" data-i18n="btn_modal_sub">Formulario Express</span>
+                <span style="display: block; font-size: clamp(0.95rem, 1.05vw, 1.2rem); font-weight: 800;" data-i18n="btn_modal_main">Pedir Balón a Domicilio</span>
+              </div>
+            </button>
+
+            <a href="tel:+51936369384" class="btn-call" style="flex: 1 1 210px; padding: 1.4vh 1.8vw;">
+              <i class="fas fa-phone-volume" style="font-size: 1.3rem;"></i>
+              <div style="text-align: left; line-height: 1.2;">
+                <span style="display: block; font-size: clamp(0.68rem, 0.72vw, 0.8rem); font-weight: 500; text-transform: uppercase;" data-i18n="btn_call_sub">Llamada Directa</span>
+                <span style="display: block; font-size: clamp(0.95rem, 1.05vw, 1.2rem); font-weight: 800;">936 369 384</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Métricas de Trayectoria -->
+          <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5vw; margin-top: 3.5vh; padding-top: 2.5vh; border-top: 1px solid var(--border-card);">
+            <div>
+              <div style="font-size: clamp(1.4rem, 1.8vw, 2.2rem); font-weight: 800; color: var(--primary); font-family: 'Outfit', sans-serif;">12K+</div>
+              <div style="font-size: clamp(0.7rem, 0.78vw, 0.85rem); color: var(--text-muted); font-weight: 600;" data-i18n="stat_happy_clients">Clientes Felices</div>
+            </div>
+            <div>
+              <div style="font-size: clamp(1.4rem, 1.8vw, 2.2rem); font-weight: 800; color: var(--accent-emerald); font-family: 'Outfit', sans-serif;">100%</div>
+              <div style="font-size: clamp(0.7rem, 0.78vw, 0.85rem); color: var(--text-muted); font-weight: 600;" data-i18n="stat_scales_certified">Peso Exacto</div>
+            </div>
+            <div>
+              <div style="font-size: clamp(1.4rem, 1.8vw, 2.2rem); font-weight: 800; color: var(--brand-blue); font-family: 'Outfit', sans-serif;">25+</div>
+              <div style="font-size: clamp(0.7rem, 0.78vw, 0.85rem); color: var(--text-muted); font-weight: 600;" data-i18n="stat_years_exp">Años en Lima</div>
+            </div>
+            <div>
+              <div style="font-size: clamp(1.4rem, 1.8vw, 2.2rem); font-weight: 800; color: var(--accent-gold); font-family: 'Outfit', sans-serif;">365</div>
+              <div style="font-size: clamp(0.7rem, 0.78vw, 0.85rem); color: var(--text-muted); font-weight: 600;" data-i18n="stat_days_open">Días al Año</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Columna Derecha: Fotografía Limpia y Garantía -->
+        <div>
+          <div class="clean-card" style="padding: 1.2vw; border: 2px solid var(--border-accent);">
+            
+            <div class="hero-img-box" style="border-radius: 1vh; overflow: hidden; position: relative; background: #0b1122;">
+              <img 
+                src="/imgwii/01-solgas-surquillo.webp" 
+                alt="Balón Solgas en Cocina Moderna" 
+                style="width: 100%; height: 100%; object-fit: cover;"
+              />
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5vh; padding: 1.2vh 1.2vw; background: var(--bg-surface-elevated); border-radius: 1vh; border: 1px solid var(--border-card);">
+              <div style="display: flex; align-items: center; gap: 1vw;">
+                <img 
+                  src="/imgwii/Delivery_worker_riding_motorcycle.jpeg" 
+                  alt="Motorizado en ruta" 
+                  style="width: 5vh; height: 5vh; border-radius: 0.8vh; object-fit: cover; border: 1px solid var(--border-card);"
+                />
+                <div>
+                  <div style="font-size: clamp(0.82rem, 0.9vw, 1rem); font-weight: 700; color: var(--text-bright);" data-i18n="hero_driver_box_title">
+                    Balanza Calibrada a Bordo
+                  </div>
+                  <div style="font-size: clamp(0.7rem, 0.75vw, 0.82rem); color: var(--text-muted);" data-i18n="hero_driver_box_desc">
+                    Pesamos el balón frente a tus ojos en tu puerta.
+                  </div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: clamp(0.68rem, 0.72vw, 0.78rem); color: var(--text-muted);" data-i18n="hero_card_price_from">Desde</div>
+                <div style="font-size: clamp(1.2rem, 1.5vw, 1.8rem); font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif;">
+                  S/ 48.00
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PRODUCTOS: VENTA DE BALONES A DOMICILIO CON PESO EXACTO -->
+  <section id="productos" style="padding: 7vh 0; background: var(--bg-body);">
+    <div class="page-container">
+      
+      <div style="text-align: center; max-width: 680px; margin: 0 auto 5vh;">
+        <span class="badge-fire" style="margin-bottom: 1.2vh;">
+          <i class="fas fa-boxes"></i> <span data-i18n="catalog_badge">CATÁLOGO OFICIAL SOLGAS SURQUILLO</span>
+        </span>
+        <h2 style="font-size: clamp(1.7rem, 2.5vw, 2.8rem); margin-bottom: 1.2vh;" data-i18n="catalog_title">
+          Venta de Balones a Domicilio con Peso Exacto
+        </h2>
+        <p style="color: var(--text-muted); font-size: clamp(0.9rem, 0.95vw, 1.05rem);" data-i18n="catalog_desc">
+          Todos los balones incluyen precinto inviolable oficial de fábrica Solgas, pesaje con balanza digital Inacal en tu domicilio y revisión de fugas sin costo alguno.
+        </p>
+      </div>
+
+      <div class="catalog-grid" style="display: grid;">
+        {datosNegocio.productos.map((prod) => (
+          <div class="clean-card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 1.8vh 1.4vw; border-top: 0.5vh solid var(--primary);">
+            
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5vh;">
+                <span class={prod.tagClase} style="font-size: clamp(0.7rem, 0.75vw, 0.82rem);">{prod.badge}</span>
+                <span style="font-size: clamp(0.68rem, 0.72vw, 0.78rem); color: var(--text-muted); font-weight: 600;">{prod.tipoUso}</span>
+              </div>
+
+              <div style="height: 24vh; border-radius: 1vh; overflow: hidden; background: #ffffff; display: flex; align-items: center; justify-content: center; margin-bottom: 1.8vh; border: 1px solid var(--border-card); position: relative;">
+                <img 
+                  src={prod.imagen} 
+                  alt={prod.nombre} 
+                  style="max-height: 20vh; max-width: 88%; object-fit: contain;"
+                />
+                <div style="position: absolute; bottom: 0.8vh; right: 0.8vw; background: rgba(5,8,17,0.85); backdrop-filter: blur(4px); color: #ffffff; font-size: 0.72rem; font-weight: 700; padding: 0.2vh 0.6vw; border-radius: 999px;">
+                  {prod.capacidad}
+                </div>
+              </div>
+
+              <h3 style="font-size: clamp(1.05rem, 1.15vw, 1.35rem); margin-bottom: 0.6vh; color: var(--text-bright);">{prod.nombre}</h3>
+              <div style="font-size: clamp(0.75rem, 0.8vw, 0.88rem); color: var(--text-muted); margin-bottom: 1.4vh;">
+                <i class="fas fa-cog" style="color: var(--primary);"></i> {prod.valvula}
+              </div>
+
+              <ul style="list-style: none; margin-bottom: 2vh; font-size: clamp(0.75rem, 0.8vw, 0.88rem); color: var(--text-muted);">
+                {prod.caracteristicas.map((caract) => (
+                  <li style="display: flex; align-items: flex-start; gap: 0.5vw; margin-bottom: 0.6vh;">
+                    <i class="fas fa-check-circle" style="color: var(--accent-emerald); margin-top: 0.3vh; font-size: 0.85rem;"></i>
+                    <span>{caract}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-card); padding-top: 1.5vh; margin-top: 1vh;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5vh; gap: 0.8vw;">
+                <div style="flex-shrink: 0;">
+                  <span style="font-size: clamp(0.68rem, 0.72vw, 0.78rem); color: var(--text-muted); text-transform: uppercase;" data-i18n="card_price_label">Precio</span>
+                  <div style="font-size: clamp(1.3rem, 1.55vw, 1.95rem); font-weight: 900; color: var(--text-bright); font-family: 'Outfit', sans-serif; white-space: nowrap; line-height: 1.1;">
+                    S/ {prod.precioPEN.toFixed(2)}
+                  </div>
+                </div>
+                <div style="text-align: right; min-width: 0; flex: 1;">
+                  <span style="font-size: clamp(0.64rem, 0.7vw, 0.76rem); color: var(--accent-emerald); font-weight: 700; display: block; line-height: 1.25; margin-bottom: 0.3vh;">
+                    <i class="fas fa-tag"></i> {prod.ahorro}
+                  </span>
+                  <span style="font-size: clamp(0.62rem, 0.68vw, 0.72rem); color: var(--text-muted); display: block;" data-i18n="card_tax_inc">Incluye delivery</span>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr auto; gap: 0.6vw;">
+                <button 
+                  onclick={`abrirModalPedido('${prod.nombre}')`} 
+                  class="btn-whatsapp" 
+                  style="padding: 1.1vh 1vw; font-size: clamp(0.82rem, 0.88vw, 0.95rem);"
+                >
+                  <i class="fab fa-whatsapp"></i> <span data-i18n="btn_order_product">Pedir por WhatsApp</span>
+                </button>
+                <a 
+                  href="tel:+51936369384" 
+                  class="btn-outline" 
+                  style="padding: 1.1vh 1vw;" 
+                  title="Llamar para pedir"
+                >
+                  <i class="fas fa-phone-alt"></i>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 4. PESAJE: ¿POR QUÉ EXIGIR EL PESAJE CON BALANZA DIGITAL? -->
+  <section id="pesaje" style="padding: 7vh 0; background: var(--bg-surface);">
+    <div class="page-container">
+      <div style="display: grid; align-items: center;" class="split-grid">
+        
+        <div>
+          <div class="clean-card" style="padding: 1vw; border: 2px solid var(--border-accent);">
+            <div style="border-radius: 1vh; overflow: hidden; height: 45vh; position: relative;">
+              <img 
+                src="/imgwii/02-solgas-surquillo-balanza.jpeg" 
+                alt="Pesaje con balanza digital Inacal" 
+                style="width: 100%; height: 100%; object-fit: cover;"
+              />
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5vh 1.5vw; background: linear-gradient(to top, rgba(5,8,17,0.92) 0%, transparent 100%); color: #ffffff;">
+                <span class="badge-emerald" style="margin-bottom: 0.5vh;">
+                  <i class="fas fa-balance-scale"></i> Balanza Digital Certificada
+                </span>
+                <h4 style="font-size: clamp(1rem, 1.15vw, 1.3rem); color: #ffffff;" data-i18n="scale_img_caption">
+                  Pesaje Transparente: 10 kg Netos de Gas GLP
+                </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <span class="badge-blue" style="margin-bottom: 1.2vh;">
+            <i class="fas fa-check-double"></i> <span data-i18n="scale_badge">GARANTÍA DE TRANSPARENCIA</span>
+          </span>
+          <h2 style="font-size: clamp(1.7rem, 2.5vw, 2.8rem); margin-bottom: 1.5vh;" data-i18n="scale_title">
+            ¿Por Qué Exigir el Pesaje con Balanza Digital?
+          </h2>
+          <p style="color: var(--text-muted); font-size: clamp(0.95rem, 1.05vw, 1.15rem); margin-bottom: 2.5vh;" data-i18n="scale_desc">
+            En <strong>Solgas Surquillo</strong> combatimos las malas prácticas del mercado informal. Colocamos una balanza digital calibrada frente a tu puerta para que verifiques que recibes cada gramo de gas por el que pagas.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1vw; margin-bottom: 3vh;">
+            <div class="clean-card" style="padding: 1.5vh 1vw; text-align: center;">
+              <div style="font-size: clamp(0.68rem, 0.72vw, 0.8rem); color: var(--text-muted); text-transform: uppercase;" data-i18n="scale_tara">Tara (Balón Vacío)</div>
+              <div style="font-size: clamp(1.2rem, 1.6vw, 2rem); font-weight: 800; color: var(--text-bright); font-family: 'Outfit', sans-serif;">12.5 kg</div>
+              <div style="font-size: clamp(0.65rem, 0.7vw, 0.75rem); color: var(--text-muted);" data-i18n="scale_tara_desc">Grabado en el asa</div>
+            </div>
+            <div class="clean-card" style="padding: 1.5vh 1vw; text-align: center; border-color: var(--primary);">
+              <div style="font-size: clamp(0.68rem, 0.72vw, 0.8rem); color: var(--primary); text-transform: uppercase;" data-i18n="scale_gas">GLP Neto Líquido</div>
+              <div style="font-size: clamp(1.2rem, 1.6vw, 2rem); font-weight: 800; color: var(--primary); font-family: 'Outfit', sans-serif;">+ 10.0 kg</div>
+              <div style="font-size: clamp(0.65rem, 0.7vw, 0.75rem); color: var(--primary);" data-i18n="scale_gas_desc">Gas 100% puro</div>
+            </div>
+            <div class="clean-card" style="padding: 1.5vh 1vw; text-align: center; background: rgba(16, 185, 129, 0.08); border-color: var(--accent-emerald);">
+              <div style="font-size: clamp(0.68rem, 0.72vw, 0.8rem); color: var(--accent-emerald); text-transform: uppercase;" data-i18n="scale_total">Total en Balanza</div>
+              <div style="font-size: clamp(1.2rem, 1.6vw, 2rem); font-weight: 800; color: var(--accent-emerald); font-family: 'Outfit', sans-serif;">= 22.5 kg</div>
+              <div style="font-size: clamp(0.65rem, 0.7vw, 0.75rem); color: var(--accent-emerald);" data-i18n="scale_total_desc">Garantía Exacta</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1vw; flex-wrap: wrap;">
+            <button onclick="abrirModalPedido('Balón SOLGAS de 10 kg con Balanza Digital')" class="btn-whatsapp">
+              <i class="fab fa-whatsapp"></i> <span data-i18n="scale_btn_wa">Pedir con Balanza Digital</span>
+            </button>
+            <a href="tel:+51936369384" class="btn-call">
+              <i class="fas fa-phone-alt"></i> <span data-i18n="btn_call_short">Llamar: 936 369 384</span>
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. INSTALACIÓN SEGURA Y PRUEBA HERMÉTICA CERO FUGAS -->
+  <section id="seguridad" style="padding: 7vh 0; background: var(--bg-body);">
+    <div class="page-container">
+      <div style="display: grid; align-items: center;" class="split-grid">
+        
+        <div>
+          <span class="badge-fire" style="margin-bottom: 1.2vh;">
+            <i class="fas fa-shield-virus"></i> <span data-i18n="safety_badge">SEGURIDAD PARA TU FAMILIA</span>
+          </span>
+          <h2 style="font-size: clamp(1.7rem, 2.5vw, 2.8rem); margin-bottom: 1.5vh;" data-i18n="safety_title">
+            Instalación Gratuita y Prueba Hermética Cero Fugas
+          </h2>
+          <p style="color: var(--text-muted); font-size: clamp(0.95rem, 1.05vw, 1.15rem); margin-bottom: 2.5vh;" data-i18n="safety_desc">
+            Nuestros motorizados son técnicos capacitados en manejo seguro de GLP. Instalamos tu balón de gas, acoplamos el regulador Click-On y realizamos la prueba de espuma para certificar hermeticidad absoluta.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 1.8vh; margin-bottom: 3vh;">
+            <div style="display: flex; gap: 1vw; align-items: flex-start;">
+              <div style="background: rgba(255, 102, 0, 0.12); color: var(--primary); width: 4.8vh; height: 4.8vh; border-radius: 1vh; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="fas fa-wrench"></i>
+              </div>
+              <div>
+                <h4 style="font-size: clamp(0.95rem, 1vw, 1.15rem); margin-bottom: 0.3vh;" data-i18n="safety_item1_title">Revisión de Válvula y Manguera</h4>
+                <p style="font-size: clamp(0.8rem, 0.85vw, 0.95rem); color: var(--text-muted);" data-i18n="safety_item1_desc">Verificamos que tu manguera flexible no presente resecamiento, cortes ni caducidad.</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1vw; align-items: flex-start;">
+              <div style="background: rgba(2, 132, 199, 0.12); color: var(--brand-blue); width: 4.8vh; height: 4.8vh; border-radius: 1vh; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="fas fa-soap"></i>
+              </div>
+              <div>
+                <h4 style="font-size: clamp(0.95rem, 1vw, 1.15rem); margin-bottom: 0.3vh;" data-i18n="safety_item2_title">Prueba de Espuma Activa</h4>
+                <p style="font-size: clamp(0.8rem, 0.85vw, 0.95rem); color: var(--text-muted);" data-i18n="safety_item2_desc">Inspeccionamos la unión del regulador con el cilindro antes de encender la cocina.</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1vw; align-items: flex-start;">
+              <div style="background: rgba(16, 185, 129, 0.12); color: var(--accent-emerald); width: 4.8vh; height: 4.8vh; border-radius: 1vh; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="fas fa-recycle"></i>
+              </div>
+              <div>
+                <h4 style="font-size: clamp(0.95rem, 1vw, 1.15rem); margin-bottom: 0.3vh;" data-i18n="safety_item3_title">Retiro y Reciclaje Seguro del Balón Vacío</h4>
+                <p style="font-size: clamp(0.8rem, 0.85vw, 0.95rem); color: var(--text-muted);" data-i18n="safety_item3_desc">Nos llevamos el cilindro desocupado sin ensuciar tu cocina ni golpear tus pisos.</p>
+              </div>
+            </div>
+          </div>
+
+          <a href="tel:+51936369384" class="btn-call">
+            <i class="fas fa-phone-alt"></i> <span data-i18n="btn_call_technician">Pedir Técnico al 936 369 384</span>
+          </a>
+        </div>
+
+        <div>
+          <div class="clean-card" style="padding: 1vw; border: 2px solid var(--border-accent);">
+            <div style="border-radius: 1vh; overflow: hidden; height: 45vh;">
+              <img 
+                src="/imgwii/03-solgas-surquillo-instalacion.webp" 
+                alt="Instalación sin fugas con regulador Solgas" 
+                style="width: 100%; height: 100%; object-fit: cover;"
+              />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. BANNER DE EMERGENCIA SOS CULINARIO -->
+  <section style="background: linear-gradient(90deg, var(--brand-orange) 0%, #d84315 100%); color: #ffffff; padding: 2.2vh 0;">
+    <div class="page-container" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5vw;">
+      <div style="display: flex; align-items: center; gap: 1.2vw;">
+        <div style="background: rgba(255,255,255,0.22); width: 5.5vh; height: 5.5vh; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+          <i class="fas fa-utensils"></i>
+        </div>
+        <div>
+          <h3 style="font-size: clamp(1.05rem, 1.25vw, 1.45rem); font-weight: 800; color: #ffffff; line-height: 1.2;" data-i18n="sos_title">
+            ¿Se te apagó la hornilla a mitad del almuerzo o cena?
+          </h3>
+          <p style="font-size: clamp(0.8rem, 0.88vw, 0.98rem); opacity: 0.92;" data-i18n="sos_subtitle">
+            Activa el <strong>Despacho Prioritario SOS</strong> al 936 369 384 y te enviamos la moto más cercana en minutos.
+          </p>
+        </div>
+      </div>
+      <div style="display: flex; gap: 1vw;">
+        <a href="tel:+51936369384" style="background: #ffffff; color: #d84315; font-weight: 800; padding: 1.1vh 1.6vw; border-radius: 0.8vh; font-size: clamp(0.85rem, 0.9vw, 1rem); display: inline-flex; align-items: center; gap: 0.6vw; box-shadow: 0 0.5vh 1.5vh rgba(0,0,0,0.25);">
+          <i class="fas fa-bolt"></i> <span data-i18n="sos_btn_call">¡Auxilio Gas Express!</span>
+        </a>
+        <button onclick="abrirModalPedido('Balón SOLGAS de 10 kg - Pedido SOS')" style="background: #25d366; color: #ffffff; font-weight: 800; padding: 1.1vh 1.6vw; border-radius: 0.8vh; font-size: clamp(0.85rem, 0.9vw, 1rem); display: inline-flex; align-items: center; gap: 0.6vw; box-shadow: 0 0.5vh 1.5vh rgba(0,0,0,0.25); border: none; cursor: pointer;">
+          <i class="fab fa-whatsapp"></i> <span data-i18n="sos_btn_wa">WhatsApp SOS</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CALCULADORA INTERACTIVA EN 2 COLUMNAS (ACOMPAÑADA CON IMAGEN Y TIPS DE AHORRO) -->
+  <section id="calculadora" style="padding: 7vh 0; background: var(--bg-surface);">
+    <div class="page-container">
+      
+      <div style="text-align: center; max-width: 680px; margin: 0 auto 5vh;">
+        <span class="badge-gold" style="margin-bottom: 1.2vh;">
+          <i class="fas fa-calculator"></i> <span data-i18n="calc_badge">CALCULADORA DE CONSUMO INTELIGENTE</span>
+        </span>
+        <h2 style="font-size: clamp(1.7rem, 2.5vw, 2.8rem); margin-bottom: 1.2vh;" data-i18n="calc_title">
+          ¿Cuánto te Rendirá tu Balón Solgas?
+        </h2>
+        <p style="color: var(--text-muted); font-size: clamp(0.9rem, 0.95vw, 1.05rem);" data-i18n="calc_desc">
+          Calcula la duración estimada de tu balón y descubre cómo optimizar el consumo de gas en tu hogar.
+        </p>
+      </div>
+
+      <div style="display: grid; align-items: stretch;" class="split-grid">
+        
+        <!-- Columna 1: Controles de la Calculadora -->
+        <div class="clean-card" style="padding: 3.5vh 2.5vw; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="margin-bottom: 2.5vh;">
+              <label style="display: flex; justify-content: space-between; font-size: clamp(0.85rem, 0.9vw, 1rem); font-weight: 700; margin-bottom: 1vh;">
+                <span data-i18n="calc_persons_label"><i class="fas fa-users" style="color: var(--primary);"></i> Personas en Casa:</span>
+                <span id="personasDisplay" style="color: var(--primary); font-weight: 800;">3 personas</span>
+              </label>
+              <input type="range" id="calcPersonas" min="1" max="8" value="3" style="width: 100%; accent-color: var(--primary); cursor: pointer;" />
+            </div>
+
+            <div style="margin-bottom: 2.5vh;">
+              <label style="display: flex; justify-content: space-between; font-size: clamp(0.85rem, 0.9vw, 1rem); font-weight: 700; margin-bottom: 1vh;">
+                <span data-i18n="calc_hours_label"><i class="fas fa-clock" style="color: var(--primary);"></i> Horas de Cocción Diaria:</span>
+                <span id="horasDisplay" style="color: var(--primary); font-weight: 800;">2.5 horas / día</span>
+              </label>
+              <input type="range" id="calcHoras" min="0.5" max="6.0" step="0.5" value="2.5" style="width: 100%; accent-color: var(--primary); cursor: pointer;" />
+            </div>
+
+            <div style="margin-bottom: 3vh;">
+              <label style="font-size: clamp(0.85rem, 0.9vw, 1rem); font-weight: 700; margin-bottom: 1vh; display: block;" data-i18n="calc_size_label">
+                <i class="fas fa-burn" style="color: var(--primary);"></i> Tamaño del Balón:
+              </label>
+              <select id="calcTamano" style="width: 100%; padding: 1.2vh 1vw; border-radius: 0.8vh; background: var(--bg-surface-elevated); border: 1px solid var(--border-card); color: var(--text-main); font-weight: 600; font-family: inherit;">
+                <option value="10">Balón Solgas 10 kg (Hogar Estándar)</option>
+                <option value="45">Balón Solgas 45 kg (Comercial / Restaurante)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--bg-surface-elevated); border-radius: 1.2vh; padding: 2.5vh 1.8vw; border: 1px solid var(--border-card); text-align: center;">
+            <div style="font-size: clamp(0.75rem, 0.82vw, 0.9rem); color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5vh;" data-i18n="calc_res_title">
+              Duración Promedio Estimada
+            </div>
+            
+            <div id="calcDiasResult" style="font-size: clamp(2.8rem, 3.8vw, 4.5rem); font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif; line-height: 1;">
+              32 días
+            </div>
+
+            <div style="font-size: clamp(0.78rem, 0.85vw, 0.95rem); color: var(--accent-emerald); font-weight: 700; margin: 1vh 0 1.5vh;">
+              <i class="fas fa-check"></i> <span data-i18n="calc_res_flame">¡Hasta 18% más rendimiento que balones adulterados!</span>
+            </div>
+
+            <button onclick="abrirModalPedido('Balón SOLGAS 10kg - Calculado')" class="btn-whatsapp" style="width: 100%; font-size: clamp(0.85rem, 0.9vw, 1rem);">
+              <i class="fab fa-whatsapp"></i> <span data-i18n="btn_order_now">Pedir mi Balón Ahora</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Columna 2: Fotografía de Cocina con Llama Azul + 4 Tips de Rendimiento -->
+        <div class="clean-card" style="padding: 1.5vw; display: flex; flex-direction: column; justify-content: space-between;">
+          <div style="border-radius: 1vh; overflow: hidden; height: 26vh; margin-bottom: 2vh; position: relative;">
+            <img 
+              src="/imgwii/04-solgas-surquillo-cocina.webp" 
+              alt="Cocina moderna con llama azul eficiente" 
+              style="width: 100%; height: 100%; object-fit: cover;"
+            />
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1vh 1vw; background: linear-gradient(to top, rgba(5,8,17,0.9) 0%, transparent 100%); color: #ffffff;">
+              <span class="badge-fire" style="font-size: 0.72rem;"><i class="fas fa-fire"></i> Llama Azul Pura</span>
+            </div>
+          </div>
+
+          <div style="flex: 1;">
+            <h4 style="font-size: clamp(1rem, 1.1vw, 1.25rem); color: var(--text-bright); margin-bottom: 1.2vh;">
+              <i class="fas fa-lightbulb" style="color: var(--accent-gold);"></i> 4 Consejos para que tu Gas Rinda Más:
+            </h4>
+            <ul style="list-style: none; font-size: clamp(0.8rem, 0.85vw, 0.92rem); color: var(--text-muted); display: flex; flex-direction: column; gap: 0.8vh;">
+              <li><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i> <strong>Usa tapas en las ollas:</strong> Reduce el tiempo de cocción hasta en un 25%.</li>
+              <li><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i> <strong>Llama azul uniforme:</strong> Si la llama es amarilla, quema mal y gasta gas. Solicita inspección gratis.</li>
+              <li><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i> <strong>Regulador de alta precisión:</strong> Evita microfugas imperceptibles.</li>
+              <li><i class="fas fa-check-circle" style="color: var(--accent-emerald);"></i> <strong>Balón con peso garantizado:</strong> Asegura los 10 kg netos completos con balanza digital.</li>
+            </ul>
+          </div>
+
+          <div style="margin-top: 2vh; padding-top: 1.5vh; border-top: 1px solid var(--border-card); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.82rem; color: var(--text-muted);">¿Dudas con tu consumo?</span>
+            <a href="tel:+51936369384" class="btn-outline" style="padding: 0.8vh 1.2vw;">
+              <i class="fas fa-phone-alt"></i> Consultar Técnico
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 8. SEDE CENTRAL FÍSICA Y GOOGLE MAPS EN JR. DANTE 260 -->
+  <section id="mapa-sede" style="padding: 7vh 0; background: var(--bg-body);">
+    <div class="page-container">
+      
+      <div style="text-align: center; max-width: 680px; margin: 0 auto 4vh;">
+        <span class="badge-blue" style="margin-bottom: 1.2vh;">
+          <i class="fas fa-map-marked-alt"></i> <span data-i18n="map_badge">SEDE CENTRAL Y CENTRO DE OPERACIONES</span>
+        </span>
+        <h2 style="font-size: clamp(1.7rem, 2.5vw, 2.8rem); margin-bottom: 1.2vh;" data-i18n="map_title">
+          Encuéntranos en Jr. Dante 260, Surquillo
+        </h2>
+        <p style="color: var(--text-muted); font-size: clamp(0.9rem, 0.95vw, 1.05rem);" data-i18n="map_desc">
+          Desde nuestra planta central despachamos balones con balanza digital en tiempo récord a Surquillo, Miraflores, San Borja y San Isidro.
+        </p>
+      </div>
+
+      <div class="clean-card" style="padding: 1.5vw; overflow: hidden; border: 2px solid var(--border-accent);">
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5vw; margin-bottom: 2vh; padding: 1.5vh 1.5vw; background: var(--bg-surface-elevated); border-radius: 1vh; border: 1px solid var(--border-card);">
+          <div style="display: flex; align-items: center; gap: 1vw;">
+            <div style="background: rgba(255,102,0,0.12); color: var(--primary); width: 4.5vh; height: 4.5vh; border-radius: 0.8vh; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Dirección Central</div>
+              <div style="font-size: 0.92rem; font-weight: 700; color: var(--text-bright);">Jr. Dante 260, Surquillo 15047</div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 1vw;">
+            <div style="background: rgba(2,132,199,0.12); color: var(--brand-blue); width: 4.5vh; height: 4.5vh; border-radius: 0.8vh; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Horario de Despacho</div>
+              <div style="font-size: 0.92rem; font-weight: 700; color: var(--text-bright);">6:00 a.m. a 11:00 p.m. (365 días)</div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 1vw;">
+            <div style="background: rgba(16,185,129,0.12); color: var(--accent-emerald); width: 4.5vh; height: 4.5vh; border-radius: 0.8vh; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+              <i class="fas fa-phone-alt"></i>
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Teléfono Delivery</div>
+              <div style="font-size: 0.92rem; font-weight: 700; color: var(--text-bright);">+51 936 369 384</div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: flex-end;">
+            <a href="https://maps.app.goo.gl/s86EmxowFcKetJWL8" target="_blank" rel="noopener noreferrer" class="btn-fire" style="padding: 1vh 1.4vw; font-size: 0.88rem; width: 100%; justify-content: center;">
+              <i class="fas fa-external-link-alt"></i> Abrir en Google Maps
+            </a>
+          </div>
+        </div>
+
+        <div class="map-container" style="width: 100%; border-radius: 1vh; overflow: hidden; border: 1px solid var(--border-card);">
+          <iframe 
+            src="https://maps.google.com/maps?q=-12.1177408,-77.0226796&hl=es&z=17&output=embed" 
+            width="100%" 
+            height="100%" 
+            style="border:0; min-height: 380px;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Mapa Sede Central Solgas Surquillo - Jr. Dante 260"
+          ></iframe>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 9. QUIÉNES SOMOS & RESPALDO HISTÓRICO REAL (25 AÑOS) -->
+  <section id="nosotros" style="padding: 7vh 0; background: var(--bg-surface);">
+    <div class="page-container">
+      <div style="display: grid; align-items: center;" class="split-grid">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2vw;">
+          <div class="clean-card" style="padding: 0.8vw;">
+            <img 
+              src="/imgwii/06-solgas-surquillo.webp" 
+              alt="Flota de reparto Solgas" 
+              style="width: 100%; height: 25vh; object-fit: cover; border-radius: 0.8vh;"
+            />
+            <div style="font-size: clamp(0.7rem, 0.75vw, 0.82rem); color: var(--text-muted); margin-top: 1vh; text-align: center;" data-i18n="about_img1_caption">
+              Flota oficial de balones Solgas
+            </div>
+          </div>
+          
+          <div class="clean-card" style="padding: 0.8vw;">
+            <img 
+              src="/imgwii/07-solgas-surquillo-rendidor.webp" 
+              alt="Solgas Rendidor Oficial" 
+              style="width: 100%; height: 25vh; object-fit: cover; border-radius: 0.8vh;"
+            />
+            <div style="font-size: clamp(0.7rem, 0.75vw, 0.82rem); color: var(--text-muted); margin-top: 1vh; text-align: center;" data-i18n="about_img2_caption">
+              Garantía Solgas S.A.
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <span class="badge-blue" style="margin-bottom: 1.2vh;">
+            <i class="fas fa-award"></i> <span data-i18n="about_badge">25 AÑOS DE EXPERIENCIA</span>
+          </span>
+          <h2 style="font-size: clamp(1.7rem, 2.5vw, 2.8rem); margin-bottom: 1.5vh;" data-i18n="about_title">
+            Más de Dos Décadas Llevando Seguridad a tu Cocina
+          </h2>
+          <p style="color: var(--text-muted); font-size: clamp(0.95rem, 1.05vw, 1.15rem); margin-bottom: 1.5vh;" data-i18n="about_p1">
+            En <strong>Solgas Surquillo</strong> somos distribuidores autorizados acreditados formalmente ante <strong>OSINERGMIN</strong> y contamos con el respaldo permanente de <strong>Solgas S.A.</strong>
+          </p>
+          <p style="color: var(--text-muted); font-size: clamp(0.95rem, 1.05vw, 1.15rem); margin-bottom: 3vh;" data-i18n="about_p2">
+            Nuestro compromiso no termina al dejar el balón: nos aseguramos de que tu cocina funcione con llama azul limpia, sin olores a gas y con el máximo rendimiento que cuida la economía de tu hogar.
+          </p>
+
+          <div style="display: flex; gap: 1vw; flex-wrap: wrap;">
+            <a href="tel:+51936369384" class="btn-call">
+              <i class="fas fa-phone-alt"></i> <span data-i18n="btn_call_direct">Llamar a Central: 936 369 384</span>
+            </a>
+            <button onclick="abrirModalPedido()" class="btn-whatsapp">
+              <i class="fab fa-whatsapp"></i> <span data-i18n="btn_contact_wa">Pedir por WhatsApp</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FOOTER INSTITUCIONAL -->
+  <footer style="background: #020409; color: #94a3b8; padding: 6vh 0 3vh; border-top: 1px solid var(--border-card);">
+    <div class="page-container">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 3vw; margin-bottom: 4vh;">
+        
+        <div>
+          <div style="display: flex; align-items: center; gap: 1vw; margin-bottom: 1.5vh;">
+            <img src="/imgwii/logo.webp" alt="Logo Solgas" style="height: 4.8vh; border-radius: 0.6vh; background: #ffffff; padding: 0.2vh;" />
+            <div>
+              <span style="font-size: 1.1rem; font-weight: 800; color: #ffffff; display: block; font-family: 'Outfit', sans-serif;">SOLGAS SURQUILLO</span>
+              <span style="font-size: 0.72rem; color: var(--brand-orange); font-weight: 700;">DISTRIBUIDOR AUTORIZADO</span>
+            </div>
+          </div>
+          <p style="font-size: clamp(0.78rem, 0.82vw, 0.9rem); line-height: 1.6; margin-bottom: 1.5vh;" data-i18n="footer_bio">
+            Distribución formal de balones de gas GLP Solgas y MásGas. Sede en Jr. Dante 260, Surquillo. Pesaje obligatorio en puerta y atención los 365 días del año.
+          </p>
+          <div style="font-size: clamp(0.85rem, 0.9vw, 1rem); color: #ffffff; font-weight: 700;">
+            <i class="fas fa-phone-alt" style="color: var(--brand-orange);"></i> Delivery Central: <a href="tel:+51936369384" style="color: var(--brand-orange);">936 369 384</a>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="color: #ffffff; font-size: clamp(0.95rem, 1.05vw, 1.15rem); margin-bottom: 1.5vh;" data-i18n="footer_coverage_title">Distritos de Cobertura</h4>
+          <ul style="list-style: none; font-size: clamp(0.78rem, 0.82vw, 0.9rem); line-height: 2;">
+            <li><i class="fas fa-chevron-right" style="color: var(--brand-orange); font-size: 0.7rem;"></i> Surquillo (Base Jr. Dante 260)</li>
+            <li><i class="fas fa-chevron-right" style="color: var(--brand-orange); font-size: 0.7rem;"></i> Miraflores (Todas las zonas)</li>
+            <li><i class="fas fa-chevron-right" style="color: var(--brand-orange); font-size: 0.7rem;"></i> San Borja (Norte y Sur)</li>
+            <li><i class="fas fa-chevron-right" style="color: var(--brand-orange); font-size: 0.7rem;"></i> San Isidro (Financiero y Residencial)</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="color: #ffffff; font-size: clamp(0.95rem, 1.05vw, 1.15rem); margin-bottom: 1.5vh;" data-i18n="footer_payments_title">Medios de Pago y Horarios</h4>
+          <p style="font-size: clamp(0.78rem, 0.82vw, 0.9rem); margin-bottom: 1.2vh;">
+            Aceptamos todos los medios de pago al recibir tu balón:
+          </p>
+          <div style="display: flex; gap: 0.5vw; flex-wrap: wrap; margin-bottom: 1.5vh;">
+            <span style="background: rgba(255,255,255,0.1); color: #ffffff; padding: 0.3vh 0.6vw; border-radius: 0.5vh; font-size: 0.75rem; font-weight: 700;">YAPE</span>
+            <span style="background: rgba(255,255,255,0.1); color: #ffffff; padding: 0.3vh 0.6vw; border-radius: 0.5vh; font-size: 0.75rem; font-weight: 700;">PLIN</span>
+            <span style="background: rgba(255,255,255,0.1); color: #ffffff; padding: 0.3vh 0.6vw; border-radius: 0.5vh; font-size: 0.75rem; font-weight: 700;">POS (VISA/MC)</span>
+            <span style="background: rgba(255,255,255,0.1); color: #ffffff; padding: 0.3vh 0.6vw; border-radius: 0.5vh; font-size: 0.75rem; font-weight: 700;">EFECTIVO</span>
+          </div>
+          <p style="font-size: clamp(0.75rem, 0.8vw, 0.88rem); color: #94a3b8;">
+            <i class="far fa-clock" style="color: var(--brand-orange);"></i> <strong>Lunes a Domingo:</strong> 6:00 a.m. a 11:00 p.m.
+          </p>
+        </div>
+
+        <div>
+          <h4 style="color: #ffffff; font-size: clamp(0.95rem, 1.05vw, 1.15rem); margin-bottom: 1.5vh;" data-i18n="footer_claims_title">Libro de Reclamaciones</h4>
+          <p style="font-size: clamp(0.75rem, 0.8vw, 0.88rem); margin-bottom: 1.2vh;" data-i18n="footer_claims_desc">
+            Conforme a lo establecido por el Código de Protección y Defensa del Consumidor de INDECOPI.
+          </p>
+          <a href="mailto:reclamaciones@solgassurquillo.com?subject=Libro%20de%20Reclamaciones%20Solgas%20Surquillo" style="display: inline-block;">
+            <img 
+              src="/imgwii/Libro-de-reclamaciones.webp" 
+              alt="Libro de Reclamaciones INDECOPI" 
+              style="width: 140px; height: auto; border-radius: 0.8vh; border: 1px solid rgba(255,255,255,0.2);"
+            />
+          </a>
+        </div>
+
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2vh; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1vw; font-size: clamp(0.72rem, 0.78vw, 0.85rem);">
+        <div>
+          © 2026 Solgas Surquillo. Todos los derechos reservados. Sede Jr. Dante 260. Distribuidor Autorizado OSINERGMIN.
+        </div>
+        <div>
+          <a href="#hero" style="color: var(--brand-orange);"><i class="fas fa-arrow-up"></i> Volver arriba</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- 11. BARRA FLOTANTE STICKY PARA SMARTPHONES -->
+  <div class="mobile-sticky-bar">
+    <a href="tel:+51936369384" class="btn-call" style="flex: 1; padding: 1.2vh 1vw; font-size: 0.95rem; justify-content: center;">
+      <i class="fas fa-phone-alt"></i> <span data-i18n="btn_call_short">Llamar 936 369 384</span>
+    </a>
+    <button onclick="abrirModalPedido()" class="btn-whatsapp" style="flex: 1.2; padding: 1.2vh 1vw; font-size: 0.95rem; justify-content: center; border: none; cursor: pointer;">
+      <i class="fab fa-whatsapp"></i> <span data-i18n="btn_wa_short">Pedir Gas Express</span>
+    </button>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 1: LOGIN / INICIAR SESIÓN (DISEÑO QUE LE GUSTÓ AL CLIENTE)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modalLogin" onclick="if(event.target===this) cerrarModalLogin()">
+    <div class="modal-login-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5vh; border-bottom: 1px solid var(--border-card); padding-bottom: 1.5vh;">
+        <div style="display: flex; align-items: center; gap: 0.8vw;">
+          <i class="fas fa-user-circle" style="font-size: 1.6rem; color: var(--primary);"></i>
+          <h3 style="font-size: 1.25rem; color: var(--text-bright); margin: 0;" data-i18n="modal_login_title">Iniciar Sesión Clientes</h3>
+        </div>
+        <button onclick="cerrarModalLogin()" style="background: none; border: none; font-size: 1.4rem; color: var(--text-main); cursor: pointer;">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="formLogin" onsubmit="event.preventDefault(); procesarLogin();">
+        <div class="form-group" style="margin-bottom: 2vh;">
+          <label for="loginEmail"><i class="fas fa-envelope"></i> Correo Electrónico o Celular:</label>
+          <input type="text" id="loginEmail" class="form-input" placeholder="ejemplo@correo.com o 987654321" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 2vh;">
+          <label for="loginPass"><i class="fas fa-lock"></i> Contraseña:</label>
+          <input type="password" id="loginPass" class="form-input" placeholder="••••••••" required />
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5vh; font-size: 0.85rem;">
+          <label style="display: flex; align-items: center; gap: 0.4vw; cursor: pointer;">
+            <input type="checkbox" id="loginRecordar" checked /> Recordarme
+          </label>
+          <a href="#" onclick="alert('Ingresa tu teléfono al WhatsApp para restablecer tu acceso rápido.')" style="color: var(--primary);">¿Olvidaste tu clave?</a>
+        </div>
+
+        <button type="submit" class="btn-fire" style="width: 100%; padding: 1.2vh; font-size: 1rem; justify-content: center;">
+          <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </button>
+      </form>
+
+      <div style="margin-top: 2.5vh; text-align: center; font-size: 0.85rem; color: var(--text-muted);">
+        ¿No tienes cuenta? <a href="#" onclick="cerrarModalLogin(); abrirModalPedido();" style="color: var(--accent-emerald); font-weight: 700;">Haz tu pedido directo sin registro</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 2: FORMULARIO EXPRESS EN 2 Y 3 COLUMNAS (CERO SCROLL)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modalPedido" onclick="if(event.target===this) cerrarModalPedido()">
+    <div class="modal-pedido-box">
+      
+      <!-- Cabecera del Modal -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.2vh; border-bottom: 1px solid var(--border-card); padding-bottom: 1.5vh;">
+        <div style="display: flex; align-items: center; gap: 0.8vw;">
+          <i class="fas fa-truck-loading" style="font-size: 1.6rem; color: var(--primary);"></i>
+          <div>
+            <h3 style="font-size: 1.3rem; color: var(--text-bright); margin: 0; line-height: 1.2;" data-i18n="modal_order_title">Solicitud de Balón a Domicilio</h3>
+            <span style="font-size: 0.78rem; color: var(--accent-emerald); font-weight: 600;">
+              <i class="fas fa-bolt"></i> Despacho express en 15 a 20 minutos desde Jr. Dante 260
+            </span>
+          </div>
+        </div>
+        <button onclick="cerrarModalPedido()" style="background: none; border: none; font-size: 1.4rem; color: var(--text-main); cursor: pointer;">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="formPedidoExpress" onsubmit="event.preventDefault(); enviarPedidoModalWhatsApp();">
+        
+        <!-- FILA 1: 3 COLUMNAS (DATOS PERSONALES Y DISTRITO) -->
+        <div class="modal-grid-3">
+          <div class="form-group">
+            <label for="pedNombre"><i class="fas fa-user"></i> Tu Nombre y Apellido:</label>
+            <input type="text" id="pedNombre" class="form-input" placeholder="Ej: Patricia Morales" required />
+          </div>
+
+          <div class="form-group">
+            <label for="pedTelefono"><i class="fas fa-phone"></i> Teléfono / Celular:</label>
+            <input type="tel" id="pedTelefono" class="form-input" placeholder="Ej: 987 654 321" required />
+          </div>
+
+          <div class="form-group">
+            <label for="pedDistrito"><i class="fas fa-map-marker-alt"></i> Distrito:</label>
+            <select id="pedDistrito" class="form-select" required>
+              <option value="Surquillo">Surquillo (12 - 18 min)</option>
+              <option value="Miraflores">Miraflores (15 - 20 min)</option>
+              <option value="San Borja">San Borja (15 - 22 min)</option>
+              <option value="San Isidro">San Isidro (18 - 25 min)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- FILA 2: 2 COLUMNAS (DIRECCIÓN Y PRODUCTO) -->
+        <div class="modal-grid-2">
+          <div class="form-group">
+            <label for="pedDireccion" style="display: block; font-size: clamp(0.78rem, 0.84vw, 0.94rem); font-weight: 700; margin-bottom: 0.6vh; color: var(--text-bright);">
+              <i class="fas fa-home" style="color: var(--primary);"></i> Dirección de Entrega:
+            </label>
+            <input 
+              type="text" 
+              id="pedDireccion" 
+              class="form-input" 
+              placeholder="Ej: Av. José Pardo 486, Miraflores (Al frente del BCP)" 
+              required 
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="pedProducto"><i class="fas fa-burn"></i> Balón Requerido:</label>
+            <select id="pedProducto" class="form-select" required>
+              <option value="Balón SOLGAS de 10 kg (Click-On) - S/ 48.00">Balón SOLGAS 10 kg (Click-On) - S/ 48.00</option>
+              <option value="Balón SOLGAS de 10 kg (Rosca) - S/ 48.00">Balón SOLGAS 10 kg (Rosca) - S/ 48.00</option>
+              <option value="Balón SOLGAS de 45 kg (Industrial) - S/ 215.00">Balón SOLGAS 45 kg (Industrial) - S/ 215.00</option>
+              <option value="Balón MASGAS de 10 kg (Económico) - S/ 44.00">Balón MASGAS 10 kg (Económico) - S/ 44.00</option>
+              <option value="Regulador Premium SOLGAS Antifugas - S/ 38.00">Regulador Premium SOLGAS - S/ 38.00</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- FILA 3: 2 COLUMNAS (MÉTODO DE PAGO E INDICACIONES) -->
+        <div class="modal-grid-2">
+          <div class="form-group">
+            <label for="pedPago"><i class="fas fa-money-bill-wave"></i> Método de Pago:</label>
+            <select id="pedPago" class="form-select" required>
+              <option value="Yape">Yape</option>
+              <option value="Plin">Plin</option>
+              <option value="Tarjeta POS (Visa / Mastercard)">Tarjeta POS en Puerta</option>
+              <option value="Efectivo (Monto Exacto)">Efectivo (Monto Exacto)</option>
+              <option value="Efectivo (Vuelto de S/ 100)">Efectivo (Vuelto de S/ 100)</option>
+              <option value="Efectivo (Vuelto de S/ 50)">Efectivo (Vuelto de S/ 50)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pedComentarios"><i class="fas fa-comment-dots"></i> Indicaciones Especiales:</label>
+            <input type="text" id="pedComentarios" class="form-input" placeholder="Ej: Tocar timbre 402, llevar balanza digital e instalar." />
+          </div>
+        </div>
+
+        <!-- FILA 4: BOTÓN DE ENVÍO DIRECTO A WHATSAPP -->
+        <div style="margin-top: 2vh;">
+          <button type="submit" class="btn-whatsapp" style="width: 100%; padding: 1.5vh; font-size: clamp(0.95rem, 1.05vw, 1.15rem); justify-content: center; box-shadow: 0 1vh 3vh rgba(37,211,102,0.4);">
+            <i class="fab fa-whatsapp" style="font-size: 1.4rem;"></i> Enviar Pedido a WhatsApp Oficial (936 369 384)
+          </button>
+          <div style="text-align: center; margin-top: 1vh; font-size: 0.78rem; color: var(--text-muted);">
+            <i class="fas fa-shield-alt" style="color: var(--accent-emerald);"></i> Verificación obligatoria con balanza digital Inacal y prueba de fugas gratuita.
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT DE INTERACTIVIDAD Y MODALES -->
+  <script is:inline>
+    // Diccionario Bilingüe (ES / EN)
+    const diccView21 = {
+      es: {
+        topbar_coverage: "Sede Central: Jr. Dante 260, Surquillo • Despacho en 15 - 20 min",
+        topbar_time: "365 días del año",
+        nav_products: "Productos",
+        nav_weight: "Balanza Digital",
+        nav_safety: "Cero Fugas",
+        nav_calc: "Calculadora",
+        nav_map: "Ubicación",
+        nav_about: "Nosotros",
+        btn_login: "Login",
+        btn_header_order: "Pedir Gas",
+        hero_health_badge: "👋 ¡HOLA VECINO! CUIDAMOS LA SALUD Y TRANQUILIDAD DE TU HOGAR",
+        hero_title_1: "¿Cansado de Balones que",
+        hero_title_highlight: "Duran Poco o Huelen a Gas?",
+        hero_subtitle: "¡Estamos para servirte con una sonrisa! Recibe tu Balón Solgas 100% Lleno, sellado e instalado en tu cocina en 15 a 20 minutos. Despachamos con cariño desde nuestra base en Jr. Dante 260, Surquillo hacia Miraflores, San Borja y San Isidro. Pesamos tu balón con balanza digital frente a tus ojos y realizamos la prueba de cero fugas totalmente gratis.",
+        hero_zone_select_title: "¿Dónde te encuentras ahora mismo?",
+        hero_zone_eta: "Despachando desde Jr. Dante 260 (Surquillo): 12 - 18 min",
+        hero_free_delivery: "¡Envío sin recargo!",
+        btn_modal_sub: "Formulario Express",
+        btn_modal_main: "Pedir Balón a Domicilio",
+        btn_call_sub: "Llamada Directa",
+        stat_happy_clients: "Clientes Felices",
+        stat_scales_certified: "Peso Exacto",
+        stat_years_exp: "Años en Lima",
+        stat_days_open: "Días al Año",
+        hero_card_price_from: "Desde",
+        hero_driver_box_title: "Balanza Calibrada a Bordo",
+        hero_driver_box_desc: "Pesamos el balón frente a tus ojos en tu puerta.",
+        btn_call_short: "Llamar",
+        sos_title: "¿Se te apagó la hornilla a mitad del almuerzo o cena?",
+        sos_subtitle: "Activa el Despacho Prioritario SOS al 936 369 384 y te enviamos la moto más cercana en minutos.",
+        sos_btn_call: "¡Auxilio Gas Express!",
+        sos_btn_wa: "WhatsApp SOS",
+        catalog_badge: "CATÁLOGO OFICIAL SOLGAS SURQUILLO",
+        catalog_title: "Venta de Balones a Domicilio con Peso Exacto",
+        catalog_desc: "Todos los balones incluyen precinto inviolable oficial de fábrica Solgas, pesaje con balanza digital Inacal en tu domicilio y revisión de fugas sin costo alguno.",
+        card_price_label: "Precio",
+        card_tax_inc: "Incluye delivery",
+        btn_order_product: "Pedir por WhatsApp",
+        scale_badge: "GARANTÍA DE TRANSPARENCIA",
+        scale_title: "¿Por Qué Exigir el Pesaje con Balanza Digital?",
+        scale_desc: "En Solgas Surquillo combatimos las malas prácticas del mercado informal. Colocamos una balanza digital calibrada frente a tu puerta para que verifiques que recibes cada gramo de gas por el que pagas.",
+        scale_tara: "Tara (Balón Vacío)",
+        scale_tara_desc: "Grabado en el asa",
+        scale_gas: "GLP Neto Líquido",
+        scale_gas_desc: "Gas 100% puro",
+        scale_total: "Total en Balanza",
+        scale_total_desc: "Garantía Exacta",
+        scale_btn_wa: "Pedir con Balanza Digital",
+        scale_img_caption: "Pesaje Transparente: 10 kg Netos de Gas GLP",
+        safety_badge: "SEGURIDAD PARA TU FAMILIA",
+        safety_title: "Instalación Gratuita y Prueba Hermética Cero Fugas",
+        safety_desc: "Nuestros motorizados son técnicos capacitados en manejo seguro de GLP. Instalamos tu balón de gas, acoplamos el regulador Click-On y realizamos la prueba de espuma para certificar hermeticidad absoluta.",
+        safety_item1_title: "Revisión de Válvula y Manguera",
+        safety_item1_desc: "Verificamos que tu manguera flexible no presente resecamiento, cortes ni caducidad.",
+        safety_item2_title: "Prueba de Espuma Activa",
+        safety_item2_desc: "Inspeccionamos la unión del regulador con el cilindro antes de encender la cocina.",
+        safety_item3_title: "Retiro y Reciclaje Seguro del Balón Vacío",
+        safety_item3_desc: "Nos llevamos el cilindro desocupado sin ensuciar tu cocina ni golpear tus pisos.",
+        btn_call_technician: "Pedir Técnico al 936 369 384",
+        calc_badge: "CALCULADORA DE CONSUMO INTELIGENTE",
+        calc_title: "¿Cuánto te Rendirá tu Balón Solgas?",
+        calc_desc: "Calcula la duración estimada de tu balón y descubre cómo optimizar el consumo de gas en tu hogar.",
+        calc_persons_label: "Personas en Casa:",
+        calc_hours_label: "Horas de Cocción Diaria:",
+        calc_size_label: "Tamaño del Balón:",
+        calc_res_title: "Duración Promedio Estimada",
+        calc_res_flame: "¡Hasta 18% más rendimiento que balones adulterados!",
+        btn_order_now: "Pedir mi Balón Ahora",
+        map_badge: "SEDE CENTRAL Y CENTRO DE OPERACIONES",
+        map_title: "Encuéntranos en Jr. Dante 260, Surquillo",
+        map_desc: "Desde nuestra planta central despachamos balones con balanza digital en tiempo récord a Surquillo, Miraflores, San Borja y San Isidro.",
+        about_badge: "25 AÑOS DE EXPERIENCIA",
+        about_title: "Más de Dos Décadas Llevando Seguridad a tu Cocina",
+        about_p1: "En Solgas Surquillo somos distribuidores autorizados acreditados formalmente ante OSINERGMIN y contamos con el respaldo permanente de Solgas S.A.",
+        about_p2: "Nuestro compromiso no termina al dejar el balón: nos aseguramos de que tu cocina funcione con llama azul limpia, sin olores a gas y con el máximo rendimiento que cuida la economía de tu hogar.",
+        about_img1_caption: "Flota oficial de balones Solgas",
+        about_img2_caption: "Garantía Solgas S.A.",
+        btn_call_direct: "Llamar a Central: 936 369 384",
+        btn_contact_wa: "Pedir por WhatsApp",
+        footer_bio: "Distribución formal de balones de gas GLP Solgas y MásGas. Sede en Jr. Dante 260, Surquillo. Pesaje obligatorio en puerta y atención los 365 días del año.",
+        footer_coverage_title: "Distritos de Cobertura",
+        footer_payments_title: "Medios de Pago y Horarios",
+        footer_claims_title: "Libro de Reclamaciones",
+        footer_claims_desc: "Conforme a lo establecido por el Código de Protección y Defensa del Consumidor de INDECOPI.",
+        btn_wa_short: "Pedir Gas Express",
+        btn_order_now_modal: "Pedir Balón Express"
+      },
+      en: {
+        topbar_coverage: "Central Hub: Jr. Dante 260, Surquillo • Delivery in 15 - 20 mins",
+        topbar_time: "365 days a year",
+        nav_products: "Products",
+        nav_weight: "Digital Scale",
+        nav_safety: "Zero Leaks",
+        nav_calc: "Calculator",
+        nav_map: "Location",
+        nav_about: "About Us",
+        btn_login: "Login",
+        btn_header_order: "Order Gas",
+        hero_health_badge: "👋 HELLO NEIGHBOR! WE PROTECT YOUR FAMILY'S HEALTH & PEACE OF MIND",
+        hero_title_1: "Tired of Gas Cylinders that",
+        hero_title_highlight: "Run Out Fast or Smell of Gas?",
+        hero_subtitle: "We are delighted to serve you with a smile! Receive your 100% Full and Sealed Solgas cylinder installed in your kitchen in 15 to 20 minutes. Dispatched with care from our hub at Jr. Dante 260, Surquillo to Miraflores, San Borja, and San Isidro. We verify the exact weight in front of you with a digital scale and perform zero-leak testing free of charge.",
+        hero_zone_select_title: "Where are you located right now?",
+        hero_zone_eta: "Dispatching from Jr. Dante 260 (Surquillo): 12 - 18 mins",
+        hero_free_delivery: "Free delivery included!",
+        btn_modal_sub: "Express Form",
+        btn_modal_main: "Order Gas Cylinder",
+        btn_call_sub: "Direct Phone Call",
+        stat_happy_clients: "Happy Clients",
+        stat_scales_certified: "Exact Weight",
+        stat_years_exp: "Years in Lima",
+        stat_days_open: "Days a Year",
+        hero_card_price_from: "Starting at",
+        hero_driver_box_title: "Calibrated Scale On Board",
+        hero_driver_box_desc: "We weigh the cylinder right in front of your eyes at your door.",
+        btn_call_short: "Call",
+        sos_title: "Did your gas run out while cooking lunch or dinner?",
+        sos_subtitle: "Activate Priority SOS Dispatch at 936 369 384 and we will send the nearest courier unit in minutes.",
+        sos_btn_call: "Express Gas SOS Call!",
+        sos_btn_wa: "WhatsApp SOS",
+        catalog_badge: "OFFICIAL SOLGAS SURQUILLO CATALOG",
+        catalog_title: "Home Gas Delivery with Guaranteed Exact Weight",
+        catalog_desc: "All cylinders include factory tamper-evident safety seals, on-site digital scale weighing, and complimentary leak inspections.",
+        card_price_label: "Price",
+        card_tax_inc: "Delivery included",
+        btn_order_product: "Order via WhatsApp",
+        scale_badge: "TRANSPARENCY GUARANTEE",
+        scale_title: "Why Should You Demand Digital Scale Weighing?",
+        scale_desc: "At Solgas Surquillo we fight unfair market practices. We place a calibrated digital scale right at your doorway so you verify every single gram.",
+        scale_tara: "Tare (Empty Tank)",
+        scale_tara_desc: "Engraved on the handle",
+        scale_gas: "Net LPG Liquid",
+        scale_gas_desc: "100% pure gas",
+        scale_total: "Total on Scale",
+        scale_total_desc: "Guaranteed Exact",
+        scale_btn_wa: "Order with Digital Scale",
+        scale_img_caption: "Transparent Weighing: 10 kg Net LPG",
+        safety_badge: "SAFETY FOR YOUR FAMILY",
+        safety_title: "Free Installation & Zero-Leak Hermetic Testing",
+        safety_desc: "Our delivery staff are certified LPG technicians. We connect your Click-On regulator and run active foam bubble tests to ensure absolute airtight security.",
+        safety_item1_title: "Valve & Hose Inspection",
+        safety_item1_desc: "We check your flexible hose for dryness, cracks, or expiration dates.",
+        safety_item2_title: "Active Foam Test",
+        safety_item2_desc: "We thoroughly inspect the regulator connection before lighting the stove.",
+        safety_item3_title: "Safe Removal of Empty Cylinder",
+        safety_item3_desc: "We carefully take away the empty tank without staining or scratching your floors.",
+        btn_call_technician: "Call Technician at 936 369 384",
+        calc_badge: "SMART CONSUMPTION CALCULATOR",
+        calc_title: "How Long Will Your Solgas Cylinder Last?",
+        calc_desc: "Estimate cylinder duration and discover how to optimize gas consumption in your home.",
+        calc_persons_label: "People in Home:",
+        calc_hours_label: "Daily Cooking Hours:",
+        calc_size_label: "Cylinder Size:",
+        calc_res_title: "Estimated Average Duration",
+        calc_res_flame: "Up to 18% higher yield than adulterated cylinders!",
+        btn_order_now: "Order My Cylinder Now",
+        map_badge: "CENTRAL BASE & OPERATIONS CENTER",
+        map_title: "Visit Us at Jr. Dante 260, Surquillo",
+        map_desc: "From our central hub we deliver cylinders with calibrated digital scales in record time to Surquillo, Miraflores, San Borja, and San Isidro.",
+        about_badge: "25 YEARS OF EXPERIENCE",
+        about_title: "Over Two Decades Bringing Safety to Your Kitchen",
+        about_p1: "Solgas Surquillo is an officially authorized distributor certified by OSINERGMIN with direct backing from Solgas S.A.",
+        about_p2: "Our commitment goes beyond dropping off the tank: we ensure your stove burns a pure blue flame, odor-free and with maximum energy efficiency.",
+        about_img1_caption: "Official Solgas delivery fleet",
+        about_img2_caption: "Backed by Solgas S.A.",
+        btn_call_direct: "Call Dispatch: 936 369 384",
+        btn_contact_wa: "Order via WhatsApp",
+        footer_bio: "Licensed distribution of Solgas and MásGas LPG cylinders. Central base at Jr. Dante 260, Surquillo. On-site scale verification 365 days a year.",
+        footer_coverage_title: "Coverage Districts",
+        footer_payments_title: "Payment Methods & Hours",
+        footer_claims_title: "Complaints Book",
+        footer_claims_desc: "In accordance with INDECOPI Consumer Protection and Defense Code regulations.",
+        btn_wa_short: "Order Gas Express",
+        btn_order_now_modal: "Order Gas Express"
+      }
+    };
+
+    let idiomaActual = 'es';
+
+    // Manejo de Tema
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function aplicarTema(t) {
+      document.documentElement.dataset.theme = t;
+      try { localStorage.setItem('wiTema_gaswii_view26', t); } catch (e) {}
+      if (themeIcon) {
+        themeIcon.className = t === 'futuro' ? 'fas fa-moon' : 'fas fa-sun';
+      }
+    }
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const actual = document.documentElement.dataset.theme || 'futuro';
+        const nuevo = actual === 'futuro' ? 'luz' : 'futuro';
+        aplicarTema(nuevo);
+      });
+    }
+
+    const temaInit = document.documentElement.dataset.theme || 'futuro';
+    if (themeIcon) {
+      themeIcon.className = temaInit === 'futuro' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+
+    // Manejo de Idioma
+    document.querySelectorAll('#langSwitcher button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        idiomaActual = btn.dataset.lang;
+        document.querySelectorAll('#langSwitcher button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.dataset.i18n;
+          if (diccView21[idiomaActual] && diccView21[idiomaActual][key]) {
+            el.textContent = diccView21[idiomaActual][key];
+          }
+        });
+
+        recalcularDuracion();
+      });
+    });
+
+    // Selector Dinámico de Distrito en Hero
+    document.querySelectorAll('.district-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.district-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const distName = btn.dataset.district;
+        const distTime = btn.dataset.time;
+        const infoEl = document.getElementById('distritoActualInfo');
+        
+        if (infoEl) {
+          infoEl.innerHTML = `Despachando a <strong>${distName}</strong>: tiempo estimado <strong>${distTime}</strong>`;
+        }
+
+        const selPedDist = document.getElementById('pedDistrito');
+        if (selPedDist) {
+          selPedDist.value = distName;
+        }
+      });
+    });
+
+    // Lógica de la Calculadora de Consumo
+    function recalcularDuracion() {
+      const personas = parseInt(document.getElementById('calcPersonas')?.value || 3);
+      const horas = parseFloat(document.getElementById('calcHoras')?.value || 2.5);
+      const kg = parseInt(document.getElementById('calcTamano')?.value || 10);
+
+      const personasEl = document.getElementById('personasDisplay');
+      const horasEl = document.getElementById('horasDisplay');
+
+      if (personasEl) {
+        personasEl.textContent = idiomaActual === 'es' ? `${personas} personas` : `${personas} persons`;
+      }
+      if (horasEl) {
+        horasEl.textContent = idiomaActual === 'es' ? `${horas} horas / día` : `${horas} hrs / day`;
+      }
+
+      const totalHorasDisponibles = (kg / 10) * 80;
+      const consumoDiarioHoras = horas * (0.55 + (personas * 0.15));
+      const dias = Math.max(8, Math.round(totalHorasDisponibles / consumoDiarioHoras));
+
+      const resEl = document.getElementById('calcDiasResult');
+      if (resEl) {
+        resEl.textContent = idiomaActual === 'es' ? `${dias} días` : `${dias} days`;
+      }
+    }
+
+    document.getElementById('calcPersonas')?.addEventListener('input', recalcularDuracion);
+    document.getElementById('calcHoras')?.addEventListener('input', recalcularDuracion);
+    document.getElementById('calcTamano')?.addEventListener('change', recalcularDuracion);
+
+    // Control del Drawer Móvil
+    function abrirDrawer() {
+      document.getElementById('mobileDrawer')?.classList.add('open');
+      document.getElementById('drawerBackdrop')?.classList.add('active');
+    }
+
+    function cerrarDrawer() {
+      document.getElementById('mobileDrawer')?.classList.remove('open');
+      document.getElementById('drawerBackdrop')?.classList.remove('active');
+    }
+
+    // Funciones de Modales: Login
+    function abrirModalLogin() {
+      document.getElementById('modalLogin')?.classList.add('open');
+    }
+
+    function cerrarModalLogin() {
+      document.getElementById('modalLogin')?.classList.remove('open');
+    }
+
+    function procesarLogin() {
+      const email = document.getElementById('loginEmail')?.value;
+      alert(`¡Bienvenido de vuelta, ${email}! Has iniciado sesión correctamente.`);
+      cerrarModalLogin();
+    }
+
+    // Funciones de Modales: Pedido Express
+    function abrirModalPedido(productoPreseleccionado) {
+      if (productoPreseleccionado) {
+        const selProd = document.getElementById('pedProducto');
+        if (selProd) {
+          for (let i = 0; i < selProd.options.length; i++) {
+            if (selProd.options[i].text.toLowerCase().includes(productoPreseleccionado.toLowerCase())) {
+              selProd.selectedIndex = i;
+              break;
+            }
+          }
+        }
+      }
+      document.getElementById('modalPedido')?.classList.add('open');
+    }
+
+    function cerrarModalPedido() {
+      document.getElementById('modalPedido')?.classList.remove('open');
+    }
+
+    // ==========================================================================
+    // ENVÍO DE PEDIDO A WHATSAPP (SENCILLO, CLARO Y CON TONO SERVICIAL)
+    // ==========================================================================
+    function enviarPedidoModalWhatsApp() {
+      const nombre = document.getElementById('pedNombre')?.value.trim() || '';
+      const telefono = document.getElementById('pedTelefono')?.value.trim() || '';
+      const distrito = document.getElementById('pedDistrito')?.value || 'Surquillo';
+      const direccion = document.getElementById('pedDireccion')?.value.trim() || '';
+      const producto = document.getElementById('pedProducto')?.value || 'Balón SOLGAS de 10 kg';
+      const pago = document.getElementById('pedPago')?.value || 'Efectivo';
+      const comentarios = document.getElementById('pedComentarios')?.value.trim() || 'Ninguno';
+
+      if (!direccion) {
+        alert('Por favor indícanos tu dirección (calle, número o referencia) para llevarte el balón.');
+        document.getElementById('pedDireccion')?.focus();
+        return;
+      }
+
+      const textoMensaje = 
+        `🔥 *NUEVO PEDIDO DE GAS - SOLGAS SURQUILLO*\n` +
+        `━━━━━━━━━━━━━━━━━━━━━\n` +
+        `👤 *Cliente:* ${nombre || 'Vecino Solgas'}\n` +
+        `📱 *Teléfono:* ${telefono || 'Por coordinar'}\n` +
+        `📍 *Distrito:* ${distrito}\n` +
+        `🏠 *Dirección:* ${direccion}\n` +
+        `📦 *Producto:* ${producto}\n` +
+        `💳 *Método de Pago:* ${pago}\n` +
+        `📝 *Indicaciones:* ${comentarios}\n` +
+        `⚖️ *Garantía:* Balanza digital en puerta y prueba cero fugas\n` +
+        `━━━━━━━━━━━━━━━━━━━━━\n` +
+        `🛵 _Sede Jr. Dante 260, Surquillo • ¡Te atendemos con gusto en 15 a 20 min!_`;
+
+      const urlWa = `https://api.whatsapp.com/send?phone=51936369384&text=${encodeURIComponent(textoMensaje)}`;
+      window.open(urlWa, '_blank');
+      cerrarModalPedido();
+    }
+
+    // Exponer funciones globales
+    window.abrirDrawer = abrirDrawer;
+    window.cerrarDrawer = cerrarDrawer;
+    window.abrirModalLogin = abrirModalLogin;
+    window.cerrarModalLogin = cerrarModalLogin;
+    window.procesarLogin = procesarLogin;
+    window.abrirModalPedido = abrirModalPedido;
+    window.cerrarModalPedido = cerrarModalPedido;
+    window.enviarPedidoModalWhatsApp = enviarPedidoModalWhatsApp;
+    
+
+    document.addEventListener('DOMContentLoaded', () => {
+      recalcularDuracion();
+    });
+    recalcularDuracion();
+  </script>
+
+</body>
+</html>
