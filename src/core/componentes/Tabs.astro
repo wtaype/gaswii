@@ -1,0 +1,57 @@
+---
+// src/core/componentes/Tabs.astro
+// 📑 Conmutador Universal de Pestañas Reactivo (<40 líneas)
+interface TabItem {
+  id: string;
+  label: string;
+  icon?: string;
+  active?: boolean;
+}
+
+interface Props {
+  tabs: TabItem[];
+  idContenedor?: string;
+}
+
+const { tabs, idContenedor = 'tabs_container' } = Astro.props;
+---
+
+<div class="tabs-nav-bar" id={idContenedor}>
+  {tabs.map(tab => (
+    <button type="button" class={`tab-pill-btn ${tab.active ? 'active' : ''}`} data-tab-target={tab.id}>
+      {tab.icon && <i class={tab.icon}></i>}
+      <span>{tab.label}</span>
+    </button>
+  ))}
+</div>
+
+<style>
+  .tabs-nav-bar {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border-card);
+    padding-bottom: 0.3rem;
+    overflow-x: auto;
+  }
+  .tab-pill-btn {
+    padding: 0.65rem 1.2rem;
+    border-radius: 0.7rem 0.7rem 0 0;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    transition: 0.2s;
+  }
+  .tab-pill-btn.active {
+    color: var(--neon-yellow);
+    border-bottom-color: var(--neon-yellow);
+    background: var(--bg-subtle);
+  }
+</style>
