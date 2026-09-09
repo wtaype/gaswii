@@ -1,0 +1,559 @@
+---
+// src/feature/personal/personalPage.astro
+// 🏢 Gaswii Command Center - Consola Logística y Operaciones (Staff / Dueño)
+import Principal from '../../core/layouts/Principal.astro';
+import MetricasHoy from './secciones/MetricasHoy.astro';
+import RegistroVentaRapida from './secciones/RegistroVentaRapida.astro';
+import TablaVentasDiarias from './secciones/TablaVentasDiarias.astro';
+import KanbanPedidos from './secciones/KanbanPedidos.astro';
+import InventarioPlanta from './secciones/InventarioPlanta.astro';
+import FlotaMotos from './secciones/FlotaMotos.astro';
+import ModalPesajeOficial from './secciones/ModalPesajeOficial.astro';
+import personalCss from './personal.css?inline';
+import authCss from '../auth/auth.css?inline';
+
+const featureCss = personalCss + '\n' + authCss;
+
+interface Props {
+  idioma?: 'es' | 'en';
+}
+
+const { idioma = 'es' } = Astro.props;
+---
+
+<Principal idioma={idioma} ruta="/personal">
+  <style slot="head" is:global set:html={featureCss}></style>
+  <div class="page-container personal-page-box">
+    
+    <!-- 🗂️ Barra de Pestañas (Tabs) Consola Operativa Staff / Personal -->
+    <div class="personal-tabs-header">
+      <div class="personal-tabs-bar">
+        <button type="button" id="tabBtn_personal_resumen" class="personal-tab-btn active" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('resumen')">
+          <i class="fa-solid fa-chart-pie"></i> <span>Resumen</span>
+        </button>
+
+        <button type="button" id="tabBtn_personal_tabla" class="personal-tab-btn" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('tabla')">
+          <i class="fa-solid fa-table-list"></i> <span>Tabla de Ventas</span>
+        </button>
+
+        <button type="button" id="tabBtn_personal_kanban" class="personal-tab-btn" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('kanban')">
+          <i class="fa-solid fa-truck-fast"></i> <span>Despacho Kanban</span>
+        </button>
+
+        <button type="button" id="tabBtn_personal_inventario" class="personal-tab-btn" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('inventario')">
+          <i class="fa-solid fa-boxes-stacked"></i> <span>Inventario Planta</span>
+        </button>
+
+        <button type="button" id="tabBtn_personal_flota" class="personal-tab-btn" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('flota')">
+          <i class="fa-solid fa-motorcycle"></i> <span>Flota Motos</span>
+        </button>
+      </div>
+
+      <!-- Badge de Estado de la Central Dante 260 -->
+      <div class="personal-status-pill">
+        <span class="personal-live-dot"></span>
+        <span class="font-bold text-bright">Central Jr. Dante 260</span>
+        <span class="opacity-30">|</span>
+        <span id="staffOperadorMini" class="color-brand-blue font-bold">@staff</span>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- PANELES DE CONTENIDO POR TAB (STAFF) -->
+    <!-- ========================================================================= -->
+
+    <!-- TAB 1: RESUMEN (Métricas de Caja + Registro Rápido 0 Fricción) -->
+    <div id="tabPanel_personal_resumen" class="personal-tab-panel">
+      <!-- 1. Métricas de Ventas, Arqueo de Caja y Métodos de Pago -->
+      <MetricasHoy />
+
+      <!-- 2. Registro Rápido Directo en Pantalla (2 Columnas, 0 Fricción) -->
+      <RegistroVentaRapida />
+    </div>
+
+    <!-- TAB 2: TABLA DE VENTAS DIARIAS & AUDITORÍA -->
+    <div id="tabPanel_personal_tabla" class="personal-tab-panel">
+      <!-- 3. Tabla Ejecutiva de Información, Registro y Medición Diaria -->
+      <TablaVentasDiarias />
+    </div>
+
+    <!-- TAB 3: DESPACHO KANBAN EN VIVO -->
+    <div id="tabPanel_personal_kanban" class="personal-tab-panel">
+      <!-- 4. Tablero Kanban de Despacho y Cobranzas en Vivo -->
+      <KanbanPedidos />
+    </div>
+
+    <!-- TAB 4: INVENTARIO PLANTA -->
+    <div id="tabPanel_personal_inventario" class="personal-tab-panel">
+      <!-- 5. Inventario Físico en Planta (Jr. Dante 260) -->
+      <InventarioPlanta />
+    </div>
+
+    <!-- TAB 5: FLOTA DE MOTORIZADOS -->
+    <div id="tabPanel_personal_flota" class="personal-tab-panel">
+      <!-- 6. Flota de 12 Motorizados -->
+      <FlotaMotos />
+    </div>
+
+    <!-- Modal Técnico de Pesaje Opcional -->
+    <ModalPesajeOficial />
+
+  </div>
+</Principal>
+
+<script>
+  import { getSmileLocal, cerrarSesion, generarAvatarUrl, limpiarUsuario } from '../auth/auth.js';
+  import { Saludar } from '../../core/widev/saludo.js';
+  import { cambiarTabPersonal, initTabsPersonal } from './tabs/tabsPersonalController.js';
+
+  (window as any).cambiarTabPersonal = cambiarTabPersonal;
+
+  // -------------------------------------------------------------------------
+  // GESTIÓN DE VENTAS Y PEDIDOS EN TIEMPO REAL (LOCAL-FIRST)
+  // -------------------------------------------------------------------------
+  const STORAGE_KEY_VENTAS = 'gaswii_ventas_staff';
+
+  function obtenerVentas(): any[] {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY_VENTAS);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function guardarVentas(ventas: any[]) {
+    try {
+      localStorage.setItem(STORAGE_KEY_VENTAS, JSON.stringify(ventas));
+    } catch (e) {}
+  }
+
+  // -------------------------------------------------------------------------
+  // ACTUALIZACIÓN DE MÉTRICAS FINANCIERAS Y ARQUEO DE CAJA
+  // -------------------------------------------------------------------------
+  function actualizarMetricasVentas(ventas: any[]) {
+    let totalIngreso = 0;
+    let totalYape = 0;
+    let totalTarjeta = 0;
+    let totalEfectivo = 0;
+    let cantYape = 0;
+    let cantTarjeta = 0;
+    let cantEfectivo = 0;
+    let totalBalones = 0;
+    let cobradosCount = 0;
+
+    ventas.forEach((v) => {
+      const monto = parseFloat(v.monto) || 0;
+      totalBalones += 1;
+
+      // Se cuenta en caja solo los que ya pasaron a cobro o entregados
+      if (v.estado === 'entregados' || v.estado === 'cobro') {
+        totalIngreso += monto;
+        cobradosCount += 1;
+
+        const pago = (v.pago || '').toLowerCase();
+        if (pago.includes('yape') || pago.includes('plin')) {
+          totalYape += monto;
+          cantYape += 1;
+        } else if (pago.includes('tarjeta') || pago.includes('pos')) {
+          totalTarjeta += monto;
+          cantTarjeta += 1;
+        } else {
+          totalEfectivo += monto;
+          cantEfectivo += 1;
+        }
+      }
+    });
+
+    const elTotal = document.getElementById('metricasTotalIngreso');
+    const elSub = document.getElementById('metricasSubtotalVentas');
+    const elYape = document.getElementById('metricasTotalYape');
+    const elCantYape = document.getElementById('metricasCantYape');
+    const elTarjeta = document.getElementById('metricasTotalTarjeta');
+    const elCantTarjeta = document.getElementById('metricasCantTarjeta');
+    const elEfectivo = document.getElementById('metricasTotalEfectivo');
+    const elCantEfectivo = document.getElementById('metricasCantEfectivo');
+    const elBalones = document.getElementById('metricasTotalBalones');
+
+    if (elTotal) elTotal.textContent = `S/ ${totalIngreso.toFixed(2)}`;
+    if (elSub) elSub.textContent = `${cobradosCount} pedidos cobrados`;
+    if (elYape) elYape.textContent = `S/ ${totalYape.toFixed(2)}`;
+    if (elCantYape) elCantYape.textContent = `${cantYape} pagos digitales`;
+    if (elTarjeta) elTarjeta.textContent = `S/ ${totalTarjeta.toFixed(2)}`;
+    if (elCantTarjeta) elCantTarjeta.textContent = `${cantTarjeta} vouchers POS`;
+    if (elEfectivo) elEfectivo.textContent = `S/ ${totalEfectivo.toFixed(2)}`;
+    if (elCantEfectivo) elCantEfectivo.textContent = `${cantEfectivo} cobros físicos`;
+    if (elBalones) elBalones.textContent = `${totalBalones}`;
+  }
+
+  // -------------------------------------------------------------------------
+  // RENDERIZADO DEL TABLERO KANBAN
+  // -------------------------------------------------------------------------
+  function renderizarKanban(ventas: any[]) {
+    const colNuevos = document.getElementById('kanbanColNuevos');
+    const colRuta = document.getElementById('kanbanColRuta');
+    const colCobro = document.getElementById('kanbanColCobro');
+    const colEntregados = document.getElementById('kanbanColEntregados');
+
+    const countNuevos = document.getElementById('kanbanCountNuevos');
+    const countRuta = document.getElementById('kanbanCountRuta');
+    const countCobro = document.getElementById('kanbanCountCobro');
+    const countEntregados = document.getElementById('kanbanCountEntregados');
+
+    const cols = {
+      nuevos: { el: colNuevos, countEl: countNuevos, items: [] as any[] },
+      ruta: { el: colRuta, countEl: countRuta, items: [] as any[] },
+      cobro: { el: colCobro, countEl: countCobro, items: [] as any[] },
+      entregados: { el: colEntregados, countEl: countEntregados, items: [] as any[] }
+    };
+
+    ventas.forEach((v) => {
+      const st = v.estado || 'nuevos';
+      if (cols[st as keyof typeof cols]) {
+        cols[st as keyof typeof cols].items.push(v);
+      } else {
+        cols.nuevos.items.push(v);
+      }
+    });
+
+    Object.keys(cols).forEach((key) => {
+      const c = cols[key as keyof typeof cols];
+      if (c.countEl) c.countEl.textContent = `${c.items.length}`;
+      if (!c.el) return;
+
+      if (c.items.length === 0) {
+        c.el.innerHTML = `
+          <div class="kanban-empty-state">
+            <i class="fa-solid fa-inbox kanban-empty-icon"></i>
+            Sin pedidos en esta etapa
+          </div>
+        `;
+      } else {
+        c.el.innerHTML = c.items.map((p) => {
+          const badgeClass = p.pago === 'Yape' || p.pago === 'Plin' ? 'kanban-badge-yape' :
+                             p.pago === 'Tarjeta POS' ? 'kanban-badge-tarjeta' :
+                             'kanban-badge-efectivo';
+
+          let botonAccion = '';
+          if (p.estado === 'nuevos') {
+            botonAccion = `<button onclick="window.moverEtapaPedido('${p.id}', 'ruta')" class="kanban-btn-action-ruta">Asignar Repartidor ➔</button>`;
+          } else if (p.estado === 'ruta') {
+            botonAccion = `<button onclick="window.moverEtapaPedido('${p.id}', 'cobro')" class="kanban-btn-action-cobro">Llegó a Puerta / Cobrar ➔</button>`;
+          } else if (p.estado === 'cobro') {
+            botonAccion = `<button onclick="window.moverEtapaPedido('${p.id}', 'entregados')" class="kanban-btn-action-entregado">Confirmar Pago & Cerrar ✓</button>`;
+          } else {
+            botonAccion = `<span class="kanban-text-cobrada"><i class="fa-solid fa-circle-check"></i> Venta Cobrada</span>`;
+          }
+
+          return `
+            <div class="kanban-item-card">
+              <div class="kanban-item-top">
+                <span class="kanban-item-id">${p.id}</span>
+                <span class="kanban-item-badge ${badgeClass}">
+                  ${p.pago}
+                </span>
+              </div>
+              <strong class="kanban-item-client">${p.cliente}</strong>
+              <div class="kanban-item-dir">
+                <i class="fa-solid fa-location-dot"></i> ${p.direccion}
+              </div>
+              <div class="kanban-item-detail-row">
+                <span class="kanban-item-product">${p.producto}</span>
+                <span class="kanban-item-price">S/ ${parseFloat(p.monto).toFixed(2)}</span>
+              </div>
+              ${p.telefono ? `
+                <div class="kanban-item-contact">
+                  <a href="tel:${p.telefono}" class="kanban-contact-phone"><i class="fa-solid fa-phone"></i> ${p.telefono}</a>
+                  <a href="https://api.whatsapp.com/send?phone=51${p.telefono.replace(/[^0-9]/g, '')}" target="_blank" class="kanban-contact-whatsapp"><i class="fa-brands fa-whatsapp"></i> Chat</a>
+                </div>
+              ` : ''}
+              ${botonAccion}
+            </div>
+          `;
+        }).join('');
+      }
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // ACCIONES GLOBALES EXPUESTAS EN WINDOW
+  // -------------------------------------------------------------------------
+  (window as any).abrirModalPesaje = () => {
+    document.getElementById('modalPesajeOficial')?.classList.add('open');
+  };
+
+  (window as any).cerrarModalPesaje = () => {
+    document.getElementById('modalPesajeOficial')?.classList.remove('open');
+  };
+
+  (window as any).actualizarMontoSugerido = () => {
+    const sel = document.getElementById('nvProducto') as HTMLSelectElement;
+    const inputMonto = document.getElementById('nvMonto') as HTMLInputElement;
+    if (sel && inputMonto) {
+      const opt = sel.options[sel.selectedIndex];
+      const precio = opt.getAttribute('data-precio') || '48.00';
+      inputMonto.value = precio;
+    }
+  };
+
+  (window as any).calcularPesoTotalBal = () => {
+    const tara = parseFloat((document.getElementById('psTara') as HTMLInputElement)?.value || '14.8');
+    const neto = parseFloat((document.getElementById('psNeto') as HTMLInputElement)?.value || '10.0');
+    const totalEl = document.getElementById('psTotal') as HTMLInputElement;
+    if (totalEl) totalEl.value = (tara + neto).toFixed(1);
+  };
+
+  (window as any).guardarVentaDirectaStaff = () => {
+    const celular = (document.getElementById('vdCelular') as HTMLInputElement)?.value.trim() || '';
+    const nombre = (document.getElementById('vdNombre') as HTMLInputElement)?.value.trim() || 'Cliente';
+    const distrito = (document.getElementById('vdDistrito') as HTMLSelectElement)?.value || 'Surquillo';
+    const direccion = (document.getElementById('vdDireccion') as HTMLInputElement)?.value.trim() || 'Jr. Dante 260';
+    const pago = (document.getElementById('vdPago') as HTMLSelectElement)?.value || 'Yape';
+    const total = (document.getElementById('vdTotal') as HTMLInputElement)?.value || '48.00';
+
+    const nuevaVenta = {
+      id: `#V-${Math.floor(100 + Math.random() * 900)}`,
+      cliente: nombre,
+      telefono: celular,
+      direccion: `${direccion} (${distrito})`,
+      producto: 'Balón SOLGAS de 10 kg',
+      pago,
+      monto: total,
+      estado: 'nuevos',
+      creado: new Date().toISOString()
+    };
+
+    const ventas = obtenerVentas();
+    ventas.unshift(nuevaVenta);
+    guardarVentas(ventas);
+
+    actualizarMetricasVentas(ventas);
+    renderizarKanban(ventas);
+    (window as any).filtrarTablaVentas();
+
+    // Limpieza rápida para el siguiente pedido
+    const inCel = document.getElementById('vdCelular') as HTMLInputElement;
+    const inNom = document.getElementById('vdNombre') as HTMLInputElement;
+    const inDir = document.getElementById('vdDireccion') as HTMLInputElement;
+    if (inCel) inCel.value = '';
+    if (inNom) inNom.value = '';
+    if (inDir) inDir.value = '';
+    if (inCel) inCel.focus();
+  };
+
+  (window as any).moverEtapaPedido = (id: string, nuevaEtapa: string) => {
+    const ventas = obtenerVentas();
+    const item = ventas.find(v => v.id === id);
+    if (item) {
+      item.estado = nuevaEtapa;
+      guardarVentas(ventas);
+      actualizarMetricasVentas(ventas);
+      renderizarKanban(ventas);
+      (window as any).filtrarTablaVentas();
+    }
+  };
+
+  (window as any).guardarPesajeOficial = () => {
+    const serie = (document.getElementById('psBalonSerie') as HTMLInputElement)?.value;
+    const total = (document.getElementById('psTotal') as HTMLInputElement)?.value;
+    alert(`✅ Control Técnico Certificado: Balón ${serie} con peso total de ${total} kg registrado correctamente.`);
+    (window as any).cerrarModalPesaje();
+  };
+
+  // -------------------------------------------------------------------------
+  // RENDERIZADO Y FILTRADO DE LA TABLA DIARIA DE VENTAS
+  // -------------------------------------------------------------------------
+  function renderizarTablaVentas(ventas: any[]) {
+    const tbody = document.getElementById('tablaVentasBody');
+    const totalCountEl = document.getElementById('tablaResumenTotalPedidos');
+    const totalBalEl = document.getElementById('tablaResumenTotalBalones');
+    const montoTotalEl = document.getElementById('tablaResumenMontoTotal');
+
+    if (!tbody) return;
+
+    if (ventas.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="10" class="staff-td-empty">
+            <i class="fa-solid fa-clipboard-list staff-td-empty-icon"></i>
+            No hay registros de ventas para el filtro seleccionado.
+          </td>
+        </tr>
+      `;
+      if (totalCountEl) totalCountEl.textContent = '0';
+      if (totalBalEl) totalBalEl.textContent = '0';
+      if (montoTotalEl) montoTotalEl.textContent = 'S/ 0.00';
+      return;
+    }
+
+    let sumaMonto = 0;
+    tbody.innerHTML = ventas.map((v) => {
+      const monto = parseFloat(v.monto) || 0;
+      sumaMonto += monto;
+
+      const hora = v.creado ? new Date(v.creado).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+      const badgeClass = v.pago === 'Yape' || v.pago === 'Plin' ? 'kanban-badge-yape' :
+                         v.pago === 'Tarjeta POS' ? 'kanban-badge-tarjeta' :
+                         'kanban-badge-efectivo';
+
+      const stateClass = v.estado === 'entregados' ? 'state-entregados' :
+                         v.estado === 'cobro' ? 'state-cobro' :
+                         v.estado === 'ruta' ? 'state-ruta' :
+                         'state-nuevos';
+
+      return `
+        <tr class="staff-tr">
+          <td class="staff-td staff-td-muted">${hora}</td>
+          <td class="staff-td staff-td-id">${v.id}</td>
+          <td class="staff-td staff-td-client">${v.cliente}</td>
+          <td class="staff-td">
+            ${v.telefono ? `
+              <div class="staff-td-phone-wrap">
+                <a href="tel:${v.telefono}" class="staff-td-phone-link"><i class="fa-solid fa-phone"></i> ${v.telefono}</a>
+                <a href="https://api.whatsapp.com/send?phone=51${v.telefono.replace(/[^0-9]/g, '')}" target="_blank" class="staff-td-wa-link" title="Abrir WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+              </div>
+            ` : '<span class="staff-td-muted">--</span>'}
+          </td>
+          <td class="staff-td staff-td-address" title="${v.direccion}">${v.direccion}</td>
+          <td class="staff-td staff-td-prod">${v.producto || 'Balón 10 kg'}</td>
+          <td class="staff-td">
+            <span class="kanban-item-badge ${badgeClass}">
+              ${v.pago}
+            </span>
+          </td>
+          <td class="staff-td staff-td-price">
+            S/ ${monto.toFixed(2)}
+          </td>
+          <td class="staff-td staff-td-center">
+            <select onchange="window.moverEtapaPedido('${v.id}', this.value)" class="staff-state-select ${stateClass}">
+              <option value="nuevos" ${v.estado === 'nuevos' ? 'selected' : ''}>🟡 En Cola</option>
+              <option value="ruta" ${v.estado === 'ruta' ? 'selected' : ''}>🔵 En Ruta</option>
+              <option value="cobro" ${v.estado === 'cobro' ? 'selected' : ''}>🟠 Por Cobrar</option>
+              <option value="entregados" ${v.estado === 'entregados' ? 'selected' : ''}>🟢 Cobrado</option>
+            </select>
+          </td>
+          <td class="staff-td staff-td-center">
+            <button onclick="window.eliminarVentaStaff('${v.id}')" title="Eliminar o Anular" class="staff-btn-delete">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    if (totalCountEl) totalCountEl.textContent = `${ventas.length}`;
+    if (totalBalEl) totalBalEl.textContent = `${ventas.length}`;
+    if (montoTotalEl) montoTotalEl.textContent = `S/ ${sumaMonto.toFixed(2)}`;
+  }
+
+  (window as any).filtrarTablaVentas = () => {
+    const q = (document.getElementById('tablaBusquedaInput') as HTMLInputElement)?.value.toLowerCase().trim() || '';
+    const pagoFiltro = (document.getElementById('tablaFiltroPago') as HTMLSelectElement)?.value || 'todos';
+    const estadoFiltro = (document.getElementById('tablaFiltroEstado') as HTMLSelectElement)?.value || 'todos';
+
+    let filtrados = obtenerVentas();
+
+    if (q) {
+      filtrados = filtrados.filter(v => 
+        (v.cliente && v.cliente.toLowerCase().includes(q)) ||
+        (v.telefono && v.telefono.includes(q)) ||
+        (v.id && v.id.toLowerCase().includes(q)) ||
+        (v.direccion && v.direccion.toLowerCase().includes(q))
+      );
+    }
+
+    if (pagoFiltro !== 'todos') {
+      filtrados = filtrados.filter(v => {
+        if (pagoFiltro === 'Yape') return (v.pago === 'Yape' || v.pago === 'Plin');
+        return v.pago === pagoFiltro;
+      });
+    }
+
+    if (estadoFiltro !== 'todos') {
+      filtrados = filtrados.filter(v => v.estado === estadoFiltro);
+    }
+
+    renderizarTablaVentas(filtrados);
+  };
+
+  (window as any).eliminarVentaStaff = (id: string) => {
+    if (confirm(`¿Deseas anular o eliminar el pedido ${id}?`)) {
+      let ventas = obtenerVentas();
+      ventas = ventas.filter(v => v.id !== id);
+      guardarVentas(ventas);
+      actualizarMetricasVentas(ventas);
+      renderizarKanban(ventas);
+      (window as any).filtrarTablaVentas();
+    }
+  };
+
+  (window as any).reiniciarTurnoCaja = () => {
+    const ventas = obtenerVentas();
+    if (ventas.length === 0) {
+      alert('El turno actual no tiene ventas registradas.');
+      return;
+    }
+    const total = ventas.reduce((acc, v) => acc + (parseFloat(v.monto) || 0), 0);
+    if (confirm(`CIERRE DE TURNO BASE DANTE 260\n\nTotal Pedidos: ${ventas.length}\nMonto Acumulado: S/ ${total.toFixed(2)}\n\n¿Deseas reiniciar la caja y comenzar un nuevo turno?`)) {
+      guardarVentas([]);
+      actualizarMetricasVentas([]);
+      renderizarKanban([]);
+      renderizarTablaVentas([]);
+      alert('✅ Turno cerrado con éxito. Caja reiniciada en S/ 0.00 para el siguiente turno.');
+    }
+  };
+
+  // -------------------------------------------------------------------------
+  // INICIALIZACIÓN DE PERFIL STAFF
+  // -------------------------------------------------------------------------
+  function initStaff() {
+    const smile = getSmileLocal();
+    if (smile) {
+      const primerNombre = smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'Operador');
+      const saludo = Saludar(primerNombre);
+      const el = document.getElementById('staffBienvenida');
+      if (el) el.textContent = `${saludo} — Conectado a la Central Jr. Dante 260.`;
+      const nombreDisplay = document.getElementById('staffNombreDisplay');
+      if (nombreDisplay) nombreDisplay.textContent = `Operador ${primerNombre}`;
+
+      const foto = smile.foto || generarAvatarUrl(smile.nombre, smile.usuario);
+      const avatarImg = document.getElementById('staffAvatarImg') as HTMLImageElement;
+      const defaultIcon = document.getElementById('staffDefaultIcon');
+      if (foto && avatarImg) {
+        avatarImg.src = foto;
+        avatarImg.style.display = 'block';
+        if (defaultIcon) defaultIcon.style.display = 'none';
+      }
+
+      if (smile.usuario) {
+        const uBadge = document.getElementById('staffUsuarioBadge');
+        if (uBadge) uBadge.textContent = `@${limpiarUsuario(smile.usuario)}`;
+        const mini = document.getElementById('staffOperadorMini');
+        if (mini) mini.textContent = `@${limpiarUsuario(smile.usuario)}`;
+      }
+      if (smile.estado) {
+        const eBadge = document.getElementById('staffEstadoBadge');
+        if (eBadge) {
+          eBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${smile.estado.toUpperCase()}`;
+        }
+      }
+    }
+
+    // Inicializar tabs guardadas (o por defecto 'resumen')
+    initTabsPersonal();
+
+    const ventas = obtenerVentas();
+    actualizarMetricasVentas(ventas);
+    renderizarKanban(ventas);
+    (window as any).filtrarTablaVentas();
+  }
+
+  (window as any).cerrarSesionStaff = async () => {
+    await cerrarSesion();
+    window.location.href = '/';
+  };
+
+  document.addEventListener('DOMContentLoaded', initStaff);
+  initStaff();
+</script>
+

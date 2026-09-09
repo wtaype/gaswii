@@ -1,0 +1,71 @@
+---
+// src/feature/inicio/secciones/Nosotros.astro
+// 9. NOSOTROS: TRAYECTORIA Y RESPALDO OFICIAL (100% Cero CSS Inline)
+import { getI18n, type Idioma } from '../../../core/idioma/idioma';
+import negocio from '../../../negocio';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma);
+---
+
+<section id="nosotros" class="seccion-nosotros section-py-surface">
+  <div class="page-container">
+    <div class="split-grid items-center">
+      
+      <div class="grid grid-cols-2 gap-3">
+        <div class="clean-card p-3">
+          <img 
+            src="/imgwii/06-solgas-surquillo.webp" 
+            alt="Flota de reparto Solgas" 
+            class="w-full h-48 object-cover rounded-lg"
+            loading="lazy"
+          />
+          <div class="text-xs text-muted mt-2 text-center">
+            {t.nosotros.img1_caption}
+          </div>
+        </div>
+        
+        <div class="clean-card p-3">
+          <img 
+            src="/imgwii/07-solgas-surquillo-rendidor.webp" 
+            alt="Solgas Rendidor Oficial" 
+            class="w-full h-48 object-cover rounded-lg"
+            loading="lazy"
+          />
+          <div class="text-xs text-muted mt-2 text-center">
+            {t.nosotros.img2_caption}
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="badge-blue mb-3 inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs">
+          <i class="fa-solid fa-award"></i> <span>{t.nosotros.badge}</span>
+        </span>
+        <h2 class="section-header-title text-left mb-3">
+          {t.nosotros.titulo}
+        </h2>
+        <p class="text-muted text-base mb-3 leading-relaxed">
+          {t.nosotros.p1}
+        </p>
+        <p class="text-muted text-base mb-6 leading-relaxed">
+          {t.nosotros.p2}
+        </p>
+
+        <div class="flex gap-3 flex-wrap">
+          <a href={`tel:${negocio.telefonoRaw}`} class="btn-call py-3 px-6 text-sm font-bold">
+            <i class="fa-solid fa-phone"></i> <span>{t.nosotros.btn_llamar}</span>
+          </a>
+          <button onclick="window.abrirModalPedido && window.abrirModalPedido()" class="btn-whatsapp py-3 px-6 text-sm font-bold">
+            <i class="fa-brands fa-whatsapp"></i> <span>{t.nosotros.btn_pedir}</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,123 @@
+---
+// src/core/componentes/Footer.astro
+// 10. FOOTER INSTITUCIONAL UX/UI 10/10 - Solgas Surquillo (100% Cero CSS Inline, 0 Emojis, i18n Centralizado)
+import app from '../../app.js';
+import { getI18n, type Idioma } from '../idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).footer;
+---
+
+<footer class="footer-main">
+  <div class="page-container">
+    <div class="footer-grid-layout">
+      
+      <!-- Columna 1: Marca, Bio y Teléfono -->
+      <div class="footer-col-brand">
+        <div class="footer-brand-box">
+          <img 
+            src="/imgwii/logo.webp" 
+            alt="Logo Solgas Surquillo" 
+            width="44"
+            height="44"
+            class="footer-logo-img" 
+          />
+          <div>
+            <span class="footer-brand-title">SOLGAS SURQUILLO</span>
+            <span class="footer-brand-auth">
+              <i class="fa-solid fa-shield-halved color-primary"></i> {app.autorizacion}
+            </span>
+          </div>
+        </div>
+        <p class="footer-bio-text">
+          {t.bio}
+        </p>
+        <div class="footer-delivery-box">
+          <span class="footer-delivery-label">{t.delivery_central}</span>
+          <a href={`tel:${app.telefonoLimpio}`} class="footer-delivery-btn" title="Llamar a Central">
+            <i class="fa-solid fa-phone-volume"></i> <span>{app.telefono}</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Columna 2: Distritos de Cobertura -->
+      <div class="footer-col-distritos">
+        <h4 class="footer-col-title">
+          <i class="fa-solid fa-location-dot color-primary"></i> {t.cobertura_titulo}
+        </h4>
+        <ul class="footer-nav-list">
+          <li><i class="fa-solid fa-chevron-right"></i> <span>{t.cobertura_surquillo}</span></li>
+          <li><i class="fa-solid fa-chevron-right"></i> <span>{t.cobertura_miraflores}</span></li>
+          <li><i class="fa-solid fa-chevron-right"></i> <span>{t.cobertura_sanborja}</span></li>
+          <li><i class="fa-solid fa-chevron-right"></i> <span>{t.cobertura_sanisidro}</span></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Medios de Pago y Horarios -->
+      <div class="footer-col-pagos">
+        <h4 class="footer-col-title">
+          <i class="fa-solid fa-credit-card color-primary"></i> {t.pagos_titulo}
+        </h4>
+        <p class="footer-desc-text">
+          {t.pagos_desc}
+        </p>
+        <div class="footer-payment-tags">
+          <span class="footer-payment-pill"><i class="fa-solid fa-mobile-screen-button"></i> {t.pago_yape}</span>
+          <span class="footer-payment-pill"><i class="fa-solid fa-wallet"></i> {t.pago_plin}</span>
+          <span class="footer-payment-pill"><i class="fa-solid fa-credit-card"></i> {t.pago_pos}</span>
+          <span class="footer-payment-pill"><i class="fa-solid fa-money-bill-wave"></i> {t.pago_efectivo}</span>
+        </div>
+        <div class="footer-schedule-card">
+          <i class="fa-solid fa-clock color-primary"></i>
+          <div>
+            <strong>{t.horario_semana}</strong> {t.horario_horas}
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 4: Libro de Reclamaciones INDECOPI -->
+      <div class="footer-col-reclamos">
+        <h4 class="footer-col-title">
+          <i class="fa-solid fa-book color-primary"></i> {t.reclamos_titulo}
+        </h4>
+        <p class="footer-desc-text">
+          {t.reclamos_desc}
+        </p>
+        <a 
+          href="mailto:reclamaciones@solgassurquillo.com?subject=Libro%20de%20Reclamaciones%20Solgas%20Surquillo" 
+          class="footer-claims-card"
+          title="Abrir Libro de Reclamaciones Virtual"
+        >
+          <img 
+            src="/imgwii/Libro-de-reclamaciones.webp" 
+            alt="Libro de Reclamaciones INDECOPI" 
+            width="130"
+            height="55"
+            class="footer-claims-img"
+          />
+          <span class="footer-claims-tag">
+            <i class="fa-solid fa-shield-check"></i> Libro Virtual 100% Conforme
+          </span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Barra Inferior de Copyright -->
+    <div class="footer-bottom-container">
+      <div class="footer-copy-text">
+        © 2026 Solgas Surquillo. {t.derechos}
+      </div>
+      <div>
+        <a href="#hero" class="footer-back-top-link" title="Volver al inicio">
+          <i class="fa-solid fa-arrow-up"></i> <span>{t.volver_arriba}</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</footer>

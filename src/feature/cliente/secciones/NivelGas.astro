@@ -1,0 +1,69 @@
+---
+// src/feature/cliente/secciones/NivelGas.astro
+// Medidor Circular de Gas en Tiempo Real con Alerta Preventiva (100% Cero CSS Inline)
+interface Props {
+  porcentaje?: number;
+  diasRestantes?: number;
+  status?: string;
+  fechaInstalacion?: string;
+  consumoHorasDiarias?: number;
+  pesoBrutoKg?: number;
+}
+
+const {
+  porcentaje = 100,
+  diasRestantes = 32,
+  status = 'Carga Completa Verificada',
+  fechaInstalacion = 'Hoy',
+  consumoHorasDiarias = 2.5,
+  pesoBrutoKg = 22.50
+} = Astro.props;
+---
+
+<div class="nivel-gas-card clean-card">
+  <div class="nivel-gas-header">
+    <h2 class="nivel-gas-title">
+      <i class="fa-solid fa-gauge-high color-primary"></i> Nivel de Gas en Cocina
+    </h2>
+    <span class="badge-activo-tag">
+      <i class="fa-solid fa-circle-check"></i> {status}
+    </span>
+  </div>
+
+  <div class="nivel-gas-body">
+    <!-- Indicador Porcentual Circular -->
+    <div class="nivel-gauge-wrap">
+      <div class="nivel-gauge-inner">
+        <div class="nivel-percent-val">{porcentaje}%</div>
+        <div class="nivel-percent-label">Restante</div>
+      </div>
+    </div>
+
+    <!-- Estadísticas Detalladas -->
+    <div class="nivel-meta-list">
+      <div class="nivel-meta-row">
+        <span class="nivel-meta-label">Duración estimada:</span>
+        <strong class="color-emerald">~ {diasRestantes} DÍAS</strong>
+      </div>
+      <div class="nivel-meta-row">
+        <span class="nivel-meta-label">Última recarga realizada:</span>
+        <strong class="nivel-meta-value">{fechaInstalacion}</strong>
+      </div>
+      <div class="nivel-meta-row">
+        <span class="nivel-meta-label">Consumo familiar promedio:</span>
+        <strong class="nivel-meta-value">{consumoHorasDiarias} hrs de cocción / día</strong>
+      </div>
+      <div class="nivel-meta-row">
+        <span class="nivel-meta-label">Peso inicial certificado:</span>
+        <strong class="nivel-meta-value">{pesoBrutoKg} kg (Inacal)</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="nivel-guarantee-note">
+    <i class="fa-solid fa-shield-halved"></i>
+    <span>
+      Garantía de Rendimiento Gaswii: Tu balón cuenta con precinto de seguridad termocontraíble y pesaje digital obligatorio en puerta para garantizar hasta 18% más de duración.
+    </span>
+  </div>
+</div>

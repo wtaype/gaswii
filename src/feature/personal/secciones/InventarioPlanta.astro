@@ -1,0 +1,41 @@
+---
+// src/feature/personal/secciones/InventarioPlanta.astro
+// Monitoreo de Stock de Balones Llenos y Vacíos en Jr. Dante 260 (100% Cero CSS Inline)
+interface Props {
+  inventario?: Array<{ nombre: string; llenos: number; vacios: number; minimo: number; color: string }>;
+}
+
+const {
+  inventario = [
+    { nombre: 'Solgas 10 kg Click-On', llenos: 0, vacios: 0, minimo: 30, color: '#005bb5' },
+    { nombre: 'Solgas 10 kg Rosca', llenos: 0, vacios: 0, minimo: 25, color: '#e65100' },
+    { nombre: 'Masgas 10 kg Económico', llenos: 0, vacios: 0, minimo: 20, color: '#d84315' },
+    { nombre: 'Industrial 45 kg', llenos: 0, vacios: 0, minimo: 8, color: '#bf360c' },
+    { nombre: 'Regulador Premium Solgas', llenos: 0, vacios: 0, minimo: 15, color: '#059669' }
+  ]
+} = Astro.props;
+---
+
+<div class="inventario-box clean-card">
+  <div class="flex justify-between items-center mb-3">
+    <h2 class="text-xl font-bold text-bright flex items-center gap-2 m-0">
+      <i class="fa-solid fa-boxes-stacked color-primary"></i> Inventario en Planta (Jr. Dante 260)
+    </h2>
+    <span class="text-muted text-xs">Stock físico al instante</span>
+  </div>
+
+  <div class="inventario-grid">
+    {inventario.map((item) => (
+      <div class="inventario-card">
+        <strong class="inventario-card-title">{item.nombre}</strong>
+        <div class="inventario-card-meta">
+          <span class="color-emerald font-bold">Llenos: {item.llenos}</span>
+          <span class="text-muted">Vacíos: {item.vacios}</span>
+        </div>
+        <div class="inventario-progress-track">
+          <div style={`height: 100%; width: ${(item.llenos / 180) * 100}%; background: ${item.color}; border-radius: 3px;`}></div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

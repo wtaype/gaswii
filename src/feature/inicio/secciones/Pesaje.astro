@@ -1,0 +1,95 @@
+---
+// src/feature/inicio/secciones/Pesaje.astro
+// 4. PESAJE: ¿POR QUÉ EXIGIR EL PESAJE CON BALANZA DIGITAL? (100% Cero CSS Inline)
+import { datosNegocio } from '../../../negocio.js';
+import { getI18n, type Idioma } from '../../../core/idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).pesaje;
+---
+
+<section id="pesaje" class="section-py-surface">
+  <div class="page-container">
+    <div class="split-grid items-center">
+      
+      <!-- Columna Izquierda: Tarjeta con Borde Naranja y Foto de Balanza -->
+      <div>
+        <div class="pesaje-image-frame">
+          <div class="pesaje-media-container">
+            <img 
+              src="/imgwii/02-solgas-surquillo-balanza.webp" 
+              alt={idioma === 'en' ? 'Digital scale weighing in front of customer doorstep' : 'Pesaje con balanza digital Inacal frente a puerta del cliente'} 
+              width="500"
+              height="400"
+              loading="lazy"
+              class="pesaje-media-img"
+            />
+            <div class="pesaje-caption-overlay">
+              <span class="pesaje-caption-badge">
+                <i class="fa-solid fa-scale-balanced"></i> <span>{t.balanza_certificada}</span>
+              </span>
+              <h4 class="pesaje-caption-title">
+                {t.caption}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Información CRO, 3 Tarjetas de Ecuación y Botones -->
+      <div>
+        <div class="pesaje-top-badge">
+          <i class="fa-solid fa-check"></i> <span>{t.badge}</span>
+        </div>
+
+        <h2 class="pesaje-main-title">
+          {t.titulo}
+        </h2>
+
+        <p class="pesaje-main-desc">
+          {idioma === 'en' ? (
+            <>At <strong>Solgas Surquillo</strong> we fight unfair market practices. We place a calibrated digital scale right at your doorway so you verify every single gram.</>
+          ) : (
+            <>En <strong>Solgas Surquillo</strong> combatimos las malas prácticas del mercado informal. Colocamos una balanza digital calibrada frente a tu puerta para que verifiques que recibes cada gramo de gas por el que pagas.</>
+          )}
+        </p>
+
+        <!-- Ecuación de Pesaje: 3 Tarjetas -->
+        <div class="pesaje-stats-grid">
+          <div class="pesaje-stat-card card-tara">
+            <div class="pesaje-stat-label">{t.tara}</div>
+            <div class="pesaje-stat-val val-tara">12.5 kg</div>
+            <div class="pesaje-stat-sub">{t.tara_desc}</div>
+          </div>
+
+          <div class="pesaje-stat-card card-glp">
+            <div class="pesaje-stat-label color-orange">{t.gas}</div>
+            <div class="pesaje-stat-val color-orange">+ 10.0 kg</div>
+            <div class="pesaje-stat-sub">{t.gas_desc}</div>
+          </div>
+
+          <div class="pesaje-stat-card card-total">
+            <div class="pesaje-stat-label color-emerald">{t.total}</div>
+            <div class="pesaje-stat-val color-emerald">= 22.5 kg</div>
+            <div class="pesaje-stat-sub">{t.total_desc}</div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="pesaje-actions-row">
+          <button type="button" onclick="window.abrirModalPedido && window.abrirModalPedido()" class="btn-pesaje-wa">
+            <i class="fa-brands fa-whatsapp"></i> <span>{t.btn_wa}</span>
+          </button>
+          <a href={`tel:${datosNegocio.telefonoLimpio}`} class="btn-pesaje-call">
+            <i class="fa-solid fa-phone"></i> <span>{idioma === 'en' ? `Call: ${datosNegocio.telefonoMostrado}` : `Llamar: ${datosNegocio.telefonoMostrado}`}</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

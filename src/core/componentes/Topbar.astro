@@ -1,0 +1,32 @@
+---
+// src/core/componentes/Topbar.astro
+// 1. TOP BAR OFICIAL - Solgas Surquillo (100% Cero CSS Inline)
+import app from '../../app.js';
+import { getI18n, type Idioma } from '../idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).topbar;
+---
+
+<div class="topbar-main">
+  <div class="page-container topbar-content">
+    <div class="topbar-group">
+      <span class="topbar-auth-pill">
+        <i class="fa-solid fa-shield-halved"></i> <span>{app.autorizacion}</span>
+      </span>
+      <span>{t.cobertura}</span>
+    </div>
+    <div class="topbar-group-right">
+      <span><i class="fa-solid fa-clock"></i> <span>{t.horario}</span></span>
+      <a href={`tel:${app.telefonoLimpio}`} class="topbar-phone-link" title="Llamar a Central">
+        <i class="fa-solid fa-phone"></i> 
+        <span class="desktop-only">{app.telefono}</span>
+        <span class="mobile-only">{idioma === 'en' ? 'Call' : 'Llamar'}</span>
+      </a>
+    </div>
+  </div>
+</div>

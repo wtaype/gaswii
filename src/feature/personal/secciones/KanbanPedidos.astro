@@ -1,0 +1,87 @@
+---
+// src/feature/personal/secciones/KanbanPedidos.astro
+// Tablero de Administración de Pedidos, Despacho y Cobranzas en Vivo (100% Cero CSS Inline)
+---
+
+<div class="clean-card p-6 bg-card rounded-2xl border border-card mb-6">
+  <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+    <div>
+      <h2 class="text-xl font-bold text-bright flex items-center gap-2 m-0">
+        <i class="fa-solid fa-list-check color-primary"></i> Administración de Pedidos y Despacho en Vivo
+      </h2>
+      <p class="text-muted text-xs mt-1">
+        Flujo de atención, asignación de motorizados y verificación de pagos (Yape, Tarjeta, Efectivo)
+      </p>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-xs color-emerald font-bold bg-emerald-500/10 border border-emerald-500/25 px-3 py-1 rounded-full">
+        <i class="fa-solid fa-rotate"></i> Sincronizado en Central Dante 260
+      </span>
+    </div>
+  </div>
+
+  <div class="kanban-grid-layout">
+    
+    <!-- COLUMNA 1: NUEVOS POR ATENDER -->
+    <div class="kanban-col-box">
+      <div class="kanban-col-top col-1">
+        <span>1. Nuevos por Atender</span>
+        <span id="kanbanCountNuevos" class="kanban-pill-count bg-primary">0</span>
+      </div>
+      <div id="kanbanColNuevos" class="flex flex-col gap-3 min-h-[120px]">
+        <div class="kanban-empty-state">
+          <i class="fa-solid fa-inbox text-xl mb-2 block opacity-40"></i>
+          Sin pedidos pendientes
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMNA 2: EN DESPACHO / RUTA -->
+    <div class="kanban-col-box">
+      <div class="kanban-col-top col-2">
+        <span>2. En Despacho / Ruta</span>
+        <span id="kanbanCountRuta" class="kanban-pill-count bg-blue">0</span>
+      </div>
+      <div id="kanbanColRuta" class="flex flex-col gap-3 min-h-[120px]">
+        <div class="kanban-empty-state">
+          <i class="fa-solid fa-motorcycle text-xl mb-2 block opacity-40"></i>
+          Sin pedidos en ruta
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMNA 3: POR COBRAR / VALIDAR PAGO -->
+    <div class="kanban-col-box">
+      <div class="kanban-col-top col-3">
+        <span>3. Por Cobrar / Validar</span>
+        <span id="kanbanCountCobro" class="kanban-pill-count bg-amber">0</span>
+      </div>
+      <div id="kanbanColCobro" class="flex flex-col gap-3 min-h-[120px]">
+        <div class="kanban-empty-state">
+          <i class="fa-solid fa-hand-holding-dollar text-xl mb-2 block opacity-40"></i>
+          Sin cobranzas pendientes
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMNA 4: ENTREGADOS Y COBRADOS -->
+    <div class="kanban-col-box">
+      <div class="kanban-col-top col-4">
+        <span>4. Entregados & Cobrados</span>
+        <span id="kanbanCountEntregados" class="kanban-pill-count bg-emerald">0</span>
+      </div>
+      <div id="kanbanColEntregados" class="flex flex-col gap-3 min-h-[120px]">
+        <div class="kanban-empty-state">
+          <i class="fa-solid fa-circle-check text-xl mb-2 block opacity-40"></i>
+          Esperando primeras ventas
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="mt-4 pt-3 border-t border-card text-muted text-xs flex justify-between items-center flex-wrap gap-2">
+    <span>ℹ️ Los estados se sincronizan con las motos en calle.</span>
+    <span class="color-primary font-bold">Distribuidor Oficial Solgas - Jr. Dante 260, Surquillo</span>
+  </div>
+</div>

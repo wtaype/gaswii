@@ -1,0 +1,49 @@
+---
+// src/feature/inicio/secciones/SosBanner.astro
+// 6. BANNER DE EMERGENCIA SOS CULINARIO (100% Cero CSS Inline)
+import { datosNegocio } from '../../../negocio.js';
+import { getI18n, type Idioma } from '../../../core/idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).sos;
+---
+
+<section class="sos-banner-wrapper">
+  <div class="page-container sos-banner-content">
+    <div class="sos-info-block">
+      <div class="sos-icon-box">
+        <i class="fa-solid fa-utensils"></i>
+      </div>
+      <div class="sos-text-box">
+        <h3 class="sos-title">
+          {t.titulo}
+        </h3>
+        <p class="sos-sub">
+          {idioma === 'en' ? (
+            <>Activate <strong>SOS Priority Delivery</strong> at {datosNegocio.telefonoMostrado} and we will dispatch the closest bike in minutes.</>
+          ) : (
+            <>Activa el <strong>Despacho Prioritario SOS</strong> al {datosNegocio.telefonoMostrado} y te enviamos la moto más cercana en minutos.</>
+          )}
+        </p>
+      </div>
+    </div>
+    <div class="sos-actions-block">
+      <a href={`tel:${datosNegocio.telefonoLimpio}`} class="btn-sos-call" title="Llamar a Despacho SOS">
+        <i class="fa-solid fa-bolt color-orange-icon"></i> 
+        <span>{t.btn_llamar}</span>
+      </a>
+      <button 
+        type="button"
+        onclick="window.abrirModalPedido && window.abrirModalPedido('Balón SOLGAS de 10 kg - Pedido SOS')" 
+        class="btn-sos-wa"
+        title="Pedir Balón de Emergencia por WhatsApp"
+      >
+        <i class="fa-brands fa-whatsapp"></i> <span>{t.btn_wa}</span>
+      </button>
+    </div>
+  </div>
+</section>

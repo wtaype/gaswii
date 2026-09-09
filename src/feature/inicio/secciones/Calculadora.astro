@@ -1,0 +1,183 @@
+---
+// src/feature/inicio/secciones/Calculadora.astro
+// 6. CALCULADORA DE DURACIÓN GLP Y EFICIENCIA ENERGÉTICA (100% Cero CSS Inline)
+import datosNegocio from '../../../negocio.js';
+import { getI18n, type Idioma } from '../../../core/idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).calculadora;
+---
+
+<section id="calculadora" class="section-py-surface" data-lang={idioma}>
+  <div class="page-container">
+    
+    <!-- Encabezado de Sección Centrado -->
+    <div class="section-header-box text-center mb-8">
+      <span class="calc-top-badge mb-3">
+        <i class="fa-solid fa-calculator"></i> <span>{t.badge}</span>
+      </span>
+      <h2 class="calc-main-title">
+        {t.titulo}
+      </h2>
+      <p class="calc-main-desc">
+        {t.desc}
+      </p>
+    </div>
+
+    <!-- Grilla 2 Columnas -->
+    <div class="split-grid items-stretch">
+      
+      <!-- Panel Izquierdo: Controles y Resultado -->
+      <div class="calc-card-controls">
+        <div>
+          <div class="calc-range-group">
+            <label class="calc-range-label" for="calcPersonas">
+              <span><i class="fa-solid fa-users"></i> {t.personas_label}</span>
+              <span id="personasDisplay" class="calc-val-display">{idioma === 'en' ? '3 people' : '3 personas'}</span>
+            </label>
+            <input type="range" id="calcPersonas" min="1" max="8" value="3" class="calc-range-slider" />
+          </div>
+
+          <div class="calc-range-group">
+            <label class="calc-range-label" for="calcHoras">
+              <span><i class="fa-solid fa-clock"></i> {t.horas_label}</span>
+              <span id="horasDisplay" class="calc-val-display">{idioma === 'en' ? '2.5 hrs / day' : '2.5 horas / día'}</span>
+            </label>
+            <input type="range" id="calcHoras" min="0.5" max="6.0" step="0.5" value="2.5" class="calc-range-slider" />
+          </div>
+
+          <div class="calc-select-group mb-6">
+            <label class="calc-range-label" for="calcTamano">
+              <span><i class="fa-solid fa-fire"></i> {t.tamano_label}</span>
+            </label>
+            <select id="calcTamano" class="calc-select-tamano">
+              <option value="10" selected>{t.tamano_10}</option>
+              <option value="45">{t.tamano_45}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tarjeta Interior de Resultado -->
+        <div class="calc-result-box">
+          <div class="calc-result-label">
+            {t.resultado_titulo}
+          </div>
+          <div id="calcDiasResult" class="calc-result-days">
+            32 {t.resultado_dias}
+          </div>
+          <div class="calc-result-guarantee">
+            <i class="fa-solid fa-circle-check"></i> <span>{t.resultado_sub}</span>
+          </div>
+          
+          <button 
+            type="button"
+            onclick="window.abrirModalPedido && window.abrirModalPedido()"
+            class="btn-calc-pedir"
+          >
+            <i class="fa-brands fa-whatsapp"></i> <span>{t.btn_pedir}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel Derecho: Imagen Cocina y 4 Consejos -->
+      <div class="calc-card-tips">
+        <div class="calc-tips-media">
+          <img 
+            src="/imgwii/04-solgas-surquillo-cocina.webp" 
+            alt={idioma === 'en' ? 'Family cooking with pure blue flame' : 'Familia cocinando con seguridad y llama azul pura'} 
+            width="600"
+            height="350"
+            loading="lazy"
+            class="calc-tips-img"
+          />
+          <div class="calc-tips-badge-overlay">
+            <span class="calc-media-badge"><i class="fa-solid fa-fire"></i> {t.tip_overlay}</span>
+          </div>
+        </div>
+
+        <div class="calc-tips-content">
+          <h4 class="calc-tips-title">
+            <i class="fa-solid fa-lightbulb color-gold"></i> <span>{t.tips_titulo}</span>
+          </h4>
+          <ul class="calc-tips-list">
+            <li class="calc-tip-item">
+              <i class="fa-solid fa-circle-check"></i>
+              <div><strong>{t.tip1_tit}</strong> {t.tip1_desc}</div>
+            </li>
+            <li class="calc-tip-item">
+              <i class="fa-solid fa-circle-check"></i>
+              <div><strong>{t.tip2_tit}</strong> {t.tip2_desc}</div>
+            </li>
+            <li class="calc-tip-item">
+              <i class="fa-solid fa-circle-check"></i>
+              <div><strong>{t.tip3_tit}</strong> {t.tip3_desc}</div>
+            </li>
+            <li class="calc-tip-item">
+              <i class="fa-solid fa-circle-check"></i>
+              <div><strong>{t.tip4_tit}</strong> {t.tip4_desc}</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="calc-dudas-row">
+          <span class="calc-dudas-text">{t.dudas_label}</span>
+          <a href={`tel:${datosNegocio.telefonoLimpio}`} class="btn-calc-consultar">
+            <i class="fa-solid fa-phone"></i> <span>{t.btn_consultar_tecnico}</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  function setupCalculadora() {
+    const section = document.getElementById('calculadora');
+    const isEn = section?.dataset.lang === 'en';
+    const personasEl = document.getElementById('calcPersonas') as HTMLInputElement;
+    const horasEl = document.getElementById('calcHoras') as HTMLInputElement;
+    const tamanoEl = document.getElementById('calcTamano') as HTMLSelectElement;
+    const displayDias = document.getElementById('calcDiasResult');
+    const displayPersonas = document.getElementById('personasDisplay');
+    const displayHoras = document.getElementById('horasDisplay');
+
+    if (!personasEl || !horasEl || !tamanoEl || !displayDias) return;
+
+    function calcular() {
+      const p = parseFloat(personasEl.value) || 3;
+      const h = parseFloat(horasEl.value) || 2.5;
+      const kg = parseFloat(tamanoEl.value) || 10;
+
+      if (displayPersonas) {
+        displayPersonas.textContent = `${p} ${p === 1 ? (isEn ? 'person' : 'persona') : (isEn ? 'people' : 'personas')}`;
+      }
+      if (displayHoras) {
+        displayHoras.textContent = `${h} ${h === 1 ? (isEn ? 'hr / day' : 'hora / día') : (isEn ? 'hrs / day' : 'horas / día')}`;
+      }
+
+      const totalHorasDisponibles = (kg / 10) * 80;
+      const consumoDiarioHoras = h * (0.55 + (p * 0.15));
+      const dias = Math.max(8, Math.round(totalHorasDisponibles / consumoDiarioHoras));
+
+      if (displayDias) {
+        displayDias.textContent = `${dias} ${isEn ? 'days' : 'días'}`;
+      }
+    }
+
+    personasEl.addEventListener('input', calcular);
+    horasEl.addEventListener('input', calcular);
+    tamanoEl.addEventListener('change', calcular);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupCalculadora);
+  } else {
+    setupCalculadora();
+  }
+</script>

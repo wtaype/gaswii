@@ -1,0 +1,95 @@
+---
+// src/feature/personal/secciones/TablaVentasDiarias.astro
+// Tabla Ejecutiva de Gestión y Medición de Ventas Diarias (100% Cero CSS Inline)
+---
+
+<div class="personal-table-card clean-card">
+  
+  <!-- Encabezado de la Tabla y Filtros de Medición -->
+  <div class="personal-table-header">
+    <div>
+      <h2 class="personal-table-title">
+        <i class="fa-solid fa-table-list color-brand-blue"></i> Registro Diario y Auditoría de Ventas
+      </h2>
+      <p class="text-muted text-xs mt-1">
+        Administra, filtra y mide cada venta, medio de pago y entrega en tiempo real.
+      </p>
+    </div>
+
+    <!-- Filtros de Medición y Búsqueda -->
+    <div class="flex items-center gap-2 flex-wrap">
+      
+      <!-- Buscador por Cliente / Celular / ID -->
+      <div class="relative">
+        <i class="fa-solid fa-search search-icon-input"></i>
+        <input 
+          type="text" 
+          id="tablaBusquedaInput" 
+          placeholder="Buscar cliente, teléfono o #ID..." 
+          oninput="window.filtrarTablaVentas && window.filtrarTablaVentas()"
+          class="form-input search-field-with-icon" 
+        />
+      </div>
+
+      <!-- Filtro por Método de Pago -->
+      <select 
+        id="tablaFiltroPago" 
+        onchange="window.filtrarTablaVentas && window.filtrarTablaVentas()"
+        class="form-input filter-dropdown" 
+      >
+        <option value="todos">💳 Todos los Pagos</option>
+        <option value="Yape">📱 Yape / Plin</option>
+        <option value="Tarjeta POS">💳 Tarjeta POS</option>
+        <option value="Efectivo">💵 Efectivo</option>
+      </select>
+
+      <!-- Filtro por Estado -->
+      <select 
+        id="tablaFiltroEstado" 
+        onchange="window.filtrarTablaVentas && window.filtrarTablaVentas()"
+        class="form-input filter-dropdown" 
+      >
+        <option value="todos">📋 Todos los Estados</option>
+        <option value="nuevos">🟡 Nuevos por Atender</option>
+        <option value="ruta">🔵 En Despacho / Ruta</option>
+        <option value="cobro">🟠 Por Cobrar</option>
+        <option value="entregados">🟢 Entregados y Cobrados</option>
+      </select>
+
+      <!-- Botón Exportar Resumen CSV -->
+      <button 
+        type="button" 
+        onclick="window.exportarVentasCSV && window.exportarVentasCSV()" 
+        class="btn-clean px-3 py-2 text-xs font-bold rounded-lg border border-card color-brand-blue" 
+        title="Descargar reporte en Excel / CSV"
+      >
+        <i class="fa-solid fa-file-excel"></i> <span>Exportar</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Contenedor Responsive de la Tabla -->
+  <div class="overflow-x-auto rounded-xl border border-card">
+    <table class="personal-sales-table" id="tablaVentasEjecutiva">
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th># ID</th>
+          <th>Cliente</th>
+          <th>Contacto</th>
+          <th>Dirección Surquillo</th>
+          <th>Producto</th>
+          <th>Pago</th>
+          <th class="text-right">Total</th>
+          <th class="text-center">Estado</th>
+          <th class="text-center">Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaVentasTbody">
+        <!-- Rellenado dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+
+</div>

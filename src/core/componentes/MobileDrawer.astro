@@ -1,0 +1,110 @@
+---
+// src/core/componentes/MobileDrawer.astro
+// DRAWER MÓVIL INTERACTIVO - Solgas Surquillo (100% Cero CSS Inline)
+import app from '../../app.js';
+import { getI18n, type Idioma } from '../idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).nav;
+---
+
+<!-- BACKDROP PARA DRAWER MÓVIL -->
+<div class="drawer-backdrop" id="drawerBackdrop" onclick="window.cerrarDrawer && window.cerrarDrawer()"></div>
+
+<!-- DRAWER MÓVIL INTERACTIVO -->
+<aside class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-brand-header">
+    <div class="drawer-brand-box">
+      <img src="/imgwii/logo.webp" alt="Logo Solgas" width="36" height="36" class="drawer-logo-img" />
+      <span class="drawer-brand-title">SOLGAS SURQUILLO</span>
+    </div>
+    <button onclick="window.cerrarDrawer && window.cerrarDrawer()" aria-label="Cerrar Menú" class="drawer-close-btn">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Navegación Drawer -->
+  <nav class="drawer-nav-list">
+    <a href="#pesaje" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-scale-balanced drawer-nav-icon color-brand-blue"></i> <span>{t.balanza}</span></a>
+    <a href="#productos" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-fire drawer-nav-icon color-primary"></i> <span>{t.productos}</span></a>
+    <a href="#seguridad" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-shield-halved drawer-nav-icon color-emerald"></i> <span>{t.seguridad}</span></a>
+    <a href="#calculadora" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-calculator drawer-nav-icon color-gold"></i> <span>{t.calculadora}</span></a>
+    <a href="#mapa-sede" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-location-dot drawer-nav-icon color-brand-blue"></i> <span>{t.ubicacion}</span></a>
+    <a href="#nosotros" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-building drawer-nav-icon color-primary"></i> <span>{t.nosotros}</span></a>
+  </nav>
+
+  <!-- Botones en Drawer Móvil -->
+  <div class="drawer-footer-actions">
+    <!-- Botón Login Móvil -->
+    <button id="drawerBtnLogin" onclick="window.cerrarDrawer && window.cerrarDrawer(); window.abrirModalLogin && window.abrirModalLogin();" class="btn-outline w-full justify-center">
+      <i class="fa-solid fa-circle-user"></i> <span>{t.login}</span>
+      <span class="header-login-badge">+50 Pts</span>
+    </button>
+
+    <!-- Card Usuario Móvil (Cuando está autenticado) -->
+    <div id="drawerUserPerfil" class="drawer-user-card">
+      <a id="drawerPerfilLink" href="/cliente" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-user-link">
+        <img id="drawerUserAvatar" src="" alt="Avatar" class="drawer-user-avatar" />
+        <div>
+          <div id="drawerUserNombre" class="drawer-user-name">Cliente VIP</div>
+          <div id="drawerUserBadge" class="drawer-user-badge">@usuario</div>
+        </div>
+      </a>
+      <button type="button" onclick="window.cerrarSesionHeader && window.cerrarSesionHeader()" class="drawer-btn-logout" title="Cerrar Sesión">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
+
+    <!-- Botón Pedir Gas Móvil -->
+    <button onclick="window.cerrarDrawer && window.cerrarDrawer(); window.abrirModalPedido && window.abrirModalPedido();" class="btn-whatsapp w-full justify-center">
+      <i class="fa-brands fa-whatsapp"></i> <span>{t.pedir}</span>
+    </button>
+
+    <!-- Enlace Telefónico Rápido -->
+    <a href={`tel:${app.telefonoLimpio}`} class="btn-outline w-full justify-center">
+      <i class="fa-solid fa-phone"></i> <span>{app.telefono}</span>
+    </a>
+
+    <div class="text-center font-bold text-muted text-xs">
+      <i class="fa-solid fa-clock"></i> <span>{idioma === 'en' ? '6:00 a.m. to 11:00 p.m. (365 days)' : '6:00 a.m. a 11:00 p.m. (365 días)'}</span>
+    </div>
+  </div>
+</aside>
+
+<script>
+  import { getSmileLocal, escucharAuth, generarAvatarUrl } from '../../feature/auth/auth.js';
+
+  function actualizarDrawerAuth(smile) {
+    const drawerBtnLogin = document.getElementById('drawerBtnLogin');
+    const drawerUserPerfil = document.getElementById('drawerUserPerfil');
+    const drawerUserAvatar = document.getElementById('drawerUserAvatar') as HTMLImageElement;
+    const drawerUserNombre = document.getElementById('drawerUserNombre');
+    const drawerUserBadge = document.getElementById('drawerUserBadge');
+    const drawerPerfilLink = document.getElementById('drawerPerfilLink') as HTMLAnchorElement;
+
+    if (smile && (smile.uid || smile.nombre)) {
+      if (drawerBtnLogin) drawerBtnLogin.style.display = 'none';
+      if (drawerUserPerfil) drawerUserPerfil.style.display = 'flex';
+
+      const foto = smile.foto || generarAvatarUrl(smile.nombre, smile.usuario);
+      if (drawerUserAvatar) drawerUserAvatar.src = foto;
+      if (drawerUserNombre) drawerUserNombre.textContent = smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'VIP');
+      if (drawerUserBadge) drawerUserBadge.textContent = smile.usuario ? `@${smile.usuario.replace('@', '')}` : 'VIP';
+      if (drawerPerfilLink) drawerPerfilLink.href = smile.rol === 'personal' ? '/personal' : '/cliente';
+    } else {
+      if (drawerBtnLogin) drawerBtnLogin.style.display = 'flex';
+      if (drawerUserPerfil) drawerUserPerfil.style.display = 'none';
+    }
+  }
+
+  const localSmile = getSmileLocal();
+  actualizarDrawerAuth(localSmile);
+
+  escucharAuth((user, smile) => {
+    actualizarDrawerAuth(smile);
+  });
+</script>

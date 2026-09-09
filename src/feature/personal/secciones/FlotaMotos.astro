@@ -1,0 +1,64 @@
+---
+// src/feature/personal/secciones/FlotaMotos.astro
+// Monitoreo de los 12 Motorizados con Balanza Digital Inacal (100% Cero CSS Inline)
+interface Props {
+  flota?: Array<{ id: string; chofer: string; zona: string; estado: string; balanza: string; balones: number; celular: string; eta?: string }>;
+}
+
+const {
+  flota = []
+} = Astro.props;
+---
+
+<div class="flota-box clean-card">
+  <div class="flex justify-between items-center mb-3">
+    <h2 class="text-xl font-bold text-bright flex items-center gap-2 m-0">
+      <i class="fa-solid fa-motorcycle color-brand-blue"></i> Flota de Motorizados y Balanzas
+    </h2>
+    <span class="color-emerald font-bold text-xs">
+      {flota.length} Unidades Activas
+    </span>
+  </div>
+
+  {flota.length === 0 ? (
+    <div class="text-center p-8 bg-surface-elevated rounded-xl border border-dashed border-card text-muted text-sm">
+      <i class="fa-solid fa-motorcycle text-2xl mb-2 block opacity-40"></i>
+      Sin motorizados en turno activo. La flota y balanzas Inacal se sincronizan al iniciar turno en Jr. Dante 260.
+    </div>
+  ) : (
+    <div class="overflow-x-auto">
+      <table class="personal-sales-table">
+        <thead>
+          <tr>
+            <th>Unidad</th>
+            <th>Chofer</th>
+            <th>Zona Asignada</th>
+            <th>Balanza Inacal</th>
+            <th>Estado</th>
+            <th>Contacto</th>
+          </tr>
+        </thead>
+        <tbody>
+          {flota.map((m) => (
+            <tr>
+              <td><strong>{m.id}</strong></td>
+              <td>{m.chofer}</td>
+              <td class="text-muted">{m.zona}</td>
+              <td class="color-emerald font-bold">{m.balanza}</td>
+              <td>
+                <span class={m.estado === 'En Ruta' ? 'badge-route' : 'badge-done'}>
+                  {m.estado}
+                </span>
+              </td>
+              <td>
+                <a href={`tel:+51${m.celular}`} class="color-primary font-semibold">
+                  <i class="fa-solid fa-phone"></i> {m.celular}
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</div>

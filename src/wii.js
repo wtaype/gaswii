@@ -1,6 +1,6 @@
 // src/wii.js
 export const id = 'gaswii-web';
-export const app = 'Sandboard Huacachina Evolution';
+export const app = 'Solgas Surquillo';
 export const by = '@wilder.taype';
 export const linkweb = 'https://gaswii.amorwii.workers.dev/';
 export const linkme = 'https://wtaype.github.io/';

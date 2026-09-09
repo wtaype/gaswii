@@ -1,0 +1,184 @@
+---
+// src/core/componentes/Header.astro
+// 2. HEADER CON BOTONES LOGIN Y PEDIR GAS - Solgas Surquillo (100% Cero CSS Inline)
+import app from '../../app.js';
+import { getI18n, type Idioma } from '../idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+  ruta?: string;
+}
+
+const { idioma = 'es', ruta = '/' } = Astro.props;
+const t = getI18n(idioma).nav;
+const urlEs = '/';
+const urlEn = '/en';
+
+const esPersonal = ruta === '/personal';
+const esCliente = ruta === '/cliente';
+---
+
+<header class="header-main">
+  <div class="page-container header-container">
+    
+    <!-- Logo y Título -->
+    <a href={esPersonal || esCliente ? '/' : (idioma === 'en' ? '/en#hero' : '#hero')} title={esPersonal || esCliente ? 'Ir a la Tienda Pública GasWii' : 'GasWii Inicio'} class="header-brand-link">
+      <img 
+        src="/imgwii/logo.webp" 
+        alt="Solgas Surquillo" 
+        width="44"
+        height="44"
+        class="header-logo-img"
+      />
+      <div>
+        <span class="header-brand-title">
+          SOLGAS <span>SURQUILLO</span>
+        </span>
+        <span class="desktop-only header-brand-sub">
+          {esPersonal ? (
+            <span class="inline-flex items-center gap-1"><i class="fa-solid fa-building"></i> Consola Staff & Despachos</span>
+          ) : esCliente ? (
+            <span class="inline-flex items-center gap-1"><i class="fa-solid fa-star"></i> Portal Cliente VIP</span>
+          ) : (
+            <span>{idioma === 'en' ? 'Home & Business Deliveries' : 'Envíos a domicilio y trabajo'}</span>
+          )}
+        </span>
+      </div>
+    </a>
+
+    <!-- Navegación Desktop: Adaptativa según el Rol y la Ruta -->
+    {esPersonal ? (
+      <div class="desktop-only header-group-desktop">
+        <span class="header-badge-status personal">
+          <i class="fa-solid fa-tower-broadcast"></i> Consola Operativa Base Jr. Dante 260
+        </span>
+        <a href="/" class="btn-outline btn-compact" title="Ver Tienda Pública">
+          <i class="fa-solid fa-store icon-brand-orange"></i> <span>Ver Tienda Pública</span>
+        </a>
+      </div>
+    ) : esCliente ? (
+      <div class="desktop-only header-group-desktop">
+        <span class="header-badge-status cliente">
+          <i class="fa-solid fa-gem"></i> Área Exclusiva Cliente VIP
+        </span>
+        <a href="/" class="btn-outline btn-compact" title="Ver Catálogo Completo">
+          <i class="fa-solid fa-fire icon-brand-orange"></i> <span>Catálogo y Precios</span>
+        </a>
+      </div>
+    ) : (
+      <nav class="desktop-only header-nav-desktop">
+        <a href="#pesaje" class="header-nav-item">{t.balanza}</a>
+        <a href="#productos" class="header-nav-item">{t.productos}</a>
+        <a href="#seguridad" class="header-nav-item">{t.seguridad}</a>
+        <a href="#calculadora" class="header-nav-item">{t.calculadora}</a>
+        <a href="#mapa-sede" class="header-nav-item">{t.ubicacion}</a>
+        <a href="#nosotros" class="header-nav-item">{t.nosotros}</a>
+      </nav>
+    )}
+
+    <!-- Controles: Idioma, Tema, Botón Login y Botón Pedir -->
+    <div class="header-actions-row">
+      
+      <!-- Switcher Idioma (ES / EN) -->
+      <div class="header-pill-group" title="Idioma / Language">
+        <a href={urlEs} class={`header-pill-btn ${idioma === 'es' ? 'active' : ''}`}>ES</a>
+        <a href={urlEn} class={`header-pill-btn ${idioma === 'en' ? 'active' : ''}`}>EN</a>
+      </div>
+
+      <!-- Switcher Tema (Luz / Futuro) -->
+      <button 
+        id="themeToggleBtn" 
+        onclick="window.toggleTema && window.toggleTema()"
+        aria-label="Cambiar tema" 
+        class="header-theme-toggle"
+        title="Cambiar Tema"
+      >
+        <i class="fa-solid fa-moon" id="themeIcon"></i>
+      </button>
+
+      <!-- Contenedor Auth Desktop -->
+      <div id="headerAuthContainer" class="desktop-only header-auth-box">
+        <!-- Botón LOGIN -->
+        <button id="headerBtnLogin" onclick="window.abrirModalLogin && window.abrirModalLogin()" class="header-btn-login" title="Iniciar Sesión o Registrarse">
+          <i class="fa-solid fa-circle-user"></i> <span>{t.login}</span>
+          <span class="header-login-badge">+50 Pts</span>
+        </button>
+
+        <!-- Card Perfil Usuario -->
+        <div id="headerUserPerfil" class="header-user-card">
+          <a href="/cliente" id="headerPerfilLink" class="header-user-link">
+            <img id="headerUserAvatar" src="" alt="Foto de perfil" class="header-user-avatar" />
+            <div class="header-user-info">
+              <span id="headerUserNombre" class="header-user-name">Cliente</span>
+              <div class="header-user-meta">
+                <span id="headerUserBadge" class="header-user-badge">@usuario</span>
+                <span id="headerUserPuntos" class="header-user-puntos">50 Pts</span>
+              </div>
+            </div>
+          </a>
+          <button type="button" onclick="window.cerrarSesionHeader && window.cerrarSesionHeader()" title="Cerrar Sesión" class="header-btn-logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón PEDIR GAS -->
+      {!esPersonal && (
+        <button onclick="window.abrirModalPedido && window.abrirModalPedido()" class="header-btn-order desktop-only" title="Hacer Pedido Express">
+          <i class="fa-brands fa-whatsapp"></i> <span>{t.pedir}</span>
+        </button>
+      )}
+
+      <!-- Botón Hamburguesa Móvil -->
+      <button class="mobile-only header-btn-mobile-toggle" onclick="window.abrirDrawer && window.abrirDrawer()" aria-label="Abrir Menú">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+    </div>
+
+  </div>
+</header>
+
+<script>
+  import { getSmileLocal, escucharAuth, cerrarSesion, generarAvatarUrl } from '../../feature/auth/auth.js';
+
+  function actualizarHeaderAuth(smile) {
+    const btnLogin = document.getElementById('headerBtnLogin');
+    const userPerfil = document.getElementById('headerUserPerfil');
+    const userAvatar = document.getElementById('headerUserAvatar') as HTMLImageElement;
+    const userNombre = document.getElementById('headerUserNombre');
+    const userBadge = document.getElementById('headerUserBadge');
+    const perfilLink = document.getElementById('headerPerfilLink') as HTMLAnchorElement;
+
+    if (smile && (smile.uid || smile.nombre)) {
+      if (btnLogin) btnLogin.style.display = 'none';
+      if (userPerfil) userPerfil.style.display = 'flex';
+      
+      const foto = smile.foto || generarAvatarUrl(smile.nombre, smile.usuario);
+      if (userAvatar) userAvatar.src = foto;
+      if (userNombre) userNombre.textContent = smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'VIP');
+      if (userBadge) userBadge.textContent = smile.usuario ? `@${smile.usuario.replace('@', '')}` : 'VIP';
+      const userPuntos = document.getElementById('headerUserPuntos');
+      if (userPuntos) userPuntos.textContent = `${smile.puntos !== undefined ? smile.puntos : 50} Pts`;
+      if (perfilLink) perfilLink.href = smile.rol === 'personal' ? '/personal' : '/cliente';
+    } else {
+      if (btnLogin) btnLogin.style.display = 'inline-flex';
+      if (userPerfil) userPerfil.style.display = 'none';
+    }
+  }
+
+  window.cerrarSesionHeader = async () => {
+    await cerrarSesion();
+    actualizarHeaderAuth(null);
+    if (window.location.pathname.includes('/cliente') || window.location.pathname.includes('/personal')) {
+      window.location.href = '/';
+    }
+  };
+
+  const localSmile = getSmileLocal();
+  actualizarHeaderAuth(localSmile);
+
+  escucharAuth((user, smile) => {
+    actualizarHeaderAuth(smile);
+  });
+</script>

@@ -1,0 +1,148 @@
+---
+// src/feature/inicio/secciones/Hero.astro
+// 2. HERO SECTION: NARRATIVA CRO [PROBLEMA REAL] ➔ [SOLUCIÓN INMEDIATA] (100% Cero CSS Inline)
+import { datosNegocio } from '../../../negocio.js';
+import { getI18n, type Idioma } from '../../../core/idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).hero;
+---
+
+<section id="hero" class="hero-section">
+  <div class="page-container">
+    <div class="hero-layout">
+      
+      <!-- Columna Izquierda: Problema ➔ Solución -->
+      <div>
+        <div class="mb-3">
+          <span class="badge-fire hero-badge">
+            <i class="fa-solid fa-face-smile-beam"></i> <span>{t.badge}</span>
+          </span>
+        </div>
+
+        <h1 class="hero-main-heading">
+          <span>{t.titulo_1}</span><br />
+          <span class="hero-title-highlight">
+            {t.titulo_resaltado}
+          </span>
+        </h1>
+
+        <p class="hero-main-sub">
+          {t.subtitulo}
+        </p>
+
+        <!-- Selector Dinámico de Distrito -->
+        <div class="hero-district-card">
+          <div class="hero-district-title">
+            <i class="fa-solid fa-location-dot"></i> <span>{t.selector_titulo}</span>
+          </div>
+          
+          <div class="hero-district-grid" id="districtSelector">
+            {datosNegocio.distritos.map((dist, idx) => (
+              <button 
+                type="button"
+                class={`hero-district-btn ${idx === 0 ? 'active' : ''}`}
+                data-district={dist.nombre}
+                data-time={dist.tiempo}
+              >
+                <div class="hero-district-name">{dist.nombre}</div>
+                <div class="hero-district-time"><i class="fa-solid fa-bolt"></i> {dist.tiempo}</div>
+              </button>
+            ))}
+          </div>
+
+          <div class="hero-district-footer">
+            <span><i class="fa-solid fa-motorcycle color-primary"></i> <span id="distritoActualInfo">{t.selector_eta} <strong>12 - 18 min</strong></span></span>
+            <span class="color-emerald font-bold"><i class="fa-solid fa-check"></i> <span>{t.envio_gratis}</span></span>
+          </div>
+        </div>
+
+        <!-- Botones Principales -->
+        <div class="hero-ctas-group">
+          <button onclick="window.abrirModalPedido && window.abrirModalPedido()" class="btn-fire hero-btn-cta">
+            <i class="fa-solid fa-cart-shopping text-xl"></i>
+            <div class="hero-btn-text">
+              <span class="hero-btn-sub">{t.btn_modal_sub}</span>
+              <span class="hero-btn-main">{t.btn_modal_main}</span>
+            </div>
+          </button>
+
+          <a href={`tel:${datosNegocio.telefonoLimpio}`} class="btn-call hero-btn-cta">
+            <i class="fa-solid fa-phone-volume text-xl"></i>
+            <div class="hero-btn-text">
+              <span class="hero-btn-sub">{t.btn_call_sub}</span>
+              <span class="hero-btn-main">{datosNegocio.telefonoMostrado}</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Métricas de Trayectoria -->
+        <div class="stats-grid hero-stats-box">
+          <div>
+            <div class="hero-stat-val color-primary">25K+</div>
+            <div class="hero-stat-label">{t.stat_clientes}</div>
+          </div>
+          <div>
+            <div class="hero-stat-val color-emerald">100%</div>
+            <div class="hero-stat-label">{t.stat_balanza}</div>
+          </div>
+          <div>
+            <div class="hero-stat-val color-brand-blue">25+</div>
+            <div class="hero-stat-label">{t.stat_anos}</div>
+          </div>
+          <div>
+            <div class="hero-stat-val color-gold">365</div>
+            <div class="hero-stat-label">{t.stat_dias}</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Columna Derecha: Fotografía Limpia y Garantía -->
+      <div>
+        <div class="hero-right-card">
+          
+          <div class="hero-img-box">
+            <img 
+              src="/imgwii/01-solgas-surquillo.webp" 
+              alt="Balón Solgas instalado en cocina con balanza digital" 
+              width="600"
+              height="450"
+              loading="eager"
+              fetchpriority="high"
+              class="hero-img"
+            />
+          </div>
+
+          <div class="hero-guarantee-box">
+            <div class="hero-guarantee-left">
+              <div class="hero-guarantee-icon">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </div>
+              <div>
+                <div class="hero-guarantee-title">
+                  {t.driver_card_titulo}
+                </div>
+                <div class="hero-guarantee-sub">
+                  {t.driver_card_desc}
+                </div>
+              </div>
+            </div>
+            <div class="hero-guarantee-price">
+              <div class="hero-price-sub">{t.precio_desde}</div>
+              <div class="hero-price-val">
+                S/ 48.00
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

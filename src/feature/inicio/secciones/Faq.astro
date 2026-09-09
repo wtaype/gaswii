@@ -1,0 +1,115 @@
+---
+// src/feature/inicio/secciones/Faq.astro
+// 8. PREGUNTAS FRECUENTES Y VALIDACIÓN DE CONFIANZA (100% Cero CSS Inline)
+import { getI18n, type Idioma } from '../../../core/idioma/idioma';
+import negocio from '../../../negocio';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma);
+
+const faqs = [
+  { q: t.faq.q6, a: t.faq.a6, oficial: true },
+  { q: t.faq.q1, a: t.faq.a1 },
+  { q: t.faq.q2, a: t.faq.a2 },
+  { q: t.faq.q3, a: t.faq.a3 },
+  { q: t.faq.q4, a: t.faq.a4 },
+  { q: t.faq.q5, a: t.faq.a5 }
+];
+---
+
+<section id="faq" class="seccion-faq section-py-body">
+  <div class="page-container">
+    
+    <div class="section-header-box mb-4">
+      <span class="badge-blue mb-3 inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs">
+        <i class="fa-solid fa-circle-question"></i> <span>{t.faq.badge}</span>
+      </span>
+      <h2 class="section-header-title">
+        {t.faq.titulo}
+      </h2>
+      <p class="section-header-desc">
+        {t.faq.desc}
+      </p>
+    </div>
+
+    <div class="faq-grid-layout">
+      
+      <!-- Columna 1: Acordeón Interactivo de FAQ -->
+      <div class="faq-stack">
+        {faqs.map((faq, index) => (
+          <details class="clean-card faq-details-card" open={index === 0}>
+            <summary class="faq-summary">
+              <span><i class="fa-solid fa-circle-check color-primary mr-2"></i> {faq.q}</span>
+              <i class="fa-solid fa-chevron-down faq-icon text-muted text-xs transition-transform"></i>
+            </summary>
+            <div class="faq-answer-content">
+              {faq.a}
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- Columna 2: Tarjeta Visual de Experiencia, Balanza Digital y Garantía -->
+      <div class="clean-card faq-side-card">
+        <div class="faq-media-box">
+          <img 
+            src="/imgwii/02-solgas-surquillo-balanza.webp" 
+            alt="Atención confiable con balanza digital" 
+            loading="lazy"
+            class="faq-media-img" 
+          />
+          <div class="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/90 to-transparent text-white flex items-center justify-between gap-2 flex-wrap">
+            <span class="badge-fire text-xs px-2 py-1 rounded-full"><i class="fa-solid fa-shield-halved"></i> 100% {t.faq.badge_garantia}</span>
+            <span class="badge-blue text-xs px-2 py-1 rounded-full font-bold"><i class="fa-solid fa-award"></i> {t.faq.badge_osinergmin}</span>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-bold text-bright mb-2">
+          {t.faq.garantia_titulo}
+        </h3>
+        <p class="text-sm text-muted leading-relaxed mb-4">
+          {t.faq.garantia_desc}
+        </p>
+
+        <div class="flex flex-col gap-2 mb-4">
+          <div class="flex items-center gap-2 text-sm text-bright font-bold">
+            <i class="fa-solid fa-clock color-brand-orange"></i> <span>{idioma === 'en' ? negocio.horarioEn : negocio.horario}</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-bright font-bold">
+            <i class="fa-solid fa-location-dot color-brand-orange"></i> <span>{negocio.direccionSede}</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2 flex-wrap">
+          <a href={`tel:${negocio.telefonoLimpio}`} class="btn-call flex-1 justify-center py-3 text-sm font-bold">
+            <i class="fa-solid fa-phone"></i> <span>{negocio.telefonoMostrado}</span>
+          </a>
+          <button onclick="window.abrirModalPedido && window.abrirModalPedido()" class="btn-whatsapp flex-1 justify-center py-3 text-sm font-bold">
+            <i class="fa-brands fa-whatsapp"></i> <span>{t.faq.pedir_btn}</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const details = document.querySelectorAll('.faq-details-card');
+  details.forEach((targetDetail) => {
+    targetDetail.addEventListener('toggle', () => {
+      if ((targetDetail as HTMLDetailsElement).open) {
+        details.forEach((detail) => {
+          if (detail !== targetDetail) {
+            detail.removeAttribute('open');
+          }
+        });
+      }
+    });
+  });
+</script>

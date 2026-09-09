@@ -1,0 +1,120 @@
+---
+// src/feature/personal/secciones/RegistroVentaRapida.astro
+// Registro Directo en Pantalla (100% Cero CSS Inline - 2 Columnas)
+import negocio from '../../../negocio.js';
+---
+
+<div class="staff-reg-box clean-card">
+  
+  <div class="staff-reg-grid grid-registro-staff">
+    
+    <!-- COLUMNA 1: IMAGEN DE MARCA Y STATUS BASE -->
+    <div class="staff-reg-media">
+      <img 
+        src="/imgwii/01-solgas-surquillo.webp" 
+        alt="Despacho Solgas Surquillo" 
+        class="staff-reg-media-img"
+      />
+      <div class="staff-reg-media-overlay"></div>
+
+      <div class="staff-reg-media-text">
+        <span class="staff-reg-badge">
+          <i class="fa-solid fa-bolt"></i> Atención Express
+        </span>
+        <h3 class="font-bold text-xl text-white line-tight">
+          Base Jr. Dante 260
+        </h3>
+        <p class="text-xs text-slate-300 mt-1">
+          Registra llamadas o pedidos de mostrador en 5 segundos sin salir de esta pantalla.
+        </p>
+      </div>
+    </div>
+
+    <!-- COLUMNA 2: FORMULARIO DIRECTO -->
+    <div class="staff-reg-form-col">
+      <div class="flex justify-between items-center mb-3">
+        <div>
+          <h2 class="text-bright font-bold text-lg flex items-center gap-2 m-0">
+            <i class="fa-solid fa-cash-register color-emerald"></i> Nueva Venta / Pedido Rápido
+          </h2>
+          <span class="text-muted text-xs">
+            Llénalo al momento que entra la llamada o mensaje.
+          </span>
+        </div>
+        <span class="text-xs px-2 py-1 rounded-full font-bold border border-emerald-500/30 text-emerald-400 bg-emerald-500/10">
+          0 Fricción
+        </span>
+      </div>
+
+      <form id="formVentaDirecta" onsubmit="event.preventDefault(); window.guardarVentaDirectaStaff && window.guardarVentaDirectaStaff();">
+        
+        <!-- Fila 1: Celular y Nombre -->
+        <div class="staff-reg-row-2 grid-form-staff">
+          <div class="form-group">
+            <label for="vdCelular" class="staff-reg-label">
+              <i class="fas fa-phone color-primary"></i> 1. Celular / WhatsApp:
+            </label>
+            <input type="tel" id="vdCelular" class="form-input p-3" placeholder="Ej. 987 654 321" required />
+          </div>
+
+          <div class="form-group">
+            <label for="vdNombre" class="staff-reg-label">
+              <i class="fas fa-user color-primary"></i> 2. Nombre del Cliente:
+            </label>
+            <input type="text" id="vdNombre" class="form-input p-3" placeholder="Ej. Carlos Mendoza" required />
+          </div>
+        </div>
+
+        <!-- Fila 2: Dirección y Referencia -->
+        <div class="form-group mb-2">
+          <label for="vdDireccion" class="staff-reg-label">
+            <i class="fas fa-map-marker-alt color-primary"></i> 3. Dirección Exacta (Surquillo / Aledaños):
+          </label>
+          <input type="text" id="vdDireccion" class="form-input p-3" placeholder="Ej. Jr. Dante 420 Dpto 302, Surquillo" required />
+        </div>
+
+        <!-- Fila 3: Producto y Método de Pago -->
+        <div class="staff-reg-row-2 grid-form-staff">
+          <div class="form-group">
+            <label for="vdProducto" class="staff-reg-label">
+              <i class="fas fa-burn color-primary"></i> 4. Balón Solgas:
+            </label>
+            <select id="vdProducto" class="form-select p-3" onchange="window.actualizarPrecioStaffDirecto && window.actualizarPrecioStaffDirecto()">
+              <option value="Balón SOLGAS de 10 kg|48">Solgas 10 kg (Click-On) - S/ 48.00</option>
+              <option value="Balón MASGAS de 10 kg|44">Masgas 10 kg (Económico) - S/ 44.00</option>
+              <option value="Balón SOLGAS de 45 kg|215">Solgas 45 kg (Industrial) - S/ 215.00</option>
+              <option value="Regulador Premium SOLGAS|38">Regulador Click-On - S/ 38.00</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="vdPago" class="staff-reg-label">
+              <i class="fas fa-wallet color-primary"></i> 5. Método de Cobro:
+            </label>
+            <select id="vdPago" class="form-select p-3">
+              <option value="Yape">📱 Yape / Plin (Al entregar)</option>
+              <option value="Efectivo">💵 Efectivo Exacto</option>
+              <option value="Tarjeta">💳 Tarjeta POS en Puerta</option>
+              <option value="Transferencia">🏦 Transferencia / BCP</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Barra Inferior de Acción y Total -->
+        <div class="flex justify-between items-center mt-3 pt-3 border-t border-card flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted font-bold uppercase">Total a Cobrar:</span>
+            <span id="vdPrecioDisplay" class="font-extrabold text-xl color-amber">S/ 48.00</span>
+          </div>
+
+          <button type="submit" id="btnGuardarVentaDirecta" class="btn-fire px-6 py-3 font-bold text-sm rounded-xl">
+            <i class="fa-solid fa-paper-plane"></i> <span>Registrar y Mandar a Ruta ➔</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,82 @@
+---
+// src/feature/personal/secciones/MetricasHoy.astro
+// Métricas en Tiempo Real de Ventas, Métodos de Pago y Caja (100% Cero CSS Inline)
+---
+
+<div class="metricas-box">
+  
+  <!-- Barra de Acciones Ejecutivas: Nueva Venta y Pesaje Opcional -->
+  <div class="metricas-header-row">
+    <div class="flex items-center gap-2">
+      <h2 class="metricas-title">
+        <i class="fa-solid fa-cash-register color-emerald"></i> Arqueo de Caja y Ventas del Día
+      </h2>
+      <span class="metricas-live-badge">
+        EN VIVO
+      </span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <!-- Botón Registrar Pesaje Oficial (Opcional) -->
+      <button type="button" onclick="window.abrirModalPesaje && window.abrirModalPesaje()" class="btn-outline text-xs px-3 py-2 rounded-lg" title="Registrar Pesaje Oficial de Balanza">
+        <i class="fa-solid fa-scale-balanced color-brand-blue"></i> <span>⚖️ Certificar Pesaje Balanza (Extra)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tarjetas de Métricas de Ventas y Pagos -->
+  <div class="metricas-grid">
+    
+    <!-- 1. TOTAL INGRESOS DEL DÍA -->
+    <div class="metricas-card clean-card">
+      <div class="metricas-card-top">
+        <span class="text-muted font-bold text-xs uppercase">Total Ventas Hoy</span>
+        <i class="fa-solid fa-coins color-amber"></i>
+      </div>
+      <div id="metricasTotalIngreso" class="metricas-num color-amber">S/ 0.00</div>
+      <span id="metricasSubtotalVentas" class="metricas-sub">0 pedidos cobrados</span>
+    </div>
+
+    <!-- 2. COBRADO POR YAPE / PLIN -->
+    <div class="metricas-card clean-card">
+      <div class="metricas-card-top">
+        <span class="color-purple font-bold text-xs uppercase">📱 Yape / Plin</span>
+        <i class="fa-solid fa-mobile-screen-button color-purple"></i>
+      </div>
+      <div id="metricasTotalYape" class="metricas-num color-purple">S/ 0.00</div>
+      <span id="metricasCantYape" class="metricas-sub">0 pagos digitales</span>
+    </div>
+
+    <!-- 3. COBRADO POR TARJETA POS -->
+    <div class="metricas-card clean-card">
+      <div class="metricas-card-top">
+        <span class="color-brand-blue font-bold text-xs uppercase">💳 Tarjeta POS</span>
+        <i class="fa-solid fa-credit-card color-brand-blue"></i>
+      </div>
+      <div id="metricasTotalTarjeta" class="metricas-num color-brand-blue">S/ 0.00</div>
+      <span id="metricasCantTarjeta" class="metricas-sub">0 vouchers POS</span>
+    </div>
+
+    <!-- 4. COBRADO EN EFECTIVO -->
+    <div class="metricas-card clean-card">
+      <div class="metricas-card-top">
+        <span class="color-emerald font-bold text-xs uppercase">💵 Efectivo Físico</span>
+        <i class="fa-solid fa-money-bill-1-wave color-emerald"></i>
+      </div>
+      <div id="metricasTotalEfectivo" class="metricas-num color-emerald">S/ 0.00</div>
+      <span id="metricasCantEfectivo" class="metricas-sub">0 cobros en mano</span>
+    </div>
+
+    <!-- 5. MARGEN BRUTO ESTIMADO -->
+    <div class="metricas-card clean-card">
+      <div class="metricas-card-top">
+        <span class="color-primary font-bold text-xs uppercase">📈 Margen Neto Est.</span>
+        <i class="fa-solid fa-chart-line color-primary"></i>
+      </div>
+      <div id="metricasMargenEstimado" class="metricas-num color-primary">S/ 0.00</div>
+      <span class="metricas-sub">Costo GLP deducido</span>
+    </div>
+
+  </div>
+
+</div>

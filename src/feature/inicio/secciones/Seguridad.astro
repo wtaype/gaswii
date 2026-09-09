@@ -1,0 +1,92 @@
+---
+// src/feature/inicio/secciones/Seguridad.astro
+// 5. INSTALACIÓN SEGURA Y PRUEBA HERMÉTICA CERO FUGAS (100% Cero CSS Inline)
+import { datosNegocio } from '../../../negocio.js';
+import { getI18n, type Idioma } from '../../../core/idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).seguridad;
+---
+
+<section id="seguridad" class="section-py-body">
+  <div class="page-container">
+    <div class="split-grid items-center">
+      
+      <div>
+        <span class="badge-fire mb-3 inline-flex items-center gap-2 px-3 py-1 rounded-full">
+          <i class="fa-solid fa-shield-halved"></i> <span>{t.badge}</span>
+        </span>
+        <h2 class="section-header-title text-left mb-3">
+          {t.titulo}
+        </h2>
+        <p class="text-muted text-base mb-6 leading-relaxed">
+          {t.desc}
+        </p>
+
+        <div class="flex flex-col gap-4 mb-6">
+          <div class="flex gap-3 items-start">
+            <div class="w-12 h-12 rounded-xl bg-orange-500/15 color-primary flex items-center justify-center shrink-0 text-lg">
+              <i class="fa-solid fa-wrench"></i>
+            </div>
+            <div>
+              <h4 class="text-base font-bold text-bright mb-1">{t.pilar1_titulo}</h4>
+              <p class="text-xs md:text-sm text-muted m-0">{t.pilar1_desc}</p>
+            </div>
+          </div>
+
+          <div class="flex gap-3 items-start">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/15 color-brand-blue flex items-center justify-center shrink-0 text-lg">
+              <i class="fa-solid fa-pump-soap"></i>
+            </div>
+            <div>
+              <h4 class="text-base font-bold text-bright mb-1">{t.pilar2_titulo}</h4>
+              <p class="text-xs md:text-sm text-muted m-0">{t.pilar2_desc}</p>
+            </div>
+          </div>
+
+          <div class="flex gap-3 items-start">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/15 color-emerald flex items-center justify-center shrink-0 text-lg">
+              <i class="fa-solid fa-recycle"></i>
+            </div>
+            <div>
+              <h4 class="text-base font-bold text-bright mb-1">{t.pilar3_titulo}</h4>
+              <p class="text-xs md:text-sm text-muted m-0">{t.pilar3_desc}</p>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="window.abrirModalPedido && window.abrirModalPedido()" class="btn-fire py-3 px-6 text-sm font-bold">
+          <i class="fa-solid fa-screwdriver-wrench"></i> <span>{t.btn_inspeccion}</span>
+        </button>
+      </div>
+
+      <div>
+        <div class="clean-card p-2 border-2 border-accent">
+          <div class="pesaje-media-container">
+            <img 
+              src="/imgwii/03-solgas-surquillo-instalacion.webp" 
+              alt="Instalación y revisión técnica antifugas Solgas Surquillo" 
+              width="500"
+              height="400"
+              loading="lazy"
+              class="pesaje-media-img"
+            />
+            <div class="pesaje-caption-overlay">
+              <span class="badge-gold mb-1 inline-flex items-center gap-1 px-3 py-1 rounded-full">
+                <i class="fa-solid fa-shield-halved"></i> <span>{t.badge_cero_fugas}</span>
+              </span>
+              <h4 class="text-base text-white m-0 font-bold">
+                {t.caption_cero_fugas}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

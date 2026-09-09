@@ -1,0 +1,52 @@
+---
+// src/feature/cliente/secciones/DireccionesRecarga.astro
+// Gestor de Direcciones y Puntos de Entrega Guardados (100% Cero CSS Inline)
+interface Props {
+  direcciones?: Array<{ id: string; etiqueta: string; direccion: string; predeterminada: boolean }>;
+}
+
+const {
+  direcciones = []
+} = Astro.props;
+---
+
+<div class="direcciones-card-box clean-card">
+  <div class="direcciones-header-row">
+    <h2 class="direcciones-title">
+      <i class="fa-solid fa-map-location-dot color-emerald"></i> Tus Puntos de Entrega
+    </h2>
+    <button type="button" class="btn-clean color-primary font-bold text-sm" onclick="window.agregarNuevaDireccion && window.agregarNuevaDireccion()">
+      + Agregar
+    </button>
+  </div>
+
+  <div id="contenedorDireccionesCliente" class="direcciones-list">
+    {direcciones.length === 0 ? (
+      <div id="vacioDirecciones" class="direcciones-empty-box">
+        <i class="fa-solid fa-house-chimney direcciones-empty-icon"></i>
+        <p class="text-muted text-sm mb-3">
+          Aún no tienes direcciones guardadas para pedidos express.
+        </p>
+        <button type="button" class="btn-clean py-2 px-4 border border-card rounded-lg text-xs color-primary font-bold" onclick="window.agregarNuevaDireccion && window.agregarNuevaDireccion()">
+          <i class="fa-solid fa-plus"></i> Registrar Domicilio
+        </button>
+      </div>
+    ) : (
+      direcciones.map((d) => (
+        <div class={`direccion-item-card ${d.predeterminada ? 'is-default' : ''}`}>
+          <div>
+            <strong class="text-bright text-sm block">{d.etiqueta}</strong>
+            <span class="text-muted text-xs">{d.direccion}</span>
+          </div>
+          <div>
+            {d.predeterminada && (
+              <span class="direccion-tag-default">
+                Predeterminada
+              </span>
+            )}
+          </div>
+        </div>
+      ))
+    )}
+  </div>
+</div>

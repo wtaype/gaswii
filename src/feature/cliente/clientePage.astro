@@ -1,0 +1,172 @@
+---
+// src/feature/cliente/clientePage.astro
+// 👑 Portal y Dashboard Personal de Cliente VIP (Gaswii - Solgas Surquillo)
+// 100% Cero CSS Inline - Estilos Centralizados en cliente.css (Sin menciones a SUNAT)
+import Principal from '../../core/layouts/Principal.astro';
+import ReordenExpress from './secciones/ReordenExpress.astro';
+import NivelGas from './secciones/NivelGas.astro';
+import RadarMotorizado from './secciones/RadarMotorizado.astro';
+import PuntosBilletera from './secciones/PuntosBilletera.astro';
+import BoletasSunat from './secciones/BoletasSunat.astro';
+import DireccionesRecarga from './secciones/DireccionesRecarga.astro';
+import clienteCss from './cliente.css?inline';
+import authCss from '../auth/auth.css?inline';
+
+const featureCss = clienteCss + '\n' + authCss;
+
+interface Props {
+  idioma?: 'es' | 'en';
+}
+
+const { idioma = 'es' } = Astro.props;
+---
+
+<Principal idioma={idioma} ruta="/cliente">
+  <style slot="head" is:global set:html={featureCss}></style>
+  <div class="page-container cliente-page-box">
+    
+    <!-- Header del Dashboard VIP -->
+    <div class="cliente-header-bar">
+      <div class="cliente-profile-group">
+        <div class="cliente-avatar-box">
+          <img id="clienteAvatarImg" src="" alt="Foto de perfil" class="cliente-avatar-img" />
+          <i id="clienteDefaultIcon" class="fa-solid fa-crown cliente-default-icon"></i>
+        </div>
+        <div>
+          <div class="cliente-title-row">
+            <h1 id="clienteNombreDisplay" class="cliente-nombre-heading">
+              Mi Gaswii VIP
+            </h1>
+            <span class="badge-vip-tag">VIP HOGAR</span>
+            <span id="clienteUsuarioBadge" class="badge-usuario-tag">@usuario</span>
+            <span id="clienteEstadoBadge" class="badge-activo-tag"><i class="fa-solid fa-circle-check"></i> ACTIVO</span>
+          </div>
+          <p id="clienteBienvenida" class="cliente-welcome-desc">
+            Bienvenido a tu panel de control y pedidos prioritarios en Surquillo.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🗂️ Barra de Pestañas (Tabs) de Cliente VIP (Sin palabras SUNAT) -->
+    <div class="cliente-tabs-bar">
+      <button type="button" id="tabBtn_resumen" class="cliente-tab-btn active" onclick="window.cambiarTabCliente && window.cambiarTabCliente('resumen')">
+        <i class="fa-solid fa-house"></i> <span>Resumen</span>
+      </button>
+
+      <button type="button" id="tabBtn_pedidos" class="cliente-tab-btn" onclick="window.cambiarTabCliente && window.cambiarTabCliente('pedidos')">
+        <i class="fa-solid fa-motorcycle"></i> <span>Mis Pedidos & Radar</span>
+      </button>
+
+      <button type="button" id="tabBtn_direcciones" class="cliente-tab-btn" onclick="window.cambiarTabCliente && window.cambiarTabCliente('direcciones')">
+        <i class="fa-solid fa-map-location-dot"></i> <span>Mis Direcciones</span>
+      </button>
+
+      <button type="button" id="tabBtn_puntos" class="cliente-tab-btn" onclick="window.cambiarTabCliente && window.cambiarTabCliente('puntos')">
+        <i class="fa-solid fa-gift"></i> <span>Puntos & Premios</span>
+      </button>
+
+      <button type="button" id="tabBtn_comprobantes" class="cliente-tab-btn" onclick="window.cambiarTabCliente && window.cambiarTabCliente('comprobantes')">
+        <i class="fa-solid fa-file-invoice"></i> <span>Comprobantes Oficiales</span>
+      </button>
+    </div>
+
+    <!-- PANELES DE CONTENIDO POR TAB -->
+
+    <!-- TAB 1: RESUMEN GENERAL -->
+    <div id="tabPanel_resumen" class="cliente-tab-panel">
+      <!-- Reorden Express -->
+      <ReordenExpress />
+
+      <!-- Grid de 2 Columnas -->
+      <div class="cliente-dashboard-grid">
+        <div>
+          <NivelGas />
+        </div>
+        <div>
+          <PuntosBilletera />
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: MIS PEDIDOS & RADAR MOTORIZADO -->
+    <div id="tabPanel_pedidos" class="cliente-tab-panel">
+      <RadarMotorizado />
+      <div class="mt-4">
+        <h3 class="text-bright font-bold text-lg mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left color-brand-blue"></i> Historial de Pedidos Realizados
+        </h3>
+        <div id="pedidosHistorialLista"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: MIS DIRECCIONES -->
+    <div id="tabPanel_direcciones" class="cliente-tab-panel">
+      <DireccionesRecarga />
+    </div>
+
+    <!-- TAB 4: PUNTOS & PREMIOS -->
+    <div id="tabPanel_puntos" class="cliente-tab-panel">
+      <PuntosBilletera />
+    </div>
+
+    <!-- TAB 5: COMPROBANTES OFICIALES (Sin SUNAT) -->
+    <div id="tabPanel_comprobantes" class="cliente-tab-panel">
+      <BoletasSunat />
+    </div>
+
+  </div>
+</Principal>
+
+<script>
+  import { getSmileLocal, escucharAuth, generarAvatarUrl } from '../auth/auth.js';
+  import { inicializarTabsCliente } from './tabs/tabsController.js';
+  import { inicializarResumenTab } from './tabs/resumen.js';
+  import { inicializarPedidosTab } from './tabs/pedidos.js';
+  import { inicializarDireccionesTab } from './tabs/direcciones.js';
+  import { inicializarPuntosTab } from './tabs/puntos.js';
+  import { inicializarComprobantesTab } from './tabs/comprobantes.js';
+
+  function aplicarDatosCliente(smile) {
+    const nombreDisplay = document.getElementById('clienteNombreDisplay');
+    const usuarioBadge = document.getElementById('clienteUsuarioBadge');
+    const bienvenida = document.getElementById('clienteBienvenida');
+    const avatarImg = document.getElementById('clienteAvatarImg') as HTMLImageElement;
+    const defaultIcon = document.getElementById('clienteDefaultIcon');
+
+    if (smile && (smile.uid || smile.nombre)) {
+      const primerNombre = smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'Cliente');
+      if (nombreDisplay) nombreDisplay.textContent = `Hola, ${primerNombre}`;
+      if (usuarioBadge) usuarioBadge.textContent = smile.usuario ? `@${smile.usuario.replace('@', '')}` : '@cliente';
+      if (bienvenida) {
+        bienvenida.textContent = `Buenos días, ${primerNombre} — Tienes ${smile.puntos !== undefined ? smile.puntos : 50} puntos disponibles para canjes o descuentos.`;
+      }
+
+      const foto = smile.foto || generarAvatarUrl(smile.nombre, smile.usuario);
+      if (avatarImg) {
+        avatarImg.src = foto;
+        avatarImg.classList.add('loaded');
+      }
+      if (defaultIcon) defaultIcon.classList.add('hidden');
+
+      inicializarResumenTab(smile);
+      inicializarPedidosTab(smile);
+      inicializarDireccionesTab(smile);
+      inicializarPuntosTab(smile);
+      inicializarComprobantesTab(smile);
+    } else {
+      if (nombreDisplay) nombreDisplay.textContent = 'Mi Gaswii VIP';
+      if (usuarioBadge) usuarioBadge.textContent = '@invitado';
+      if (bienvenida) bienvenida.textContent = 'Inicia sesión para gestionar tus pedidos y canjear tus puntos VIP.';
+    }
+  }
+
+  inicializarTabsCliente();
+
+  const localSmile = getSmileLocal();
+  aplicarDatosCliente(localSmile);
+
+  escucharAuth((user, smile) => {
+    aplicarDatosCliente(smile);
+  });
+</script>

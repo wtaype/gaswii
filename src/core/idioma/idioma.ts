@@ -1,38 +1,47 @@
 // src/core/idioma/idioma.ts
-// 🌐 Motor de Internacionalización y Detección de Idiomas
+// 🌐 Motor de Internacionalización y Detección de Idiomas (Español por Defecto & Fallback)
 
-import esLocale from './locales/es.json';
-import enLocale from './locales/en.json';
+import esLocale from './es.json';
+import enLocale from './en.json';
 
 export type Idioma = 'es' | 'en';
 
-export const IDIOMAS: Record<Idioma, { nombre: string; flag: string }> = {
-  es: { nombre: 'Español', flag: '🇵🇪' },
-  en: { nombre: 'English', flag: '🇺🇸' }
+export const IDIOMAS: Record<Idioma, { nombre: string; code: string }> = {
+  es: { nombre: 'Español', code: 'es' },
+  en: { nombre: 'English', code: 'en' }
 };
 
 export const DEFAULT_LANG: Idioma = 'es';
 
-const locales: Record<Idioma, Record<string, any>> = {
+const locales: Record<string, Record<string, any>> = {
   es: esLocale,
   en: enLocale
 };
 
 /**
- * Hook utilitario para obtener traducciones tipadas o fallback a clave
+ * Retorna las traducciones para el idioma solicitado con fallback automático a español.
  */
-export function useTranslations(lang: Idioma = DEFAULT_LANG) {
+export function getI18n(lang: string = DEFAULT_LANG) {
   const dict = locales[lang] || locales[DEFAULT_LANG];
-  return function t(key: string, fallback?: string): string {
-    const keys = key.split('.');
-    let result: any = dict;
-    for (const k of keys) {
-      if (result && typeof result === 'object' && k in result) {
-        result = result[k];
-      } else {
-        return fallback || key;
-      }
-    }
-    return typeof result === 'string' ? result : fallback || key;
+  const base = locales[DEFAULT_LANG];
+
+  return {
+    topbar: { ...base.topbar, ...(dict.topbar || {}) },
+    nav: { ...base.nav, ...(dict.nav || {}) },
+    hero: { ...base.hero, ...(dict.hero || {}) },
+    sos: { ...base.sos, ...(dict.sos || {}) },
+    catalogo: { ...base.catalogo, ...(dict.catalogo || {}) },
+    pesaje: { ...base.pesaje, ...(dict.pesaje || {}) },
+    seguridad: { ...base.seguridad, ...(dict.seguridad || {}) },
+    calculadora: { ...base.calculadora, ...(dict.calculadora || {}) },
+    mapa: { ...base.mapa, ...(dict.mapa || {}) },
+    nosotros: { ...base.nosotros, ...(dict.nosotros || {}) },
+    faq: { ...base.faq, ...(dict.faq || {}) },
+    footer: { ...base.footer, ...(dict.footer || {}) },
+    modales: { ...base.modales, ...(dict.modales || {}) },
   };
 }
+
+export const useTraduccion = getI18n;
+
+

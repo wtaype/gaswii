@@ -1,0 +1,58 @@
+---
+// src/feature/cliente/secciones/BoletasSunat.astro
+// Bóveda de Comprobantes Electrónicos Oficiales (100% Cero CSS Inline - Sin palabras SUNAT)
+interface Props {
+  boletas?: Array<{ id: string; fecha: string; producto: string; total: number; estado: string }>;
+}
+
+const { boletas = [] } = Astro.props;
+---
+
+<div class="invoices-vault-card clean-card">
+  <div class="invoices-vault-header">
+    <h2 class="invoices-vault-title">
+      <i class="fa-solid fa-file-invoice icon-brand-blue"></i> Bóveda de Comprobantes Electrónicos
+    </h2>
+    <span class="text-muted text-xs">Comprobantes válidos con certificación oficial</span>
+  </div>
+
+  {boletas.length === 0 ? (
+    <div class="invoices-empty-box">
+      <i class="fa-solid fa-receipt invoices-empty-icon"></i>
+      <p class="invoices-empty-text">
+        Aún no tienes comprobantes emitidos. Se generarán automáticamente al recibir tus pedidos con balanza digital en puerta.
+      </p>
+    </div>
+  ) : (
+    <div class="overflow-x-auto">
+      <table class="invoices-table">
+        <thead>
+          <tr>
+            <th>N° Comprobante</th>
+            <th>Fecha</th>
+            <th>Producto</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Descargar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {boletas.map((b) => (
+            <tr>
+              <td><strong>{b.id}</strong></td>
+              <td>{b.fecha}</td>
+              <td>{b.producto}</td>
+              <td><strong>S/ {b.total.toFixed(2)}</strong></td>
+              <td><span class="color-emerald font-bold"><i class="fa-solid fa-check"></i> {b.estado}</span></td>
+              <td>
+                <button type="button" class="btn-clean invoices-pdf-btn" onclick={`alert('Descargando comprobante oficial ${b.id} en formato PDF.')`}>
+                  <i class="fa-solid fa-file-pdf"></i> PDF
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</div>

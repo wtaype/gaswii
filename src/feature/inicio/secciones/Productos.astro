@@ -1,0 +1,129 @@
+---
+// src/feature/inicio/secciones/Productos.astro
+// 3. PRODUCTOS: VENTA DE BALONES A DOMICILIO CON PESO EXACTO (100% Cero CSS Inline)
+import { datosNegocio } from '../../../negocio.js';
+import { getI18n, type Idioma } from '../../../core/idioma/idioma';
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).catalogo;
+const isEn = idioma === 'en';
+---
+
+<section id="productos" class="section-py-body">
+  <div class="page-container">
+    
+    <div class="section-header-box">
+      <span class="badge-fire mb-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs">
+        <i class="fa-solid fa-boxes-stacked"></i> <span>{t.badge}</span>
+      </span>
+      <h2 class="section-header-title">
+        {t.titulo}
+      </h2>
+      <p class="section-header-desc">
+        {t.desc}
+      </p>
+    </div>
+
+    <div class="catalog-grid">
+      {datosNegocio.productos.map((prod) => {
+        const prodNombre = isEn ? prod.nombreEn : prod.nombre;
+        const prodBadge = isEn ? prod.badgeEn : prod.badge;
+        const prodTipo = isEn ? prod.tipoUsoEn : prod.tipoUso;
+        const prodCapacidad = isEn ? prod.capacidadEn : prod.capacidad;
+        const prodValvula = isEn ? prod.valvulaEn : prod.valvula;
+        const prodAhorro = isEn ? prod.ahorroEn : prod.ahorro;
+        const caracteristicas = isEn ? prod.caracteristicasEn : prod.caracteristicas;
+
+        return (
+          <div class="clean-card producto-card-box">
+            
+            <div>
+              <div class="producto-top-bar mb-3">
+                <span class={`producto-badge ${prod.tagClase}`}>
+                  <i class={prod.icon}></i> <span>{prodBadge}</span>
+                </span>
+                <span class="producto-tipo-badge">{prodTipo}</span>
+              </div>
+
+              <div class="producto-media-frame">
+                <img 
+                  src={prod.imagen} 
+                  alt={prodNombre} 
+                  width="220"
+                  height="220"
+                  loading="lazy"
+                  class="producto-img-tag"
+                />
+                <div class="producto-capacidad-tag">
+                  <i class="fa-solid fa-circle-check color-emerald"></i> <span>{prodCapacidad}</span>
+                </div>
+              </div>
+
+              <h3 class="text-base font-bold text-bright mb-2">
+                {prodNombre}
+              </h3>
+
+              <ul class="flex flex-col gap-1.5 mb-4 list-none p-0 text-xs text-muted">
+                <li class="flex items-center gap-2"><i class="fa-solid fa-tag color-primary"></i> <strong>{t.valvula_label}</strong> <span>{prodValvula}</span></li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-weight-scale color-emerald"></i> <strong>{t.peso_label}</strong> <span>{prod.pesoTotal}</span></li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-shield-halved color-brand-blue"></i> <strong>{t.seguridad_label}</strong> <span>{t.precinto_verificado}</span></li>
+              </ul>
+
+              <div class="mb-4 pt-3 border-t border-card">
+                <span class="text-xxs uppercase font-bold text-muted block mb-1">
+                  {t.garantia_gaswii}
+                </span>
+                <ul class="flex flex-col gap-1 list-none p-0 text-xs text-muted">
+                  {caracteristicas.map((c) => (
+                    <li class="flex items-start gap-1.5">
+                      <i class="fa-solid fa-circle-check color-emerald text-xs mt-0.5"></i>
+                      <span>{c}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-end mb-3 pt-3 border-t border-card">
+                <div>
+                  <span class="text-xxs text-emerald-400 font-bold block">{prodAhorro}</span>
+                  <div class="producto-price-val">
+                    <span class="text-sm font-bold text-muted">S/</span> {prod.precioPEN.toFixed(2)}
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="text-xxs text-muted block">{t.envio_puerta}</span>
+                  <span class="text-xs color-emerald font-bold">{t.incluido}</span>
+                </div>
+              </div>
+
+              <div class="flex gap-2">
+                <button 
+                  onclick={`window.abrirModalPedido && window.abrirModalPedido('${prodNombre}')`} 
+                  class="btn-whatsapp flex-1 justify-center py-2.5 text-xs font-bold"
+                  title={`Pedir ${prodNombre} por WhatsApp`}
+                >
+                  <i class="fa-brands fa-whatsapp"></i> <span>{t.btn_pedir}</span>
+                </button>
+                <a 
+                  href={`tel:${datosNegocio.telefonoLimpio}`} 
+                  class="btn-call py-2.5 px-3 text-xs"
+                  title="Llamar para pedir"
+                >
+                  <i class="fa-solid fa-phone"></i>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        );
+      })}
+    </div>
+
+  </div>
+</section>

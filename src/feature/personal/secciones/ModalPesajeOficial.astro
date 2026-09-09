@@ -1,0 +1,86 @@
+---
+// src/feature/personal/secciones/ModalPesajeOficial.astro
+// Modal para Registro Técnico de Pesaje en Balanza Digital (100% Cero CSS Inline)
+---
+
+<div class="modal-overlay" id="modalPesajeOficial" onclick="if(event.target===this) window.cerrarModalPesaje && window.cerrarModalPesaje()">
+  <div class="modal-pedido-box max-w-xl">
+    
+    <!-- Cabecera del Modal -->
+    <div class="flex justify-between items-center mb-3 pb-3 border-b border-card">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-500/15 color-brand-blue flex items-center justify-center text-lg">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-bright m-0 leading-tight">Control y Certificación de Pesaje</h3>
+          <span class="text-xs color-emerald font-semibold">
+            <i class="fa-solid fa-shield-halved"></i> Registro Técnico Oficial Inacal / Osinergmin
+          </span>
+        </div>
+      </div>
+      <button type="button" onclick="window.cerrarModalPesaje && window.cerrarModalPesaje()" class="bg-transparent border-none text-xl text-main cursor-pointer" aria-label="Cerrar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <form id="formPesajeOficialStaff" onsubmit="event.preventDefault(); window.guardarPesajeOficial && window.guardarPesajeOficial();">
+      
+      <div class="modal-grid-2 mb-3">
+        <div class="form-group">
+          <label for="psBalonSerie" class="staff-reg-label">
+            N° de Serie / Lote del Cilindro:
+          </label>
+          <input type="text" id="psBalonSerie" class="form-input" placeholder="Ej. SOL-2026-9481" required />
+        </div>
+
+        <div class="form-group">
+          <label for="psBalanzaId" class="staff-reg-label">
+            Balanza Digital Utilizada:
+          </label>
+          <select id="psBalanzaId" class="form-input">
+            <option value="BAL-01">Balanza #01 - Inacal Calibrada</option>
+            <option value="BAL-02">Balanza #02 - Inacal Calibrada</option>
+            <option value="BAL-MOTO-04">Balanza Portátil Moto #04</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- DESGLOSE DE PESO -->
+      <div class="grid grid-cols-3 gap-3 bg-surface-elevated p-3 rounded-xl border border-card mb-4">
+        <div>
+          <label class="block text-xs text-muted font-bold mb-1">
+            Tara Balón (kg):
+          </label>
+          <input type="number" step="0.1" id="psTara" class="form-input" value="14.8" oninput="window.calcularPesoTotalBal && window.calcularPesoTotalBal()" />
+          <span class="text-xxs text-muted">Grabado en el asa</span>
+        </div>
+
+        <div>
+          <label class="block text-xs text-muted font-bold mb-1">
+            GLP Neto (kg):
+          </label>
+          <input type="number" step="0.1" id="psGas" class="form-input" value="10.0" oninput="window.calcularPesoTotalBal && window.calcularPesoTotalBal()" />
+          <span class="text-xxs color-emerald font-bold">10 kg Exacto</span>
+        </div>
+
+        <div class="text-center flex flex-col justify-center">
+          <span class="text-xxs text-muted uppercase font-bold">Peso Total Bruto:</span>
+          <div id="psTotalDisplay" class="text-xl font-black color-primary">24.8 kg</div>
+          <span class="text-xxs color-emerald">✓ Conforme Inacal</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-3 border-t border-card">
+        <button type="button" onclick="window.cerrarModalPesaje && window.cerrarModalPesaje()" class="btn-clean px-4 py-2 text-xs border border-card rounded-lg">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-fire px-4 py-2 text-xs font-bold rounded-lg">
+          <i class="fa-solid fa-stamp"></i> Emitir Certificado de Pesaje
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>

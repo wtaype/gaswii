@@ -1,0 +1,73 @@
+---
+// src/feature/cliente/secciones/PuntosBilletera.astro
+// Club de Puntos y Canjes para Clientes VIP (Modernizado y 100% Cero CSS Inline)
+interface Props {
+  puntos?: number;
+  nivel?: string;
+}
+
+const { puntos = 50, nivel = 'VIP Hogar' } = Astro.props;
+const solesEquivalente = (puntos * 0.05).toFixed(2);
+---
+
+<div class="club-wallet-card clean-card">
+  <div class="club-wallet-header">
+    <h2 class="club-wallet-title">
+      <i class="fa-solid fa-gift color-primary"></i> Club Gaswii Puntos
+    </h2>
+    <span id="billeteraNivelBadge" class="club-vip-pill">
+      {nivel}
+    </span>
+  </div>
+
+  <!-- Tarjeta Metálica de Balance VIP -->
+  <div class="wallet-balance-metal">
+    <div class="wallet-balance-label">Tus Puntos Acumulados:</div>
+    <div id="billeteraPuntosDisplay" class="wallet-points-display">
+      {puntos}
+    </div>
+    <div class="wallet-equivalent-text">
+      Equivalen a <strong id="billeteraSolesDisplay">S/ {solesEquivalente} de descuento</strong> en tu siguiente balón.
+    </div>
+  </div>
+
+  <h4 class="canjes-section-title">Canjes y Beneficios Exclusivos:</h4>
+  
+  <div class="canjes-grid">
+    <!-- Canje 1 -->
+    <div class="canje-item-card">
+      <div>
+        <i class="fa-solid fa-tag canje-icon color-primary"></i>
+        <h5 class="canje-name">S/ 10 Descuento</h5>
+        <span class="canje-pts-req">200 Puntos</span>
+      </div>
+      <button type="button" class="canje-btn-action" onclick="alert('🎉 ¡Descuento de S/ 10 canjeado con éxito para tu siguiente recarga en Surquillo!')">
+        Canjear
+      </button>
+    </div>
+
+    <!-- Canje 2 -->
+    <div class="canje-item-card">
+      <div>
+        <i class="fa-solid fa-shield-virus canje-icon color-emerald"></i>
+        <h5 class="canje-name">Manguera Certificada</h5>
+        <span class="canje-pts-req">350 Puntos</span>
+      </div>
+      <button type="button" class="canje-btn-action" onclick="alert('🛡️ Manguera de seguridad certificada agregada sin costo a tu próximo pedido.')">
+        Canjear
+      </button>
+    </div>
+
+    <!-- Canje 3 -->
+    <div class="canje-item-card">
+      <div>
+        <i class="fa-solid fa-fire canje-icon color-amber"></i>
+        <h5 class="canje-name">Regulador Click-On</h5>
+        <span class="canje-pts-req">450 Puntos</span>
+      </div>
+      <button type="button" class="canje-btn-action" onclick="alert('🔥 Regulador premium Click-On antifugas canjeado exitosamente.')">
+        Canjear
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,90 @@
+---
+// src/feature/cliente/secciones/RadarMotorizado.astro
+// Radar GPS del Repartidor Asignado con ETA y Datos Inacal (100% Cero CSS Inline)
+interface Props {
+  pedidoActivo?: boolean;
+  chofer?: string;
+  moto?: string;
+  placa?: string;
+  fotoMoto?: string;
+  balanza?: string;
+  calificacion?: number;
+  etaMinutos?: number;
+  telefonoDirecto?: string;
+}
+
+const {
+  pedidoActivo = false,
+  chofer = 'Motorizado Asignado',
+  moto = 'Moto Delivery Gaswii',
+  placa = 'Base Jr. Dante 260',
+  fotoMoto = '/imgwii/delivery_driver_on_motorcycle.webp',
+  balanza = 'Inacal Digital Calibrada',
+  calificacion = 5.0,
+  etaMinutos = 15,
+  telefonoDirecto = '+51 936 369 384'
+} = Astro.props;
+---
+
+<div class="radar-card-box clean-card">
+  <div class="radar-header-row">
+    <h2 class="radar-title">
+      <i class="fa-solid fa-location-crosshairs color-emerald"></i> Despacho en Ruta Hacia tu Domicilio
+    </h2>
+    <span class={pedidoActivo ? 'color-emerald font-bold text-xs flex-center gap-1' : 'text-muted font-bold text-xs flex-center gap-1'}>
+      <i class="fa-solid fa-circle-dot text-xxs"></i> {pedidoActivo ? 'GPS EN VIVO' : 'SIN DESPACHOS ACTIVOS'}
+    </span>
+  </div>
+
+  {!pedidoActivo ? (
+    <div class="radar-empty-box">
+      <div class="radar-empty-icon">
+        <i class="fa-solid fa-motorcycle"></i>
+      </div>
+      <h3 class="font-bold text-base mb-1 text-bright">
+        Flota de 12 Motorizados lista en Base Jr. Dante 260
+      </h3>
+      <p class="text-muted text-sm max-w-md mx-auto mb-3 line-relaxed">
+        No tienes ningún pedido en camino actualmente. Al solicitar tu balón, aquí se activará el seguimiento GPS en vivo con la balanza digital certificada.
+      </p>
+      <button type="button" class="btn-whatsapp px-4 py-2 text-sm rounded-lg mx-auto" onclick="window.abrirModalPedido && window.abrirModalPedido()">
+        <i class="fa-solid fa-bolt"></i> Pedir Balón y Activar GPS
+      </button>
+    </div>
+  ) : (
+    <div>
+      <div class="radar-photo-box">
+        <img src={fotoMoto} alt="Motorizado en ruta" class="radar-photo-img" />
+        <div class="radar-photo-tag">
+          <i class="fa-solid fa-motorcycle color-primary"></i> {moto} ({placa})
+        </div>
+      </div>
+
+      <div class="radar-info-grid">
+        <div class="radar-info-card">
+          <span class="text-muted text-xs block mb-1">Repartidor Asignado:</span>
+          <strong class="text-bright text-sm">{chofer}</strong>
+          <div class="color-gold text-xs mt-1">★ {calificacion.toFixed(1)} Calificación de entrega</div>
+        </div>
+
+        <div class="radar-info-card">
+          <span class="text-muted text-xs block mb-1">Tiempo Estimado:</span>
+          <strong class="color-emerald text-base font-bold">~ {etaMinutos} Minutos</strong>
+          <div class="text-muted text-xs mt-1">Directo a Surquillo</div>
+        </div>
+
+        <div class="radar-info-card">
+          <span class="text-muted text-xs block mb-1">Balanza en Puerta:</span>
+          <strong class="color-primary text-sm">{balanza}</strong>
+          <div class="text-muted text-xs mt-1">Pesaje certificado obligatorio</div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <a href={`tel:${telefonoDirecto.replace(/\\s+/g, '')}`} class="btn-outline inline-flex gap-2 text-sm py-2 px-4 rounded-lg">
+          <i class="fa-solid fa-phone"></i> Llamar al Motorizado: {telefonoDirecto}
+        </a>
+      </div>
+    </div>
+  )}
+</div>

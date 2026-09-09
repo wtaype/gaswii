@@ -1,0 +1,165 @@
+---
+// src/core/layouts/Principal.astro
+// 🌟 Layout Maestro Unificado con Estilos Inlined via set:html (0 CSS generado en compilación)
+import Topbar from '../componentes/Topbar.astro';
+import Header from '../componentes/Header.astro';
+import MobileDrawer from '../componentes/MobileDrawer.astro';
+import Footer from '../componentes/Footer.astro';
+import StickyBar from '../componentes/StickyBar.astro';
+
+import { getMeta, getJsonLd } from '../seo.js';
+import type { Idioma } from '../idioma/idioma';
+
+import witemaCss from '../wicss/witema.css?inline';
+import appCss from '../wicss/app.css?inline';
+import googleCss from '../../../public/google/fonts.css?raw';
+import awesomeCss from '../../../public/fontawesome/css/all.min.css?raw';
+
+const globalCss = googleCss + '\n' + awesomeCss + '\n' + witemaCss + '\n' + appCss;
+
+interface Props {
+  idioma?: Idioma;
+  ruta?: string;
+}
+
+const { idioma = 'es', ruta = '/' } = Astro.props;
+const meta = getMeta(ruta, idioma);
+const jsonLd = getJsonLd(ruta, idioma);
+---
+
+<!DOCTYPE html>
+<html lang={idioma} data-theme="futuro" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <title>{meta.title}</title>
+  <meta name="description" content={meta.description} />
+  <meta name="keywords" content={meta.keywords} />
+  <link rel="canonical" href={meta.canonical} />
+
+  <!-- Hreflang cruzado para SEO Internacional y Local -->
+  <link rel="alternate" hreflang="es" href={meta.hreflang.es} />
+  <link rel="alternate" hreflang="en" href={meta.hreflang.en} />
+  <link rel="alternate" hreflang="x-default" href={meta.hreflang.default} />
+
+  <!-- OpenGraph y Twitter Cards -->
+  <meta property="og:type" content={meta.ogType} />
+  <meta property="og:site_name" content={meta.siteName} />
+  <meta property="og:title" content={meta.ogTitle} />
+  <meta property="og:description" content={meta.ogDescription} />
+  <meta property="og:image" content={meta.ogImage} />
+  <meta property="og:url" content={meta.canonical} />
+  <meta property="og:locale" content={meta.locale} />
+  <meta property="og:locale:alternate" content={meta.localeAlternate} />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={meta.ogTitle} />
+  <meta name="twitter:description" content={meta.ogDescription} />
+  <meta name="twitter:image" content={meta.ogImage} />
+
+  <!-- Schema.org JSON-LD para Google Rich Snippets -->
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- Fuentes Locales Precargadas Críticas (Above-the-Fold: Outfit-700 & Poppins-400) -->
+  <link rel="preload" href="/google/Outfit-700.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="/google/Poppins-400.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+
+  <!-- Anti-FOUC Inmediato (0ms de retraso visual al cargar tema) -->
+  <script is:inline>
+    (function() {
+      try {
+        const guardado = localStorage.getItem('wiTema_gaswii');
+        const sistema = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'futuro' : 'luz';
+        const tema = guardado || sistema || 'futuro';
+        document.documentElement.dataset.theme = tema;
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Estilos Globales Inlined (app.css + fonts.css + fontawesome): 0 CSS compilado, 0 peticiones bloqueantes -->
+  <style is:global data-astro-transition-persist="global-css" set:html={globalCss}></style>
+
+  <!-- Slot Head para que cada feature (inicio, cliente, personal) inyecte su CSS con set:html -->
+  <slot name="head" />
+
+  <!-- Script Global de Funciones de Interfaz (Drawer, Tema, Modales) -->
+  <script is:inline>
+    function toggleTema() {
+      const actual = document.documentElement.dataset.theme || 'futuro';
+      const nuevo = actual === 'futuro' ? 'luz' : 'futuro';
+      document.documentElement.dataset.theme = nuevo;
+      try { localStorage.setItem('wiTema_gaswii', nuevo); } catch (e) {}
+      const icon = document.getElementById('themeIcon');
+      if (icon) icon.className = nuevo === 'futuro' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    }
+
+    function abrirDrawer() {
+      document.getElementById('mobileDrawer')?.classList.add('open');
+      document.getElementById('drawerBackdrop')?.classList.add('active');
+    }
+
+    function cerrarDrawer() {
+      document.getElementById('mobileDrawer')?.classList.remove('open');
+      document.getElementById('drawerBackdrop')?.classList.remove('active');
+    }
+
+    function abrirModalLogin() {
+      document.getElementById('modalLogin')?.classList.add('open');
+    }
+
+    function cerrarModalLogin() {
+      document.getElementById('modalLogin')?.classList.remove('open');
+    }
+
+    function abrirModalPedido(productoPreseleccionado) {
+      if (productoPreseleccionado) {
+        const selProd = document.getElementById('pedProducto');
+        if (selProd) {
+          for (let i = 0; i < selProd.options.length; i++) {
+            if (selProd.options[i].text.toLowerCase().includes(productoPreseleccionado.toLowerCase())) {
+              selProd.selectedIndex = i;
+              break;
+            }
+          }
+        }
+      }
+      document.getElementById('modalPedido')?.classList.add('open');
+    }
+
+    function cerrarModalPedido() {
+      document.getElementById('modalPedido')?.classList.remove('open');
+    }
+
+    window.toggleTema = toggleTema;
+    window.abrirDrawer = abrirDrawer;
+    window.cerrarDrawer = cerrarDrawer;
+    window.abrirModalLogin = abrirModalLogin;
+    window.cerrarModalLogin = cerrarModalLogin;
+    window.abrirModalPedido = abrirModalPedido;
+    window.cerrarModalPedido = cerrarModalPedido;
+  </script>
+</head>
+
+<body>
+  <!-- 1. Topbar Oficial -->
+  <Topbar idioma={idioma} />
+
+  <!-- 2. Header Sticky Bilingüe con Botones de Acción -->
+  <Header idioma={idioma} ruta={ruta} />
+
+  <!-- 3. Drawer Móvil con Navegación y Llamada Rápida -->
+  <MobileDrawer idioma={idioma} />
+
+  <!-- 4. Contenido Principal de la Página -->
+  <main>
+    <slot />
+  </main>
+
+  <!-- 5. Footer Institucional -->
+  <Footer idioma={idioma} />
+
+  <!-- 6. Barra Sticky Móvil -->
+  <StickyBar idioma={idioma} />
+</body>
+</html>
