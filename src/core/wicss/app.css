@@ -520,7 +520,7 @@ img {
   height: 5vh;
   width: auto;
   object-fit: contain;
-  border-radius: 0.8vh;
+  border-radius: 1.2vh;
   background: #ffffff;
   padding: 0.2vh;
   border: 1px solid var(--border-card);
@@ -559,7 +559,7 @@ img {
 
 .header-badge-status {
   padding: 0.35rem 0.8rem;
-  border-radius: 8px;
+  border-radius: 1.2vh;
   font-size: 0.78rem;
   font-weight: 700;
   display: inline-flex;
@@ -612,9 +612,9 @@ img {
   align-items: center;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-card);
-  border-radius: 999px;
-  padding: 2px;
-  gap: 2px;
+  border-radius: 1.2vh;
+  padding: 3px;
+  gap: 3px;
 }
 
 .header-pill-btn {
@@ -623,8 +623,8 @@ img {
   color: var(--text-muted);
   font-weight: 700;
   font-size: 0.72rem;
-  padding: 0.22rem 0.55rem;
-  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.8vh;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
@@ -651,7 +651,7 @@ img {
   color: var(--text-bright);
   width: 38px;
   height: 38px;
-  border-radius: 50%;
+  border-radius: 1.2vh;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -679,7 +679,7 @@ img {
   border: 1px solid var(--border-card);
   color: var(--text-bright);
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 1.2vh;
   padding: 0.48rem 0.85rem;
   font-size: 0.82rem;
   cursor: pointer;
@@ -702,7 +702,7 @@ img {
   font-size: 0.68rem;
   font-weight: 800;
   padding: 0.15rem 0.4rem;
-  border-radius: 4px;
+  border-radius: 0.6vh;
   letter-spacing: 0.02em;
 }
 
@@ -713,7 +713,7 @@ img {
   gap: 0.5rem;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-card);
-  border-radius: 8px;
+  border-radius: 1.2vh;
   padding: 0.3rem 0.6rem;
 }
 
@@ -779,7 +779,7 @@ img {
   background: linear-gradient(135deg, var(--wa-green) 0%, #15803d 100%);
   color: #ffffff !important;
   font-weight: 700;
-  border-radius: 8px;
+  border-radius: 1.2vh;
   padding: 0.5rem 1.15rem;
   font-size: 0.85rem;
   border: none;
@@ -804,7 +804,7 @@ img {
   color: var(--text-bright);
   width: 38px;
   height: 38px;
-  border-radius: 8px;
+  border-radius: 1.2vh;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -869,7 +869,7 @@ img {
 .drawer-logo-img {
   height: 4.2vh;
   width: auto;
-  border-radius: 0.6vh;
+  border-radius: 1.2vh;
   background: #ffffff;
   padding: 0.2vh;
 }
@@ -932,7 +932,7 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 0.8rem 1rem;
-  border-radius: 12px;
+  border-radius: 1.2vh;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-card);
 }
@@ -1389,6 +1389,22 @@ img {
   .topbar-content,
   .header-container {
     max-width: 94% !important;
+  }
+  .topbar-content {
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+  }
+  .topbar-auth-pill {
+    font-size: 0.72rem;
+    padding: 0.2vh 0.5rem;
+    white-space: nowrap;
+  }
+  .topbar-phone-link {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  .header-brand-title {
+    display: none !important;
   }
   .footer-grid-layout { grid-template-columns: 1fr; gap: 3.5vh; }
 }

@@ -18,10 +18,10 @@ const t = getI18n(idioma).topbar;
       <span class="topbar-auth-pill">
         <i class="fa-solid fa-shield-halved"></i> <span>{app.autorizacion}</span>
       </span>
-      <span>{t.cobertura}</span>
+      <span class="desktop-only">{t.cobertura}</span>
     </div>
     <div class="topbar-group-right">
-      <span><i class="fa-solid fa-clock"></i> <span>{t.horario}</span></span>
+      <span class="desktop-only"><i class="fa-solid fa-clock"></i> <span>{t.horario}</span></span>
       <a href={`tel:${app.telefonoLimpio}`} class="topbar-phone-link" title="Llamar a Central">
         <i class="fa-solid fa-phone"></i> 
         <span class="desktop-only">{app.telefono}</span>
