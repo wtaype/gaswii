@@ -36,5 +36,10 @@
   "tip_pass_match": "Las contraseñas coinciden",
   "msg_recuperacion_enviada": "Enlace de recuperación enviado a tu correo",
   "err_user_not_found": "Usuario no encontrado. Revisa o usa tu correo",
-  "err_general": "Error al procesar la solicitud. Revisa tus datos"
+  "err_general": "Error al procesar la solicitud. Revisa tus datos",
+  "tip_enter_user": "Ingresa tu usuario o correo",
+  "tip_min_pass": "Mínimo 6 caracteres",
+  "msg_connecting": "Conectando de forma segura...",
+  "msg_login_ok": "¡Acceso exitoso! Entrando...",
+  "err_login_credentials": "Usuario, correo o contraseña incorrectos."
 }

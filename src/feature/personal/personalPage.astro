@@ -11,14 +11,16 @@ import FlotaMotos from './secciones/FlotaMotos.astro';
 import ModalPesajeOficial from './secciones/ModalPesajeOficial.astro';
 import personalCss from './personal.css?inline';
 import authCss from '../auth/auth.css?inline';
+import { getI18n, type Idioma } from '../../core/idioma/idioma';
 
 const featureCss = personalCss + '\n' + authCss;
 
 interface Props {
-  idioma?: 'es' | 'en';
+  idioma?: Idioma;
 }
 
 const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).personal;
 ---
 
 <Principal idioma={idioma} ruta="/personal">
@@ -29,30 +31,30 @@ const { idioma = 'es' } = Astro.props;
     <div class="personal-tabs-header">
       <div class="personal-tabs-bar">
         <button type="button" id="tabBtn_personal_resumen" class="personal-tab-btn active" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('resumen')">
-          <i class="fa-solid fa-chart-pie"></i> <span>Resumen</span>
+          <i class="fa-solid fa-chart-pie"></i> <span>{t.tabs.resumen}</span>
         </button>
 
         <button type="button" id="tabBtn_personal_tabla" class="personal-tab-btn" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('tabla')">
-          <i class="fa-solid fa-table-list"></i> <span>Tabla de Ventas</span>
+          <i class="fa-solid fa-table-list"></i> <span>{t.tabs.tabla}</span>
         </button>
 
         <button type="button" id="tabBtn_personal_kanban" class="personal-tab-btn" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('kanban')">
-          <i class="fa-solid fa-truck-fast"></i> <span>Despacho Kanban</span>
+          <i class="fa-solid fa-truck-fast"></i> <span>{t.tabs.kanban}</span>
         </button>
 
         <button type="button" id="tabBtn_personal_inventario" class="personal-tab-btn" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('inventario')">
-          <i class="fa-solid fa-boxes-stacked"></i> <span>Inventario Planta</span>
+          <i class="fa-solid fa-boxes-stacked"></i> <span>{t.tabs.inventario}</span>
         </button>
 
         <button type="button" id="tabBtn_personal_flota" class="personal-tab-btn" onclick="window.cambiarTabPersonal && window.cambiarTabPersonal('flota')">
-          <i class="fa-solid fa-motorcycle"></i> <span>Flota Motos</span>
+          <i class="fa-solid fa-motorcycle"></i> <span>{t.tabs.flota}</span>
         </button>
       </div>
 
       <!-- Badge de Estado de la Central Dante 260 -->
       <div class="personal-status-pill">
         <span class="personal-live-dot"></span>
-        <span class="font-bold text-bright">Central Jr. Dante 260</span>
+        <span class="font-bold text-bright">{t.central_badge}</span>
         <span class="opacity-30">|</span>
         <span id="staffOperadorMini" class="color-brand-blue font-bold">@staff</span>
       </div>

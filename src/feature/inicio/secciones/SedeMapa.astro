@@ -1,6 +1,7 @@
 ---
 // src/feature/inicio/secciones/SedeMapa.astro
 // 7. CENTRAL DE OPERACIONES Y MONITOREO DELIVERY (100% Cero CSS Inline)
+import { datosNegocio } from '../../../negocio.js';
 import { getI18n, type Idioma } from '../../../core/idioma/idioma';
 
 interface Props {
@@ -30,23 +31,42 @@ const t = getI18n(idioma);
     <!-- Contenedor Unificado de Mapa y Seguridad -->
     <div class="clean-card mapa-box-wrapper">
       
-      <!-- Fila de Palabras Positivas y Seguridad (Atención Exclusiva Delivery) -->
-      <div class="mapa-safety-strip">
-        <div class="mapa-safety-item">
-          <i class="fa-solid fa-motorcycle color-orange"></i>
-          <span>{t.mapa.seguridad_1}</span>
+      <!-- Fila de Información Central Ejecutiva (Dirección, Horario, Teléfono, Google Maps) -->
+      <div class="mapa-info-grid">
+        <div class="mapa-info-col">
+          <div class="mapa-icon-box icon-orange">
+            <i class="fa-solid fa-location-dot"></i>
+          </div>
+          <div>
+            <div class="mapa-info-label">{t.mapa.direccion_label}</div>
+            <div class="mapa-info-val">{datosNegocio.direccionSede}</div>
+          </div>
         </div>
-        <div class="mapa-safety-item">
-          <i class="fa-solid fa-tower-broadcast color-cyan"></i>
-          <span>{t.mapa.seguridad_2}</span>
+
+        <div class="mapa-info-col">
+          <div class="mapa-icon-box icon-blue">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div>
+            <div class="mapa-info-label">{t.mapa.horario_label}</div>
+            <div class="mapa-info-val">{idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.horario}</div>
+          </div>
         </div>
-        <div class="mapa-safety-item">
-          <i class="fa-solid fa-scale-balanced color-emerald"></i>
-          <span>{t.mapa.seguridad_3}</span>
+
+        <div class="mapa-info-col">
+          <div class="mapa-icon-box icon-green">
+            <i class="fa-solid fa-phone"></i>
+          </div>
+          <div>
+            <div class="mapa-info-label">{t.mapa.telefono_label}</div>
+            <div class="mapa-info-val">{datosNegocio.telefonoMostrado}</div>
+          </div>
         </div>
-        <div class="mapa-safety-item">
-          <i class="fa-solid fa-bolt color-gold"></i>
-          <span>{t.mapa.seguridad_4}</span>
+
+        <div class="mapa-btn-col">
+          <a href={datosNegocio.mapsUrl} target="_blank" rel="noopener noreferrer" class="btn-fire mapa-btn-action">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> <span>{t.mapa.btn_maps}</span>
+          </a>
         </div>
       </div>
 

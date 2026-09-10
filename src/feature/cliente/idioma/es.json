@@ -1,0 +1,16 @@
+﻿{
+  "titulo": "Mi Gaswii VIP",
+  "badge_vip": "VIP HOGAR",
+  "badge_activo": "ACTIVO",
+  "bienvenida_default": "Bienvenido a tu panel de control y pedidos prioritarios en Surquillo.",
+  "bienvenida_usuario": "Buenos días, {nombre} — Tienes {puntos} puntos disponibles para canjes o descuentos.",
+  "invitado_msg": "Inicia sesión para gestionar tus pedidos y canjear tus puntos VIP.",
+  "tabs": {
+    "resumen": "Resumen",
+    "pedidos": "Mis Pedidos & Radar",
+    "direcciones": "Mis Direcciones",
+    "puntos": "Puntos & Premios",
+    "comprobantes": "Comprobantes Oficiales"
+  },
+  "historial_titulo": "Historial de Pedidos Realizados"
+}

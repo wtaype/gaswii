@@ -230,12 +230,12 @@
 }
 
 .hero-main-heading {
-  font-size: clamp(2.1rem, 3.3vw, 3.8rem);
+  font-size: 38px;
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  line-height: 1.12;
+  line-height: 1.18;
   letter-spacing: -0.02em;
-  margin-bottom: 2vh;
+  margin-bottom: 16px;
   color: var(--text-bright);
 }
 
@@ -902,11 +902,12 @@
    PESAJE SECTION - GARANTÍA DE TRANSPARENCIA Y BALANZA DIGITAL
    ========================================================================== */
 .pesaje-image-frame {
-  border: 1.5px solid rgba(249, 115, 22, 0.45);
-  border-radius: 1.5vh;
+  border: 2px solid var(--border-accent);
+  border-radius: 1.2vh;
   overflow: hidden;
   background: var(--bg-card);
-  box-shadow: 0 1vh 3vh rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  box-shadow: 0 1vh 3vh rgba(0, 0, 0, 0.5);
   transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
@@ -1040,18 +1041,26 @@
 }
 
 .pesaje-stat-card.card-tara {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0f172a;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
 }
 
 .pesaje-stat-card.card-glp {
-  background: rgba(249, 115, 22, 0.04);
-  border: 1.5px solid rgba(249, 115, 22, 0.55);
+  background: rgba(249, 115, 22, 0.08);
+  border: 1.8px solid #f97316;
+}
+
+.pesaje-stat-card.card-glp .pesaje-stat-val {
+  color: #f97316 !important;
 }
 
 .pesaje-stat-card.card-total {
-  background: rgba(16, 185, 129, 0.04);
-  border: 1.5px solid rgba(16, 185, 129, 0.55);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1.8px solid #10b981;
+}
+
+.pesaje-stat-card.card-total .pesaje-stat-val {
+  color: #10b981 !important;
 }
 
 .pesaje-stat-label {
@@ -1301,46 +1310,84 @@
 
 /* Central de Operaciones - Monitoreo Delivery y Seguridad */
 .mapa-box-wrapper {
-  background: var(--bg-surface-elevated, #0f172e);
-  border: 1px solid var(--border-card);
+  background: var(--bg-card);
+  border: 2px solid var(--border-accent);
   border-radius: 1.5vh;
-  padding: 2.2vh 1.8vw;
+  padding: 1.8vh 1.4vw;
   box-shadow: var(--shadow-card);
 }
 
-.mapa-safety-strip {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1.2vw;
-  margin-bottom: 2.2vh;
-  padding: 1.5vh 1.8vw;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-card);
+.mapa-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5vw;
+  margin-bottom: 2vh;
+  padding: 1.5vh 1.5vw;
+  background: var(--bg-surface-elevated);
   border-radius: 1vh;
-}
-
-.mapa-safety-item {
-  display: inline-flex;
+  border: 1px solid var(--border-card);
   align-items: center;
-  gap: 0.6rem;
-  font-family: var(--ff_P, 'Poppins', sans-serif);
-  font-size: var(--fz_sm, 0.88rem);
-  font-weight: 700;
-  color: var(--text-bright, #ffffff);
 }
 
-.mapa-safety-item i {
+.mapa-info-col {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+}
+
+.mapa-icon-box {
+  width: 4.5vh;
+  height: 4.5vh;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 0.8vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.15rem;
 }
 
-.color-cyan {
+.mapa-icon-box.icon-orange {
+  background: rgba(255, 102, 0, 0.12);
+  color: var(--primary);
+}
+
+.mapa-icon-box.icon-blue {
+  background: rgba(2, 132, 199, 0.12);
   color: #38bdf8;
 }
 
-.color-gold {
-  color: #f59e0b;
+.mapa-icon-box.icon-green {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+
+.mapa-info-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.2vh;
+}
+
+.mapa-info-val {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.mapa-btn-col {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.mapa-btn-action {
+  padding: 1vh 1.4vw;
+  font-size: 0.88rem;
+  width: 100%;
+  justify-content: center;
 }
 
 .mapa-frame-box {
@@ -1365,24 +1412,18 @@
   .mapa-box-wrapper {
     padding: 1.5vh 2.5vw;
   }
-  .mapa-safety-strip {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.4vh 2vw;
-    padding: 1.4vh 3vw;
+  .mapa-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5vh;
+  }
+  .mapa-btn-col {
+    justify-content: stretch;
   }
   .mapa-frame-box {
     height: 360px;
   }
   .mapa-iframe-embed {
     min-height: 360px;
-  }
-}
-
-@media (max-width: 480px) {
-  .mapa-safety-strip {
-    grid-template-columns: 1fr;
-    gap: 1.2vh 0;
   }
 }
 
@@ -1558,20 +1599,11 @@
   }
 }
 
-.hero-main-heading {
-  font-size: clamp(2.2rem, 3.4vw, 4.2rem);
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 2vh;
-  font-family: 'Outfit', sans-serif;
-  color: var(--text-bright);
-}
-
-.hero-main-sub {
-  font-size: clamp(0.95rem, 1.05vw, 1.25rem);
-  line-height: 1.6;
-  color: var(--text-muted);
-  margin-bottom: 3.5vh;
+@media (max-width: 768px) {
+  .hero-main-heading {
+    font-size: 26px;
+    line-height: 1.22;
+  }
 }
 
 /* Modal Pedido Express */

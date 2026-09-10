@@ -142,13 +142,30 @@ const esCliente = ruta === '/cliente';
 <script>
   import { getSmileLocal, escucharAuth, cerrarSesion, generarAvatarUrl } from '../../feature/auth/auth.js';
 
-  function actualizarHeaderAuth(smile) {
+  interface SmileData {
+    uid?: string;
+    nombre?: string;
+    usuario?: string;
+    foto?: string;
+    puntos?: number;
+    rol?: string;
+    [key: string]: any;
+  }
+
+  declare global {
+    interface Window {
+      cerrarSesionHeader?: () => Promise<void>;
+      abrirDrawer?: () => void;
+    }
+  }
+
+  function actualizarHeaderAuth(smile: SmileData | null) {
     const btnLogin = document.getElementById('headerBtnLogin');
     const userPerfil = document.getElementById('headerUserPerfil');
-    const userAvatar = document.getElementById('headerUserAvatar') as HTMLImageElement;
+    const userAvatar = document.getElementById('headerUserAvatar') as HTMLImageElement | null;
     const userNombre = document.getElementById('headerUserNombre');
     const userBadge = document.getElementById('headerUserBadge');
-    const perfilLink = document.getElementById('headerPerfilLink') as HTMLAnchorElement;
+    const perfilLink = document.getElementById('headerPerfilLink') as HTMLAnchorElement | null;
 
     if (smile && (smile.uid || smile.nombre)) {
       if (btnLogin) btnLogin.style.display = 'none';
@@ -175,10 +192,10 @@ const esCliente = ruta === '/cliente';
     }
   };
 
-  const localSmile = getSmileLocal();
+  const localSmile = getSmileLocal() as SmileData | null;
   actualizarHeaderAuth(localSmile);
 
-  escucharAuth((user, smile) => {
+  escucharAuth((_user: any, smile: SmileData | null) => {
     actualizarHeaderAuth(smile);
   });
 </script>

@@ -11,14 +11,16 @@ import BoletasSunat from './secciones/BoletasSunat.astro';
 import DireccionesRecarga from './secciones/DireccionesRecarga.astro';
 import clienteCss from './cliente.css?inline';
 import authCss from '../auth/auth.css?inline';
+import { getI18n, type Idioma } from '../../core/idioma/idioma';
 
 const featureCss = clienteCss + '\n' + authCss;
 
 interface Props {
-  idioma?: 'es' | 'en';
+  idioma?: Idioma;
 }
 
 const { idioma = 'es' } = Astro.props;
+const t = getI18n(idioma).cliente;
 ---
 
 <Principal idioma={idioma} ruta="/cliente">
@@ -35,14 +37,14 @@ const { idioma = 'es' } = Astro.props;
         <div>
           <div class="cliente-title-row">
             <h1 id="clienteNombreDisplay" class="cliente-nombre-heading">
-              Mi Gaswii VIP
+              {t.titulo}
             </h1>
-            <span class="badge-vip-tag">VIP HOGAR</span>
+            <span class="badge-vip-tag">{t.badge_vip}</span>
             <span id="clienteUsuarioBadge" class="badge-usuario-tag">@usuario</span>
-            <span id="clienteEstadoBadge" class="badge-activo-tag"><i class="fa-solid fa-circle-check"></i> ACTIVO</span>
+            <span id="clienteEstadoBadge" class="badge-activo-tag"><i class="fa-solid fa-circle-check"></i> {t.badge_activo}</span>
           </div>
           <p id="clienteBienvenida" class="cliente-welcome-desc">
-            Bienvenido a tu panel de control y pedidos prioritarios en Surquillo.
+            {t.bienvenida_default}
           </p>
         </div>
       </div>
@@ -51,23 +53,23 @@ const { idioma = 'es' } = Astro.props;
     <!-- 🗂️ Barra de Pestañas (Tabs) de Cliente VIP (Sin palabras SUNAT) -->
     <div class="cliente-tabs-bar">
       <button type="button" id="tabBtn_resumen" class="cliente-tab-btn active" onclick="window.cambiarTabCliente && window.cambiarTabCliente('resumen')">
-        <i class="fa-solid fa-house"></i> <span>Resumen</span>
+        <i class="fa-solid fa-house"></i> <span>{t.tabs.resumen}</span>
       </button>
 
       <button type="button" id="tabBtn_pedidos" class="cliente-tab-btn" onclick="window.cambiarTabCliente && window.cambiarTabCliente('pedidos')">
-        <i class="fa-solid fa-motorcycle"></i> <span>Mis Pedidos & Radar</span>
+        <i class="fa-solid fa-motorcycle"></i> <span>{t.tabs.pedidos}</span>
       </button>
 
       <button type="button" id="tabBtn_direcciones" class="cliente-tab-btn" onclick="window.cambiarTabCliente && window.cambiarTabCliente('direcciones')">
-        <i class="fa-solid fa-map-location-dot"></i> <span>Mis Direcciones</span>
+        <i class="fa-solid fa-map-location-dot"></i> <span>{t.tabs.direcciones}</span>
       </button>
 
       <button type="button" id="tabBtn_puntos" class="cliente-tab-btn" onclick="window.cambiarTabCliente && window.cambiarTabCliente('puntos')">
-        <i class="fa-solid fa-gift"></i> <span>Puntos & Premios</span>
+        <i class="fa-solid fa-gift"></i> <span>{t.tabs.puntos}</span>
       </button>
 
       <button type="button" id="tabBtn_comprobantes" class="cliente-tab-btn" onclick="window.cambiarTabCliente && window.cambiarTabCliente('comprobantes')">
-        <i class="fa-solid fa-file-invoice"></i> <span>Comprobantes Oficiales</span>
+        <i class="fa-solid fa-file-invoice"></i> <span>{t.tabs.comprobantes}</span>
       </button>
     </div>
 
@@ -127,11 +129,21 @@ const { idioma = 'es' } = Astro.props;
   import { inicializarPuntosTab } from './tabs/puntos.js';
   import { inicializarComprobantesTab } from './tabs/comprobantes.js';
 
-  function aplicarDatosCliente(smile) {
+  interface SmileData {
+    uid?: string;
+    nombre?: string;
+    usuario?: string;
+    foto?: string;
+    puntos?: number;
+    rol?: string;
+    [key: string]: any;
+  }
+
+  function aplicarDatosCliente(smile: SmileData | null) {
     const nombreDisplay = document.getElementById('clienteNombreDisplay');
     const usuarioBadge = document.getElementById('clienteUsuarioBadge');
     const bienvenida = document.getElementById('clienteBienvenida');
-    const avatarImg = document.getElementById('clienteAvatarImg') as HTMLImageElement;
+    const avatarImg = document.getElementById('clienteAvatarImg') as HTMLImageElement | null;
     const defaultIcon = document.getElementById('clienteDefaultIcon');
 
     if (smile && (smile.uid || smile.nombre)) {
@@ -163,10 +175,10 @@ const { idioma = 'es' } = Astro.props;
 
   inicializarTabsCliente();
 
-  const localSmile = getSmileLocal();
+  const localSmile = getSmileLocal() as SmileData | null;
   aplicarDatosCliente(localSmile);
 
-  escucharAuth((user, smile) => {
+  escucharAuth((_user: any, smile: SmileData | null) => {
     aplicarDatosCliente(smile);
   });
 </script>

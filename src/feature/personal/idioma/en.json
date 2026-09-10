@@ -1,0 +1,19 @@
+﻿{
+  "titulo": "Staff & Operations Console",
+  "central_badge": "Central Hub Jr. Dante 260",
+  "tabs": {
+    "resumen": "Summary",
+    "tabla": "Sales Table",
+    "kanban": "Kanban Dispatch",
+    "inventario": "Plant Inventory",
+    "flota": "Bike Fleet"
+  },
+  "secciones": {
+    "metricas_hoy": "Sales Metrics & Cash Reconciliation",
+    "registro_rapido": "Quick Sales Entry",
+    "tabla_ventas": "Executive Daily Tracking & Measurement Table",
+    "kanban_despacho": "Live Dispatch & Collection Kanban Board",
+    "inventario_planta": "Physical Plant Inventory (Jr. Dante 260)",
+    "flota_motos": "Delivery Motorcycle Fleet"
+  }
+}

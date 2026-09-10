@@ -36,5 +36,10 @@
   "tip_pass_match": "Passwords match",
   "msg_recuperacion_enviada": "Password reset link sent to your email",
   "err_user_not_found": "User not found. Check or use your email",
-  "err_general": "Error processing request. Check your details"
+  "err_general": "Error processing request. Check your details",
+  "tip_enter_user": "Enter username or email",
+  "tip_min_pass": "Minimum 6 characters",
+  "msg_connecting": "Connecting securely...",
+  "msg_login_ok": "Access granted! Redirecting...",
+  "err_login_credentials": "Incorrect user, email, or password."
 }

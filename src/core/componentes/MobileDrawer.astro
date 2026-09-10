@@ -78,13 +78,23 @@ const t = getI18n(idioma).nav;
 <script>
   import { getSmileLocal, escucharAuth, generarAvatarUrl } from '../../feature/auth/auth.js';
 
-  function actualizarDrawerAuth(smile) {
+  interface SmileData {
+    uid?: string;
+    nombre?: string;
+    usuario?: string;
+    foto?: string;
+    puntos?: number;
+    rol?: string;
+    [key: string]: any;
+  }
+
+  function actualizarDrawerAuth(smile: SmileData | null) {
     const drawerBtnLogin = document.getElementById('drawerBtnLogin');
     const drawerUserPerfil = document.getElementById('drawerUserPerfil');
-    const drawerUserAvatar = document.getElementById('drawerUserAvatar') as HTMLImageElement;
+    const drawerUserAvatar = document.getElementById('drawerUserAvatar') as HTMLImageElement | null;
     const drawerUserNombre = document.getElementById('drawerUserNombre');
     const drawerUserBadge = document.getElementById('drawerUserBadge');
-    const drawerPerfilLink = document.getElementById('drawerPerfilLink') as HTMLAnchorElement;
+    const drawerPerfilLink = document.getElementById('drawerPerfilLink') as HTMLAnchorElement | null;
 
     if (smile && (smile.uid || smile.nombre)) {
       if (drawerBtnLogin) drawerBtnLogin.style.display = 'none';
@@ -101,10 +111,10 @@ const t = getI18n(idioma).nav;
     }
   }
 
-  const localSmile = getSmileLocal();
+  const localSmile = getSmileLocal() as SmileData | null;
   actualizarDrawerAuth(localSmile);
 
-  escucharAuth((user, smile) => {
+  escucharAuth((_user: any, smile: SmileData | null) => {
     actualizarDrawerAuth(smile);
   });
 </script>

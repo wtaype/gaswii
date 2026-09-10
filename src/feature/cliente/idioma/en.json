@@ -1,0 +1,16 @@
+﻿{
+  "titulo": "My Gaswii VIP",
+  "badge_vip": "HOME VIP",
+  "badge_activo": "ACTIVE",
+  "bienvenida_default": "Welcome to your control panel and priority orders in Surquillo.",
+  "bienvenida_usuario": "Good morning, {nombre} — You have {puntos} points available for rewards or discounts.",
+  "invitado_msg": "Sign in to manage your orders and redeem VIP points.",
+  "tabs": {
+    "resumen": "Summary",
+    "pedidos": "My Orders & Radar",
+    "direcciones": "My Addresses",
+    "puntos": "Points & Rewards",
+    "comprobantes": "Official Receipts"
+  },
+  "historial_titulo": "Completed Order History"
+}
