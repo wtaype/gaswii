@@ -138,6 +138,14 @@ const jsonLd = getJsonLd(ruta, idioma);
     window.cerrarModalLogin = cerrarModalLogin;
     window.abrirModalPedido = abrirModalPedido;
     window.cerrarModalPedido = cerrarModalPedido;
+
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        cerrarDrawer();
+        cerrarModalLogin();
+        cerrarModalPedido();
+      }
+    });
   </script>
 </head>
 
@@ -149,7 +157,7 @@ const jsonLd = getJsonLd(ruta, idioma);
   <Header idioma={idioma} ruta={ruta} />
 
   <!-- 3. Drawer Móvil con Navegación y Llamada Rápida -->
-  <MobileDrawer idioma={idioma} />
+  <MobileDrawer idioma={idioma} ruta={ruta} />
 
   <!-- 4. Contenido Principal de la Página -->
   <main>

@@ -141,16 +141,7 @@ const esCliente = ruta === '/cliente';
 
 <script>
   import { getSmileLocal, escucharAuth, cerrarSesion, generarAvatarUrl } from '../../feature/auth/auth.js';
-
-  interface SmileData {
-    uid?: string;
-    nombre?: string;
-    usuario?: string;
-    foto?: string;
-    puntos?: number;
-    rol?: string;
-    [key: string]: any;
-  }
+  import type { SmileData } from '../tipos/auth';
 
   declare global {
     interface Window {

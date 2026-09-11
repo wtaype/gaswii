@@ -293,7 +293,7 @@ const t = getI18n(idioma).personal;
     const inputMonto = document.getElementById('nvMonto') as HTMLInputElement;
     if (sel && inputMonto) {
       const opt = sel.options[sel.selectedIndex];
-      const precio = opt.getAttribute('data-precio') || '48.00';
+      const precio = opt.getAttribute('data-precio') || '65.00';
       inputMonto.value = precio;
     }
   };
@@ -311,14 +311,14 @@ const t = getI18n(idioma).personal;
     const distrito = (document.getElementById('vdDistrito') as HTMLSelectElement)?.value || 'Surquillo';
     const direccion = (document.getElementById('vdDireccion') as HTMLInputElement)?.value.trim() || 'Jr. Dante 260';
     const pago = (document.getElementById('vdPago') as HTMLSelectElement)?.value || 'Yape';
-    const total = (document.getElementById('vdTotal') as HTMLInputElement)?.value || '48.00';
+    const total = (document.getElementById('vdTotal') as HTMLInputElement)?.value || '65.00';
 
     const nuevaVenta = {
       id: `#V-${Math.floor(100 + Math.random() * 900)}`,
       cliente: nombre,
       telefono: celular,
       direccion: `${direccion} (${distrito})`,
-      producto: 'Balón SOLGAS de 10 kg',
+      producto: 'Balón SOLGAS Premium 10 kg',
       pago,
       monto: total,
       estado: 'nuevos',

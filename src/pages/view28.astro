@@ -1,0 +1,448 @@
+---
+import { datosNegocio } from '../negocio.js';
+import { avatar, getNombre } from '../core/widev/nombre.js';
+import '../core/wicss/witema.css';
+
+
+// Fixture compatible con smiles/{uid} de auth.js. Nunca se escribe en wiSmile ni Firebase.
+const smile = { uid: 'preview-valeria', nombre: 'Valeria Mendoza', usuario: 'valeria.m', email: 'valeria@example.com', rol: 'cliente', plan: 'vip', activo: true, estado: 'activo', puntos: 150, pin: 'Balón SOLGAS de 10 kg' };
+const producto = datosNegocio.productos.find(p => p.id === 'solgas-10kg')!;
+const money = (n: number) => `S/ ${n.toFixed(2)}`;
+const menu = [['resumen', 'house', 'Mi resumen'], ['pedidos', 'bag-shopping', 'Mis pedidos'], ['direcciones', 'location-dot', 'Mis direcciones'], ['puntos', 'gift', 'Mis puntos'], ['comprobantes', 'file-lines', 'Comprobantes']];
+const pedidos = [{ id: 'GW-1028', fecha: '10 sep 2026', estado: 'En camino' }, { id: 'GW-0984', fecha: '12 ago 2026', estado: 'Entregado' }, { id: 'GW-0916', fecha: '15 jul 2026', estado: 'Entregado' }];
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Mi Solgas · Valeria | Propuesta 28</title>
+    <meta name="description" content="Propuesta del portal de cliente registrado de Solgas Surquillo, con datos de demostración." />
+    <link rel="icon" href="/favicon.ico" /><link rel="stylesheet" href="/google/fonts.css" /><link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <style is:global>
+.v28{--orange:#e95716;--ink:#202b39;--muted:#687382;--line:#e6e9ed;--surface:#fff;--canvas:#f5f7fa;--soft:#fff3eb;margin:0;background:var(--canvas);color:var(--ink);font:400 14px/1.6 var(--ff_P,'Poppins',sans-serif)}
+.v28 *{box-sizing:border-box}.v28 h1,.v28 h2,.v28 h3,.v28 p{margin:0}.v28 h1,.v28 h2,.v28 h3{font-family:var(--ff_O,'Outfit',sans-serif);line-height:1.2}.v28 h1{font-size:clamp(2rem,3vw,2.75rem);font-weight:600;letter-spacing:-.045em}.v28 h2{font-size:1.25rem;font-weight:600;letter-spacing:-.02em}.v28 h3{font-size:1.08rem}.v28 p{color:var(--muted)}.v28 button,.v28 input,.v28 select{font:inherit}.v28 button,.v28 a{-webkit-tap-highlight-color:transparent}.v28 button{cursor:pointer}.v28 button:disabled{cursor:not-allowed;opacity:.65}.v28 button,.v28 a,.v28 input,.v28 select{outline-offset:4px}.v28 :focus-visible{outline:3px solid #2478d0}.v28 [hidden]{display:none!important}.v28 a{color:inherit;text-decoration:none}.v28 button{transition:background .18s,color .18s,transform .18s}.v28 button:hover:not(:disabled){filter:brightness(.96)}.v28 .sidebar{width:238px;position:fixed;inset:0 auto 0 0;background:var(--surface);border-right:1px solid var(--line);padding:34px 20px 20px;display:flex;flex-direction:column;z-index:20}.v28 .brand{display:flex;align-items:center;gap:10px;margin:0 8px 52px}.v28 .brand img{width:76px;height:45px;object-fit:contain}.v28 .brand>span{border-left:1px solid var(--line);padding-left:10px;font-family:Outfit,sans-serif;font-size:1.1rem;font-weight:600}.v28 .brand small{display:block;font-family:Poppins,sans-serif;letter-spacing:.1em;font-size:.6rem;color:var(--muted);margin-top:3px}.v28 .space-label{font-size:.75rem;letter-spacing:.14em;color:var(--muted);padding:0 14px;margin-bottom:14px}.v28 nav{display:grid;gap:7px}.v28 .nav-item{display:flex;align-items:center;gap:13px;border:0;background:transparent;text-align:left;color:var(--muted);padding:13px 14px;border-radius:9px;width:100%;font-size:.875rem}.v28 .nav-item i{width:18px;text-align:center}.v28 .nav-item.active{background:var(--soft);color:#ba4310;font-weight:600}.v28 .count{margin-left:auto;background:var(--orange);color:white;border-radius:6px;min-width:20px;text-align:center;font-size:.75rem}.v28 .sidebar-bottom{margin-top:auto;padding-top:40px}.v28 .help-card{background:var(--canvas);border:1px solid var(--line);border-radius:12px;padding:18px 16px}.v28 .help-icon{display:block;color:var(--orange);font-size:1.25rem;margin-bottom:12px}.v28 .help-card h3{font-size:1rem}.v28 .help-card p{font-size:.8rem;margin:9px 0 14px}.v28 .help-card button{font-size:.8rem}.v28 .profile{display:flex;align-items:center;gap:10px;background:none;border:0;border-top:1px solid var(--line);width:100%;margin-top:24px;padding:22px 0 0;text-align:left;color:var(--ink)}.v28 .profile strong{display:block;font-size:.8rem}.v28 .profile small{display:block;color:var(--muted);font-size:.75rem}.v28 .avatar{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:#fce3d5;color:#a64012;font-weight:600;flex-shrink:0;border:0}.v28 .avatar.small{width:34px;height:34px;font-size:.75rem}.v28 .workspace{margin-left:238px}.v28 .topbar{height:80px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 38px;gap:16px}.v28 .breadcrumb{font-size:.8rem;color:var(--muted)}.v28 .breadcrumb span{margin:0 13px;color:#b4b9c1}.v28 .breadcrumb strong{font-weight:500;color:var(--ink)}.v28 .top-actions{display:flex;align-items:center;gap:18px}.v28 .preview-badge{font-size:.75rem;color:var(--muted);padding:5px 10px;border:1px solid var(--line);border-radius:6px}.v28 .icon-button{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:8px;flex-shrink:0}.v28 main{padding:36px 38px 20px;max-width:1450px;margin:auto}.v28 .page-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:28px}.v28 .eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.15em;color:var(--muted);margin-bottom:9px}.v28 .page-heading p{margin-top:10px;font-size:.875rem}.v28 .hello-dot{color:var(--orange)}.v28 .primary,.v28 .secondary{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:44px;border-radius:8px;font-size:.875rem;font-weight:500;padding:11px 18px;border:1px solid transparent}.v28 .primary{background:var(--orange);color:#fff;box-shadow:0 4px 8px #cf511415}.v28 .secondary{background:var(--surface);border-color:var(--line);color:var(--ink)}.v28 .text-button{background:transparent;border:0;color:#bb4513;padding:0;font-size:.8rem;font-weight:500;display:inline-flex;align-items:center;gap:10px;min-height:36px}.v28 .dashboard-grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(290px,1fr);gap:22px}.v28 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;min-width:0;box-shadow:0 3px 10px #22304402}.v28 .card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.v28 .overline{font-size:.7rem;font-weight:600;letter-spacing:.12em;display:flex;gap:9px;align-items:center}.v28 .overline i{font-size:1rem;color:var(--orange)}.v28 .status{display:inline-block;border-radius:6px;padding:4px 9px;color:#a3450e;background:#fff0df;font-size:.75rem;font-weight:500;white-space:nowrap}.v28 .status.delivered{background:#eaf5ef;color:#27774d}.v28 .tracking{padding-bottom:0;overflow:hidden}.v28 .tracking-main{display:flex;justify-content:space-between;gap:16px;min-height:216px}.v28 .tracking-main h2{font-size:2.15rem;letter-spacing:-.04em;margin-top:20px}.v28 .tracking-main p{font-size:.75rem;margin-top:12px}.v28 .tracking-main p>span{margin:0 4px}.v28 .eta{display:flex;align-items:center;gap:10px;margin:20px 0}.v28 .eta>i{font-size:1.4rem;color:var(--orange)}.v28 .eta strong{font:600 1.25rem Outfit,sans-serif}.v28 .eta small{display:block;color:var(--muted);font-size:.7rem;margin-top:2px}.v28 .product-stage{align-self:center;position:relative;display:flex;align-items:center;justify-content:center;width:185px;height:195px;background:radial-gradient(ellipse,#fff0e3 0%,#fff8f3 55%,transparent 72%)}.v28 .product-stage img{width:155px;height:185px;object-fit:contain;filter:drop-shadow(0 12px 10px #462d1c19)}.v28 .product-stage>span{position:absolute;right:0;bottom:18px;display:grid;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:.9rem;font-weight:600;line-height:1.3}.v28 .product-stage b{font-size:.55rem;letter-spacing:.1em;color:var(--muted)}.v28 .tracking-steps{list-style:none;margin:4px 0 22px;padding:0;display:flex}.v28 .tracking-steps li{position:relative;flex:1;display:flex;gap:7px;align-items:center;font-size:.75rem;color:var(--muted)}.v28 .tracking-steps li:not(:last-child):after{content:'';height:1px;background:var(--line);flex:1;margin:0 12px 0 3px}.v28 .tracking-steps i{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--canvas);color:#8c95a1;flex-shrink:0}.v28 .tracking-steps .done i{background:#fce2d2;color:#b5410c}.v28 .tracking-steps .current{color:#b5410c}.v28 .tracking-steps .current i{background:var(--orange);color:white}.v28 .delivery-bottom{border-top:1px solid var(--line);margin:0 -24px;padding:11px 24px;display:flex;align-items:center;justify-content:space-between;gap:15px;background:var(--canvas);font-size:.7rem}.v28 .delivery-bottom>span{color:var(--muted)}.v28 .delivery-bottom i{margin-right:5px}.v28 .delivery-bottom button{white-space:nowrap}.v28 .points-card{background:#243b35;color:#fff;border-color:#243b35;position:relative;overflow:hidden}.v28 .points-card .card-heading{color:#c5d7c9}.v28 .points-card .card-heading>i{font-size:1.3rem;color:#c9e5b5}.v28 .points-card h2{font-size:1.8rem;margin:24px 0 16px;letter-spacing:-.03em}.v28 .points-total{font:600 3.65rem/1.15 Outfit,sans-serif;letter-spacing:-.05em;margin:18px 0}.v28 .points-total span{font:400 .875rem Poppins,sans-serif;letter-spacing:0;margin-left:10px;color:#c5d7c9}.v28 progress{appearance:none;border:none;display:block;width:100%;height:6px;border-radius:4px;overflow:hidden;background:#52675d}.v28 progress::-webkit-progress-bar{background:#52675d}.v28 progress::-webkit-progress-value{background:#c6e7a4;border-radius:4px}.v28 progress::-moz-progress-bar{background:#c6e7a4}.v28 .points-card p{color:#d3dfd6;font-size:.8rem;margin-top:14px}.v28 .points-card p strong{color:white}.v28 .points-link{display:flex;justify-content:space-between;align-items:center;gap:15px;width:100%;background:none;border:0;border-top:1px solid #ffffff26;color:#e7f3d9;margin-top:22px;padding:17px 0 0;font-size:.8rem}.v28 .points-card>small{display:block;font-size:.65rem;color:#c5d7c9;margin-top:12px}.v28 .muted,.v28 .pill{color:var(--muted);font-size:.7rem}.v28 .pill{background:var(--canvas);border:1px solid var(--line);padding:3px 8px;border-radius:5px}.v28 .reorder-content{display:flex;align-items:center;gap:16px;margin:20px 0}.v28 .reorder-content img{width:62px;height:82px;object-fit:contain}.v28 .reorder-content p{font-size:.75rem;margin:5px 0}.v28 .price{font:600 1.3rem Outfit,sans-serif;white-space:nowrap}.v28 .reorder-content button{margin-left:auto;font-size:.75rem;padding:10px 12px}.v28 .small-note{border-top:1px solid var(--line);padding-top:13px;color:var(--muted);font-size:.75rem}.v28 .small-note i{color:var(--orange);margin-right:7px}.v28 .gas-content{display:flex;align-items:center;gap:16px;margin:22px 0 12px}.v28 .gas-content h3{font-size:1rem}.v28 .gas-content p{font-size:.75rem;margin-top:7px}.v28 .gauge{border-radius:50%;background:conic-gradient(var(--orange) 0 18%,var(--line) 18% 100%);width:76px;height:76px;padding:6px;flex-shrink:0;display:grid;place-items:center;transform:rotate(-90deg)}.v28 .gauge>span{width:64px;height:64px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 1.6rem Outfit,sans-serif;transform:rotate(90deg)}.v28 .gauge small{font-size:.8rem}.v28 .fineprint{font-size:.75rem;margin-top:14px!important}.v28 .gas .fineprint{font-size:.65rem;margin-top:2px!important}.v28 .history{margin-top:22px}.v28 .history .card-heading p{font-size:.75rem;margin-top:7px}.v28 .table-scroll{overflow-x:auto;margin-top:22px}.v28 table{border-collapse:collapse;width:100%;white-space:nowrap;text-align:left;font-size:.8rem}.v28 th{font-weight:400;color:var(--muted);font-size:.7rem;background:var(--canvas);padding:10px 14px}.v28 th:first-child{border-radius:6px 0 0 6px}.v28 td{padding:14px;border-bottom:1px solid var(--line)}.v28 tr:last-child td{border-bottom:0}.v28 td small{display:block;font-size:.7rem;color:var(--muted);margin-top:2px}.v28 td strong{font-weight:500}.v28 .table-product{display:flex;align-items:center;gap:12px}.v28 .table-product img{width:28px;height:38px;object-fit:contain}.v28 .trust-strip{display:flex;justify-content:center;gap:30px;padding:25px 0;color:var(--muted);font-size:.7rem}.v28 .trust-strip i{margin-right:6px}.v28 .page-footer{display:flex;justify-content:space-between;gap:15px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:.7rem}.v28 .filters{display:flex;gap:10px;margin-bottom:22px}.v28 .filters .active{color:#b34513;border-color:#e7a27f;background:var(--soft)}.v28 .order-list{display:grid;gap:16px}.v28 .order-row{display:flex;align-items:center;gap:24px}.v28 .order-row>img{width:60px;height:90px;object-fit:contain}.v28 .order-row h2{margin:10px 0 6px}.v28 .order-row .price{margin-left:auto}.v28 .address-card{max-width:480px}.v28 .address-icon{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:var(--soft);color:var(--orange);font-size:1.25rem;margin-right:10px}.v28 .address-card h2{margin:22px 0 12px}.v28 hr{border:0;border-top:1px solid var(--line);margin:22px 0}.v28 .address-card button{margin-top:18px}.v28 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px}.v28 .two-col .card>p{margin:18px 0}.v28 .two-col .overline{margin-bottom:25px}.v28 .movement{display:flex;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid var(--line)}.v28 .document-row{display:flex;align-items:center;gap:15px}.v28 .document-row p{margin-top:8px}.v28 .document-row button{margin-left:auto}.v28 .profile-card{max-width:640px}.v28 .profile-card>.avatar{width:64px;height:64px;font-size:1.3rem;margin-bottom:18px}.v28 .profile-card h2{margin-bottom:8px}.v28 dl>div{display:flex;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}.v28 dt{color:var(--muted)}.v28 dd{margin:0;text-align:right;overflow-wrap:anywhere}.v28 dialog{border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);padding:26px;width:min(500px,calc(100% - 32px));max-height:90dvh;overflow-y:auto;box-shadow:0 20px 100px #10203040}.v28 dialog::backdrop{background:#13243488;backdrop-filter:blur(4px)}.v28 .dialog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.v28 #dialog-content>p{margin:12px 0}.v28 #dialog-content h2{font-size:1.65rem}.v28 .order-summary{display:flex;align-items:center;gap:20px;background:var(--canvas);padding:16px;border-radius:10px;margin:22px 0}.v28 .order-summary img{width:48px;height:68px;object-fit:contain}.v28 label{display:grid;gap:8px;margin:18px 0 8px;font-weight:500}.v28 input,.v28 select{background:var(--canvas);color:var(--ink);width:100%;min-height:46px;border:1px solid var(--line);border-radius:8px;padding:10px 12px}.v28 .full{width:100%;margin-top:20px}.v28 #preview-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#243b35;color:white;padding:14px 22px;border-radius:10px;z-index:50;max-width:calc(100% - 32px);box-shadow:0 4px 20px #10203030}.v28 .skip{position:fixed;top:-100px;left:16px;padding:12px;background:var(--surface);z-index:100}.v28 .skip:focus{top:12px}.v28 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.v28.dark{--ink:#e5eaf0;--muted:#a8b4c4;--line:#354252;--surface:#202c3a;--canvas:#17212d;--soft:#463329}.v28.dark .nav-item.active,.v28.dark .text-button{color:#ffb087}.v28.dark .product-stage{background:radial-gradient(ellipse,#61412a44,transparent 70%)}.v28.dark .points-card{background:#253e35}.v28.dark .pill{color:#c6cfd9}
+@media(min-width:1600px){.v28 main{padding-top:44px}.v28 .dashboard-grid{grid-template-columns:1.8fr 1fr}.v28 .tracking-main{min-height:240px}.v28 .product-stage{width:230px;height:220px}.v28 .product-stage img{height:210px;width:180px}}
+@media(max-width:1200px){.v28 .sidebar{width:210px;padding-inline:15px}.v28 .workspace{margin-left:210px}.v28 main{padding:28px 24px 20px}.v28 .topbar{padding-inline:24px}.v28 .dashboard-grid{gap:16px;grid-template-columns:minmax(0,1.45fr) minmax(270px,1fr)}.v28 .card{padding:20px}.v28 .tracking{padding-bottom:0}.v28 .delivery-bottom{margin-inline:-20px;padding-inline:20px;flex-wrap:wrap;gap:0}.v28 .tracking-main h2{font-size:1.9rem}.v28 .product-stage{width:140px}.v28 .product-stage img{width:125px}.v28 .tracking-steps li{flex-direction:column;gap:5px}.v28 .tracking-steps li:after{display:none}.v28 .reorder-content{flex-wrap:wrap}.v28 .reorder-content button{width:100%;margin:0}.v28 .trust-strip{gap:16px;font-size:.65rem}}
+@media(max-width:960px){.v28 .sidebar{width:185px;padding-inline:10px}.v28 .workspace{margin-left:185px}.v28 .brand{margin-inline:2px;gap:6px}.v28 .brand img{width:60px}.v28 .brand>span{font-size:.9rem}.v28 .brand small{font-size:.5rem}.v28 .nav-item{font-size:.8rem;padding:12px 10px;gap:9px}.v28 .help-card{padding:13px}.v28 .dashboard-grid{grid-template-columns:1fr}.v28 .points-card h2 br{display:none}.v28 .page-heading{align-items:flex-start}.v28 .page-heading>.primary{font-size:.75rem;white-space:nowrap}.v28 .reorder-content button{width:auto;margin-left:auto}.v28 .two-col{grid-template-columns:1fr}.v28 .order-row{flex-wrap:wrap}.v28 .trust-strip{flex-wrap:wrap}.v28 .document-row{flex-wrap:wrap}.v28 .document-row button{margin:0}}
+@media(max-width:680px){.v28 .sidebar{position:sticky;top:0;width:100%;padding:10px 14px 0;border-right:0;border-bottom:1px solid var(--line)}.v28 .brand{margin:0 0 10px;align-self:flex-start}.v28 .brand img{height:30px;width:62px}.v28 .brand small,.v28 .space-label,.v28 .sidebar-bottom{display:none}.v28 nav{display:flex;gap:0;overflow-x:auto}.v28 .nav-item{flex:1;min-width:76px;flex-direction:column;gap:5px;padding:9px 6px;font-size:.65rem;border-radius:7px 7px 0 0;white-space:nowrap}.v28 .nav-item i{font-size:.95rem}.v28 .count{display:none}.v28 .workspace{margin:0}.v28 .topbar{height:55px;padding:0 18px}.v28 .breadcrumb{display:none}.v28 .top-actions{width:100%;gap:12px}.v28 .top-actions .preview-badge{margin-right:auto;font-size:.65rem}.v28 main{padding:25px 18px 20px}.v28 .page-heading{display:block;margin-bottom:22px}.v28 h1{font-size:2.25rem}.v28 .page-heading p{font-size:.8rem}.v28 .page-heading>.primary{margin-top:18px;width:100%;font-size:.875rem}.v28 .card{padding:19px}.v28 .tracking{padding-bottom:0}.v28 .tracking-main{min-height:220px;gap:5px}.v28 .tracking-main h2{font-size:1.95rem}.v28 .product-stage{width:118px}.v28 .product-stage img{width:115px;height:170px}.v28 .product-stage>span{right:0;font-size:.75rem}.v28 .tracking-main p{font-size:.65rem}.v28 .overline{font-size:.6rem}.v28 .status{font-size:.65rem}.v28 .delivery-bottom{margin-inline:-19px;padding:12px 19px}.v28 .delivery-bottom>span{width:100%}.v28 .points-card h2{font-size:1.7rem}.v28 .reorder-content{gap:12px}.v28 .reorder-content button{width:100%;margin:0}.v28 .history .card-heading{align-items:flex-start}.v28 .history .card-heading p{max-width:200px}.v28 .history .text-button{white-space:nowrap}.v28 .table-scroll{margin-right:-19px}.v28 .trust-strip{align-items:flex-start;flex-direction:column;gap:10px;font-size:.75rem}.v28 .page-footer{flex-direction:column;gap:6px}.v28 .order-row{gap:14px}.v28 .order-row>img{width:45px}.v28 .order-row>div{flex:1}.v28 .order-row>.price{margin:0}.v28 .order-row>.secondary{flex:1}.v28 .movement{font-size:.8rem}.v28 dl>div{flex-direction:column;gap:5px}.v28 dd{text-align:left}.v28 .document-row h2{font-size:1.1rem}.v28 .document-row p{font-size:.8rem}}
+@media(prefers-reduced-motion:reduce){.v28 *{transition:none!important;scroll-behavior:auto!important}}
+/* Legibilidad: controles y datos frecuentes a 14 px; metadatos a 12 px. */
+.v28 .nav-item,.v28 .text-button,.v28 .points-link,.v28 .reorder-content button,.v28 .table-product,.v28 td,.v28 .tracking-steps li,.v28 .gas-content p,.v28 .reorder-content p{font-size:.875rem}
+.v28 .eyebrow,.v28 .overline,.v28 .preview-badge,.v28 .status,.v28 .pill,.v28 .muted,.v28 .delivery-bottom,.v28 .tracking-main p,.v28 .eta small,.v28 .points-card>small,.v28 .gas .fineprint,.v28 .trust-strip,.v28 .page-footer,.v28 th,.v28 td small{font-size:.75rem}
+.v28 .page-heading p{font-size:1rem}
+@media(max-width:1200px){.v28 .tracking-steps li{font-size:.75rem}}
+@media(max-width:680px){.v28 .nav-item{font-size:.75rem}.v28 nav{overflow-x:auto}.v28 .nav-item{min-width:95px}.v28 .tracking-main{flex-wrap:wrap}.v28 .tracking-main>div:first-child{flex:1;min-width:175px}.v28 .tracking-main h2{font-size:1.85rem}.v28 .product-stage{flex:0 0 105px}.v28 .history .card-heading{flex-wrap:wrap}}
+
+/* Ajustes de presentación de esta versión. Todo vive en view28.astro. */
+.v28 { -webkit-font-smoothing: antialiased; }
+.v28 .mobile-label { display: none; }
+.v28 #contenido:focus { outline: none; }
+.v28 main { width: 100%; max-width: 1510px; padding: clamp(24px, 3vw, 44px); }
+.v28 .sidebar { overflow-y: auto; overscroll-behavior: contain; }
+.v28 .card { border-radius: 18px; }
+.v28 .page-heading { margin-bottom: 30px; }
+.v28 .primary { border-radius: 12px; min-height: 48px; }
+.v28 .secondary { border-radius: 10px; min-height: 44px; }
+.v28 .icon-button { min-width: 44px; min-height: 44px; }
+.v28 .text-button { min-height: 44px; }
+.v28 .tracking-main { padding-block: 8px; }
+.v28 .product-stage img { border-radius: 14px; }
+.v28 .tracking-steps { gap: 8px; }
+.v28 .delivery-bottom { padding-block: 14px; }
+.v28 .gas-content { gap: 20px; }
+.v28 .nav-item { min-height: 48px; }
+.v28 .nav-item.active { box-shadow: inset 3px 0 #e95716; }
+.v28 dialog { overscroll-behavior: contain; }
+.v28:has(dialog[open]) { overflow: hidden; }
+.v28 input, .v28 select { font-size: 16px; }
+.v28 .topbar { gap: 10px; }
+@media (min-width: 961px) and (max-width: 1150px) {
+  .v28 .sidebar { width: 200px; }
+  .v28 .workspace { margin-left: 200px; }
+  .v28 main { padding: 24px; }
+  .v28 .dashboard-grid { grid-template-columns: minmax(0, 1fr) minmax(260px, .82fr); }
+  .v28 .tracking-main { flex-wrap: wrap; }
+  .v28 .product-stage { width: 120px; }
+  .v28 .card-heading { flex-wrap: wrap; }
+}
+@media (max-width: 680px) {
+  .v28 .sidebar { position: relative; inset: auto; padding: 14px 20px; overflow: visible; }
+  .v28 .brand { margin: 0; }
+  .v28 .brand img { width: 76px; height: 34px; }
+  .v28 .brand > span { font-size: 1.05rem; }
+  .v28 .sidebar nav {
+    position: fixed; inset: auto 0 0; z-index: 30;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px;
+    padding: 7px max(6px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
+    background: var(--surface); border-top: 1px solid var(--line);
+    box-shadow: 0 -4px 22px #15283b08; overflow: visible;
+  }
+  .v28 .nav-item { min-width: 0; min-height: 55px; width: 100%; padding: 7px 1px; gap: 6px; border-radius: 10px; line-height: 1.2; white-space: normal; }
+  .v28 .nav-item i { font-size: 1.1rem; }
+  .v28 .nav-item.active { box-shadow: none; }
+  .v28 .desktop-label { display: none; }
+  .v28 .mobile-label { display: block; font-size: .75rem; letter-spacing: -.035em; }
+  .v28 .topbar { height: 54px; padding: 0 20px; }
+  .v28 .top-actions { gap: 10px; }
+  .v28 .top-actions .avatar { width: 40px; height: 40px; }
+  .v28 .preview-badge { border: 0; padding: 0; }
+  .v28 main { padding: 26px 16px calc(98px + env(safe-area-inset-bottom)); }
+  .v28 h1 { font-size: 2.1rem; }
+  .v28 .page-heading p { font-size: .9375rem; line-height: 1.7; }
+  .v28 .page-heading > .primary { min-height: 50px; }
+  .v28 .dashboard-grid { gap: 16px; }
+  .v28 .card { padding: 20px; border-radius: 18px; }
+  .v28 .tracking { padding-bottom: 0; }
+  .v28 .tracking-main { flex-wrap: nowrap; gap: 6px; min-height: 210px; }
+  .v28 .tracking-main > div:first-child { min-width: 0; flex: 1; }
+  .v28 .tracking-main h2 { font-size: clamp(1.6rem, 6vw, 1.95rem); }
+  .v28 .product-stage { flex-basis: 100px; height: 170px; }
+  .v28 .product-stage img { width: 100px; height: 140px; }
+  .v28 .product-stage > span { bottom: 6px; }
+  .v28 .eta { gap: 8px; }
+  .v28 .eta strong { font-size: 1.2rem; }
+  .v28 .eta small { font-size: .75rem; }
+  .v28 .tracking-steps { margin-top: 12px; gap: 4px; }
+  .v28 .tracking-steps li { font-size: .75rem; }
+  .v28 .tracking-steps i { width: 32px; height: 32px; }
+  .v28 .delivery-bottom { margin-inline: -20px; padding: 12px 20px; }
+  .v28 .delivery-bottom > span { line-height: 1.8; }
+  .v28 .points-card h2 { font-size: 1.6rem; margin-top: 20px; }
+  .v28 .points-total { font-size: 3.2rem; }
+  .v28 .card-heading h2 { font-size: 1.2rem; }
+  .v28 .reorder-content button { min-height: 48px; }
+  .v28 .history .card-heading { gap: 8px; }
+  .v28 .history .card-heading p { max-width: none; font-size: .875rem; }
+  .v28 .table-scroll { margin: 10px 0 0; overflow: visible; }
+  .v28 table, .v28 tbody { display: block; width: 100%; white-space: normal; }
+  .v28 thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .v28 tbody tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 12px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .v28 tbody tr:last-child { border-bottom: 0; padding-bottom: 0; }
+  .v28 td { border: 0; padding: 0; align-self: center; }
+  .v28 td:nth-child(1) { grid-column: 1; grid-row: 1; }
+  .v28 td:nth-child(5) { grid-column: 2; grid-row: 1; text-align: right; }
+  .v28 td:nth-child(2) { grid-column: 1; grid-row: 2; }
+  .v28 td:nth-child(4) { grid-column: 2; grid-row: 2; text-align: right; }
+  .v28 td:nth-child(3) { grid-column: 1; grid-row: 3; color: var(--muted); }
+  .v28 td:nth-child(6) { grid-column: 2; grid-row: 3; justify-self: end; }
+  .v28 .filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .v28 .filters button { padding: 10px 5px; font-size: .8rem; }
+  .v28 .order-row { gap: 14px; }
+  .v28 .order-row p { overflow-wrap: anywhere; }
+  .v28 .document-row > div { min-width: 0; }
+  .v28 .document-row button { width: 100%; }
+  .v28 dialog { margin: auto 0 0; width: 100%; max-width: none; max-height: calc(100dvh - 24px); border-radius: 24px 24px 0 0; padding: 22px 22px max(24px, env(safe-area-inset-bottom)); border-bottom: 0; }
+  .v28 #preview-toast { bottom: calc(88px + env(safe-area-inset-bottom)); width: max-content; font-size: .875rem; }
+}
+@media (max-width: 360px) {
+  .v28 .card { padding-inline: 16px; }
+  .v28 .tracking-main { flex-wrap: wrap; }
+  .v28 .product-stage { margin-inline: auto; }
+  .v28 .delivery-bottom { margin-inline: -16px; padding-inline: 16px; }
+}
+/* VIEW 28 — una cuenta visible y el pedido como centro de la experiencia. */
+.v28 { --canvas: #f6f8fa; --ink: #203047; --orange: #ed560f; }
+.v28 .topbar { position: sticky; top: 0; z-index: 25; height: 78px; background: var(--surface); }
+.v28 .header-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.v28 .compact-brand { display: none; }
+.v28 .menu-toggle { border-color: transparent; color: var(--ink); }
+.v28 .header-profile { display: flex; align-items: center; gap: 12px; background: none; border: 0; color: var(--ink); padding: 3px; }
+.v28 .profile-copy { text-align: right; }
+.v28 .profile-copy strong { display: block; font-size: .875rem; font-weight: 500; }
+.v28 .profile-copy small { color: var(--muted); font-size: .75rem; }
+.v28 .header-profile > i { font-size: .7rem; color: var(--muted); }
+.v28 .header-profile .avatar { width: 44px; height: 44px; background: #fce5d9; border: 3px solid var(--surface); outline: 1px solid #f2d3c0; }
+.v28 main { max-width: 1380px; padding: 32px clamp(24px, 3vw, 46px); }
+.v28 .welcome-label { display: flex; align-items: center; gap: 8px; font-size: .7rem; letter-spacing: .13em; color: var(--muted); margin-bottom: 10px; }
+.v28 .welcome-label > span { width: 16px; height: 2px; background: var(--orange); }
+.v28 .page-heading h1 { font-size: 2.4rem; }
+.v28 .page-heading { margin-bottom: 26px; }
+.v28 .page-heading p { margin-top: 8px; font-size: .9375rem; }
+.v28 .new-order { min-height: 46px; }
+.v28 .dashboard-grid { grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); gap: 22px; align-items: stretch; }
+.v28 .card { border-radius: 20px; box-shadow: 0 4px 20px #24344903; }
+.v28 .tracking { border-color: #f0d9c9; }
+.v28 .tracking > .card-heading { gap: 8px; }
+.v28 .tracking-main { min-height: 210px; padding-top: 12px; }
+.v28 .tracking-main h2 { font-size: clamp(1.45rem, 2.1vw, 1.95rem); margin-top: 16px; }
+.v28 .tracking-product { display: block; color: var(--muted); font-size: .875rem; margin-top: 7px; }
+.v28 .tracking-main p { font-size: .75rem; margin-top: 8px; }
+.v28 .eta { margin: 20px 0 18px; gap: 12px; }
+.v28 .eta > i { background: var(--soft); width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; }
+.v28 .eta strong { font-size: 1.65rem; letter-spacing: -.03em; }
+.v28 .eta small { font-size: .75rem; }
+.v28 .product-stage { width: 165px; height: 185px; background: var(--surface); }
+.v28 .product-stage img { width: 145px; height: 175px; filter: none; mix-blend-mode: multiply; }
+.v28.dark .product-stage { background: #fff; border-radius: 16px; }
+.v28 .product-stage > span { display: none; }
+.v28 .tracking-steps { padding: 12px 0 20px; margin: 0; }
+.v28 .tracking-steps i { width: 30px; height: 30px; }
+.v28 .delivery-bottom { background: var(--surface); gap: 12px; padding-block: 16px; }
+.v28 .delivery-bottom > span { flex: 1; font-size: .8rem; }
+.v28 .track-cta { font-size: .875rem; white-space: nowrap; padding-inline: 18px; min-height: 46px; }
+.v28 .points-card { background: #203f36; border-color: #203f36; padding: 26px; }
+.v28 .points-card h2 { font-size: 1.8rem; margin: 24px 0 0; }
+.v28 .points-total { font-size: 3.9rem; margin: 20px 0; }
+.v28 .points-link { min-height: 44px; }
+.v28 .gas .fineprint { font-size: .75rem; margin-top: 5px!important; }
+.v28 .gas-content p { font-size: .8rem; }
+.v28 .page-footer { flex-wrap: wrap; }
+.v28 .version-note { color: var(--muted); }
+.v28 #account-drawer { position: fixed; inset: 0 auto 0 0; margin: 0; width: min(360px, calc(100% - 32px)); max-width: none; height: 100dvh; max-height: 100dvh; border-radius: 0 24px 24px 0; padding: 24px; }
+.v28 .drawer-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 26px; }
+.v28 .drawer-top .eyebrow { margin: 0; }
+.v28 .drawer-identity { display: flex; align-items: center; gap: 14px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.v28 .drawer-identity .avatar { width: 54px; height: 54px; font-size: 1rem; }
+.v28 .drawer-identity h2 { font-size: 1.3rem; }
+.v28 .drawer-identity p { font-size: .8rem; margin-top: 6px; overflow-wrap: anywhere; }
+.v28 .drawer-links { display: grid; gap: 4px; padding: 20px 0; }
+.v28 .drawer-links button, .v28 .drawer-footer button { display: flex; align-items: center; gap: 14px; background: transparent; border: 0; color: var(--ink); padding: 14px 8px; text-align: left; min-height: 48px; border-radius: 10px; }
+.v28 .drawer-links button:hover, .v28 .drawer-footer button:hover { background: var(--soft); }
+.v28 .drawer-links button > i:first-child, .v28 .drawer-footer button > i { width: 18px; color: var(--orange); }
+.v28 .drawer-links button > i:last-child:not(:first-child) { margin-left: auto; font-size: .7rem; color: var(--muted); }
+.v28 .drawer-footer { border-top: 1px solid var(--line); padding-top: 14px; display: grid; }
+.v28 .drawer-footer small { margin-top: 24px; color: var(--muted); font-size: .75rem; }
+.v28 #account-popover { position: fixed; inset: 88px 24px auto auto; margin: 0; width: min(370px, calc(100% - 32px)); border-radius: 20px; padding: 24px; }
+.v28 .account-status { display: inline-flex; gap: 7px; align-items: center; color: #2e7752; background: #eaf7ef; border-radius: 7px; padding: 5px 9px; font-size: .75rem; margin-top: 18px; }
+@media (max-width: 1080px) {
+  .v28 .dashboard-grid { grid-template-columns: minmax(0, 1fr); }
+  .v28 .points-card h2 br { display: none; }
+  .v28 .points-card h2 { margin-top: 16px; }
+  .v28 .points-total { margin: 14px 0; }
+  .v28 .tracking-main { flex-wrap: nowrap; }
+}
+@media (max-width: 680px) {
+  .v28 .sidebar { position: static; height: 0; padding: 0; border: 0; }
+  .v28 .sidebar > .brand { display: none; }
+  .v28 .topbar { height: calc(66px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) 16px 0 12px; }
+  .v28 .header-brand { gap: 7px; }
+  .v28 .menu-toggle { width: 40px; min-width: 40px; }
+  .v28 .compact-brand { display: flex; margin: 0; gap: 7px; }
+  .v28 .compact-brand img { width: 65px; height: 32px; }
+  .v28 .compact-brand > span { font-size: 1rem; padding-left: 8px; }
+  .v28 .desktop-crumb, .v28 .profile-copy, .v28 .header-profile > i { display: none; }
+  .v28 .header-profile { padding: 0; }
+  .v28 .header-profile .avatar { width: 40px; height: 40px; font-size: .8rem; }
+  .v28 main { padding: 24px 16px calc(94px + env(safe-area-inset-bottom)); }
+  .v28 .welcome-label { font-size: .65rem; letter-spacing: .1em; margin-bottom: 7px; }
+  .v28 .page-heading { margin-bottom: 20px; }
+  .v28 .page-heading h1 { font-size: 1.95rem; }
+  .v28 .page-heading p { font-size: .875rem; margin-top: 7px; }
+  .v28 .page-heading .new-order { display: none; }
+  .v28 .dashboard-grid { gap: 16px; }
+  .v28 .card { padding: 20px; border-radius: 18px; }
+  .v28 .tracking { padding-bottom: 0; }
+  .v28 .tracking .overline { font-size: .65rem; letter-spacing: .06em; }
+  .v28 .status { font-size: .75rem; }
+  .v28 .tracking-main { gap: 3px; min-height: 173px; padding-block: 6px; }
+  .v28 .tracking-main > div:first-child { min-width: 0; flex: 1; }
+  .v28 .tracking-main h2 { font-size: 1.45rem; margin-top: 16px; line-height: 1.15; }
+  .v28 .tracking-product { font-size: .8rem; margin-top: 7px; }
+  .v28 .tracking-main p { font-size: .75rem; }
+  .v28 .product-stage { width: 91px; flex: 0 0 91px; height: 140px; align-self: center; }
+  .v28 .product-stage img { width: 91px; height: 132px; }
+  .v28 .eta { margin: 14px 0 8px; gap: 8px; }
+  .v28 .eta > i { width: 32px; height: 36px; font-size: 1rem; }
+  .v28 .eta strong { font-size: 1.4rem; }
+  .v28 .tracking-steps { padding: 12px 0 18px; gap: 0; }
+  .v28 .tracking-steps li { position: relative; gap: 7px; flex-direction: column; font-size: .75rem; }
+  .v28 .tracking-steps li:not(:last-child):after { display: block; position: absolute; top: 14px; left: calc(50% + 19px); width: calc(100% - 38px); height: 1px; margin: 0; background: var(--line); }
+  .v28 .tracking-steps .done:after { background: #f2b393!important; }
+  .v28 .delivery-bottom { display: grid; grid-template-columns: 1fr; margin-inline: -20px; padding: 13px 20px 18px; gap: 12px; }
+  .v28 .delivery-bottom > span { font-size: .75rem; line-height: 1.6; }
+  .v28 .track-cta { width: 100%; min-height: 46px; font-size: .875rem; justify-content: space-between; padding-inline: 18px; }
+  .v28 .points-card { grid-row: 3; padding: 22px; }
+  .v28 .reorder { grid-row: 2; }
+  .v28 .points-card h2 { font-size: 1.4rem; }
+  .v28 .points-total { font-size: 3.1rem; margin: 16px 0; }
+  .v28 .reorder-content { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; margin-block: 16px; }
+  .v28 .reorder-content img { width: 48px; height: 70px; }
+  .v28 .reorder-content button { grid-column: 1 / -1; background: var(--soft); border-color: transparent; color: #ad3c08; width: 100%; }
+  .v28.dark .reorder-content button { color: #ffb38e; }
+  .v28 .sidebar nav { padding-top: 9px; box-shadow: 0 -5px 22px #18283a06; }
+  .v28 .nav-item.active { background: var(--soft); }
+  .v28 .nav-item { min-height: 54px; }
+  .v28 #account-popover { inset: calc(74px + env(safe-area-inset-top)) 12px auto auto; width: min(360px, calc(100% - 24px)); max-height: calc(100dvh - 100px); border: 1px solid var(--line); }
+  .v28 #account-drawer { padding-top: max(24px, env(safe-area-inset-top)); padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+  .v28 .page-footer { line-height: 1.8; }
+}
+@media (max-width: 360px) {
+  .v28 .compact-brand img { width: 57px; }
+  .v28 .compact-brand > span { font-size: .9rem; }
+  .v28 .tracking-main { flex-wrap: nowrap; }
+  .v28 .tracking-main h2 { font-size: 1.3rem; }
+  .v28 .product-stage { flex-basis: 76px; }
+  .v28 .product-stage img { width: 76px; }
+}
+    </style>
+  </head>
+  <body class="v28">
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <aside class="sidebar">
+      <a class="brand" href="/view28" aria-label="Solgas Surquillo, mi cuenta"><img src="/imgwii/logo.webp" alt="Solgas" /><span>Surquillo<small>SIEMPRE CONTIGO</small></span></a>
+      <div class="space-label">MI ESPACIO</div>
+      <nav aria-label="Mi cuenta">{menu.map(([id, icon, label]) => <button type="button" data-view={id} class:list={['nav-item', { active: id === 'resumen' }]} aria-current={id === 'resumen' ? 'page' : undefined}><i class={`fa-solid fa-${icon}`} aria-hidden="true"></i><span class="desktop-label">{label}</span><span class="mobile-label">{({ resumen: 'Resumen', pedidos: 'Pedidos', direcciones: 'Direcciones', puntos: 'Puntos', comprobantes: 'Boletas' })[id]}</span>{id === 'pedidos' && <b class="count">1</b>}</button>)}</nav>
+      <div class="sidebar-bottom"><div class="help-card"><span class="help-icon"><i class="fa-solid fa-headset" aria-hidden="true"></i></span><h3>Estamos para ayudarte</h3><p>Tu equipo de Surquillo, a un mensaje de distancia.</p><button class="text-button" data-help>Hablar con nosotros <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></button></div>
+      <button class="profile" data-view="perfil"><span class="avatar">{avatar(smile.nombre)}</span><span><strong>{smile.nombre}</strong><small>Mi cuenta <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></small></span></button></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+  <div class="header-brand"><button class="icon-button menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-haspopup="dialog" aria-controls="account-drawer"><i class="fa-solid fa-bars" aria-hidden="true"></i></button><a class="brand compact-brand" href="/view28" aria-label="Solgas Surquillo, inicio de mi cuenta"><img src="/imgwii/logo.webp" alt="Solgas" /><span>Surquillo</span></a><span class="breadcrumb desktop-crumb">Mi cuenta <span>/</span> <strong id="breadcrumb">Mi resumen</strong></span></div>
+  <button class="header-profile" id="profile-toggle" aria-label="Abrir cuenta de Valeria Mendoza" aria-haspopup="dialog" aria-controls="account-popover"><span class="profile-copy"><strong>Valeria Mendoza</strong><small>Mi cuenta personal</small></span><span class="avatar">VM</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+</header>
+      <main id="contenido" tabindex="-1">
+        <section data-panel="resumen">
+          <div class="page-heading"><div><div class="welcome-label"><span></span> QUÉ BUENO TENERTE EN CASA</div><h1>Hola, {getNombre(smile.nombre)}<span class="hello-dot">.</span></h1><p>Todo listo. Tu pedido ya está en camino.</p></div><button class="secondary new-order" data-order><i class="fa-solid fa-plus" aria-hidden="true"></i> Nueva recarga</button></div>
+          <div class="dashboard-grid">
+            <article class="card tracking"><div class="card-heading"><span class="overline"><i class="fa-solid fa-motorcycle" aria-hidden="true"></i> TE LO LLEVAMOS A CASA</span><span class="status">En camino</span></div><div class="tracking-main"><div><h2>En camino a tu hogar</h2><span class="tracking-product">Recarga SOLGAS · 10 kg</span><p>Pedido #GW-1028 <span>·</span> Hoy, 10:32 a. m.</p><div class="eta"><i class="fa-regular fa-clock" aria-hidden="true"></i><div><strong>12–18 min</strong><small>Llegada estimada</small></div></div></div><div class="product-stage"><img src={producto.imagen} alt={producto.nombre} /><span>10 kg <b>SOLGAS</b></span></div></div>
+              <ol class="tracking-steps" aria-label="Estado del pedido"><li class="done"><i class="fa-solid fa-check" aria-hidden="true"></i><span>Confirmado</span></li><li class="current" aria-current="step"><i class="fa-solid fa-motorcycle" aria-hidden="true"></i><span>En camino</span></li><li><i class="fa-solid fa-house" aria-hidden="true"></i><span>En tu puerta</span></li></ol>
+              <div class="delivery-bottom"><span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Casa · <span data-address-text>Jr. Las Orquídeas 248, dpto. 302</span></span><button class="primary track-cta" data-track>Ver mi pedido <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+            </article>
+            <article class="card points-card"><div class="card-heading"><span class="overline">CADA RECARGA SUMA</span><i class="fa-solid fa-gift" aria-hidden="true"></i></div><h2>Tus recargas<br />te dan más.</h2><div class="points-total">{smile.puntos}<span>puntos</span></div><progress value="150" max="200" aria-label="150 de 200 puntos"></progress><p>Te faltan <strong>50 puntos</strong> para tu próxima recompensa.</p><button class="points-link" data-view="puntos">Explorar mis beneficios <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button><small>Beneficio de ejemplo sujeto a validación.</small></article>
+            <article class="card reorder"><div class="card-heading"><h2>Tu recarga de siempre</h2><span class="muted">Tu favorito</span></div><div class="reorder-content"><img src={producto.imagen} alt="" /><div><h3>SOLGAS de 10 kg</h3><p>Recarga para tu hogar</p><strong class="price">{money(producto.precioPEN)}</strong></div><button class="secondary" data-order>Volver a pedir <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div><div class="small-note"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Pesaje en tu puerta en cada entrega.</div></article>
+            <article class="card gas"><div class="card-heading"><h2>Tu consumo en casa</h2><span class="pill">Estimación</span></div><div class="gas-content"><div class="gauge" role="img" aria-label="Estimación: 18 por ciento restante"><span>18<small>%</small></span></div><div><h3>Quedan unos 5 días</h3><p>Referencia de tu balón actual. Tu nueva recarga está en camino.</p></div></div><button class="text-button" data-estimate>Ajustar mi consumo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button><p class="fineprint">Orientativo. No es una medición del balón.</p></article>
+          </div>
+          <article class="card history"><div class="card-heading"><div><h2>Tus últimos pedidos</h2><p>Todo listo para cuando vuelvas a necesitarlo.</p></div><button class="text-button" data-view="pedidos">Ver todos <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div><div class="table-scroll"><table><caption class="sr-only">Pedidos recientes de ejemplo</caption><thead><tr><th>Pedido / fecha</th><th>Producto</th><th>Entrega</th><th>Total</th><th>Estado</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody>{pedidos.slice(0, 2).map(p => <tr><td><strong>#{p.id}</strong><small>{p.fecha}</small></td><td><div class="table-product"><img src={producto.imagen} alt="" />SOLGAS 10 kg</div></td><td>Casa · Surquillo</td><td><strong>{money(producto.precioPEN)}</strong></td><td><span class:list={['status', { delivered: p.estado === 'Entregado' }]}>{p.estado}</span></td><td><button class="icon-button" data-track={p.id} aria-label={`Ver pedido ${p.id}`}><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></button></td></tr>)}</tbody></table></div></article>
+          <div class="trust-strip"><span><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Peso que puedes comprobar</span><span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Atención en cada entrega</span><span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Tu distribuidor en Surquillo</span></div>
+        </section>
+        <section data-panel="pedidos" hidden><div class="page-heading"><div><div class="eyebrow">DE NUESTRA PUERTA A LA TUYA</div><h1>Mis pedidos</h1><p>Consulta tus entregas y vuelve a pedir tu favorito.</p></div><button class="primary" data-order>Hacer un pedido</button></div><div class="filters" aria-label="Filtrar pedidos"><button class="secondary active" data-filter="todos" aria-pressed="true">Todos</button><button class="secondary" data-filter="En camino" aria-pressed="false">En camino</button><button class="secondary" data-filter="Entregado" aria-pressed="false">Entregados</button></div><div class="order-list">{pedidos.map(p => <article class="card order-row" data-order-status={p.estado}><img src={producto.imagen} alt="" /><div><span class="status">{p.estado}</span><h2>SOLGAS de 10 kg</h2><p>#{p.id} · {p.fecha} · Casa</p></div><strong class="price">{money(producto.precioPEN)}</strong><button class="secondary" data-track={p.id}>Ver detalle</button>{p.estado === 'Entregado' && <button class="text-button" data-order>Volver a pedir</button>}</article>)}</div></section>
+        <section data-panel="direcciones" hidden><div class="page-heading"><div><div class="eyebrow">TUS LUGARES FAVORITOS</div><h1>Mis direcciones</h1><p>La dirección correcta, lista para tu próxima entrega.</p></div></div><article class="card address-card"><span class="address-icon"><i class="fa-solid fa-house" aria-hidden="true"></i></span><span class="pill">Predeterminada</span><h2>Casa</h2><p data-address-text>Jr. Las Orquídeas 248, dpto. 302</p><p>Surquillo, Lima</p><hr /><p>Tocar el intercomunicador 302.</p><button class="secondary" data-edit-address>Editar dirección</button></article><p class="fineprint">Dirección ficticia. Los cambios duran hasta recargar esta preview.</p></section>
+        <section data-panel="puntos" hidden><div class="page-heading"><div><div class="eyebrow">GRACIAS POR ELEGIRNOS</div><h1>Mis puntos</h1><p>Cada pedido te acerca a un nuevo beneficio.</p></div></div><div class="two-col"><article class="card points-card"><h2>Tu saldo disponible</h2><div class="points-total">150<span>puntos</span></div><progress value="150" max="200" aria-label="150 de 200 puntos"></progress><p>50 puntos más para llegar a la meta de 200.</p></article><article class="card"><span class="overline">PRÓXIMA RECOMPENSA</span><h2>Una recarga de 10 kg</h2><p>Propuesta de beneficio al alcanzar 200 puntos.</p><button class="secondary" disabled>Necesitas 50 puntos más</button><p class="fineprint">Reglas, vigencia y disponibilidad pendientes de confirmar con el negocio.</p></article></div><article class="card history"><h2>Últimos movimientos</h2><div class="movement"><span>Pedido #GW-0984 · 12 ago 2026</span><strong>+25 puntos</strong></div><div class="movement"><span>Pedido #GW-0916 · 15 jul 2026</span><strong>+25 puntos</strong></div><p class="fineprint">Movimientos ilustrativos; no representan una regla de acumulación vigente.</p></article></section>
+        <section data-panel="comprobantes" hidden><div class="page-heading"><div><div class="eyebrow">TODO EN ORDEN</div><h1>Mis comprobantes</h1><p>Encuentra los documentos de tus pedidos entregados.</p></div></div><article class="card"><div class="document-row"><span class="address-icon"><i class="fa-regular fa-file-lines" aria-hidden="true"></i></span><div><h2>Documento de muestra</h2><p>Pedido #GW-0984 · 12 ago 2026 · {money(producto.precioPEN)}</p></div><button class="secondary" data-receipt>Ver muestra</button></div><p class="fineprint">Esta preview no emite boletas ni facturas. La integración fiscal se plantea en el plan.</p></article></section>
+        <section data-panel="perfil" hidden><div class="page-heading"><div><div class="eyebrow">TU ESPACIO PERSONAL</div><h1>Mi cuenta</h1><p>Así se verá tu perfil después de iniciar sesión.</p></div></div><article class="card profile-card"><span class="avatar">{avatar(smile.nombre)}</span><h2>{smile.nombre}</h2><p>@{smile.usuario}</p><dl><div><dt>Correo</dt><dd>{smile.email}</dd></div><div><dt>Estado</dt><dd>Cuenta activa</dd></div><div><dt>Plan</dt><dd>VIP</dd></div><div><dt>Producto habitual</dt><dd>{smile.pin}</dd></div></dl><p class="fineprint">Perfil ficticio basado en el modelo de registro actual. No necesitas iniciar sesión para explorar esta propuesta.</p></article></section>
+        <footer class="page-footer"><span class="version-note">Propuesta 28 · Datos de ejemplo</span><span>© 2026 {datosNegocio.nombre}</span><span>Hecho para que en casa no falte nada.</span></footer>
+      </main>
+    </div>
+    <dialog id="account-drawer" aria-labelledby="drawer-heading">
+  <div class="drawer-top"><span class="eyebrow">SOLGAS SURQUILLO</span><button class="icon-button" data-close-account aria-label="Cerrar menú"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+  <div class="drawer-identity"><span class="avatar">VM</span><div><h2 id="drawer-heading">Hola, Valeria</h2><p>Tu hogar, bien atendido.</p></div></div>
+  <div class="drawer-links">{menu.map(([id, icon, label]) => <button data-view={id}><i class={`fa-solid fa-${icon}`} aria-hidden="true"></i>{label}<i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>)}</div>
+  <div class="drawer-footer"><button data-view="perfil"><i class="fa-regular fa-user" aria-hidden="true"></i> Mi cuenta</button><button data-help><i class="fa-solid fa-headset" aria-hidden="true"></i> Ayuda y contacto</button><button id="theme-toggle" aria-label="Activar tema oscuro" aria-pressed="false"><i class="fa-solid fa-moon" aria-hidden="true"></i> Cambiar apariencia</button><small>Propuesta 28 · Cuenta de demostración</small></div>
+</dialog>
+<dialog id="account-popover" aria-labelledby="account-heading"><div class="drawer-top"><span class="eyebrow">MI CUENTA</span><button class="icon-button" data-close-account aria-label="Cerrar cuenta"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div><div class="drawer-identity"><span class="avatar">VM</span><div><h2 id="account-heading">Valeria Mendoza</h2><p>valeria@example.com</p></div></div><span class="account-status"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Cuenta activa</span><div class="drawer-links"><button data-view="perfil"><i class="fa-regular fa-user" aria-hidden="true"></i> Ver mi perfil<i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button><button data-view="direcciones"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Mi dirección de entrega<i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button></div><p class="fineprint">Estás explorando una cuenta ficticia.</p></dialog>
+    <dialog id="preview-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span class="eyebrow">MI SOLGAS · PREVIEW</span><button id="dialog-close" class="icon-button" aria-label="Cerrar"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div><div id="dialog-content"></div></dialog>
+    <template id="order-template"><h2 id="dialog-title">Tu consumo en casa</h2><p>Revisa los datos antes de continuar.</p><form id="order-form"><div class="order-summary"><img src={producto.imagen} alt="" /><div><strong>{producto.nombre}</strong><p>{money(producto.precioPEN)} · precio de catálogo</p></div></div><label>Entregar en<select name="direccion"><option>Casa · Surquillo</option></select></label><p data-address-text>Jr. Las Orquídeas 248, dpto. 302</p><label>Forma de pago<select name="pago"><option>Yape al recibir</option><option>Efectivo al recibir</option></select></label><div class="movement"><span>Total de ejemplo</span><strong>{money(producto.precioPEN)}</strong></div><p class="fineprint">Simulación: no se enviará ningún pedido. Ya tienes un pedido de ejemplo en camino.</p><button class="primary full" type="submit">Simular pedido</button></form></template>
+    <template id="address-template"><h2 id="dialog-title">Editar dirección</h2><p>Casa · Surquillo</p><form id="address-form"><label>Dirección<input name="direccion" required maxlength="120" autocomplete="off" /></label><p class="fineprint">Se aplicará únicamente en esta preview.</p><button class="primary full" type="submit">Guardar cambios</button></form></template>
+    <template id="estimate-template"><h2 id="dialog-title">Ajusta tu consumo</h2><p>Referencia orientativa para organizar tu próxima compra.</p><form id="estimate-form"><label>Horas de cocina al día<select name="horas"><option value="1">1 hora</option><option value="2" selected>2 horas</option><option value="3">3 horas</option></select></label><p class="fineprint">Ejemplo basado en un saldo ficticio del 18 %. El consumo real varía según la cocina y el uso.</p><button class="primary full" type="submit">Actualizar estimación</button></form></template>
+    <div id="preview-toast" role="status" aria-live="polite" hidden></div>
+    <script is:inline type="module">
+// Estado efímero: no importar auth.js ni escribir en las claves de la sesión real.
+const dialog = document.querySelector('#preview-dialog');
+const content = document.querySelector('#dialog-content');
+let direccion = 'Jr. Las Orquídeas 248, dpto. 302';
+let lastTrigger;
+let toastTimer;
+const labels = { resumen: 'Mi resumen', pedidos: 'Mis pedidos', direcciones: 'Mis direcciones', puntos: 'Mis puntos', comprobantes: 'Comprobantes', perfil: 'Mi cuenta' };
+function view(id, focus = true) {
+  if (!Object.hasOwn(labels, id)) id = 'resumen';
+  document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== id; });
+  document.querySelectorAll('.nav-item').forEach(b => {
+    const active = b.dataset.view === id;
+    b.classList.toggle('active', active);
+    if (active) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  document.querySelector('#breadcrumb').textContent = labels[id];
+  if (focus) {
+    history.replaceState(null, '', `#${id}`);
+    document.querySelector('#contenido').focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+}
+function openDialog(trigger) {
+  lastTrigger = trigger;
+  dialog.showModal();
+}
+function closeDialog() { dialog.close(); }
+dialog.addEventListener('close', () => lastTrigger?.focus());
+document.querySelector('#dialog-close').addEventListener('click', closeDialog);
+function template(id, trigger) {
+  content.replaceChildren(document.querySelector(id).content.cloneNode(true));
+  content.querySelectorAll('[data-address-text]').forEach(e => { e.textContent = direccion; });
+  openDialog(trigger);
+}
+function message(title, paragraphs, trigger) {
+  content.replaceChildren();
+  const heading = document.createElement('h2'); heading.id = 'dialog-title'; heading.textContent = title;
+  content.append(heading);
+  paragraphs.forEach(text => { const p = document.createElement('p'); p.textContent = text; content.append(p); });
+  openDialog(trigger);
+}
+function toast(text) {
+  const el = document.querySelector('#preview-toast');
+  clearTimeout(toastTimer); el.textContent = text; el.hidden = false;
+  toastTimer = setTimeout(() => { el.hidden = true; }, 5000);
+}
+document.addEventListener('click', event => {
+  const button = event.target.closest('button'); if (!button) return;
+  if (button.dataset.view) view(button.dataset.view);
+  if (button.hasAttribute('data-order')) {
+    template('#order-template', button);
+    content.querySelector('form').addEventListener('submit', e => {
+      e.preventDefault();
+      const pago = new FormData(e.currentTarget).get('pago');
+      closeDialog(); toast(`Simulación completada: recarga para Casa, ${pago}. No se envió un pedido real.`);
+    });
+  }
+  if (button.hasAttribute('data-track')) {
+    const id = button.dataset.track || 'GW-1028';
+    const active = id === 'GW-1028';
+    message(`Pedido #${id}`, [active ? 'En camino · llegada estimada en 12–18 min.' : 'Entregado · recibido en Casa.', `SOLGAS de 10 kg · Casa · ${direccion}, Surquillo.`, active ? 'Confirmado a las 10:32 a. m. · Salida de reparto a las 10:40 a. m.' : 'Entrega completada. Puedes repetir este pedido desde Mis pedidos.', 'Datos ficticios. El seguimiento real y sus horarios se conectarán al servicio de pedidos.'], button);
+  }
+  if (button.hasAttribute('data-edit-address')) {
+    template('#address-template', button);
+    content.querySelector('input').value = direccion;
+    content.querySelector('form').addEventListener('submit', e => {
+      e.preventDefault();
+      const input = content.querySelector('input');
+      const value = input.value.trim();
+      if (!value) { input.setCustomValidity('Escribe una dirección.'); input.reportValidity(); input.addEventListener('input', () => input.setCustomValidity(''), { once: true }); return; }
+      direccion = value;
+      document.querySelectorAll('[data-address-text]').forEach(el => { el.textContent = direccion; });
+      closeDialog(); toast('Dirección actualizada en la preview.');
+    });
+  }
+  if (button.hasAttribute('data-estimate')) {
+    template('#estimate-template', button);
+    content.querySelector('form').addEventListener('submit', e => {
+      e.preventDefault();
+      const horas = Number(new FormData(e.currentTarget).get('horas'));
+      document.querySelector('.gas-content h3').textContent = `Quedan unos ${Math.round(10 / horas)} días`;
+      closeDialog(); toast('Estimación de ejemplo actualizada.');
+    });
+  }
+  if (button.hasAttribute('data-receipt')) message('Documento de muestra', ['SIN VALIDEZ FISCAL · No es una boleta ni una factura.', 'Pedido #GW-0984 · 12 de agosto de 2026.', 'Cliente ficticia: Valeria Mendoza. Producto: recarga SOLGAS de 10 kg.', 'En producción, este espacio abrirá el documento emitido por el proveedor de comprobantes.'], button);
+  if (button.hasAttribute('data-help')) message('Tu equipo de Surquillo', ['En el portal final podrás contactar al equipo de atención desde aquí.', 'Esta preview no inicia llamadas ni envía mensajes.'], button);
+  if (button.hasAttribute('data-filter')) {
+    document.querySelectorAll('[data-filter]').forEach(el => { const active = el === button; el.classList.toggle('active', active); el.setAttribute('aria-pressed', String(active)); });
+    document.querySelectorAll('[data-order-status]').forEach(el => { el.hidden = button.dataset.filter !== 'todos' && el.dataset.orderStatus !== button.dataset.filter; });
+  }
+});
+document.querySelector('#theme-toggle').addEventListener('click', e => {
+  const dark = document.body.classList.toggle('dark');
+  e.currentTarget.setAttribute('aria-pressed', String(dark));
+  e.currentTarget.setAttribute('aria-label', dark ? 'Activar tema claro' : 'Activar tema oscuro');
+  e.currentTarget.querySelector('i').className = `fa-solid fa-${dark ? 'sun' : 'moon'}`;
+});
+const drawer = document.querySelector('#account-drawer');
+const account = document.querySelector('#account-popover');
+const accountTriggers = new Map([[drawer, document.querySelector('#menu-toggle')], [account, document.querySelector('#profile-toggle')]]);
+for (const [panel, trigger] of accountTriggers) {
+  trigger.addEventListener('click', () => panel.showModal());
+  panel.addEventListener('close', () => trigger.focus({ preventScroll: true }));
+  panel.querySelector('[data-close-account]').addEventListener('click', () => panel.close());
+  panel.addEventListener('click', event => {
+    if (event.target === panel) {
+      const box = panel.getBoundingClientRect();
+      if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) panel.close();
+    }
+    if (event.target.closest('[data-view], [data-help]')) panel.close();
+  });
+}
+view(location.hash.slice(1), false);
+window.addEventListener('hashchange', () => view(location.hash.slice(1), false));
+
+    </script>
+  </body>
+</html>

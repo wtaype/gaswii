@@ -6,10 +6,12 @@ import { getI18n, type Idioma } from '../idioma/idioma';
 
 interface Props {
   idioma?: Idioma;
+  ruta?: string;
 }
 
-const { idioma = 'es' } = Astro.props;
+const { idioma = 'es', ruta = '/' } = Astro.props;
 const t = getI18n(idioma).nav;
+const baseHash = idioma === 'en' ? '/en' : (ruta !== '/' ? '/' : '');
 ---
 
 <!-- BACKDROP PARA DRAWER MÓVIL -->
@@ -19,22 +21,30 @@ const t = getI18n(idioma).nav;
 <aside class="mobile-drawer" id="mobileDrawer">
   <div class="drawer-brand-header">
     <div class="drawer-brand-box">
-      <img src="/imgwii/logo.webp" alt="Logo Solgas" width="36" height="36" class="drawer-logo-img" />
-      <span class="drawer-brand-title">SOLGAS SURQUILLO</span>
+      <img src="/imgwii/logo.webp" alt="Logo Solgas" width="44" height="44" class="drawer-logo-img" />
     </div>
-    <button onclick="window.cerrarDrawer && window.cerrarDrawer()" aria-label="Cerrar Menú" class="drawer-close-btn">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
+    
+    <div class="flex items-center gap-2">
+      <!-- Selector Bilingüe Móvil (ES / EN) -->
+      <div class="header-pill-group" title="Idioma / Language">
+        <a href="/" class={`header-pill-btn ${idioma === 'es' ? 'active' : ''}`}>ES</a>
+        <a href="/en" class={`header-pill-btn ${idioma === 'en' ? 'active' : ''}`}>EN</a>
+      </div>
+
+      <button onclick="window.cerrarDrawer && window.cerrarDrawer()" aria-label="Cerrar Menú" class="drawer-close-btn">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
   </div>
 
   <!-- Navegación Drawer -->
   <nav class="drawer-nav-list">
-    <a href="#pesaje" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-scale-balanced drawer-nav-icon color-brand-blue"></i> <span>{t.balanza}</span></a>
-    <a href="#productos" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-fire drawer-nav-icon color-primary"></i> <span>{t.productos}</span></a>
-    <a href="#seguridad" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-shield-halved drawer-nav-icon color-emerald"></i> <span>{t.seguridad}</span></a>
-    <a href="#calculadora" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-calculator drawer-nav-icon color-gold"></i> <span>{t.calculadora}</span></a>
-    <a href="#mapa-sede" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-location-dot drawer-nav-icon color-brand-blue"></i> <span>{t.ubicacion}</span></a>
-    <a href="#nosotros" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-building drawer-nav-icon color-primary"></i> <span>{t.nosotros}</span></a>
+    <a href={`${baseHash}#pesaje`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-scale-balanced drawer-nav-icon color-brand-blue"></i> <span>{t.balanza}</span></a>
+    <a href={`${baseHash}#productos`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-fire drawer-nav-icon color-primary"></i> <span>{t.productos}</span></a>
+    <a href={`${baseHash}#seguridad`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-shield-halved drawer-nav-icon color-emerald"></i> <span>{t.seguridad}</span></a>
+    <a href={`${baseHash}#calculadora`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-calculator drawer-nav-icon color-gold"></i> <span>{t.calculadora}</span></a>
+    <a href={`${baseHash}#mapa-sede`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-location-dot drawer-nav-icon color-brand-blue"></i> <span>{t.ubicacion}</span></a>
+    <a href={`${baseHash}#nosotros`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-building drawer-nav-icon color-primary"></i> <span>{t.nosotros}</span></a>
   </nav>
 
   <!-- Botones en Drawer Móvil -->
@@ -77,16 +87,7 @@ const t = getI18n(idioma).nav;
 
 <script>
   import { getSmileLocal, escucharAuth, generarAvatarUrl } from '../../feature/auth/auth.js';
-
-  interface SmileData {
-    uid?: string;
-    nombre?: string;
-    usuario?: string;
-    foto?: string;
-    puntos?: number;
-    rol?: string;
-    [key: string]: any;
-  }
+  import type { SmileData } from '../tipos/auth';
 
   function actualizarDrawerAuth(smile: SmileData | null) {
     const drawerBtnLogin = document.getElementById('drawerBtnLogin');
@@ -116,5 +117,12 @@ const t = getI18n(idioma).nav;
 
   escucharAuth((_user: any, smile: SmileData | null) => {
     actualizarDrawerAuth(smile);
+  });
+
+  // Accesibilidad: Cerrar Drawer con tecla Escape
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && window.cerrarDrawer) {
+      window.cerrarDrawer();
+    }
   });
 </script>

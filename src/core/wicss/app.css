@@ -85,7 +85,7 @@ html {
   scroll-behavior: smooth;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
 }
 
@@ -97,7 +97,7 @@ body {
   line-height: 1.6;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
   transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
@@ -109,7 +109,7 @@ main {
   flex: 1;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   box-sizing: border-box;
 }
 
@@ -117,7 +117,7 @@ section {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
@@ -484,17 +484,18 @@ img {
 
 /* 10. HEADER STICKY OFICIAL */
 .header-main {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box !important;
-  background: var(--header-bg);
+  background: var(--header-bg) !important;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-card);
-  padding: 1vh 0;
+  padding: 0.8vh 0;
   transition: background 0.3s ease;
 }
 
@@ -514,16 +515,16 @@ img {
   gap: 0.9vw;
   text-decoration: none;
   min-width: 0;
+  height: 46px;
 }
 
 .header-logo-img {
-  height: 5vh;
+  height: 46px;
+  max-height: 46px;
   width: auto;
   object-fit: contain;
   border-radius: 1.2vh;
-  background: #ffffff;
-  padding: 0.2vh;
-  border: 1px solid var(--border-card);
+  box-sizing: border-box !important;
   flex-shrink: 0;
 }
 
@@ -612,9 +613,12 @@ img {
   align-items: center;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-card);
-  border-radius: 1.2vh;
-  padding: 3px;
-  gap: 3px;
+  border-radius: 1vh;
+  padding: 2px;
+  gap: 2px;
+  height: 34px;
+  box-sizing: border-box !important;
+  flex-shrink: 0;
 }
 
 .header-pill-btn {
@@ -623,8 +627,9 @@ img {
   color: var(--text-muted);
   font-weight: 700;
   font-size: 0.72rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: 0.8vh;
+  padding: 0 0.55rem;
+  height: 100%;
+  border-radius: 0.7vh;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
@@ -632,6 +637,7 @@ img {
   align-items: center;
   justify-content: center;
   line-height: 1;
+  box-sizing: border-box !important;
 }
 
 .header-pill-btn:hover {
@@ -649,16 +655,17 @@ img {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-card);
   color: var(--text-bright);
-  width: 38px;
-  height: 38px;
-  border-radius: 1.2vh;
+  width: 34px;
+  height: 34px;
+  border-radius: 1vh;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   transition: all 0.25s ease;
   flex-shrink: 0;
+  box-sizing: border-box !important;
 }
 
 .header-theme-toggle:hover, .btn-theme-toggle:hover {
@@ -802,15 +809,17 @@ img {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-card);
   color: var(--text-bright);
-  width: 38px;
-  height: 38px;
-  border-radius: 1.2vh;
+  width: 34px;
+  height: 34px;
+  border-radius: 1vh;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   transition: all 0.2s ease;
+  flex-shrink: 0;
+  box-sizing: border-box !important;
 }
 
 /* 11. DRAWER MÓVIL Y BACKDROP */
@@ -863,30 +872,37 @@ img {
 .drawer-brand-box {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
 }
 
 .drawer-logo-img {
-  height: 4.2vh;
+  height: 38px;
+  max-height: 38px;
   width: auto;
-  border-radius: 1.2vh;
-  background: #ffffff;
-  padding: 0.2vh;
-}
-
-.drawer-brand-title {
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--text-bright);
+  object-fit: contain;
+  border-radius: 1vh;
+  box-sizing: border-box !important;
 }
 
 .drawer-close-btn {
-  background: none;
-  border: none;
-  font-size: 1.4rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-card);
+  border-radius: 1vh;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
   color: var(--text-main);
   cursor: pointer;
-  padding: 0.4rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  box-sizing: border-box !important;
+}
+
+.drawer-close-btn:hover {
+  color: var(--brand-orange);
+  border-color: var(--brand-orange);
 }
 
 .drawer-nav-list {
@@ -1376,7 +1392,7 @@ img {
   main {
     width: 100% !important;
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     padding-bottom: 8vh;
     box-sizing: border-box !important;
   }
@@ -1405,6 +1421,24 @@ img {
   }
   .header-brand-title {
     display: none !important;
+  }
+  .header-actions-row {
+    gap: 5px !important;
+  }
+  .header-brand-link {
+    height: 44px !important;
+  }
+  .header-logo-img {
+    height: 44px !important;
+    max-height: 44px !important;
+  }
+  .header-pill-group {
+    height: 34px !important;
+  }
+  .header-theme-toggle,
+  .header-btn-mobile-toggle {
+    width: 34px !important;
+    height: 34px !important;
   }
   .footer-grid-layout { grid-template-columns: 1fr; gap: 3.5vh; }
 }

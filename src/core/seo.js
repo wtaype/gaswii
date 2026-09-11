@@ -124,7 +124,7 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
         url: urlBase,
         telephone: datosNegocio.telefonoMostrado,
         image: `${urlBase}/imgwii/01-solgas-surquillo.webp`,
-        priceRange: "S/ 38 - S/ 215",
+        priceRange: "S/ 55 - S/ 230",
         paymentAccepted: ["Cash", "Credit Card", "Debit Card", "Yape", "Plin"],
         currenciesAccepted: "PEN",
         address: {
