@@ -1,0 +1,2907 @@
+---
+import { datosNegocio } from '../negocio.js';
+import { avatar, getNombre } from '../core/widev/nombre.js';
+import '../core/wicss/witema.css';
+
+// Perfil de cliente con libreta de direcciones
+const cliente = {
+  nombreCompleto: 'Valeria Mendoza',
+  nombre: 'Valeria', // Solo primer nombre
+  usuario: 'valeria.m',
+  telefono: '987 654 321',
+  email: 'valeria.mendoza@gmail.com',
+  dni: '74829103',
+  cilindroHabitual: 'solgas-10kg',
+  metodoPago: 'efectivo', // 'efectivo' | 'yape-plin'
+  vueltoDe: '100',
+  notas: 'Piso 3, timbre no suena fuerte. Dejar con vigilancia si no contesto.',
+  tipoComprobante: 'boleta', // 'boleta' | 'factura'
+  ruc: '',
+  razonSocial: '',
+  direcciones: [
+    {
+      id: 'dir-1',
+      alias: 'Casa Principal',
+      icono: 'house',
+      calle: 'Jr. Dante 260, Dpto 301',
+      distrito: 'Surquillo',
+      referencia: 'Frente al parque, portón marrón',
+      eta: '12–15 min',
+      esPrincipal: true
+    },
+    {
+      id: 'dir-2',
+      alias: 'Oficina / Estudio',
+      icono: 'briefcase',
+      calle: 'Av. República de Panamá 3565',
+      distrito: 'San Isidro',
+      referencia: 'Edificio Platino, Piso 4',
+      eta: '18–25 min',
+      esPrincipal: false
+    }
+  ]
+};
+
+// 4 productos de Solgas Surquillo con exactamente 2 especificaciones organizadas en checks
+const productos = [
+  {
+    id: 'solgas-10kg',
+    nombre: 'Balón SOLGAS 10 kg',
+    nombreCorto: 'Solgas 10 kg',
+    badge: 'Más Pedido',
+    tagClase: 'badge-fire',
+    tipoUso: 'Hogar',
+    capacidad: '10 kg Neto',
+    precioPEN: 65.00,
+    imagen: '/imgwii/productos/BALON-10KG.webp',
+    checks: [
+      { label: 'Válvula', valor: 'Click-On o Rosca estándar' },
+      { label: 'Pesaje', valor: 'Balanza digital Inacal en puerta' }
+    ]
+  },
+  {
+    id: 'solgas-45kg',
+    nombre: 'Balón SOLGAS 45 kg',
+    nombreCorto: 'Solgas 45 kg',
+    badge: 'Comercial',
+    tagClase: 'badge-blue',
+    tipoUso: 'Negocio',
+    capacidad: '45 kg Neto',
+    precioPEN: 230.00,
+    imagen: '/imgwii/productos/BALON-45KG.webp',
+    checks: [
+      { label: 'Conexión', valor: 'Rosca industrial alta presión' },
+      { label: 'Capacidad', valor: 'Caudal continuo para negocios' }
+    ]
+  },
+  {
+    id: 'masgas-10kg',
+    nombre: 'Balón MASGAS 10 kg',
+    nombreCorto: 'Masgas 10 kg',
+    badge: 'Económico',
+    tagClase: 'badge-emerald',
+    tipoUso: 'Ahorro',
+    capacidad: '10 kg Neto',
+    precioPEN: 55.00,
+    imagen: '/imgwii/productos/MASGAS-10KG.webp',
+    checks: [
+      { label: 'Conexión', valor: 'Universal estándar para hogar' },
+      { label: 'Rendimiento', valor: 'Larga duración garantizada' }
+    ]
+  },
+  {
+    id: 'regulador-solgas',
+    nombre: 'Kit Regulador SOLGAS',
+    nombreCorto: 'Kit Regulador',
+    badge: 'Seguridad',
+    tagClase: 'badge-gold',
+    tipoUso: 'Antifugas',
+    capacidad: 'Click-On',
+    precioPEN: 70.00,
+    imagen: '/imgwii/productos/REGULADOR.webp',
+    checks: [
+      { label: 'Seguridad', valor: 'Traba automática antifugas' },
+      { label: 'Certificación', valor: 'Homologado por Osinergmin' }
+    ]
+  }
+];
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Mi Perfil Express & Pedido 1-Clic · Solgas Surquillo | View 40</title>
+    <meta name="description" content="Portal ejecutivo de Solgas Surquillo con atributos diferenciados por valor, sección de direcciones ampliada con vh, header unificado y tipografía optimizada." />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/google/fonts.css" />
+    <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+
+    <!-- Script Anti-FOUC con sincronización de temas -->
+    <script is:inline>
+      (function() {
+        try {
+          const saved = localStorage.getItem('wiTema_gaswii') || localStorage.getItem('wiTema');
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = saved || (prefersDark ? 'futuro' : 'luz');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'futuro';
+        }
+      })();
+    </script>
+
+    <style is:global>
+/* ==========================================================================
+   VIEW39 - EXPERIENCIA PREMIUM SOLGAS SURQUILLO
+   ATRIBUTOS POR VALOR + DIRECCIONES CON PADDING-BLOCK VH + HEADER UNIFICADO
+   ========================================================================== */
+
+:root {
+  --v40-primary: #ff6600;
+  --v40-primary-hover: #ff771a;
+  --v40-primary-glow: rgba(255, 102, 0, 0.28);
+  --v40-wa: #25d366;
+  --v40-wa-hover: #1ebd5b;
+  --v40-call: #0284c7;
+  --v40-call-hover: #0369a1;
+
+  /* WhatsApp Mockup Tokens */
+  --v40-wa-chat-bg: #efeae2;
+  --v40-wa-header-bg: #008069;
+  --v40-wa-bubble-me: #d9fdd3;
+  --v40-wa-text-me: #111b21;
+
+  /* Colores Portal Light */
+  --v40-bg: #f4f7fb;
+  --v40-surface: #ffffff;
+  --v40-surface-alt: #f8fafc;
+  --v40-card-bg: #ffffff;
+  --v40-border: #e2e8f0;
+  --v40-border-strong: #cbd5e1;
+  --v40-text-title: #0f172a;
+  --v40-text-body: #334155;
+  --v40-text-muted: #64748b;
+  --v40-input-bg: #ffffff;
+  --v40-pill-bg: #fff1eb;
+  --v40-pill-text: #c2410c;
+  --v40-shadow: 0 0.5vh 2.5vh rgba(15, 23, 42, 0.05);
+  --v40-header-bg: rgba(255, 255, 255, 0.96);
+  --v40-modal-bg: #ffffff;
+  --v40-modal-header-bg: #f8fafc;
+}
+
+:root[data-theme="futuro"],
+body.dark {
+  --v40-bg: #060913;
+  --v40-surface: #0a0f1f;
+  --v40-surface-alt: #0e162c;
+  --v40-card-bg: #0c1328;
+  --v40-border: rgba(255, 255, 255, 0.08);
+  --v40-border-strong: rgba(255, 255, 255, 0.16);
+  --v40-text-title: #f8fafc;
+  --v40-text-body: #cbd5e1;
+  --v40-text-muted: #94a3b8;
+  --v40-input-bg: #070c18;
+  --v40-pill-bg: rgba(255, 102, 0, 0.15);
+  --v40-pill-text: #ff944d;
+  --v40-shadow: 0 1vh 3.5vh rgba(0, 0, 0, 0.5);
+  --v40-header-bg: rgba(6, 9, 19, 0.96);
+  --v40-modal-bg: #0a1024;
+  --v40-modal-header-bg: #070c1c;
+
+  /* WhatsApp Mockup Dark */
+  --v40-wa-chat-bg: #0b141a;
+  --v40-wa-header-bg: #202c33;
+  --v40-wa-bubble-me: #005c4b;
+  --v40-wa-text-me: #e9edef;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-height: 100vh;
+  background: var(--v40-bg);
+  color: var(--v40-text-body);
+  font-family: var(--ff_P, 'Poppins', sans-serif);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* ==========================================================================
+   HEADER PROFESIONAL CON LOGO Y TEXTO UNIFICADOS (SIN SEPARACIÓN EXCESIVA)
+   ========================================================================== */
+.v40-topbar {
+  height: clamp(56px, 7vh, 66px);
+  background: var(--v40-header-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 0.1vh solid var(--v40-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5vw;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+}
+
+.v40-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.55vw; /* Reducido de 1vw para mayor unión */
+}
+
+.v40-brand-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.v40-brand-logo {
+  height: clamp(34px, 4.6vh, 42px);
+  width: auto;
+  object-fit: contain;
+}
+
+.v40-brand-desc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 0.12vh solid var(--v40-border);
+  padding-left: 0.55vw; /* Reducido de 0.9vw para estar más unido al logo */
+}
+
+.v40-brand-desc strong {
+  font-size: clamp(0.78rem, 0.88vw, 0.95rem);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  letter-spacing: 0.04em;
+  color: var(--v40-text-title);
+  line-height: 1.12;
+}
+
+.v40-brand-desc strong span { color: var(--v40-primary); }
+
+.v40-brand-desc small {
+  font-size: clamp(0.62rem, 0.68vw, 0.74rem);
+  color: var(--v40-text-muted);
+}
+
+.v40-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2vw;
+}
+
+.v40-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+}
+
+.v40-lang-btn,
+.v40-theme-btn {
+  background: var(--v40-surface-alt);
+  border: 0.1vh solid var(--v40-border);
+  color: var(--v40-text-title);
+  border-radius: 0.8vh;
+  width: clamp(32px, 4vh, 38px);
+  height: clamp(32px, 4vh, 38px);
+  display: grid;
+  place-items: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.v40-lang-btn:hover,
+.v40-theme-btn:hover {
+  border-color: var(--v40-primary);
+  color: var(--v40-primary);
+}
+
+/* User Trigger (Solo Nombre Valeria) */
+.v40-user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  background: var(--v40-surface-alt);
+  border: 0.1vh solid var(--v40-border);
+  padding: 0.4vh 0.8vw 0.4vh 0.4vh;
+  border-radius: 3vh;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.v40-user-trigger:hover { border-color: var(--v40-primary); }
+
+.v40-user-avatar {
+  width: clamp(28px, 3.6vh, 34px);
+  height: clamp(28px, 3.6vh, 34px);
+  border-radius: 50%;
+  background: var(--v40-primary);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.v40-user-name-only strong {
+  font-size: clamp(0.76rem, 0.84vw, 0.9rem);
+  font-weight: 600;
+  color: var(--v40-text-title);
+}
+
+/* User Dropdown */
+.v40-user-dropdown {
+  position: absolute;
+  top: calc(100% + 0.6vh);
+  right: 0;
+  width: clamp(180px, 14vw, 210px);
+  background: var(--v40-card-bg);
+  border: 0.1vh solid var(--v40-border);
+  border-radius: 1.2vh;
+  box-shadow: var(--v40-shadow);
+  padding: 0.5vh;
+  display: none;
+  flex-direction: column;
+  gap: 0.2vh;
+  z-index: 150;
+}
+.v40-user-dropdown.open { display: flex; }
+
+.v40-drop-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+  padding: 0.8vh 0.8vw;
+  border-radius: 0.8vh;
+  border: none;
+  background: transparent;
+  color: var(--v40-text-title);
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.v40-drop-btn:hover {
+  background: var(--v40-surface-alt);
+  color: var(--v40-primary);
+}
+.v40-drop-btn.logout { color: #ef4444; }
+
+/* ==========================================================================
+   BANNER SUPERIOR EXPRESS (RELLENA EL VACÍO SUPERIOR)
+   ========================================================================== */
+.v40-top-banner {
+  max-width: 96vw;
+  margin: 1.6vh auto 0;
+  padding: 1.2vh 1.8vw;
+  background: linear-gradient(90deg, rgba(255, 102, 0, 0.08) 0%, rgba(2, 132, 199, 0.05) 100%);
+  border: 0.12vh solid var(--v40-border-strong);
+  border-radius: 1.4vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5vw;
+}
+
+.v40-banner-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25vh;
+}
+
+.v40-banner-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+}
+
+.v40-banner-title i {
+  color: var(--v40-primary);
+  font-size: clamp(1rem, 1.25vw, 1.35rem);
+}
+
+.v40-banner-title h2 {
+  margin: 0;
+  font-size: clamp(1rem, 1.2vw, 1.3rem);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  font-weight: 800;
+  color: var(--v40-text-title);
+  letter-spacing: -0.01em;
+}
+
+.v40-banner-sub {
+  margin: 0;
+  font-size: clamp(0.72rem, 0.78vw, 0.85rem);
+  color: var(--v40-text-muted);
+  line-height: 1.35;
+}
+
+.v40-banner-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.v40-badge-autocompletado {
+  background: rgba(16, 185, 129, 0.12);
+  border: 0.1vh solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  padding: 0.5vh 1vw;
+  border-radius: 2vh;
+  font-size: clamp(0.72rem, 0.78vw, 0.84rem);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+}
+.v40-badge-autocompletado i { font-size: 0.85rem; }
+
+/* ==========================================================================
+   LAYOUT PRINCIPAL: 65% FORMULARIO / 35% PREVIEW WHATSAPP
+   ========================================================================== */
+.v40-app-container {
+  max-width: 96vw;
+  margin: 1.2vh auto 2.5vh;
+  display: grid;
+  grid-template-columns: 65% 35%;
+  gap: 1.5vw;
+  align-items: start;
+}
+
+/* ==========================================================================
+   COLUMNA 1: FORMULARIO PRINCIPAL
+   ========================================================================== */
+.v40-col-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vh;
+}
+
+.v40-section-card {
+  background: var(--v40-card-bg);
+  border: 0.1vh solid var(--v40-border);
+  border-radius: 1.8vh;
+  padding: 1.6vh 1.6vw;
+  box-shadow: var(--v40-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vh;
+}
+
+.v40-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.1vh solid var(--v40-border);
+  padding-bottom: 0.9vh;
+}
+
+.v40-card-head h1 {
+  margin: 0;
+  font-size: clamp(1.15rem, 1.4vw, 1.5rem);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  font-weight: 800;
+  color: var(--v40-text-title);
+}
+.v40-card-head h1 span { color: var(--v40-primary); }
+
+.v40-btn-edit {
+  background: var(--v40-surface-alt);
+  border: 0.12vh solid var(--v40-border-strong);
+  color: var(--v40-primary);
+  padding: 0.6vh 1vw;
+  border-radius: 0.9vh;
+  font-size: clamp(0.72rem, 0.78vw, 0.86rem);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+  transition: all 0.2s;
+}
+.v40-btn-edit:hover {
+  background: var(--v40-primary);
+  color: #fff;
+  border-color: var(--v40-primary);
+}
+
+/* ==========================================================================
+   DATOS DE ENTREGA: PADDING-BLOCK AUMENTADO CON VH Y DISEÑO ELEGANTE
+   ========================================================================== */
+.v40-delivery-grid {
+  display: grid;
+  grid-template-columns: 24% 33% 43%;
+  gap: 0.8vw;
+  align-items: center;
+  background: var(--v40-surface-alt);
+  border: 0.12vh solid var(--v40-border-strong);
+  border-radius: 1.4vh;
+  padding-block: clamp(1.4vh, 1.9vh, 2.5vh); /* Aumentado con vh como solicitó el usuario */
+  padding-inline: clamp(1vw, 1.3vw, 1.6vw);
+  box-shadow: 0 0.3vh 1.2vh rgba(0, 0, 0, 0.04);
+}
+
+.v40-delivery-cell small {
+  display: flex;
+  align-items: center;
+  gap: 0.3vw;
+  font-size: clamp(0.64rem, 0.7vw, 0.76rem);
+  color: var(--v40-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.4vh;
+}
+
+.v40-delivery-cell strong {
+  font-size: clamp(0.85rem, 0.94vw, 1.02rem);
+  color: var(--v40-text-title);
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+}
+
+.v40-select-address {
+  width: 100%;
+  padding: 0.75vh 0.85vw; /* Aumentado para mayor presencia y toque premium */
+  border-radius: 0.9vh;
+  border: 0.15vh solid var(--v40-border-strong);
+  background: var(--v40-surface);
+  color: var(--v40-text-title);
+  font-size: clamp(0.78rem, 0.86vw, 0.92rem);
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.v40-select-address:focus {
+  outline: 0.2vh solid var(--v40-primary);
+  border-color: transparent;
+  box-shadow: 0 0 0 0.2vh var(--v40-primary-glow);
+}
+
+/* Etiquetas de Sección */
+.v40-section-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.3vh;
+}
+
+.v40-section-label > span:first-child {
+  font-size: clamp(0.82rem, 0.88vw, 0.94rem);
+  font-weight: 700;
+  color: var(--v40-text-title);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.v40-delivery-badge {
+  font-size: clamp(0.7rem, 0.76vw, 0.82rem);
+  color: #10b981;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.35vw;
+}
+
+/* ==========================================================================
+   4 PRODUCTOS EN 1 FILA DESKTOP:
+   TEXTO MÁS GRANDE, LINE-HEIGHT Y PADDING AUMENTADO, ESPECIFICACIONES POR VALOR
+   ========================================================================== */
+.v40-products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.9vw;
+}
+
+.v40-prod-card {
+  border: 0.18vh solid var(--v40-border);
+  background: var(--v40-surface-alt);
+  border-radius: 1.6vh;
+  padding: clamp(1.2vh, 1.6vh, 2vh) clamp(0.8vw, 1vw, 1.2vw); /* Padding aumentado y más profesional */
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  color: var(--v40-text-title);
+  position: relative;
+}
+.v40-prod-card:hover {
+  border-color: var(--v40-primary);
+  transform: translateY(-0.3vh);
+  box-shadow: 0 1vh 2.4vh var(--v40-primary-glow);
+}
+.v40-prod-card.active {
+  border-color: var(--v40-primary);
+  background: var(--v40-pill-bg);
+  box-shadow: 0 0 0 0.2vh var(--v40-primary-glow);
+}
+
+.v40-prod-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4vh;
+}
+
+.v40-prod-badge {
+  font-size: clamp(0.6rem, 0.66vw, 0.72rem);
+  padding: 0.28vh 0.55vw;
+  border-radius: 0.6vh;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.badge-fire { background: rgba(255, 102, 0, 0.16); color: var(--v40-primary); }
+.badge-blue { background: rgba(2, 132, 199, 0.16); color: #0284c7; }
+.badge-emerald { background: rgba(16, 185, 129, 0.16); color: #10b981; }
+.badge-gold { background: rgba(245, 158, 11, 0.16); color: #f59e0b; }
+
+.v40-prod-use-tag {
+  font-size: clamp(0.62rem, 0.68vw, 0.74rem);
+  color: var(--v40-text-muted);
+  font-weight: 700;
+}
+
+.v40-prod-img-box {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 1.2vh;
+  padding: 0.6vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0.3vh 0 0.7vh;
+  min-height: clamp(84px, 10vh, 102px);
+}
+.v40-prod-img-box img {
+  height: clamp(72px, 8.8vh, 92px);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+.v40-prod-card:hover .v40-prod-img-box img {
+  transform: scale(1.06);
+}
+
+.v40-capacidad-pill {
+  position: absolute;
+  bottom: 0.35vh;
+  right: 0.35vw;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: clamp(0.54rem, 0.6vw, 0.66rem);
+  font-weight: 700;
+  padding: 0.2vh 0.45vw;
+  border-radius: 1.5vh;
+  display: flex;
+  align-items: center;
+  gap: 0.2vw;
+}
+.v40-capacidad-pill i { color: #10b981; font-size: 0.48rem; }
+
+/* Nombre del Producto: Tamaño y Line-height Aumentados */
+.v40-prod-name {
+  font-size: clamp(0.88rem, 0.98vw, 1.08rem);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  font-weight: 800;
+  line-height: 1.28;
+  color: var(--v40-text-title);
+  margin: 0.3vh 0 0.6vh;
+}
+
+/* ==========================================================================
+   CHECKLIST SUPER ORGANIZADO DE PRODUCTO CON CHECKS VERDES (SIN CORTES)
+   ========================================================================== */
+.v40-prod-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55vh;
+  margin: 0.4vh 0 0.9vh;
+}
+
+.v40-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4vw;
+  font-size: clamp(0.6rem, 0.66vw, 0.74rem); /* Reducido ~2px como se solicitó */
+  line-height: 1.35;
+  color: var(--v40-text-body);
+}
+
+.v40-check-icon {
+  color: #10b981;
+  font-size: clamp(0.62rem, 0.68vw, 0.76rem);
+  margin-top: 0.15vh;
+  flex-shrink: 0;
+}
+
+.v40-check-text {
+  flex: 1;
+}
+
+.v40-check-text strong {
+  color: var(--v40-text-title);
+  font-weight: 700;
+}
+
+.v40-prod-bottom-box {
+  border-top: 0.1vh solid var(--v40-border);
+  padding-top: 0.7vh;
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.v40-prod-price {
+  font-size: clamp(1.2rem, 1.4vw, 1.55rem);
+  font-weight: 800;
+  color: var(--v40-primary);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  line-height: 1;
+}
+
+.v40-prod-delivery-note {
+  font-size: clamp(0.62rem, 0.68vw, 0.74rem);
+  color: #10b981;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   FORMA DE PAGO & INDICACIONES DE ENTREGA EN 2 COLUMNAS
+   ========================================================================== */
+.v40-two-col-payment-notes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2vw;
+  margin-top: 0.3vh;
+}
+
+/* COLUMNA PAGO & VUELTO */
+.v40-pay-panel {
+  background: var(--v40-surface-alt);
+  border: 0.12vh solid var(--v40-border);
+  border-radius: 1.4vh;
+  padding: 1.3vh 1.2vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9vh;
+}
+
+.v40-panel-subtitle {
+  font-size: clamp(0.76rem, 0.82vw, 0.9rem);
+  font-weight: 700;
+  color: var(--v40-text-title);
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+}
+.v40-panel-subtitle i { color: var(--v40-primary); }
+
+.v40-pay-methods-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6vw;
+}
+
+.v40-pay-method-btn {
+  border: 0.15vh solid var(--v40-border);
+  background: var(--v40-surface);
+  border-radius: 1vh;
+  padding: 0.85vh 0.6vw;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4vw;
+  font-size: clamp(0.76rem, 0.82vw, 0.9rem);
+  font-weight: 700;
+  color: var(--v40-text-title);
+  transition: all 0.2s;
+}
+.v40-pay-method-btn:hover { border-color: var(--v40-primary); }
+.v40-pay-method-btn.active {
+  border-color: var(--v40-primary);
+  background: var(--v40-pill-bg);
+  color: var(--v40-primary);
+  box-shadow: 0 0 0 0.15vh var(--v40-primary-glow);
+}
+.v40-pay-method-btn i { font-size: 1rem; }
+
+/* Efectivo: Selector de vuelto amigable con 4 referencias + personalizado */
+.v40-cash-details-box {
+  background: var(--v40-surface);
+  border: 0.1vh dashed var(--v40-border-strong);
+  border-radius: 1vh;
+  padding: 0.9vh 1vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7vh;
+}
+
+.v40-cash-title {
+  font-size: clamp(0.72rem, 0.78vw, 0.85rem);
+  font-weight: 600;
+  color: var(--v40-text-title);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.v40-vuelto-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.35vw;
+}
+
+.v40-vuelto-chip {
+  border: 0.1vh solid var(--v40-border);
+  background: var(--v40-surface-alt);
+  color: var(--v40-text-title);
+  border-radius: 0.6vh;
+  padding: 0.55vh 0.2vw;
+  font-size: clamp(0.66rem, 0.72vw, 0.78rem);
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.v40-vuelto-chip:hover { border-color: var(--v40-primary); }
+.v40-vuelto-chip.active {
+  background: var(--v40-primary);
+  color: #fff;
+  border-color: var(--v40-primary);
+}
+
+/* Input Personalizado para Efectivo */
+.v40-custom-cash-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  background: var(--v40-surface-alt);
+  border: 0.1vh solid var(--v40-border);
+  border-radius: 0.8vh;
+  padding: 0.45vh 0.6vw;
+}
+
+.v40-custom-cash-input-row span {
+  font-size: clamp(0.72rem, 0.78vw, 0.85rem);
+  font-weight: 800;
+  color: var(--v40-primary);
+}
+
+.v40-custom-cash-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--v40-text-title);
+  font-size: clamp(0.78rem, 0.86vw, 0.94rem);
+  font-weight: 700;
+  font-family: inherit;
+  outline: none;
+}
+
+.v40-vuelto-calc-feedback {
+  font-size: clamp(0.66rem, 0.72vw, 0.78rem);
+  color: #10b981;
+  font-weight: 700;
+}
+
+/* Yape / Plin Box */
+.v40-yape-details-box {
+  background: var(--v40-surface);
+  border: 0.1vh dashed rgba(16, 185, 129, 0.4);
+  border-radius: 1vh;
+  padding: 1vh 0.9vw;
+  display: none;
+  align-items: center;
+  gap: 0.8vw;
+}
+.v40-yape-details-box i {
+  font-size: 1.5rem;
+  color: #10b981;
+}
+.v40-yape-details-box p {
+  margin: 0;
+  font-size: clamp(0.72rem, 0.78vw, 0.85rem);
+  color: var(--v40-text-body);
+  line-height: 1.35;
+}
+
+/* COLUMNA INDICACIONES Y NOTAS */
+.v40-notes-panel {
+  background: var(--v40-surface-alt);
+  border: 0.12vh solid var(--v40-border);
+  border-radius: 1.4vh;
+  padding: 1.3vh 1.2vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vh;
+}
+
+.v40-quick-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35vw;
+}
+
+.v40-quick-tag {
+  background: var(--v40-surface);
+  border: 0.1vh solid var(--v40-border);
+  color: var(--v40-text-muted);
+  border-radius: 1.5vh;
+  padding: 0.35vh 0.7vw;
+  font-size: clamp(0.64rem, 0.7vw, 0.76rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 0.25vw;
+}
+.v40-quick-tag:hover {
+  border-color: var(--v40-primary);
+  color: var(--v40-primary);
+}
+.v40-quick-tag.active {
+  background: var(--v40-pill-bg);
+  border-color: var(--v40-primary);
+  color: var(--v40-primary);
+}
+
+.v40-notes-input {
+  width: 100%;
+  flex: 1;
+  min-height: clamp(68px, 8.5vh, 90px);
+  padding: 0.8vh 0.9vw;
+  border-radius: 1vh;
+  border: 0.12vh solid var(--v40-border-strong);
+  background: var(--v40-surface);
+  color: var(--v40-text-title);
+  font-size: clamp(0.76rem, 0.82vw, 0.88rem);
+  font-family: inherit;
+  resize: none;
+  line-height: 1.45;
+}
+.v40-notes-input:focus {
+  outline: 0.2vh solid var(--v40-primary);
+  border-color: transparent;
+}
+
+/* ==========================================================================
+   COLUMNA 2: PREVIEW WHATSAPP MAXI CON CHAT AMPLIO
+   ========================================================================== */
+.v40-col-preview {
+  position: sticky;
+  top: clamp(66px, 8vh, 76px);
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.v40-phone-mockup {
+  background: var(--v40-wa-chat-bg);
+  border: 0.2vh solid var(--v40-border-strong);
+  border-radius: 2.2vh;
+  overflow: hidden;
+  box-shadow: var(--v40-shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.v40-wa-header {
+  background: var(--v40-wa-header-bg);
+  color: #ffffff;
+  padding: 1.1vh 1.2vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.v40-wa-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+}
+
+.v40-wa-header-avatar {
+  width: clamp(32px, 4vh, 38px);
+  height: clamp(32px, 4vh, 38px);
+  border-radius: 50%;
+  background: #ffffff;
+  padding: 0.2vh;
+  object-fit: contain;
+}
+
+.v40-wa-header-info strong {
+  display: block;
+  font-size: clamp(0.8rem, 0.9vw, 0.94rem);
+  font-weight: 600;
+  line-height: 1.15;
+}
+.v40-wa-header-info small {
+  font-size: clamp(0.64rem, 0.7vw, 0.74rem);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.v40-wa-header-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+  font-size: 0.9rem;
+}
+
+/* Chat con PADDING-BLOCK y Altura Ampliada */
+.v40-wa-chat-area {
+  padding-block: clamp(2vh, 3vh, 4vh);
+  padding-inline: 1.2vw;
+  min-height: clamp(330px, 42vh, 420px);
+  background-image: radial-gradient(rgba(0,0,0,0.06) 1px, transparent 0);
+  background-size: 1.8vh 1.8vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1.2vh;
+}
+
+.v40-wa-msg-incoming {
+  align-self: flex-start;
+  max-width: 90%;
+  background: var(--v40-surface);
+  color: var(--v40-text-title);
+  padding: 1vh 1vw;
+  border-radius: 1.2vh 1.2vh 1.2vh 0;
+  font-size: clamp(0.74rem, 0.8vw, 0.86rem);
+  box-shadow: 0 0.15vh 0.5vh rgba(0, 0, 0, 0.12);
+  line-height: 1.4;
+}
+.v40-wa-msg-incoming small {
+  display: block;
+  text-align: right;
+  font-size: 0.62rem;
+  color: var(--v40-text-muted);
+  margin-top: 0.4vh;
+}
+
+.v40-wa-msg-outgoing {
+  align-self: flex-end;
+  max-width: 96%;
+  background: var(--v40-wa-bubble-me);
+  color: var(--v40-wa-text-me);
+  padding-block: clamp(1.2vh, 1.8vh, 2.2vh);
+  padding-inline: clamp(1vw, 1.3vw, 1.6vw);
+  border-radius: 1.4vh 1.4vh 0 1.4vh;
+  font-size: clamp(0.78rem, 0.86vw, 0.92rem);
+  box-shadow: 0 0.2vh 0.6vh rgba(0, 0, 0, 0.16);
+  line-height: 1.55;
+  white-space: pre-line;
+  font-family: inherit;
+}
+.v40-wa-msg-outgoing .time-stamp {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35vw;
+  font-size: 0.64rem;
+  color: rgba(0, 0, 0, 0.58);
+  margin-top: 0.6vh;
+}
+:root[data-theme="futuro"] .v40-wa-msg-outgoing .time-stamp {
+  color: rgba(255, 255, 255, 0.68);
+}
+.v40-wa-msg-outgoing .time-stamp i { color: #53bdeb; }
+
+/* Resumen Total */
+.v40-summary-card {
+  background: var(--v40-card-bg);
+  border: 0.1vh solid var(--v40-border);
+  border-radius: 1.5vh;
+  padding: 1.1vh 1.3vw;
+  box-shadow: var(--v40-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.v40-summary-card strong {
+  display: block;
+  font-size: clamp(0.9rem, 1.05vw, 1.1rem);
+  color: var(--v40-text-title);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+}
+.v40-summary-card span {
+  font-size: clamp(0.7rem, 0.78vw, 0.82rem);
+  color: var(--v40-text-muted);
+}
+.v40-summary-price {
+  font-size: clamp(1.3rem, 1.55vw, 1.65rem);
+  font-weight: 800;
+  color: var(--v40-primary);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+}
+
+/* ==========================================================================
+   DESTINO DE ENTREGA EN PREVIEW: PADDING-BLOCK AUMENTADO CON VH
+   ========================================================================== */
+.v40-dest-chosen-card {
+  background: var(--v40-surface-alt);
+  border: 0.12vh solid var(--v40-border-strong);
+  border-radius: 1.5vh;
+  padding-block: clamp(1.3vh, 1.7vh, 2.3vh); /* Aumentado con vh como solicitó el usuario */
+  padding-inline: clamp(1.1vw, 1.3vw, 1.6vw);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;
+}
+
+.v40-dest-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.v40-dest-tag {
+  font-size: clamp(0.64rem, 0.7vw, 0.76rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--v40-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.35vw;
+}
+
+.v40-dest-eta-pill {
+  font-size: clamp(0.64rem, 0.7vw, 0.76rem);
+  font-weight: 700;
+  color: #10b981;
+}
+
+.v40-dest-chosen-card strong {
+  font-size: clamp(0.85rem, 0.94vw, 1.02rem);
+  color: var(--v40-text-title);
+}
+
+.v40-dest-chosen-card p {
+  margin: 0;
+  font-size: clamp(0.7rem, 0.76vw, 0.84rem);
+  color: var(--v40-text-muted);
+  line-height: 1.4;
+}
+
+/* Botones de Acción (Llamar + WhatsApp) */
+.v40-action-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.7vw;
+}
+
+.v40-btn-call {
+  background: var(--v40-call);
+  color: #ffffff;
+  border-radius: 1.2vh;
+  padding: 0 1.2vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4vw;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.v40-btn-call:hover {
+  background: var(--v40-call-hover);
+  transform: translateY(-0.15vh);
+}
+
+.v40-btn-wa-action {
+  background: var(--v40-wa);
+  color: #ffffff;
+  border-radius: 1.2vh;
+  padding: 1.1vh 1.4vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6vw;
+  font-size: clamp(0.88rem, 1vw, 1.05rem);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 0.5vh 1.8vh rgba(37, 211, 102, 0.35);
+  transition: all 0.2s;
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+}
+.v40-btn-wa-action:hover {
+  background: var(--v40-wa-hover);
+  transform: translateY(-0.15vh);
+  box-shadow: 0 0.8vh 2.4vh rgba(37, 211, 102, 0.45);
+}
+
+/* ==========================================================================
+   MODAL 90VW X 90VH: CERO SCROLLBARS INTERNOS EN DESKTOP, CERRADO POR DEFECTO
+   ========================================================================== */
+.v40-modal-overlay {
+  border: none;
+  padding: 0;
+  background: transparent;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  z-index: 2000;
+  outline: none;
+}
+
+/* REGLA VITAL: CERRADO POR DEFECTO */
+.v40-modal-overlay:not([open]) {
+  display: none !important;
+}
+
+.v40-modal-overlay[open] {
+  display: flex !important;
+  flex-direction: column;
+  width: 90vw !important;
+  max-width: 90vw !important;
+  height: 90vh !important;
+  max-height: 90vh !important;
+  background: var(--v40-modal-bg);
+  border-radius: 2vh;
+  box-shadow: 0 2vh 6vh rgba(0, 0, 0, 0.65);
+  border: 0.15vh solid var(--v40-border-strong);
+  overflow: hidden;
+  animation: v40ModalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.v40-modal-overlay::backdrop {
+  background: rgba(4, 7, 16, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@keyframes v40ModalIn {
+  from { opacity: 0; transform: scale(0.97) translateY(1.2vh); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.v40-modal-header {
+  height: clamp(54px, 7vh, 64px);
+  background: var(--v40-modal-header-bg);
+  border-bottom: 0.1vh solid var(--v40-border);
+  padding: 0 2vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.v40-modal-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+}
+
+.v40-modal-icon-badge {
+  width: clamp(32px, 4vh, 38px);
+  height: clamp(32px, 4vh, 38px);
+  border-radius: 1vh;
+  background: var(--v40-primary);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+}
+
+.v40-modal-header-title h2 {
+  margin: 0;
+  font-size: clamp(1rem, 1.2vw, 1.25rem);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  font-weight: 800;
+  color: var(--v40-text-title);
+}
+
+.v40-modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+}
+
+.v40-modal-badge-secure {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  padding: 0.35vh 0.8vw;
+  border-radius: 1.5vh;
+  font-size: 0.74rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+}
+
+.v40-modal-close-btn {
+  background: var(--v40-surface-alt);
+  border: 0.1vh solid var(--v40-border);
+  width: clamp(32px, 3.8vh, 38px);
+  height: clamp(32px, 3.8vh, 38px);
+  border-radius: 50%;
+  color: var(--v40-text-muted);
+  font-size: 1.05rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s;
+}
+.v40-modal-close-btn:hover {
+  background: var(--v40-primary);
+  color: #fff;
+  border-color: var(--v40-primary);
+}
+
+/* Cuerpo del Modal: CERO SCROLLBAR EN DESKTOP (35% Cliente / 65% Direcciones) */
+.v40-modal-body {
+  flex: 1;
+  padding: 1.8vh 2vw;
+  display: grid;
+  grid-template-columns: 35% 65%;
+  gap: 1.8vw;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.v40-modal-panel-profile {
+  background: var(--v40-surface-alt);
+  border: 0.1vh solid var(--v40-border);
+  border-radius: 1.6vh;
+  padding: 1.6vh 1.4vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.v40-profile-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+  padding-bottom: 1.2vh;
+  border-bottom: 0.1vh solid var(--v40-border);
+}
+
+.v40-profile-avatar-large {
+  width: clamp(42px, 5.2vh, 50px);
+  height: clamp(42px, 5.2vh, 50px);
+  border-radius: 50%;
+  background: var(--v40-primary);
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0.4vh 1.2vh var(--v40-primary-glow);
+}
+
+.v40-profile-card-top h3 {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.1vw, 1.15rem);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  color: var(--v40-text-title);
+}
+
+.v40-profile-card-top span {
+  font-size: clamp(0.66rem, 0.72vw, 0.76rem);
+  color: #10b981;
+  font-weight: 600;
+}
+
+.v40-profile-fields-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  margin: 1vh 0;
+}
+
+.v40-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25vh;
+}
+
+.v40-form-group label {
+  font-size: clamp(0.7rem, 0.76vw, 0.8rem);
+  font-weight: 600;
+  color: var(--v40-text-title);
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+}
+
+.v40-form-input {
+  width: 100%;
+  padding: 0.85vh 0.8vw;
+  border-radius: 0.9vh;
+  border: 0.15vh solid var(--v40-border);
+  background: var(--v40-input-bg);
+  color: var(--v40-text-title);
+  font-size: clamp(0.78rem, 0.85vw, 0.9rem);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.v40-form-input:focus {
+  outline: 0.2vh solid var(--v40-primary);
+  border-color: transparent;
+}
+
+.v40-billing-switch-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6vw;
+  margin-top: 0.3vh;
+}
+
+.v40-billing-radio-btn {
+  border: 0.12vh solid var(--v40-border);
+  background: var(--v40-surface);
+  border-radius: 0.8vh;
+  padding: 0.7vh 0.5vw;
+  font-size: clamp(0.7rem, 0.76vw, 0.8rem);
+  font-weight: 600;
+  color: var(--v40-text-title);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4vw;
+  transition: all 0.2s;
+}
+.v40-billing-radio-btn.active {
+  border-color: var(--v40-primary);
+  background: var(--v40-pill-bg);
+  color: var(--v40-primary);
+}
+
+.v40-vip-badge-card {
+  background: var(--v40-surface);
+  border: 0.1vh solid var(--v40-border);
+  border-radius: 1vh;
+  padding: 1vh 1vw;
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+  font-size: clamp(0.68rem, 0.74vw, 0.78rem);
+  color: var(--v40-text-muted);
+}
+.v40-vip-badge-card i {
+  color: #10b981;
+  font-size: 1.1rem;
+}
+.v40-vip-badge-card strong {
+  display: block;
+  color: var(--v40-text-title);
+  font-weight: 600;
+}
+
+/* Columna Derecha: Libreta de Direcciones */
+.v40-modal-panel-addresses {
+  background: var(--v40-surface-alt);
+  border: 0.1vh solid var(--v40-border);
+  border-radius: 1.6vh;
+  padding: 1.6vh 1.4vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.v40-addresses-top-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1vh;
+}
+
+.v40-addresses-top-action h3 {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.1vw, 1.15rem);
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  color: var(--v40-text-title);
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+}
+
+.v40-btn-add-address {
+  background: var(--v40-primary);
+  color: #fff;
+  border: none;
+  padding: 0.65vh 1.1vw;
+  border-radius: 0.8vh;
+  font-size: clamp(0.74rem, 0.8vw, 0.86rem);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+  transition: all 0.2s;
+}
+.v40-btn-add-address:hover {
+  background: var(--v40-primary-hover);
+}
+
+.v40-address-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  flex: 1;
+}
+
+.v40-address-item-card {
+  background: var(--v40-surface);
+  border: 0.15vh solid var(--v40-border);
+  border-radius: 1.2vh;
+  padding: 1.2vh 1.2vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vh;
+  transition: border-color 0.2s;
+}
+.v40-address-item-card.is-active {
+  border-color: var(--v40-primary);
+  box-shadow: 0 0 0 0.15vh var(--v40-primary-glow);
+}
+
+.v40-address-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.v40-address-item-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+}
+.v40-address-item-title i { color: var(--v40-primary); }
+.v40-address-item-title strong {
+  font-size: clamp(0.85rem, 0.95vw, 1.05rem);
+  color: var(--v40-text-title);
+}
+
+.v40-address-badge-default {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.25vh 0.6vw;
+  border-radius: 1.2vh;
+  display: flex;
+  align-items: center;
+  gap: 0.3vw;
+}
+
+.v40-btn-make-default {
+  background: transparent;
+  border: 0.1vh solid var(--v40-border-strong);
+  color: var(--v40-text-title);
+  border-radius: 0.6vh;
+  padding: 0.25vh 0.6vw;
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.v40-btn-make-default:hover {
+  background: var(--v40-primary);
+  color: #fff;
+  border-color: var(--v40-primary);
+}
+
+.v40-address-fields-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.2fr;
+  gap: 0.8vw;
+}
+
+.v40-add-new-address-form {
+  background: var(--v40-surface);
+  border: 0.15vh dashed var(--v40-primary);
+  border-radius: 1.2vh;
+  padding: 1.2vh 1.2vw;
+  display: none;
+  flex-direction: column;
+  gap: 0.8vh;
+  margin-bottom: 1vh;
+}
+.v40-add-new-address-form.open { display: flex; }
+
+.v40-address-tip-banner {
+  background: rgba(255, 102, 0, 0.08);
+  border: 0.1vh solid rgba(255, 102, 0, 0.2);
+  border-radius: 1vh;
+  padding: 0.9vh 1vw;
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+  font-size: clamp(0.68rem, 0.74vw, 0.78rem);
+  color: var(--v40-text-body);
+}
+.v40-address-tip-banner i { color: var(--v40-primary); font-size: 1rem; }
+
+/* Footer del Modal */
+.v40-modal-footer {
+  height: clamp(54px, 7vh, 64px);
+  background: var(--v40-modal-header-bg);
+  border-top: 0.1vh solid var(--v40-border);
+  padding: 0 2vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.v40-modal-footer-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  font-size: clamp(0.72rem, 0.78vw, 0.84rem);
+  color: var(--v40-text-muted);
+}
+.v40-modal-footer-notice i { color: #10b981; }
+
+.v40-modal-footer-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+}
+
+.v40-btn-modal-cancel {
+  background: transparent;
+  border: 0.1vh solid var(--v40-border-strong);
+  color: var(--v40-text-title);
+  padding: 0.85vh 1.3vw;
+  border-radius: 0.9vh;
+  font-size: clamp(0.76rem, 0.82vw, 0.88rem);
+  font-weight: 600;
+  cursor: pointer;
+}
+.v40-btn-modal-cancel:hover { background: var(--v40-surface-alt); }
+
+.v40-btn-modal-save {
+  background: var(--v40-primary);
+  color: #fff;
+  border: none;
+  padding: 0.85vh 1.6vw;
+  border-radius: 0.9vh;
+  font-size: clamp(0.8rem, 0.88vw, 0.92rem);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  box-shadow: 0 0.4vh 1.5vh var(--v40-primary-glow);
+  transition: all 0.2s;
+}
+.v40-btn-modal-save:hover {
+  background: var(--v40-primary-hover);
+  transform: translateY(-0.15vh);
+}
+
+/* Toast */
+.v40-toast {
+  position: fixed;
+  bottom: 8.5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111827;
+  color: #ffffff;
+  padding: 0.8vh 1.5vw;
+  border-radius: 3vh;
+  font-size: 0.82rem;
+  z-index: 2500;
+  box-shadow: 0 1vh 3vh rgba(0,0,0,0.35);
+  display: none;
+  align-items: center;
+  gap: 0.5vw;
+}
+
+/* Barra fija en móvil */
+.v40-mobile-bottom-bar {
+  display: none;
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD MÓVIL OPTIMIZADA
+   ========================================================================== */
+@media (max-width: 980px) {
+  .v40-top-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.2vh 3vw;
+    gap: 1vh;
+  }
+  .v40-banner-right {
+    align-self: flex-start;
+  }
+
+  .v40-app-container {
+    grid-template-columns: 1fr;
+    padding: 1.2vh 3vw calc(85px + env(safe-area-inset-bottom, 0px));
+    gap: 1.8vh;
+  }
+  .v40-col-preview { position: static; }
+  
+  .v40-topbar {
+    padding: 0 3vw;
+    height: 56px;
+  }
+  .v40-brand-desc { display: none; }
+
+  .v40-card-head {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.8vh;
+  }
+
+  .v40-delivery-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 1.2vh;
+  }
+  .v40-delivery-cell strong { justify-content: center; }
+
+  .v40-section-label {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.4vh;
+  }
+
+  /* 2 Columnas de productos en tablet/móvil */
+  .v40-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2vh;
+  }
+  .v40-prod-card {
+    padding: 1.2vh 1vw;
+  }
+  .v40-prod-name {
+    font-size: 0.88rem;
+  }
+
+  /* 2 Columnas de pago y notas en móvil pasan a 1 col */
+  .v40-two-col-payment-notes {
+    grid-template-columns: 1fr;
+    gap: 1.2vh;
+  }
+  
+  .v40-vuelto-chips-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .v40-summary-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.8vh;
+  }
+  .v40-dest-chosen-card { text-align: center; }
+  .v40-dest-header { justify-content: center; }
+
+  .v40-action-row { display: none; }
+
+  /* Barra Fija Móvil */
+  .v40-mobile-bottom-bar {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    background: var(--v40-header-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 0.1vh solid var(--v40-border);
+    padding: 0.8vh 3vw calc(0.8vh + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -0.8vh 2.5vh rgba(0, 0, 0, 0.25);
+    align-items: center;
+    gap: 2vw;
+  }
+
+  .v40-m-btn-call {
+    width: 46px;
+    height: 46px;
+    background: var(--v40-call);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 1.1vh;
+    display: grid;
+    place-items: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+  }
+
+  .v40-m-btn-wa {
+    flex: 1;
+    height: 46px;
+    background: var(--v40-wa);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 1.1vh;
+    padding: 0 3.5vw;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: var(--ff_O, 'Outfit', sans-serif);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Modal en móvil con scroll suave */
+  .v40-modal-overlay[open] {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    height: 92vh !important;
+    max-height: 92vh !important;
+  }
+  .v40-modal-body {
+    grid-template-columns: 1fr;
+    gap: 1.5vh;
+    padding: 1.5vh 3vw;
+    overflow-y: auto;
+  }
+  .v40-address-fields-grid {
+    grid-template-columns: 1fr;
+  }
+  .v40-modal-footer {
+    flex-direction: column;
+    gap: 0.8vh;
+    height: auto;
+    padding: 1vh 2vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .v40-products-grid {
+    grid-template-columns: 1fr;
+  }
+  .v40-vuelto-chips-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+    </style>
+  </head>
+  <body>
+    <!-- 1. HEADER LIMPIO CON LOGO Y TEXTO UNIFICADOS -->
+    <header class="v40-topbar">
+      <div class="v40-topbar-left">
+        <a href="/" class="v40-brand-link" aria-label="Solgas Surquillo">
+          <img src="/imgwii/logo.webp" alt="Solgas Surquillo" class="v40-brand-logo" />
+        </a>
+        <div class="v40-brand-desc">
+          <strong>SOLGAS <span>SURQUILLO</span></strong>
+          <small>Distribuidor Oficial · Jr. Dante 260</small>
+        </div>
+      </div>
+
+      <div class="v40-topbar-right">
+        <div class="v40-controls-group">
+          <button class="v40-lang-btn" id="btn-lang-toggle" title="Cambiar Idioma">ES</button>
+          <button class="v40-theme-btn" id="btn-theme-toggle" aria-label="Alternar tema">
+            <i class="fa-solid fa-moon" id="icon-theme"></i>
+          </button>
+        </div>
+
+        <!-- Avatar Usuario (Solo Nombre: Valeria) -->
+        <div class="v40-user-trigger" id="user-trigger">
+          <div class="v40-user-avatar">{avatar(cliente.nombre)}</div>
+          <div class="v40-user-name-only">
+            <strong id="header-user-firstname">{cliente.nombre}</strong>
+          </div>
+          <i class="fa-solid fa-chevron-down" style="font-size:0.65rem; color:var(--v40-text-muted);"></i>
+
+          <div class="v40-user-dropdown" id="user-dropdown">
+            <button type="button" class="v40-drop-btn" id="drop-open-profile">
+              <i class="fa-regular fa-id-card"></i>
+              <span>Ficha & Direcciones</span>
+            </button>
+            <a href="/" class="v40-drop-btn">
+              <i class="fa-solid fa-store"></i>
+              <span>Ir a Tienda Pública</span>
+            </a>
+            <button type="button" class="v40-drop-btn logout" id="btn-logout">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>Cerrar Sesión</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. BANNER SUPERIOR: LLENA EL VACÍO SUPERIOR CON ESTILO PROFESIONAL -->
+    <div class="v40-top-banner">
+      <div class="v40-banner-left">
+        <div class="v40-banner-title">
+          <i class="fa-solid fa-bolt"></i>
+          <h2>Mi Perfil & Pedido Express</h2>
+        </div>
+        <p class="v40-banner-sub">Tus datos y direcciones guardadas para pedir gas al instante. Delivery y pesaje digital incluidos.</p>
+      </div>
+      <div class="v40-banner-right">
+        <span class="v40-badge-autocompletado">
+          <i class="fa-solid fa-circle-check"></i> Autocompletado Activo
+        </span>
+      </div>
+    </div>
+
+    <!-- 3. CONTENEDOR PRINCIPAL: FORMULARIO 65% / PREVIEW 35% -->
+    <main class="v40-app-container">
+      <!-- COLUMNA 1: REALIZA TU PEDIDO HOY, 4 PRODUCTOS, PAGO & NOTAS EN 2 COLUMNAS -->
+      <section class="v40-col-form">
+        <article class="v40-section-card">
+          <div class="v40-card-head">
+            <h1>Realiza tu Pedido <span>Hoy</span></h1>
+            <button class="v40-btn-edit" id="btn-open-edit-ficha">
+              <i class="fa-solid fa-sliders"></i> Gestionar Ficha & Direcciones
+            </button>
+          </div>
+
+          <!-- DATOS DE ENTREGA: PADDING-BLOCK AUMENTADO CON VH Y DISEÑO PREMIUM -->
+          <div class="v40-delivery-grid">
+            <div class="v40-delivery-cell">
+              <small><i class="fa-solid fa-user-check" style="color:var(--v40-primary);"></i> Nombre Receptor</small>
+              <strong id="disp-name">{cliente.nombre}</strong>
+            </div>
+            <div class="v40-delivery-cell">
+              <small><i class="fa-brands fa-whatsapp" style="color:var(--v40-wa);"></i> WhatsApp Confirmación</small>
+              <strong>
+                <i class="fa-brands fa-whatsapp" style="color:var(--v40-wa);"></i>
+                <span id="disp-phone">+51 {cliente.telefono}</span>
+              </strong>
+            </div>
+            <div class="v40-delivery-cell">
+              <small><i class="fa-solid fa-location-dot" style="color:var(--v40-primary);"></i> Dirección de Envío</small>
+              <select class="v40-select-address" id="select-address-main">
+                {cliente.direcciones.map(dir => (
+                  <option value={dir.id} selected={dir.esPrincipal}>
+                    {dir.alias} · {dir.distrito} ({dir.eta})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <!-- 4 PRODUCTOS EN FILA CON VALORES TÉCNICOS VISUALES -->
+          <div class="v40-section-label">
+            <span>Selecciona tu producto de hoy</span>
+            <span class="v40-delivery-badge"><i class="fa-solid fa-truck-fast"></i> Delivery y Pesaje Incluido</span>
+          </div>
+
+          <div class="v40-products-grid">
+            {productos.map(p => (
+              <div class:list={['v40-prod-card', { active: p.id === cliente.cilindroHabitual }]}
+                data-id={p.id}
+                data-name={p.nombre}
+                data-price={p.precioPEN.toFixed(2)}
+                data-img={p.imagen}
+                data-shortname={p.nombreCorto}>
+                
+                <div class="v40-prod-top">
+                  <span class:list={['v40-prod-badge', p.tagClase]}>{p.badge}</span>
+                  <span class="v40-prod-use-tag">{p.tipoUso}</span>
+                </div>
+
+                <div class="v40-prod-img-box">
+                  <img src={p.imagen} alt={p.nombre} />
+                  <div class="v40-capacidad-pill">
+                    <i class="fa-solid fa-circle"></i>
+                    <span>{p.capacidad}</span>
+                  </div>
+                </div>
+
+                <!-- Nombre del Producto con Mayor Presencia -->
+                <div class="v40-prod-name">{p.nombre}</div>
+
+                <!-- CHECKLIST SUPER ORGANIZADO CON CHECKS VERDES -->
+                <div class="v40-prod-checklist">
+                  {p.checks.map(c => (
+                    <div class="v40-check-row">
+                      <i class="fa-solid fa-circle-check v40-check-icon"></i>
+                      <div class="v40-check-text">
+                        <strong>{c.label}:</strong> {c.valor}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div class="v40-prod-bottom-box">
+                  <div class="v40-prod-price">S/ {p.precioPEN.toFixed(2)}</div>
+                  <div class="v40-prod-delivery-note">Entrega Gratis</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- FORMA DE PAGO & INDICACIONES DE ENTREGA EN 2 COLUMNAS -->
+          <div class="v40-section-label">
+            <span>Forma de Pago & Indicaciones de Entrega</span>
+            <span style="font-size:0.7rem; color:var(--v40-text-muted);">Sin comisiones adicionales</span>
+          </div>
+
+          <div class="v40-two-col-payment-notes">
+            <!-- COLUMNA 1: FORMA DE PAGO Y VUELTO -->
+            <div class="v40-pay-panel">
+              <div class="v40-panel-subtitle">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>Método de Pago</span>
+              </div>
+
+              <div class="v40-pay-methods-toggle">
+                <button type="button" class="v40-pay-method-btn active" data-method="efectivo">
+                  <i class="fa-solid fa-money-bill-wave"></i>
+                  <span>Efectivo</span>
+                </button>
+                <button type="button" class="v40-pay-method-btn" data-method="yape-plin">
+                  <i class="fa-solid fa-mobile-screen-button"></i>
+                  <span>Yape / Plin</span>
+                </button>
+              </div>
+
+              <!-- Vuelto Efectivo -->
+              <div class="v40-cash-details-box" id="v40-cash-box">
+                <div class="v40-cash-title">
+                  <span>¿Con cuánto pagarás? (Vuelto)</span>
+                  <span class="v40-vuelto-calc-feedback" id="vuelto-calc-feedback">Vuelto: S/ 35.00</span>
+                </div>
+
+                <!-- 4 valores de referencia + opción personalizado -->
+                <div class="v40-vuelto-chips-grid">
+                  <button type="button" class="v40-vuelto-chip" data-vuelto="exacto">Exacto</button>
+                  <button type="button" class="v40-vuelto-chip" data-vuelto="20">S/ 20</button>
+                  <button type="button" class="v40-vuelto-chip" data-vuelto="50">S/ 50</button>
+                  <button type="button" class="v40-vuelto-chip active" data-vuelto="100">S/ 100</button>
+                  <button type="button" class="v40-vuelto-chip" data-vuelto="custom">Otro</button>
+                </div>
+
+                <!-- Input Personalizado para Efectivo -->
+                <div class="v40-custom-cash-input-row" id="custom-cash-row">
+                  <span>S/</span>
+                  <input type="number" id="in-custom-cash" class="v40-custom-cash-input" placeholder="Ingresa monto con el que pagas" value="100" min="0" step="1" />
+                </div>
+              </div>
+
+              <!-- Mensaje Yape / Plin -->
+              <div class="v40-yape-details-box" id="v40-yape-box">
+                <i class="fa-solid fa-qrcode"></i>
+                <p>Pagas con código QR oficial de <strong>Yape o Plin</strong> al recibir tu balón en la puerta.</p>
+              </div>
+            </div>
+
+            <!-- COLUMNA 2: INDICACIONES Y NOTAS PARA EL REPARTIDOR -->
+            <div class="v40-notes-panel">
+              <div class="v40-panel-subtitle">
+                <i class="fa-solid fa-comment-dots"></i>
+                <span>Indicaciones para el Repartidor</span>
+              </div>
+
+              <!-- Quick tags para añadir notas en 1 clic -->
+              <div class="v40-quick-tags-row">
+                <button type="button" class="v40-quick-tag" data-tag="🔔 Tocar timbre">🔔 Timbre</button>
+                <button type="button" class="v40-quick-tag" data-tag="📞 Llamar al llegar">📞 Llamar</button>
+                <button type="button" class="v40-quick-tag" data-tag="🏢 Dejar en recepción">🏢 Recepción</button>
+                <button type="button" class="v40-quick-tag" data-tag="🚪 Piso 3 sin ascensor">🚪 Piso 3</button>
+              </div>
+
+              <textarea id="order-notes" class="v40-notes-input" placeholder="Ej. Tocar timbre 301, dejar con vigilancia si no contesto, etc.">{cliente.notas}</textarea>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- COLUMNA 2: PREVIEW WHATSAPP MAXI (AMPLIO, REALISTA Y DIRECTO) -->
+      <aside class="v40-col-preview">
+        <div class="v40-phone-mockup">
+          <div class="v40-wa-header">
+            <div class="v40-wa-header-left">
+              <i class="fa-solid fa-arrow-left" style="font-size: 0.85rem;"></i>
+              <img src="/imgwii/logo.webp" alt="Solgas" class="v40-wa-header-avatar" />
+              <div class="v40-wa-header-info">
+                <strong>Solgas Surquillo Oficial</strong>
+                <small>en línea · Respuesta inmediata</small>
+              </div>
+            </div>
+            <div class="v40-wa-header-icons">
+              <i class="fa-solid fa-phone"></i>
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </div>
+          </div>
+
+          <!-- Chat con PADDING-BLOCK Expandido -->
+          <div class="v40-wa-chat-area">
+            <div class="v40-wa-msg-incoming">
+              ¡Hola Valeria! 👋 En Solgas Surquillo tenemos unidades en Jr. Dante 260 listas con balanza digital Inacal.
+              <small>10:30 a. m.</small>
+            </div>
+
+            <div class="v40-wa-msg-outgoing" id="wa-outgoing-bubble">
+¡Hola Solgas Surquillo! Deseo pedir mi recarga con mis datos guardados:
+
+👤 Nombre: Valeria
+📦 Producto: Balón SOLGAS 10 kg (S/ 65.00)
+📍 Entrega: Jr. Dante 260, Dpto 301, Surquillo
+🧭 Ref: Frente al parque, portón marrón
+💳 Pago: Efectivo (Llevar vuelto de S/ 100)
+📝 Nota: Piso 3, timbre no suena fuerte.
+⏱️ Llegada estimada: 12–15 min
+              <div class="time-stamp">
+                <span id="wa-time-now">10:32 a. m.</span>
+                <i class="fa-solid fa-check-double"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen Total -->
+        <div class="v40-summary-card">
+          <div>
+            <strong id="banner-prod-name">Solgas 10 kg</strong>
+            <span id="banner-addr-text">Surquillo · 12–15 min</span>
+          </div>
+          <div class="v40-summary-price" id="banner-price">S/ 65.00</div>
+        </div>
+
+        <!-- DESTINO DE ENTREGA: PADDING-BLOCK AUMENTADO CON VH -->
+        <div class="v40-dest-chosen-card">
+          <div class="v40-dest-header">
+            <span class="v40-dest-tag"><i class="fa-solid fa-location-dot"></i> Destino de Entrega</span>
+            <span class="v40-dest-eta-pill" id="dest-eta-text">12–15 min</span>
+          </div>
+          <strong id="dest-alias-text">Casa Principal</strong>
+          <p id="dest-full-text">Jr. Dante 260, Dpto 301, Surquillo · Frente al parque, portón marrón</p>
+        </div>
+
+        <!-- Botones de Acción (Llamar + WhatsApp) -->
+        <div class="v40-action-row">
+          <a href="tel:936369384" class="v40-btn-call" title="Llamar a Solgas Surquillo">
+            <i class="fa-solid fa-phone"></i>
+          </a>
+          <a href="https://wa.me/51936369384" target="_blank" rel="noopener noreferrer" class="v40-btn-wa-action" id="btn-wa-desktop">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span id="btn-wa-text-desktop">Pedir por WhatsApp (S/ 65.00)</span>
+          </a>
+        </div>
+      </aside>
+    </main>
+
+    <!-- BARRA FIJA MÓVIL (SOLO EN SMARTPHONES) -->
+    <div class="v40-mobile-bottom-bar">
+      <a href="tel:936369384" class="v40-m-btn-call" aria-label="Llamar a Solgas Surquillo">
+        <i class="fa-solid fa-phone"></i>
+      </a>
+      <a href="https://wa.me/51936369384" target="_blank" rel="noopener noreferrer" class="v40-m-btn-wa" id="btn-wa-mobile">
+        <span><i class="fa-brands fa-whatsapp"></i> Pedir por WhatsApp</span>
+        <strong id="btn-wa-mobile-total">S/ 65.00 ➔</strong>
+      </a>
+    </div>
+
+    <!-- MODAL 90VW X 90VH: GESTIONAR FICHA & DIRECCIONES (CERRADO POR DEFECTO) -->
+    <dialog class="v40-modal-overlay" id="modal-edit-ficha">
+      <!-- Cabecera del Modal -->
+      <div class="v40-modal-header">
+        <div class="v40-modal-header-title">
+          <div class="v40-modal-icon-badge">
+            <i class="fa-solid fa-address-card"></i>
+          </div>
+          <div>
+            <h2>Ficha del Cliente & Libreta de Direcciones</h2>
+            <small style="color:var(--v40-text-muted); font-size:0.72rem;">Configuración de perfil express · Solgas Surquillo</small>
+          </div>
+        </div>
+        <div class="v40-modal-header-actions">
+          <div class="v40-modal-badge-secure">
+            <i class="fa-solid fa-shield-check"></i>
+            <span>Autocompletado Activo</span>
+          </div>
+          <button class="v40-modal-close-btn" id="close-ficha-modal" aria-label="Cerrar modal">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cuerpo del Modal: CERO SCROLLBAR EN DESKTOP (35% Cliente / 65% Direcciones) -->
+      <div class="v40-modal-body">
+        <!-- Columna 1: Perfil de Cliente y Facturación -->
+        <div class="v40-modal-panel-profile">
+          <div class="v40-profile-card-top">
+            <div class="v40-profile-avatar-large">{avatar(cliente.nombre)}</div>
+            <div>
+              <h3 id="modal-display-name">{cliente.nombre}</h3>
+              <span>Cliente VIP Solgas · Autocompletado</span>
+            </div>
+          </div>
+
+          <div class="v40-profile-fields-box">
+            <div class="v40-form-group">
+              <label><i class="fa-solid fa-user" style="color:var(--v40-primary);"></i> Nombre de Pila</label>
+              <input type="text" id="in-name" class="v40-form-input" value={cliente.nombre} required />
+            </div>
+
+            <div class="v40-form-group">
+              <label><i class="fa-solid fa-id-card" style="color:var(--v40-primary);"></i> DNI / Documento</label>
+              <input type="text" id="in-dni" class="v40-form-input" value={cliente.dni} required />
+            </div>
+
+            <div class="v40-form-group">
+              <label><i class="fa-brands fa-whatsapp" style="color:var(--v40-wa);"></i> WhatsApp Confirmación</label>
+              <input type="tel" id="in-phone" class="v40-form-input" value={cliente.telefono} required pattern="[0-9\s]{9,12}" />
+            </div>
+
+            <div class="v40-form-group">
+              <label><i class="fa-solid fa-envelope" style="color:var(--v40-primary);"></i> Correo Electrónico</label>
+              <input type="email" id="in-mail" class="v40-form-input" value={cliente.email} required />
+            </div>
+
+            <div class="v40-form-group">
+              <label><i class="fa-solid fa-file-invoice-dollar" style="color:var(--v40-primary);"></i> Comprobante Preferido</label>
+              <div class="v40-billing-switch-row">
+                <button type="button" class="v40-billing-radio-btn active" data-type="boleta">
+                  <i class="fa-solid fa-receipt"></i> Boleta
+                </button>
+                <button type="button" class="v40-billing-radio-btn" data-type="factura">
+                  <i class="fa-solid fa-building"></i> Factura RUC
+                </button>
+              </div>
+            </div>
+
+            <div class="v40-form-group" id="group-ruc" style="display:none;">
+              <label>RUC & Razón Social</label>
+              <input type="text" id="in-ruc" class="v40-form-input" placeholder="20601234567 - Razón Social SAC" />
+            </div>
+          </div>
+
+          <div class="v40-vip-badge-card">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <strong>Pesaje Digital Inacal en Puerta</strong>
+              <span>Verificación con balanza calibrada en cada entrega</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna 2: Libreta de Direcciones -->
+        <div class="v40-modal-panel-addresses">
+          <div class="v40-addresses-top-action">
+            <h3><i class="fa-solid fa-map-location-dot" style="color:var(--v40-primary);"></i> Direcciones de Entrega</h3>
+            <button type="button" class="v40-btn-add-address" id="btn-toggle-add-address">
+              <i class="fa-solid fa-plus"></i> Agregar Dirección
+            </button>
+          </div>
+
+          <!-- Formulario Desplegable para Agregar Nueva Dirección -->
+          <div class="v40-add-new-address-form" id="box-add-address">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="font-size:0.86rem; color:var(--v40-primary);"><i class="fa-solid fa-location-plus"></i> Nueva Dirección</strong>
+              <button type="button" class="v40-modal-close-btn" id="btn-cancel-add-dir" style="width:26px; height:26px; font-size:0.8rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="v40-address-fields-grid">
+              <div class="v40-form-group">
+                <label>Alias (Ej. Casa Playa)</label>
+                <input type="text" id="new-dir-alias" class="v40-form-input" placeholder="Nombre" />
+              </div>
+              <div class="v40-form-group">
+                <label>Distrito</label>
+                <select id="new-dir-distrito" class="v40-form-input">
+                  <option value="Surquillo">Surquillo (12–15 min)</option>
+                  <option value="Miraflores">Miraflores (15–20 min)</option>
+                  <option value="San Borja">San Borja (15–22 min)</option>
+                  <option value="San Isidro">San Isidro (18–25 min)</option>
+                </select>
+              </div>
+              <div class="v40-form-group">
+                <label>Referencia Rápida</label>
+                <input type="text" id="new-dir-ref" class="v40-form-input" placeholder="Frente al parque..." />
+              </div>
+            </div>
+            
+            <div class="v40-form-group">
+              <label>Calle, Jr. o Av. con Número y Dpto</label>
+              <input type="text" id="new-dir-calle" class="v40-form-input" placeholder="Ej. Av. Angamos Este 1234, Dpto 402" />
+            </div>
+
+            <div style="display:flex; justify-content:flex-end;">
+              <button type="button" class="v40-btn-add-address" id="btn-save-new-dir">
+                <i class="fa-solid fa-check"></i> Guardar en Libreta
+              </button>
+            </div>
+          </div>
+
+          <!-- Tarjetas de Direcciones Guardadas -->
+          <div class="v40-address-cards-list" id="modal-address-list">
+            <!-- Dirección 1: Casa Principal -->
+            <div class="v40-address-item-card is-active">
+              <div class="v40-address-item-head">
+                <div class="v40-address-item-title">
+                  <i class="fa-solid fa-house"></i>
+                  <strong>Casa Principal</strong>
+                </div>
+                <span class="v40-address-badge-default"><i class="fa-solid fa-check"></i> Predeterminada</span>
+              </div>
+              <div class="v40-address-fields-grid">
+                <div class="v40-form-group">
+                  <label>Calle y Número / Dpto</label>
+                  <input type="text" class="v40-form-input" id="in-calle-1" value={cliente.direcciones[0].calle} />
+                </div>
+                <div class="v40-form-group">
+                  <label>Distrito</label>
+                  <select class="v40-form-input" id="in-distrito-1">
+                    <option value="Surquillo" selected>Surquillo (12–15 min)</option>
+                    <option value="Miraflores">Miraflores (15–20 min)</option>
+                    <option value="San Borja">San Borja (15–22 min)</option>
+                    <option value="San Isidro">San Isidro (18–25 min)</option>
+                  </select>
+                </div>
+                <div class="v40-form-group">
+                  <label>Referencia</label>
+                  <input type="text" class="v40-form-input" id="in-ref-1" value={cliente.direcciones[0].referencia} />
+                </div>
+              </div>
+            </div>
+
+            <!-- Dirección 2: Oficina / Estudio -->
+            <div class="v40-address-item-card">
+              <div class="v40-address-item-head">
+                <div class="v40-address-item-title">
+                  <i class="fa-solid fa-briefcase"></i>
+                  <strong>Oficina / Estudio</strong>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5vw;">
+                  <button type="button" class="v40-btn-make-default" id="btn-make-default-2">
+                    <i class="fa-regular fa-star"></i> Marcar Principal
+                  </button>
+                </div>
+              </div>
+              <div class="v40-address-fields-grid">
+                <div class="v40-form-group">
+                  <label>Calle y Número / Dpto</label>
+                  <input type="text" class="v40-form-input" id="in-calle-2" value={cliente.direcciones[1].calle} />
+                </div>
+                <div class="v40-form-group">
+                  <label>Distrito</label>
+                  <select class="v40-form-input" id="in-distrito-2">
+                    <option value="Surquillo">Surquillo (12–15 min)</option>
+                    <option value="Miraflores">Miraflores (15–20 min)</option>
+                    <option value="San Borja">San Borja (15–22 min)</option>
+                    <option value="San Isidro" selected>San Isidro (18–25 min)</option>
+                  </select>
+                </div>
+                <div class="v40-form-group">
+                  <label>Referencia</label>
+                  <input type="text" class="v40-form-input" id="in-ref-2" value={cliente.direcciones[1].referencia} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="v40-address-tip-banner">
+            <i class="fa-solid fa-lightbulb"></i>
+            <span>Puedes guardar múltiples destinos. Al seleccionar tu dirección en el portal, el pedido de WhatsApp se actualizará al instante.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer del Modal -->
+      <div class="v40-modal-footer">
+        <div class="v40-modal-footer-notice">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Tus datos se guardan de forma segura y autocompletan tus pedidos futuros.</span>
+        </div>
+        <div class="v40-modal-footer-buttons">
+          <button type="button" class="v40-btn-modal-cancel" id="btn-cancel-modal">Cerrar</button>
+          <button type="button" class="v40-btn-modal-save" id="btn-save-modal">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Ficha & Sincronizar
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Toast de Notificación -->
+    <div class="v40-toast" id="toast-box">
+      <i class="fa-solid fa-circle-check" style="color: #25d366;"></i>
+      <span id="toast-msg">Actualizado</span>
+    </div>
+
+    <!-- Script de Estado y Reactividad -->
+    <script is:inline>
+      (function() {
+        const state = {
+          nombre: 'Valeria',
+          telefono: '987 654 321',
+          email: 'valeria.mendoza@gmail.com',
+          dni: '74829103',
+          productoId: 'solgas-10kg',
+          productoNombre: 'Balón SOLGAS 10 kg',
+          productoCorto: 'Solgas 10 kg',
+          precio: '65.00',
+          metodoPago: 'efectivo',
+          vueltoModo: '100', // 'exacto' | '20' | '50' | '100' | 'custom'
+          montoPagoEfectivo: 100,
+          notas: 'Piso 3, timbre no suena fuerte. Dejar con vigilancia si no contesto.',
+          tipoComprobante: 'boleta',
+          ruc: '',
+          calle: 'Jr. Dante 260, Dpto 301',
+          distrito: 'Surquillo',
+          referencia: 'Frente al parque, portón marrón',
+          eta: '12–15 min',
+          aliasActual: 'Casa Principal',
+          direcciones: [
+            { id: 'dir-1', alias: 'Casa Principal', calle: 'Jr. Dante 260, Dpto 301', distrito: 'Surquillo', referencia: 'Frente al parque, portón marrón', eta: '12–15 min', esPrincipal: true },
+            { id: 'dir-2', alias: 'Oficina / Estudio', calle: 'Av. República de Panamá 3565', distrito: 'San Isidro', referencia: 'Edificio Platino, Piso 4', eta: '18–25 min', esPrincipal: false }
+          ]
+        };
+
+        const showToast = (text) => {
+          const toast = document.getElementById('toast-box');
+          const msg = document.getElementById('toast-msg');
+          if (msg) msg.textContent = text;
+          if (toast) {
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 2400);
+          }
+        };
+
+        const getPaymentDescription = () => {
+          if (state.metodoPago === 'yape-plin') return 'Yape / Plin (Al recibir en puerta)';
+          if (state.vueltoModo === 'exacto') return 'Efectivo (Monto exacto)';
+          const montoNum = parseFloat(state.montoPagoEfectivo) || 0;
+          return `Efectivo (Llevar vuelto de S/ ${montoNum.toFixed(2)})`;
+        };
+
+        const updateVueltoCalculation = () => {
+          const feedback = document.getElementById('vuelto-calc-feedback');
+          if (!feedback) return;
+          if (state.vueltoModo === 'exacto') {
+            feedback.textContent = 'Pago exacto (sin vuelto)';
+            feedback.style.color = '#10b981';
+            return;
+          }
+          const precioNum = parseFloat(state.precio) || 0;
+          const pagoNum = parseFloat(state.montoPagoEfectivo) || 0;
+          if (pagoNum < precioNum) {
+            feedback.textContent = `Monto menor al total (S/ ${precioNum.toFixed(2)})`;
+            feedback.style.color = '#ef4444';
+          } else {
+            const vuelto = pagoNum - precioNum;
+            feedback.textContent = `Vuelto estimado: S/ ${vuelto.toFixed(2)}`;
+            feedback.style.color = '#10b981';
+          }
+        };
+
+        const updateWhatsAppOutput = () => {
+          const pagoTexto = getPaymentDescription();
+          const notasTexto = state.notas ? `\n📝 Nota: ${state.notas}` : '';
+          const compTexto = state.tipoComprobante === 'factura' && state.ruc ? `\n🧾 Factura RUC: ${state.ruc}` : '';
+
+          const text = `¡Hola Solgas Surquillo! Deseo pedir mi recarga con mis datos guardados:
+
+👤 Nombre: ${state.nombre}
+📦 Producto: ${state.productoNombre} (S/ ${state.precio})
+📍 Entrega: ${state.calle}, ${state.distrito}
+🧭 Ref: ${state.referencia}
+💳 Pago: ${pagoTexto}${compTexto}${notasTexto}
+⏱️ Llegada estimada: ${state.eta}`;
+
+          const bubble = document.getElementById('wa-outgoing-bubble');
+          if (bubble) {
+            bubble.childNodes[0].nodeValue = text + '\n';
+          }
+
+          // Resumen Desktop
+          const bannerName = document.getElementById('banner-prod-name');
+          if (bannerName) bannerName.textContent = state.productoCorto;
+
+          const bannerAddr = document.getElementById('banner-addr-text');
+          if (bannerAddr) bannerAddr.textContent = `${state.distrito} · ${state.eta}`;
+
+          const bannerPrice = document.getElementById('banner-price');
+          if (bannerPrice) bannerPrice.textContent = `S/ ${state.precio}`;
+
+          const btnDesktop = document.getElementById('btn-wa-text-desktop');
+          if (btnDesktop) btnDesktop.textContent = `Pedir por WhatsApp (S/ ${state.precio})`;
+
+          // Destino Elegido
+          const destAlias = document.getElementById('dest-alias-text');
+          if (destAlias) destAlias.textContent = state.aliasActual || 'Casa Principal';
+
+          const destFull = document.getElementById('dest-full-text');
+          if (destFull) destFull.textContent = `${state.calle}, ${state.distrito} · ${state.referencia}`;
+
+          const destEta = document.getElementById('dest-eta-text');
+          if (destEta) destEta.textContent = state.eta;
+
+          // Botón Móvil
+          const mobileTotal = document.getElementById('btn-wa-mobile-total');
+          if (mobileTotal) mobileTotal.textContent = `S/ ${state.precio} ➔`;
+
+          // URLs WhatsApp
+          const waUrl = `https://wa.me/51936369384?text=${encodeURIComponent(text)}`;
+          const linkDesktop = document.getElementById('btn-wa-desktop');
+          if (linkDesktop) linkDesktop.href = waUrl;
+
+          const linkMobile = document.getElementById('btn-wa-mobile');
+          if (linkMobile) linkMobile.href = waUrl;
+
+          updateVueltoCalculation();
+        };
+
+        // GESTOR DE TEMA
+        const themeBtn = document.getElementById('btn-theme-toggle');
+        const themeIcon = document.getElementById('icon-theme');
+
+        const applyTheme = (themeName) => {
+          document.documentElement.dataset.theme = themeName;
+          document.body.classList.toggle('dark', themeName === 'futuro');
+          if (themeIcon) {
+            themeIcon.className = themeName === 'futuro' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+          }
+          try {
+            localStorage.setItem('wiTema_gaswii', themeName);
+            localStorage.setItem('wiTema', themeName);
+          } catch(e) {}
+        };
+
+        applyTheme(document.documentElement.dataset.theme || 'futuro');
+
+        themeBtn?.addEventListener('click', () => {
+          const next = document.documentElement.dataset.theme === 'futuro' ? 'luz' : 'futuro';
+          applyTheme(next);
+          showToast(`Tema ${next === 'futuro' ? 'oscuro' : 'claro'} activado`);
+        });
+
+        // TOGGLE IDIOMA
+        const langBtn = document.getElementById('btn-lang-toggle');
+        langBtn?.addEventListener('click', () => {
+          const current = langBtn.textContent;
+          langBtn.textContent = current === 'ES' ? 'EN' : 'ES';
+          showToast(`Idioma ${langBtn.textContent} seleccionado`);
+        });
+
+        // USER DROPDOWN
+        const userTrigger = document.getElementById('user-trigger');
+        const userDropdown = document.getElementById('user-dropdown');
+
+        userTrigger?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          userDropdown?.classList.toggle('open');
+        });
+
+        document.addEventListener('click', () => {
+          userDropdown?.classList.remove('open');
+        });
+
+        document.getElementById('btn-logout')?.addEventListener('click', () => {
+          showToast('Sesión cerrada');
+          setTimeout(() => { window.location.href = '/'; }, 800);
+        });
+
+        // SELECTOR DE PRODUCTOS (4 EN FILA)
+        document.querySelectorAll('.v40-prod-card').forEach(card => {
+          card.addEventListener('click', () => {
+            document.querySelectorAll('.v40-prod-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            state.productoId = card.dataset.id;
+            state.productoNombre = card.dataset.name;
+            state.productoCorto = card.dataset.shortname;
+            state.precio = card.dataset.price;
+            updateWhatsAppOutput();
+            showToast(`${card.dataset.shortname}: S/ ${state.precio}`);
+          });
+        });
+
+        // SELECTOR DE MÉTODO DE PAGO (EFECTIVO VS YAPE / PLIN)
+        const cashBox = document.getElementById('v40-cash-box');
+        const yapeBox = document.getElementById('v40-yape-box');
+
+        document.querySelectorAll('.v40-pay-method-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.v40-pay-method-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.metodoPago = btn.dataset.method;
+            if (state.metodoPago === 'efectivo') {
+              if (cashBox) cashBox.style.display = 'flex';
+              if (yapeBox) yapeBox.style.display = 'none';
+            } else {
+              if (cashBox) cashBox.style.display = 'none';
+              if (yapeBox) yapeBox.style.display = 'flex';
+            }
+            updateWhatsAppOutput();
+            showToast(`Pago: ${state.metodoPago === 'efectivo' ? 'Efectivo' : 'Yape / Plin'}`);
+          });
+        });
+
+        // SELECTOR DE CHIPS DE VUELTO (EXACTO, 20, 50, 100, CUSTOM)
+        const customInput = document.getElementById('in-custom-cash');
+
+        document.querySelectorAll('.v40-vuelto-chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            document.querySelectorAll('.v40-vuelto-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            state.vueltoModo = chip.dataset.vuelto;
+
+            if (state.vueltoModo === 'exacto') {
+              state.montoPagoEfectivo = parseFloat(state.precio) || 0;
+              if (customInput) customInput.value = state.precio;
+            } else if (state.vueltoModo === 'custom') {
+              if (customInput) {
+                customInput.focus();
+                state.montoPagoEfectivo = parseFloat(customInput.value) || 0;
+              }
+            } else {
+              state.montoPagoEfectivo = parseFloat(state.vueltoModo) || 0;
+              if (customInput) customInput.value = state.vueltoModo;
+            }
+
+            updateWhatsAppOutput();
+            showToast(state.vueltoModo === 'exacto' ? 'Pago con monto exacto' : `Pagarás con S/ ${state.montoPagoEfectivo}`);
+          });
+        });
+
+        // INPUT PERSONALIZADO DE MONTO EN EFECTIVO
+        customInput?.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value) || 0;
+          state.montoPagoEfectivo = val;
+          // Activar chip custom
+          document.querySelectorAll('.v40-vuelto-chip').forEach(c => c.classList.remove('active'));
+          const chipCustom = document.querySelector('.v40-vuelto-chip[data-vuelto="custom"]');
+          if (chipCustom) chipCustom.classList.add('active');
+          state.vueltoModo = 'custom';
+          updateWhatsAppOutput();
+        });
+
+        // QUICK TAGS DE INDICACIONES
+        const notesInput = document.getElementById('order-notes');
+        document.querySelectorAll('.v40-quick-tag').forEach(tag => {
+          tag.addEventListener('click', () => {
+            const textToAdd = tag.dataset.tag;
+            tag.classList.toggle('active');
+            let current = notesInput?.value || '';
+
+            if (tag.classList.contains('active')) {
+              current = current ? `${current} · ${textToAdd}` : textToAdd;
+            } else {
+              current = current.replace(` · ${textToAdd}`, '').replace(textToAdd, '').trim();
+            }
+            if (notesInput) notesInput.value = current;
+            state.notas = current;
+            updateWhatsAppOutput();
+          });
+        });
+
+        // CAMPO NOTAS ADICIONALES
+        notesInput?.addEventListener('input', (e) => {
+          state.notas = e.target.value.trim();
+          updateWhatsAppOutput();
+        });
+
+        // SELECCIÓN DE DIRECCIÓN DESDE EL SELECTOR PRINCIPAL
+        const selectAddressMain = document.getElementById('select-address-main');
+        selectAddressMain?.addEventListener('change', (e) => {
+          const dir = state.direcciones.find(d => d.id === e.target.value);
+          if (dir) {
+            state.calle = dir.calle;
+            state.distrito = dir.distrito;
+            state.referencia = dir.referencia;
+            state.eta = dir.eta;
+            state.aliasActual = dir.alias;
+            updateWhatsAppOutput();
+            showToast(`Entrega: ${dir.alias}`);
+          }
+        });
+
+        // MODAL 90VW X 90VH FICHA & DIRECCIONES
+        const modalFicha = document.getElementById('modal-edit-ficha');
+        const openFichaModal = () => modalFicha?.showModal();
+
+        document.getElementById('btn-open-edit-ficha')?.addEventListener('click', openFichaModal);
+        document.getElementById('drop-open-profile')?.addEventListener('click', openFichaModal);
+        document.getElementById('close-ficha-modal')?.addEventListener('click', () => modalFicha?.close());
+        document.getElementById('btn-cancel-modal')?.addEventListener('click', () => modalFicha?.close());
+
+        // Cerrar al hacer clic en el backdrop fuera del modal
+        modalFicha?.addEventListener('click', (e) => {
+          const rect = modalFicha.getBoundingClientRect();
+          const isInDialog = (
+            rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+            rect.left <= e.clientX && e.clientX <= rect.left + rect.width
+          );
+          if (!isInDialog) {
+            modalFicha.close();
+          }
+        });
+
+        // FACTURACIÓN TOGGLE
+        const rucGroup = document.getElementById('group-ruc');
+        document.querySelectorAll('.v40-billing-radio-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.v40-billing-radio-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.tipoComprobante = btn.dataset.type;
+            if (rucGroup) {
+              rucGroup.style.display = state.tipoComprobante === 'factura' ? 'flex' : 'none';
+            }
+          });
+        });
+
+        // AGREGAR NUEVA DIRECCIÓN TOGGLE
+        const boxAddDir = document.getElementById('box-add-address');
+        document.getElementById('btn-toggle-add-address')?.addEventListener('click', () => {
+          boxAddDir?.classList.toggle('open');
+        });
+        document.getElementById('btn-cancel-add-dir')?.addEventListener('click', () => {
+          boxAddDir?.classList.remove('open');
+        });
+
+        // GUARDAR NUEVA DIRECCIÓN EN LIBRETA
+        document.getElementById('btn-save-new-dir')?.addEventListener('click', () => {
+          const alias = document.getElementById('new-dir-alias').value.trim() || 'Nueva Dirección';
+          const calle = document.getElementById('new-dir-calle').value.trim();
+          const dist = document.getElementById('new-dir-distrito').value;
+          const ref = document.getElementById('new-dir-ref').value.trim();
+
+          if (!calle) {
+            alert('Por favor ingresa la calle, avenida y número');
+            return;
+          }
+
+          const newId = `dir-${Date.now()}`;
+          const etaMap = {
+            'Surquillo': '12–15 min',
+            'Miraflores': '15–20 min',
+            'San Borja': '15–22 min',
+            'San Isidro': '18–25 min'
+          };
+          const eta = etaMap[dist] || '15–20 min';
+
+          const newDir = { id: newId, alias, calle, distrito: dist, referencia: ref, eta, esPrincipal: false };
+          state.direcciones.push(newDir);
+
+          // Crear tarjeta en el modal
+          const list = document.getElementById('modal-address-list');
+          const cardEl = document.createElement('div');
+          cardEl.className = 'v40-address-item-card';
+          cardEl.innerHTML = `
+            <div class="v40-address-item-head">
+              <div class="v40-address-item-title">
+                <i class="fa-solid fa-map-pin"></i>
+                <strong>${alias}</strong>
+              </div>
+              <span style="font-size:0.7rem; color:var(--v40-text-muted);">${dist}</span>
+            </div>
+            <div class="v40-address-fields-grid">
+              <div class="v40-form-group">
+                <label>Calle y Número / Dpto</label>
+                <input type="text" class="v40-form-input" value="${calle}" readonly />
+              </div>
+              <div class="v40-form-group">
+                <label>Distrito</label>
+                <input type="text" class="v40-form-input" value="${dist} (${eta})" readonly />
+              </div>
+              <div class="v40-form-group">
+                <label>Referencia</label>
+                <input type="text" class="v40-form-input" value="${ref}" readonly />
+              </div>
+            </div>
+          `;
+          list.appendChild(cardEl);
+
+          // Agregar al select principal de la vista
+          if (selectAddressMain) {
+            const opt = document.createElement('option');
+            opt.value = newId;
+            opt.textContent = `${alias} · ${dist} (${eta})`;
+            selectAddressMain.appendChild(opt);
+          }
+
+          // Limpiar y cerrar formulario
+          document.getElementById('new-dir-alias').value = '';
+          document.getElementById('new-dir-calle').value = '';
+          document.getElementById('new-dir-ref').value = '';
+          boxAddDir.classList.remove('open');
+          showToast(`Dirección "${alias}" guardada en libreta`);
+        });
+
+        // BOTÓN MARCAR DIRECCIÓN 2 COMO PRINCIPAL
+        document.getElementById('btn-make-default-2')?.addEventListener('click', () => {
+          if (selectAddressMain) {
+            selectAddressMain.value = 'dir-2';
+            selectAddressMain.dispatchEvent(new Event('change'));
+            showToast('Oficina / Estudio seleccionada como principal');
+          }
+        });
+
+        // GUARDAR CAMBIOS Y SINCRONIZAR MODAL
+        document.getElementById('btn-save-modal')?.addEventListener('click', () => {
+          const nuevoNombre = document.getElementById('in-name').value.trim();
+          if (nuevoNombre) state.nombre = nuevoNombre;
+          state.dni = document.getElementById('in-dni').value.trim();
+          state.telefono = document.getElementById('in-phone').value.trim();
+          state.email = document.getElementById('in-mail').value.trim();
+          state.ruc = document.getElementById('in-ruc')?.value.trim() || '';
+
+          // Actualizar Dirección 1
+          const calle1 = document.getElementById('in-calle-1').value.trim();
+          const dist1 = document.getElementById('in-distrito-1').value;
+          const ref1 = document.getElementById('in-ref-1').value.trim();
+          state.direcciones[0].calle = calle1;
+          state.direcciones[0].distrito = dist1;
+          state.direcciones[0].referencia = ref1;
+
+          // Actualizar Dirección 2
+          const calle2 = document.getElementById('in-calle-2')?.value.trim();
+          const dist2 = document.getElementById('in-distrito-2')?.value;
+          const ref2 = document.getElementById('in-ref-2')?.value.trim();
+          if (state.direcciones[1] && calle2) {
+            state.direcciones[1].calle = calle2;
+            state.direcciones[1].distrito = dist2;
+            state.direcciones[1].referencia = ref2;
+          }
+
+          // Refrescar selector en la página principal
+          if (selectAddressMain) {
+            selectAddressMain.options[0].textContent = `Casa Principal · ${dist1} (${state.direcciones[0].eta})`;
+            if (selectAddressMain.options[1] && state.direcciones[1]) {
+              selectAddressMain.options[1].textContent = `Oficina / Estudio · ${dist2} (${state.direcciones[1].eta})`;
+            }
+          }
+
+          if (selectAddressMain.value === 'dir-1') {
+            state.calle = calle1;
+            state.distrito = dist1;
+            state.referencia = ref1;
+          } else if (selectAddressMain.value === 'dir-2') {
+            state.calle = calle2;
+            state.distrito = dist2;
+            state.referencia = ref2;
+          }
+
+          // Actualizar UI reactiva
+          const dispName = document.getElementById('disp-name');
+          if (dispName) dispName.textContent = state.nombre;
+          
+          const headerName = document.getElementById('header-user-firstname');
+          if (headerName) headerName.textContent = state.nombre;
+
+          const modalDispName = document.getElementById('modal-display-name');
+          if (modalDispName) modalDispName.textContent = state.nombre;
+
+          const dispPhone = document.getElementById('disp-phone');
+          if (dispPhone) dispPhone.textContent = `+51 ${state.telefono}`;
+
+          updateWhatsAppOutput();
+          modalFicha?.close();
+          showToast('Ficha de cliente y direcciones sincronizadas con éxito');
+        });
+
+        // Hora WhatsApp
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'p. m.' : 'a. m.';
+        hours = hours % 12 || 12;
+        const timeEl = document.getElementById('wa-time-now');
+        if (timeEl) timeEl.textContent = `${hours}:${minutes} ${ampm}`;
+
+        updateWhatsAppOutput();
+      })();
+    </script>
+  </body>
+</html>

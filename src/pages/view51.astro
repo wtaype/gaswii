@@ -1,0 +1,3722 @@
+---
+// VIEW51.ASTRO - PORTAL GERENCIAL SOLGAS SURQUILLO
+// Header limpio sin duplicar menú del sidebar, sin botones de acción en cabecera.
+// Header derecho: Notificación, Tema, Usuario con Dropdown interactivo (Ir a Tienda Principal + Salir).
+// Paleta corporativa Solgas Surquillo: Naranja (#ff6600), verde esmeralda y dark navy.
+
+const empresa = {
+  nombreComercial: 'Solgas Surquillo',
+  razonSocial: 'DISTRIBUIDORA GASWII SURQUILLO S.A.C.',
+  ruc: '20608912345',
+  direccionPlanta: 'Jr. Dante 260, Surquillo, Lima',
+  telefonoOficial: '936 369 384',
+  telefonoFormateado: '+51 936 369 384',
+  horarioAtencion: 'Lun - Dom: 06:30 am - 09:00 pm',
+  administrador: 'Wilder Alarcón',
+  cargo: 'Gestor Propietario',
+  autorizadaPor: 'Osinergmin Registro N° 114829-GLP'
+};
+
+// Productos y balones oficiales
+const productosIniciales = [
+  {
+    id: 'solgas-10kg',
+    codigo: 'GAS-001',
+    nombre: 'Balón SOLGAS Premium 10 kg',
+    nombreCorto: 'Solgas 10 kg',
+    categoria: 'Hogar',
+    badge: 'Más Pedido',
+    tagClase: 'badge-fire',
+    tipoUso: 'Hogar',
+    capacidad: '10 kg Neto',
+    pesoTotal: '22.5 kg (Tara 12.5 + Gas 10)',
+    valvula: 'Click-On (Acople Rápido) o Rosca',
+    seguridad: 'Precinto verificado Osinergmin',
+    precioPEN: 65.00,
+    costoPEN: 48.50,
+    garantia: 'Garantía 100% de peso exacto',
+    stockLlenos: 84,
+    stockVacios: 32,
+    imagen: '/imgwii/productos/BALON-10KG.webp',
+    activo: true,
+    garantiasList: [
+      'Válvula de seguridad antifugas original',
+      'Pesaje obligatorio en balanza digital en puerta',
+      'Precinto termoencogible original de fábrica',
+      'Entrega garantizada en menos de 30 minutos'
+    ]
+  },
+  {
+    id: 'solgas-45kg',
+    codigo: 'GAS-002',
+    nombre: 'Balón SOLGAS 45 kg',
+    nombreCorto: 'Solgas 45 kg',
+    categoria: 'Industrial',
+    badge: 'Comercial',
+    tagClase: 'badge-blue',
+    tipoUso: 'Negocio',
+    capacidad: '45 kg Neto',
+    pesoTotal: '95.0 kg aprox.',
+    valvula: 'Rosca Industrial de Alta Presión',
+    seguridad: 'Precinto verificado Osinergmin',
+    precioPEN: 230.00,
+    costoPEN: 185.00,
+    garantia: 'Tarifa especial negocios',
+    stockLlenos: 16,
+    stockVacios: 6,
+    imagen: '/imgwii/productos/BALON-45KG.webp',
+    activo: true,
+    garantiasList: [
+      'Poder calórico superior para cocinas de alto tráfico',
+      'Certificación industrial y factura electrónica',
+      'Atención prioritaria y cambio de batería programado',
+      'Transporte seguro y anclaje por personal calificado'
+    ]
+  },
+  {
+    id: 'masgas-10kg',
+    codigo: 'GAS-003',
+    nombre: 'Balón MASGAS 10 kg',
+    nombreCorto: 'Masgas 10 kg',
+    categoria: 'Económico',
+    badge: 'Económico',
+    tagClase: 'badge-amber',
+    tipoUso: 'Ahorro',
+    capacidad: '10 kg Neto',
+    pesoTotal: '22.4 kg garantizado',
+    valvula: 'Rosca Estándar / Universal',
+    seguridad: 'Precinto verificado',
+    precioPEN: 55.00,
+    costoPEN: 41.00,
+    garantia: 'Opción más económica',
+    stockLlenos: 22,
+    stockVacios: 10,
+    imagen: '/imgwii/productos/MASGAS-10KG.webp',
+    activo: true,
+    garantiasList: [
+      'Misma garantía de peso exacto con balanza digital',
+      'Llama azul constante y duradera',
+      'Cilindro inspeccionado libre de corrosión',
+      'Entrega inmediata sin costo de flete en Surquillo'
+    ]
+  },
+  {
+    id: 'kit-regulador',
+    codigo: 'ACC-004',
+    nombre: 'Kit Regulador Premium SOLGAS',
+    nombreCorto: 'Kit Regulador',
+    categoria: 'Accesorios',
+    badge: 'Antifugas',
+    tagClase: 'badge-purple',
+    tipoUso: 'Seguridad',
+    capacidad: 'Click-On',
+    pesoTotal: '0.85 kg bronce macizo',
+    valvula: 'Sistema Click-On de Traba Automática',
+    seguridad: 'Precinto verificado Osinergmin',
+    precioPEN: 70.00,
+    costoPEN: 45.00,
+    garantia: 'Instalación y prueba GRATIS',
+    stockLlenos: 18,
+    stockVacios: 0,
+    imagen: '/imgwii/productos/REGULADOR.webp',
+    activo: true,
+    garantiasList: [
+      'Bloqueo instantáneo ante rotura o fuga de manguera',
+      'Cuerpo de aleación anti-deflagrante reforzado',
+      'Cumple Norma Técnica Peruana ITINTEC / Osinergmin',
+      'Instalado y calibrado por nuestro personal en puerta'
+    ]
+  }
+];
+
+// Clientes iniciales
+const clientesIniciales = [
+  {
+    id: 'CLI-105',
+    nombre: 'Valeria Mendoza',
+    contacto: '987 654 321',
+    tipoDoc: 'DNI',
+    numDoc: '45892147',
+    direccion: 'Jr. Dante 260, Dpto 301, Surquillo',
+    referencia: 'Frente al parque, portón marrón',
+    fechaRegistro: '11/09/2026',
+    estadoAcceso: 'Registrado por Nosotros',
+    tienePassword: false,
+    cilindroHabitual: 'Balón SOLGAS Premium 10 kg',
+    totalPedidos: 14,
+    totalFacturado: 910.00,
+    activo: true
+  },
+  {
+    id: 'CLI-104',
+    nombre: 'Restaurante El Dante SAC',
+    contacto: '991 223 445',
+    tipoDoc: 'RUC',
+    numDoc: '20554896321',
+    direccion: 'Av. Angamos Este 1540, Surquillo',
+    referencia: 'Cerca a Mercado Surquillo 1',
+    fechaRegistro: '10/09/2026',
+    estadoAcceso: 'Contraseña Creada',
+    tienePassword: true,
+    cilindroHabitual: 'Balón SOLGAS 45 kg',
+    totalPedidos: 32,
+    totalFacturado: 7360.00,
+    activo: true
+  },
+  {
+    id: 'CLI-103',
+    nombre: 'Claudia Romero',
+    contacto: '993 456 789',
+    tipoDoc: 'DNI',
+    numDoc: '10745896',
+    direccion: 'Av. Paseo de la República 4890, Miraflores',
+    referencia: 'Edificio Residencial Piso 5',
+    fechaRegistro: '08/09/2026',
+    estadoAcceso: 'Invitación Enviada',
+    tienePassword: false,
+    cilindroHabitual: 'Balón SOLGAS Premium 10 kg',
+    totalPedidos: 8,
+    totalFacturado: 520.00,
+    activo: true
+  },
+  {
+    id: 'CLI-102',
+    nombre: 'Taller Mecánico San Isidro',
+    contacto: '982 345 678',
+    tipoDoc: 'RUC',
+    numDoc: '20601245789',
+    direccion: 'Av. República de Panamá 3565, San Isidro',
+    referencia: 'Edificio Platino, Cochera',
+    fechaRegistro: '07/09/2026',
+    estadoAcceso: 'Contraseña Creada',
+    tienePassword: true,
+    cilindroHabitual: 'Balón SOLGAS 45 kg',
+    totalPedidos: 19,
+    totalFacturado: 4370.00,
+    activo: false
+  },
+  {
+    id: 'CLI-101',
+    nombre: 'Jorge Zegarra',
+    contacto: '971 234 567',
+    tipoDoc: 'DNI',
+    numDoc: '09852144',
+    direccion: 'Jr. Huáscar 820, Surquillo',
+    referencia: 'Interior 2, timbre blanco',
+    fechaRegistro: '05/09/2026',
+    estadoAcceso: 'Registrado por Nosotros',
+    tienePassword: false,
+    cilindroHabitual: 'Balón MASGAS 10 kg',
+    totalPedidos: 11,
+    totalFacturado: 605.00,
+    activo: true
+  }
+];
+
+// Personal y Repartidores
+const equipoPersonal = [
+  {
+    id: 'PER-001',
+    nombre: 'Wilder Alarcón',
+    rol: 'Gestor Propietario',
+    tipoRol: 'gestor',
+    telefono: '936 369 384',
+    dni: '10482910',
+    area: 'Administración & Finanzas',
+    turno: 'Turno Completo (07:00 - 19:00)',
+    entregasMes: 0,
+    activo: true
+  },
+  {
+    id: 'PER-002',
+    nombre: 'Carlos Mendoza',
+    rol: 'Repartidor Motorizado',
+    tipoRol: 'personal',
+    telefono: '987 112 233',
+    dni: '44556677',
+    area: 'Moto Torito 02 (4521-3F)',
+    turno: 'Mañana (07:30 - 15:30)',
+    entregasMes: 412,
+    activo: true
+  },
+  {
+    id: 'PER-003',
+    nombre: 'Luis Ramos',
+    rol: 'Repartidor Motorizado',
+    tipoRol: 'personal',
+    telefono: '981 998 877',
+    dni: '70891234',
+    area: 'Moto Furgón 01 (8912-7B)',
+    turno: 'Intermedio (08:00 - 16:00)',
+    entregasMes: 388,
+    activo: true
+  },
+  {
+    id: 'PER-004',
+    nombre: 'Jorge Peralta',
+    rol: 'Conductor Camión',
+    tipoRol: 'personal',
+    telefono: '992 334 455',
+    dni: '10293847',
+    area: 'Camión Distribución (B9C-812)',
+    turno: 'Mañana (07:00 - 15:00)',
+    entregasMes: 195,
+    activo: false
+  },
+  {
+    id: 'PER-005',
+    nombre: 'Rosa Quispe',
+    rol: 'Almacén, Pesaje & Limpieza',
+    tipoRol: 'personal',
+    telefono: '976 221 144',
+    dni: '71882233',
+    area: 'Planta Jr. Dante 260',
+    turno: 'Tarde (08:00 - 17:00)',
+    entregasMes: 820,
+    activo: true
+  }
+];
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Solgas Surquillo | Panel de Control Gerencial (View 49)</title>
+    <meta name="description" content="Dashboard gerencial optimizado con header limpio sin duplicados, menú desplegable de usuario con acceso a tienda principal y cierre de turno, y paleta Solgas naranja." />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/google/fonts.css" />
+    <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+
+    <!-- Anti-FOUC y Tema -->
+    <script is:inline>
+      (function() {
+        try {
+          const saved = localStorage.getItem('wiTema_gaswii') || localStorage.getItem('wiTema');
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = saved || (prefersDark ? 'futuro' : 'luz');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'futuro';
+        }
+      })();
+    </script>
+
+    <style is:global>
+/* ==========================================================================
+   VIEW51 - HEADER MINIMALISTA & DROPDOWN DE USUARIO + COLORES SOLGAS
+   ========================================================================== */
+
+:root {
+  /* Paleta Corporativa Solgas */
+  --v51-primary: #ff6600;
+  --v51-primary-hover: #ff771a;
+  --v51-primary-glow: rgba(255, 102, 0, 0.32);
+  --v51-yellow: #ffd166;
+  --v51-emerald: #10b981;
+  --v51-blue: #0284c7;
+  --v51-purple: #8b5cf6;
+  --v51-amber: #f59e0b;
+  --v51-rose: #f43f5e;
+  --v51-wa: #25d366;
+
+  /* Modo Claro */
+  --v51-bg: #f4f6fb;
+  --v51-sidebar-bg: #ffffff;
+  --v51-topbar-bg: #ffffff;
+  --v51-surface: #ffffff;
+  --v51-surface-alt: #f1f5f9;
+  --v51-border: #e2e8f0;
+  --v51-border-strong: #cbd5e1;
+  --v51-text-title: #0f172a;
+  --v51-text-body: #334155;
+  --v51-text-muted: #64748b;
+  --v51-input-bg: #ffffff;
+  --v51-shadow: 0 0.5vh 2.5vh rgba(15, 23, 42, 0.05);
+
+  /* Apple Switch */
+  --v51-switch-bg-off: #cbd5e1;
+  --v51-switch-bg-on: #10b981;
+}
+
+[data-theme='futuro'],
+[data-theme='dark'] {
+  --v51-bg: #070b14;
+  --v51-sidebar-bg: #0c1222;
+  --v51-topbar-bg: #0c1222;
+  --v51-surface: #10182c;
+  --v51-surface-alt: #16233e;
+  --v51-border: rgba(255, 255, 255, 0.08);
+  --v51-border-strong: rgba(255, 255, 255, 0.16);
+  --v51-text-title: #f8fafc;
+  --v51-text-body: #cbd5e1;
+  --v51-text-muted: #94a3b8;
+  --v51-input-bg: #0c1222;
+  --v51-shadow: 0 0.8vh 3.5vh rgba(0, 0, 0, 0.5);
+
+  --v51-switch-bg-off: #334155;
+  --v51-switch-bg-on: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--v51-bg);
+  color: var(--v51-text-body);
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+/* ==========================================================================
+   ESTRUCTURA GENERAL & MASTER TOPBAR (VIEW51 SOLGAS PRO)
+   ========================================================================== */
+
+/* HEADER SUPERIOR MAESTRO 100% WIDTH (FLOTANTE ENCIMA DE TODO) */
+.v51-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 64px;
+  background: #080d1a;
+  border-bottom: 1px solid var(--v51-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.6rem;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.v51-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.v51-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* EL LOGO SOLGAS CON TAMAÑO EXACTO Y CRISP */
+.v51-header-logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.v51-header-brand:hover .v51-header-logo-img {
+  transform: scale(1.02);
+}
+
+.v51-brand-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.v51-brand-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.v51-brand-meta-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.v51-brand-meta-sub {
+  font-size: 0.68rem;
+  color: #10b981;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.v51-live-indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: v51Pulse 2s infinite ease-in-out;
+}
+
+@keyframes v51Pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+/* LADO DERECHO DEL HEADER */
+.v51-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.v51-icon-btn-round {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  background: var(--v51-surface-alt);
+  border: 1px solid var(--v51-border);
+  color: var(--v51-text-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.v51-icon-btn-round:hover {
+  border-color: var(--v51-primary);
+  color: var(--v51-primary);
+}
+
+.v51-notif-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff6600;
+  box-shadow: 0 0 6px #ff6600;
+}
+
+/* DROPDOWN DE USUARIO EN HEADER */
+.v51-user-dropdown-wrapper {
+  position: relative;
+}
+
+.v51-header-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+  padding: 0.35vh 0.8vw 0.35vh 0.4vw;
+  border-radius: 999px;
+  background: var(--v51-surface-alt);
+  border: 1px solid var(--v51-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.v51-header-user-badge:hover,
+.v51-header-user-badge.open {
+  border-color: var(--v51-primary);
+  background: var(--v51-surface);
+}
+
+.v51-header-avatar {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: #ff6600;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.v51-header-username {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--v51-text-title);
+  white-space: nowrap;
+}
+
+.v51-dropdown-arrow {
+  font-size: 0.68rem;
+  color: var(--v51-text-muted);
+  transition: transform 0.25s ease;
+}
+
+.v51-header-user-badge.open .v51-dropdown-arrow {
+  transform: rotate(180deg);
+  color: var(--v51-primary);
+}
+
+.v51-user-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 290px;
+  background: var(--v51-surface);
+  border: 1px solid var(--v51-border-strong);
+  border-radius: 1.1rem;
+  box-shadow: 0 1.6vh 4vh rgba(0, 0, 0, 0.45);
+  padding: 1.2vh 0;
+  z-index: 110;
+  animation: dropdownPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.v51-user-dropdown-menu.show {
+  display: block;
+}
+
+@keyframes dropdownPop {
+  from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.v51-dropdown-header {
+  padding: 1vh 1.4vw 1.4vh;
+  display: flex;
+  align-items: center;
+  gap: 0.9vw;
+}
+
+.v51-dropdown-avatar {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6600, #ff8c00);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0.4vh 1.2vh var(--v51-primary-glow);
+}
+
+.v51-dropdown-user-info h4 {
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: var(--v51-text-title);
+  margin-bottom: 0.2vh;
+}
+
+.v51-dropdown-user-info p {
+  font-size: 0.74rem;
+  color: var(--v51-text-muted);
+  margin-bottom: 0.4vh;
+}
+
+.v51-dropdown-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4vw;
+  font-size: 0.68rem;
+  color: var(--v51-emerald);
+  font-weight: 700;
+}
+
+.v51-green-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--v51-emerald);
+  box-shadow: 0 0 6px var(--v51-emerald);
+}
+
+.v51-dropdown-divider {
+  height: 1px;
+  background: var(--v51-border);
+  margin: 0.6vh 0;
+}
+
+.v51-dropdown-body {
+  padding: 0.6vh 0.7vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vh;
+}
+
+.v51-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9vw;
+  padding: 1vh 1vw;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: var(--v51-text-body);
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.v51-dropdown-item:hover {
+  background: var(--v51-surface-alt);
+  color: var(--v51-text-title);
+}
+
+.v51-dropdown-item-icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.92rem;
+  flex-shrink: 0;
+}
+
+.v51-dropdown-item-icon.store-icon {
+  background: rgba(255, 102, 0, 0.14);
+  color: var(--v51-primary);
+}
+
+.v51-dropdown-item-icon.settings-icon {
+  background: rgba(2, 132, 199, 0.14);
+  color: var(--v51-blue);
+}
+
+.v51-dropdown-item-icon.logout-icon {
+  background: rgba(244, 63, 94, 0.14);
+  color: var(--v51-rose);
+}
+
+.v51-dropdown-item-content {
+  flex: 1;
+}
+
+.v51-dropdown-item-content strong {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--v51-text-title);
+}
+
+.v51-dropdown-item-content small {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--v51-text-muted);
+  margin-top: 0.1vh;
+}
+
+.v51-external-link-icon {
+  font-size: 0.72rem;
+  color: var(--v51-text-muted);
+}
+
+.v51-dropdown-item:hover .v51-external-link-icon {
+  color: var(--v51-primary);
+}
+
+.v51-dropdown-item.logout-btn:hover {
+  background: rgba(244, 63, 94, 0.1);
+}
+
+.v51-dropdown-item.logout-btn:hover strong {
+  color: var(--v51-rose);
+}
+
+/* ==========================================================================
+   APP CONTAINER & SIDEBAR POR DEBAJO DEL HEADER (SaaS MODERNO)
+   ========================================================================== */
+
+.v51-app-container {
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+  padding-top: 64px; /* Exacto alto del header maestro */
+  position: relative;
+  background: var(--v51-bg);
+}
+
+.v51-sidebar {
+  width: 250px;
+  background: var(--v51-sidebar-bg);
+  border-right: 1px solid var(--v51-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: calc(100vh - 64px);
+  position: fixed;
+  top: 64px;
+  left: 0;
+  z-index: 80;
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.2rem 0;
+}
+
+.v51-sidebar.collapsed {
+  width: 76px;
+}
+
+.v51-sidebar.collapsed .v51-brand-info,
+.v51-sidebar.collapsed .v51-nav-btn-inner span,
+.v51-sidebar.collapsed .v51-badge,
+.v51-sidebar.collapsed .v51-sidebar-cta span,
+.v51-sidebar.collapsed .v51-util-btn span,
+.v51-sidebar.collapsed .v51-sidebar-section-title {
+  display: none !important;
+}
+
+.v51-sidebar.collapsed .v51-nav-btn,
+.v51-sidebar.collapsed .v51-util-btn,
+.v51-sidebar.collapsed .v51-sidebar-cta {
+  justify-content: center;
+  padding: 1.2vh 0;
+}
+
+.v51-sidebar-section-title {
+  padding: 0.4rem 1.4rem 0.6rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--v51-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.v51-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vh;
+  padding: 0 1vw;
+}
+
+.v51-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1vh 1.1vw;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+  color: var(--v51-text-body);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  width: 100%;
+}
+
+.v51-nav-btn-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.9vw;
+}
+
+.v51-nav-btn-inner i {
+  font-size: 1.05rem;
+  width: 1.4rem;
+  text-align: center;
+  color: var(--v51-text-muted);
+  transition: color 0.2s ease;
+}
+
+.v51-nav-btn:hover {
+  background: var(--v51-surface-alt);
+  color: var(--v51-text-title);
+}
+
+.v51-nav-btn:hover .v51-nav-btn-inner i {
+  color: var(--v51-primary);
+}
+
+.v51-nav-btn.active {
+  background: linear-gradient(135deg, #ff6600, #ff771a);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0.4vh 1.4vh var(--v51-primary-glow);
+}
+
+.v51-nav-btn.active .v51-nav-btn-inner i {
+  color: #fff;
+}
+
+.v51-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.2vh 0.6vw;
+  border-radius: 999px;
+  background: var(--v51-surface);
+  color: var(--v51-text-muted);
+  border: 1px solid var(--v51-border);
+}
+
+.v51-nav-btn.active .v51-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  border-color: transparent;
+}
+
+.v51-sidebar-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6vw;
+  margin: 1.8vh 1vw 0;
+  padding: 1.2vh 1vw;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px dashed var(--v51-primary);
+  color: var(--v51-primary);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.v51-sidebar-cta:hover {
+  background: var(--v51-primary);
+  color: #fff;
+  box-shadow: 0 0.4vh 1.4vh var(--v51-primary-glow);
+}
+
+.v51-sidebar-bottom-utils {
+  padding: 1.4vh 1vw 0;
+  border-top: 1px solid var(--v51-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vh;
+}
+
+.v51-util-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+  padding: 0.9vh 1vw;
+  border-radius: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--v51-text-muted);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.v51-util-btn:hover {
+  background: var(--v51-surface-alt);
+  color: var(--v51-text-title);
+}
+
+/* ==========================================================================
+   CONTENEDOR PRINCIPAL (ALINEADO Y DESPLAZADO RESPECTO AL SIDEBAR)
+   ========================================================================== */
+
+.v51-main-wrapper {
+  flex: 1;
+  margin-left: 250px;
+  min-height: calc(100vh - 64px);
+  width: calc(100vw - 250px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-bottom: 75px;
+  transition: margin-left 0.28s cubic-bezier(0.16, 1, 0.3, 1), width 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.v51-app-container.sidebar-collapsed .v51-main-wrapper {
+  margin-left: 76px;
+  width: calc(100vw - 76px);
+}
+/* ==========================================================================
+   GESTIÓN DE TABS
+   ========================================================================== */
+
+.v51-tab-pane {
+  display: none !important;
+}
+
+.v51-tab-pane.active {
+  display: block !important;
+  animation: v51Fade 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes v51Fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   BANNER DE RESUMEN EJECUTIVO (SOLGAS NARANJA + RELOJ DIGITAL GRANDE)
+   ========================================================================== */
+
+.v51-solgas-banner {
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.14) 0%, rgba(2, 132, 199, 0.08) 100%);
+  border: 1px solid rgba(255, 102, 0, 0.25);
+  border-radius: 1.4rem;
+  padding: 3vh 2.2vw;
+  margin-bottom: 2.8vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2vw;
+  box-shadow: 0 0.8vh 3vh rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.v51-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 1.2vw;
+  z-index: 2;
+}
+
+.v51-banner-flame-icon {
+  width: 3.8rem;
+  height: 3.8rem;
+  border-radius: 1.1rem;
+  background: linear-gradient(135deg, #ff6600, #ff8c00);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.8rem;
+  box-shadow: 0 0.6vh 2vh var(--v51-primary-glow);
+  flex-shrink: 0;
+}
+
+.v51-banner-text h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--v51-text-title);
+  line-height: 1.2;
+}
+
+.v51-banner-text p {
+  font-size: 0.86rem;
+  color: var(--v51-text-muted);
+  margin-top: 0.4vh;
+}
+
+.v51-banner-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5vw;
+  z-index: 2;
+}
+
+.v51-live-clock-box {
+  background: var(--v51-surface);
+  border: 1px solid var(--v51-border);
+  padding: 1.6vh 1.8vw;
+  border-radius: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.4vh;
+  box-shadow: var(--v51-shadow);
+  min-width: 270px;
+}
+
+.v51-clock-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+}
+
+.v51-clock-icon {
+  color: var(--v51-primary);
+  font-size: 1.4rem;
+}
+
+.v51-time-display {
+  font-size: 1.95rem;
+  font-weight: 900;
+  color: var(--v51-primary);
+  letter-spacing: 0.5px;
+  font-family: 'Poppins', monospace, sans-serif;
+  line-height: 1;
+}
+
+.v51-date-display {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--v51-text-title);
+  text-transform: capitalize;
+}
+
+.v51-turn-indicator {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--v51-emerald);
+  display: flex;
+  align-items: center;
+  gap: 0.35vw;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   CARDS DE RESUMEN EN 2 LÍNEAS (TEXTO EQUILIBRADO Y ELEGANTE)
+   ========================================================================== */
+
+.v51-kpi-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6vh;
+  margin-bottom: 3.2vh;
+}
+
+.v51-kpi-row-1 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4vw;
+}
+
+.v51-kpi-row-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.4vw;
+}
+
+.v51-kpi-card {
+  background: var(--v51-surface);
+  border: 1px solid var(--v51-border);
+  border-radius: 1.2rem;
+  padding: 2.2vh 1.5vw;
+  box-shadow: var(--v51-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.v51-kpi-card:hover {
+  border-color: var(--v51-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 1vh 3vh var(--v51-primary-glow);
+}
+
+.v51-kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--v51-primary);
+}
+
+.v51-kpi-card.emerald::before { background: var(--v51-emerald); }
+.v51-kpi-card.blue::before { background: var(--v51-blue); }
+.v51-kpi-card.purple::before { background: var(--v51-purple); }
+.v51-kpi-card.amber::before { background: var(--v51-amber); }
+
+.v51-kpi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2vh;
+}
+
+.v51-kpi-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 0.3vh 0.75vw;
+  border-radius: 999px;
+  background: rgba(255, 102, 0, 0.12);
+  color: var(--v51-primary);
+}
+
+.v51-kpi-tag.emerald { background: rgba(16, 185, 129, 0.12); color: var(--v51-emerald); }
+.v51-kpi-tag.blue { background: rgba(2, 132, 199, 0.12); color: var(--v51-blue); }
+.v51-kpi-tag.purple { background: rgba(139, 92, 246, 0.12); color: var(--v51-purple); }
+.v51-kpi-tag.amber { background: rgba(245, 158, 11, 0.12); color: var(--v51-amber); }
+
+.v51-kpi-icon {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 0.8rem;
+  background: var(--v51-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--v51-primary);
+}
+
+.v51-kpi-val {
+  font-size: 1.95rem;
+  font-weight: 900;
+  color: var(--v51-text-title);
+  line-height: 1.1;
+  margin-top: 0.6vh;
+}
+
+.v51-kpi-label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--v51-text-title);
+  margin-top: 0.4vh;
+}
+
+.v51-kpi-desc {
+  font-size: 0.78rem;
+  color: var(--v51-text-muted);
+  line-height: 1.45;
+  margin-top: 0.5vh;
+}
+
+.v51-kpi-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.6vh;
+  padding-top: 1.2vh;
+  border-top: 1px solid var(--v51-border);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.v51-kpi-foot span {
+  color: var(--v51-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.35vw;
+}
+
+/* ==========================================================================
+   HEADER DE SECCIÓN CON BUSCADOR Y BOTÓN ACCIÓN (CLIENTES Y PERSONAL)
+   ========================================================================== */
+
+.v51-section-banner {
+  background: var(--v51-surface);
+  border: 1px solid var(--v51-border);
+  border-radius: 1.2rem;
+  padding: 2.2vh 1.6vw;
+  margin-bottom: 2.2vh;
+  box-shadow: var(--v51-shadow);
+}
+
+.v51-sec-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.6vh;
+}
+
+.v51-sec-title h3 {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: var(--v51-text-title);
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+}
+
+.v51-sec-title p {
+  font-size: 0.8rem;
+  color: var(--v51-text-muted);
+  margin-top: 0.3vh;
+}
+
+.v51-btn-primary-orange {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  background: var(--v51-primary);
+  color: #ffffff;
+  border: none;
+  padding: 0.85vh 1.25vw;
+  border-radius: 0.65rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0.4vh 1.4vh var(--v51-primary-glow);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.v51-btn-primary-orange:hover {
+  background: var(--v51-primary-hover);
+  transform: translateY(-1px);
+}
+
+.v51-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  background: var(--v51-surface);
+  color: var(--v51-text-title);
+  border: 1px solid var(--v51-border);
+  padding: 0.85vh 1vw;
+  border-radius: 0.65rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.v51-btn-secondary:hover {
+  background: var(--v51-surface-alt);
+  border-color: var(--v51-primary);
+}
+
+.v51-search-input-box {
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+  background: var(--v51-surface-alt);
+  border: 1.5px solid var(--v51-border);
+  border-radius: 0.8rem;
+  padding: 1vh 1.2vw;
+  transition: border-color 0.2s;
+}
+
+.v51-search-input-box:focus-within {
+  border-color: var(--v51-primary);
+}
+
+.v51-search-input-box i {
+  color: var(--v51-text-muted);
+  font-size: 0.95rem;
+}
+
+.v51-search-input-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--v51-text-title);
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 500;
+  width: 100%;
+}
+
+/* ==========================================================================
+   TABLA CON PREVIEW DERECHO (FIEL A IMAGEN 2)
+   ========================================================================== */
+
+.v51-split-layout {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 1.6vw;
+  align-items: start;
+}
+
+.v51-table-card {
+  background: var(--v51-surface);
+  border: 1px solid var(--v51-border);
+  border-radius: 1.2rem;
+  padding: 1.8vh 1.4vw;
+  box-shadow: var(--v51-shadow);
+  overflow-x: auto;
+}
+
+.v51-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.v51-table th {
+  text-align: left;
+  padding: 1.2vh 0.8vw;
+  color: var(--v51-text-muted);
+  font-weight: 700;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--v51-border);
+}
+
+.v51-table td {
+  padding: 1.4vh 0.8vw;
+  border-bottom: 1px solid var(--v51-border);
+  color: var(--v51-text-body);
+}
+
+.v51-table tr:hover td {
+  background: var(--v51-surface-alt);
+  cursor: pointer;
+}
+
+.v51-table tr.selected td {
+  background: rgba(255, 102, 0, 0.08);
+  border-color: rgba(255, 102, 0, 0.2);
+}
+
+.v51-preview-card {
+  position: sticky;
+  top: 80px;
+  background: var(--v51-surface);
+  border: 1px solid var(--v51-border);
+  border-radius: 1.2rem;
+  padding: 2.6vh 1.6vw;
+  box-shadow: var(--v51-shadow);
+}
+
+.v51-preview-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35vw;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 0.3vh 0.8vw;
+  border-radius: 999px;
+  background: rgba(255, 102, 0, 0.12);
+  color: var(--v51-primary);
+  margin-bottom: 1.8vh;
+}
+
+.v51-avatar-large-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2.2vh;
+}
+
+.v51-avatar-round {
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 1rem;
+  background: #ff6600;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.5vh 1.8vh var(--v51-primary-glow);
+  margin-bottom: 1vh;
+}
+
+.v51-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1vh;
+  margin-bottom: 2.4vh;
+}
+
+.v51-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  padding-bottom: 0.9vh;
+  border-bottom: 1px solid var(--v51-border);
+}
+
+.v51-detail-row span.label {
+  color: var(--v51-text-muted);
+}
+
+.v51-detail-row span.val {
+  font-weight: 700;
+  color: var(--v51-text-title);
+  text-align: right;
+}
+
+.v51-btn-send-wa-link {
+  width: 100%;
+  background: var(--v51-primary);
+  color: #fff;
+  border: none;
+  padding: 1.3vh 1vw;
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6vw;
+  box-shadow: 0 0.5vh 1.6vh var(--v51-primary-glow);
+  transition: all 0.2s;
+  margin-bottom: 0.8vh;
+}
+
+.v51-btn-send-wa-link:hover {
+  background: var(--v51-primary-hover);
+  transform: translateY(-1px);
+}
+
+.v51-btn-cpe-shortcut {
+  width: 100%;
+  background: var(--v51-surface-alt);
+  color: var(--v51-text-title);
+  border: 1px solid var(--v51-border);
+  padding: 1.1vh 1vw;
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5vw;
+  transition: all 0.2s;
+}
+
+.v51-btn-cpe-shortcut:hover {
+  border-color: var(--v51-primary);
+  color: var(--v51-primary);
+}
+
+/* APPLE SWITCH */
+.v51-apple-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.v51-apple-switch input { opacity: 0; width: 0; height: 0; }
+
+.v51-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--v51-switch-bg-off);
+  transition: 0.25s;
+  border-radius: 24px;
+}
+
+.v51-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+input:checked + .v51-switch-slider { background-color: var(--v51-switch-bg-on); }
+input:checked + .v51-switch-slider:before { transform: translateX(20px); }
+
+/* ==========================================================================
+   PRODUCTOS (DISEÑO OFICIAL DE TIENDA)
+   ========================================================================== */
+
+.v51-products-store-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.4vw;
+}
+
+.v51-prod-card {
+  background: var(--v51-surface);
+  border: 1px solid var(--v51-border);
+  border-radius: 1.3rem;
+  padding: 2.4vh 1.3vw;
+  box-shadow: var(--v51-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: all 0.22s ease;
+}
+
+.v51-prod-card:hover {
+  border-color: var(--v51-primary);
+  transform: translateY(-3px);
+}
+
+.v51-prod-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.4vh;
+}
+
+.badge-fire {
+  background: #ff6600;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.3vh 0.7vw;
+  border-radius: 999px;
+}
+
+.badge-blue {
+  background: #0284c7;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.3vh 0.7vw;
+  border-radius: 999px;
+}
+
+.badge-amber {
+  background: #f59e0b;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.3vh 0.7vw;
+  border-radius: 999px;
+}
+
+.badge-purple {
+  background: #8b5cf6;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.3vh 0.7vw;
+  border-radius: 999px;
+}
+
+.v51-prod-use-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--v51-text-muted);
+  background: var(--v51-surface-alt);
+  padding: 0.25vh 0.6vw;
+  border-radius: 999px;
+}
+
+.v51-prod-img-box {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 1vh 0 1.5vh;
+  background: radial-gradient(circle, rgba(255, 102, 0, 0.05) 0%, transparent 70%);
+  border-radius: 1rem;
+}
+
+.v51-prod-img-box img {
+  max-height: 155px;
+  max-width: 90%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.v51-prod-card:hover .v51-prod-img-box img {
+  transform: scale(1.05);
+}
+
+.v51-prod-weight-pill {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2vh 0.55vw;
+  border-radius: 0.4rem;
+}
+
+.v51-prod-title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--v51-text-title);
+  margin-bottom: 1.2vh;
+  line-height: 1.3;
+}
+
+.v51-prod-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vh;
+  margin-bottom: 1.4vh;
+  font-size: 0.75rem;
+  color: var(--v51-text-body);
+}
+
+.v51-spec-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4vw;
+  line-height: 1.35;
+}
+
+.v51-spec-line i {
+  margin-top: 2px;
+  font-size: 0.72rem;
+}
+
+.v51-prod-guarantees {
+  border-top: 1px dashed var(--v51-border);
+  padding-top: 1vh;
+  margin-bottom: 1.4vh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35vh;
+}
+
+.v51-guarantee-tag {
+  font-size: 0.68rem;
+  color: var(--v51-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.2vh;
+}
+
+.v51-guarantee-item {
+  font-size: 0.72rem;
+  color: var(--v51-text-body);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4vw;
+  line-height: 1.3;
+}
+
+.v51-guarantee-item i {
+  color: var(--v51-emerald);
+  margin-top: 2px;
+}
+
+.v51-prod-bottom {
+  border-top: 1px solid var(--v51-border);
+  padding-top: 1.4vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.v51-prod-price-box {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.v51-prod-price-box small {
+  font-size: 0.68rem;
+  color: var(--v51-text-muted);
+}
+
+.v51-prod-price-val {
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: var(--v51-primary);
+  line-height: 1;
+}
+
+.v51-prod-action-row {
+  display: flex;
+  gap: 0.5vw;
+}
+
+.v51-btn-edit-prod {
+  flex: 1;
+  background: var(--v51-surface-alt);
+  color: var(--v51-text-title);
+  border: 1px solid var(--v51-border);
+  padding: 0.9vh 0.8vw;
+  border-radius: 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4vw;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.v51-btn-edit-prod:hover {
+  background: var(--v51-surface);
+  border-color: var(--v51-primary);
+  color: var(--v51-primary);
+}
+
+.v51-btn-wa-pedir {
+  background: #25d366;
+  color: #fff;
+  border: none;
+  padding: 0.9vh 0.9vw;
+  border-radius: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4vw;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.v51-btn-wa-pedir:hover { background: #1ebd5b; }
+
+/* ==========================================================================
+   SUNAT TICKET
+   ========================================================================== */
+
+.v51-ticket-box {
+  background: #fff;
+  color: #111;
+  border: 1px solid #ccc;
+  border-radius: 0.8rem;
+  padding: 2.2vh 1.6vw;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  box-shadow: 0 1vh 3vh rgba(0, 0, 0, 0.15);
+}
+
+
+/* ==========================================================================
+   FORM CONTROLS ULTRA-PREMIUM (SUNAT, WHATSAPP & MODALES)
+   ========================================================================== */
+
+.v51-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1.15rem;
+  width: 100%;
+}
+
+.v51-form-group label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.v51-form-group input,
+.v51-form-group select,
+.v51-form-group textarea {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  background: #0d1527 !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 0.75rem !important;
+  padding: 0.8rem 1.1rem !important;
+  color: #ffffff !important;
+  font-family: inherit !important;
+  font-size: 0.9rem !important;
+  transition: all 0.22s ease !important;
+  outline: none !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.v51-form-group input:focus,
+.v51-form-group select:focus,
+.v51-form-group textarea:focus {
+  border-color: #ff6600 !important;
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  background: #111a30 !important;
+}
+
+.v51-form-group input[readonly] {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #94a3b8 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  cursor: not-allowed;
+}
+
+.v51-form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ff6600' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 1.1rem center !important;
+  padding-right: 2.5rem !important;
+}
+
+.v51-form-group select option {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 8px;
+}
+
+/* TICKET SUNAT MEJORADO */
+.v51-ticket-box {
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 0.85rem;
+  padding: 1.4rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* CAJA DE IMAGEN DEL PRODUCTO (BALONES) */
+.v51-prod-img-box {
+  width: 100%;
+  height: 210px;
+  border-radius: 1rem;
+  background: radial-gradient(circle at center, #1b2844 0%, #0a0f1d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.v51-prod-img-box img {
+  max-height: 180px;
+  max-width: 88%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+  transition: transform 0.25s ease;
+  display: block;
+}
+
+.v51-prod-card:hover .v51-prod-img-box img {
+  transform: scale(1.05);
+}
+
+/* ACCIONES DE SECCIÓN SUPERIOR RESPONSIVE */
+.v51-sec-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.v51-sec-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/* ==========================================================================
+   BARRA DE NAVEGACIÓN MÓVIL (BOTTOM NAV)
+   ========================================================================== */
+
+.v51-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(8, 13, 26, 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--v51-border);
+  z-index: 95;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  padding: 0 0.5rem;
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
+}
+
+.v51-bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: transparent;
+  border: none;
+  color: var(--v51-text-muted);
+  font-family: inherit;
+  font-size: 0.62rem;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  padding: 6px 2px;
+}
+
+.v51-bottom-nav-item i {
+  font-size: 1.15rem;
+  transition: transform 0.2s ease;
+}
+
+.v51-bottom-nav-item.active {
+  color: var(--v51-primary);
+}
+
+.v51-bottom-nav-item.active i {
+  transform: translateY(-2px);
+}
+
+.v51-bottom-nav-item.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: var(--v51-primary);
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 2px 8px var(--v51-primary);
+}
+
+/* MODALES */
+.v51-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 11, 21, 0.75);
+  backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+  padding: 2vh 2vw;
+}
+
+.v51-modal-backdrop.open { display: flex; }
+
+.v51-modal-box {
+  background: var(--v51-surface);
+  border: 1px solid var(--v51-border);
+  border-radius: 1.2rem;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 2vh 5vh rgba(0, 0, 0, 0.5);
+  animation: modalEnter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.v51-modal-header {
+  padding: 2vh 1.8vw;
+  border-bottom: 1px solid var(--v51-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.v51-modal-header h3 {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: var(--v51-text-title);
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+}
+
+.v51-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--v51-text-muted);
+  font-size: 1.15rem;
+  cursor: pointer;
+  padding: 0.4vh 0.4vw;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.v51-modal-close:hover {
+  background: var(--v51-surface-alt);
+  color: var(--v51-rose);
+}
+
+.v51-modal-body {
+  padding: 2.2vh 1.8vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8vh;
+}
+
+.v51-modal-footer {
+  padding: 1.6vh 1.8vw;
+  border-top: 1px solid var(--v51-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.8vw;
+}
+
+.v51-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #0b1120;
+  color: #fff;
+  border: 1px solid rgba(255, 102, 0, 0.5);
+  border-radius: 0.85rem;
+  padding: 12px 22px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(20px) scale(0.95);
+  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
+  z-index: 150;
+}
+
+.v51-toast.show { 
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* RESPONSIVE DESIGN ULTRA-PREMIUM */
+@media (max-width: 1200px) {
+  .v51-products-store-grid { grid-template-columns: repeat(2, 1fr); }
+  .v51-kpi-row-1 { grid-template-columns: 1fr; }
+  .v51-kpi-row-2 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 868px) {
+  .v51-sidebar { 
+    display: none !important; 
+  }
+
+  .v51-main-wrapper { 
+    margin-left: 0 !important; 
+    width: 100vw !important;
+    padding-bottom: 85px; 
+  }
+
+  .v51-topbar {
+    padding: 0 1rem;
+    height: 60px;
+  }
+
+  .v51-header-logo-img {
+    height: 28px;
+  }
+
+  .v51-brand-divider,
+  .v51-brand-meta {
+    display: none !important;
+  }
+
+  .v51-header-username {
+    display: none !important;
+  }
+
+  .v51-app-container {
+    padding-top: 60px;
+  }
+
+  .v51-bottom-nav { 
+    display: flex !important; 
+  }
+
+  .v51-split-layout { grid-template-columns: 1fr; }
+  .v51-preview-card { position: static; margin-top: 2vh; }
+  .v51-solgas-banner { flex-direction: column; align-items: flex-start; }
+  .v51-banner-right { width: 100%; justify-content: space-between; margin-top: 1.5vh; }
+  .v51-live-clock-box { width: 100%; align-items: flex-start; }
+  .v51-grid-2 { grid-template-columns: 1fr; }
+
+  .v51-toast {
+    bottom: 78px !important; /* Espacio limpio sobre el bottom nav de 64px */
+    left: 16px !important;
+    right: 16px !important;
+    max-width: 380px !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+    text-align: center !important;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  .v51-toast.show {
+    transform: translateY(0) scale(1) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .v51-products-store-grid { grid-template-columns: 1fr; }
+}
+
+    </style>
+  </head>
+
+  <body>
+    <!-- ==================================================================
+         HEADER SUPERIOR MASTER (100% ANCHO COMPLETO, FLOTANTE ENCIMA DE TODO)
+         IZQUIERDA: LOGO SOLGAS CON METADATOS DE PLANTA (MÓVIL & DESKTOP)
+         DERECHA: NOTIFICACIONES, TEMA, USUARIO CON DROPDOWN (TIENDA + SALIR)
+         ================================================================== -->
+    <header class="v51-topbar" id="v51Topbar">
+      <!-- LADO IZQUIERDO: LOGO SOLGAS CON METADATOS DE PLANTA -->
+      <div class="v51-topbar-left">
+        <a href="/view51" class="v51-header-brand" title="Solgas Surquillo - Portal Oficial">
+          <img src="/imgwii/logo.webp" alt="Solgas Surquillo" class="v51-header-logo-img" />
+          <div class="v51-brand-divider"></div>
+          <div class="v51-brand-meta">
+            <span class="v51-brand-meta-title">PLANTA SURQUILLO</span>
+            <span class="v51-brand-meta-sub">
+              <span class="v51-live-indicator-dot"></span> Dante 260 · Operativa
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- LADO DERECHO: NOTIFICACIONES, TEMA, USUARIO CON DROPDOWN -->
+      <div class="v51-topbar-right">
+        <!-- Notificaciones -->
+        <button class="v51-icon-btn-round" id="btnNotifications" title="Notificaciones de Pedidos" onclick="showToast('🔔 3 pedidos pendientes de entrega en Surquillo')">
+          <i class="fa-regular fa-bell"></i>
+          <span class="v51-notif-dot"></span>
+        </button>
+
+        <!-- Modo Oscuro / Claro -->
+        <button class="v51-icon-btn-round" id="btnToggleTheme" title="Alternar Modo Oscuro/Claro">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Usuario con Dropdown Interactivo -->
+        <div class="v51-user-dropdown-wrapper" id="userDropdownWrapper">
+          <button class="v51-header-user-badge" id="btnUserDropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="v51-header-avatar">WA</div>
+            <span class="v51-header-username">{empresa.administrador}</span>
+            <i class="fa-solid fa-chevron-down v51-dropdown-arrow"></i>
+          </button>
+
+          <!-- MENÚ DROPDOWN DESPLEGABLE -->
+          <div class="v51-user-dropdown-menu" id="userDropdownMenu">
+            <div class="v51-dropdown-header">
+              <div class="v51-dropdown-avatar">WA</div>
+              <div class="v51-dropdown-user-info">
+                <h4>{empresa.administrador}</h4>
+                <p>{empresa.cargo}</p>
+                <span class="v51-dropdown-status">
+                  <span class="v51-green-dot"></span> En Turno · Solgas Surquillo
+                </span>
+              </div>
+            </div>
+
+            <div class="v51-dropdown-divider"></div>
+
+            <div class="v51-dropdown-body">
+              <!-- OPCIÓN 1: IR A TIENDA PRINCIPAL -->
+              <a href="/view40" class="v51-dropdown-item" title="Ver Tienda Oficial para Clientes">
+                <div class="v51-dropdown-item-icon store-icon">
+                  <i class="fa-solid fa-store"></i>
+                </div>
+                <div class="v51-dropdown-item-content">
+                  <strong>Ir a Tienda Principal</strong>
+                  <small>Vista oficial de catálogo para clientes (/view40)</small>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square v51-external-link-icon"></i>
+              </a>
+
+              <!-- OPCIÓN 2: CONFIGURACIÓN DE PLANTA -->
+              <a href="#tab-resumen" class="v51-dropdown-item" onclick="activarTab('tab-resumen'); const u = document.getElementById('userDropdownMenu'); u && u.classList.remove('show');">
+                <div class="v51-dropdown-item-icon settings-icon">
+                  <i class="fa-solid fa-sliders"></i>
+                </div>
+                <div class="v51-dropdown-item-content">
+                  <strong>Ajustes de Operación</strong>
+                  <small>Parámetros de stock y turnos en Surquillo</small>
+                </div>
+              </a>
+
+              <div class="v51-dropdown-divider"></div>
+
+              <!-- OPCIÓN 3: CERRAR TURNO / SALIR -->
+              <button class="v51-dropdown-item logout-btn" id="btnCerrarTurno" onclick="cerrarTurno()">
+                <div class="v51-dropdown-item-icon logout-icon">
+                  <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                <div class="v51-dropdown-item-content">
+                  <strong>Cerrar Turno / Salir</strong>
+                  <small>Finalizar jornada y bloquear terminal</small>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==================================================================
+         CONTENEDOR DE APLICACIÓN: SIDEBAR + MAIN CONTENT
+         ================================================================== -->
+    <div class="v51-app-container" id="v51AppContainer">
+      
+      <!-- SIDEBAR UBICADO POR DEBAJO DEL HEADER MAESTRO -->
+      <aside class="v51-sidebar" id="v51Sidebar">
+        <div>
+          <div class="v51-sidebar-section-title">
+            <span>MÓDULOS GERENCIALES</span>
+          </div>
+
+          <!-- Navegación Principal en Píldora Solgas -->
+          <nav class="v51-nav">
+            <button class="v51-nav-btn active" data-tab="tab-resumen">
+              <div class="v51-nav-btn-inner">
+                <i class="fa-solid fa-house"></i>
+                <span>Resumen</span>
+              </div>
+            </button>
+
+            <button class="v51-nav-btn" data-tab="tab-productos">
+              <div class="v51-nav-btn-inner">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span>Productos</span>
+              </div>
+              <span class="v51-badge">4</span>
+            </button>
+
+            <button class="v51-nav-btn" data-tab="tab-clientes">
+              <div class="v51-nav-btn-inner">
+                <i class="fa-solid fa-users"></i>
+                <span>Clientes</span>
+              </div>
+              <span class="v51-badge">5</span>
+            </button>
+
+            <button class="v51-nav-btn" data-tab="tab-personales">
+              <div class="v51-nav-btn-inner">
+                <i class="fa-solid fa-id-badge"></i>
+                <span>Personales</span>
+              </div>
+              <span class="v51-badge">5</span>
+            </button>
+
+            <button class="v51-nav-btn" data-tab="tab-sunat">
+              <div class="v51-nav-btn-inner">
+                <i class="fa-solid fa-receipt"></i>
+                <span>SUNAT CPE</span>
+              </div>
+            </button>
+
+            <button class="v51-nav-btn" data-tab="tab-whatsapp">
+              <div class="v51-nav-btn-inner">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span>WhatsApp</span>
+              </div>
+            </button>
+          </nav>
+
+          <!-- Botón de Acción Rápida en Sidebar -->
+          <div style="padding: 0 1vw;">
+            <button class="v51-sidebar-cta" onclick="abrirModalNuevoCliente()">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>+ Registrar Cliente</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sección Inferior: Ajustes, Cuenta, Colapsar Menú -->
+        <div class="v51-sidebar-bottom-utils">
+          <button class="v51-util-btn" onclick="showToast('⚙️ Ajustes operativos Jr. Dante 260 activos.')">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings / Ajustes</span>
+          </button>
+          
+          <button class="v51-util-btn" onclick="showToast('👤 Administrador: Wilder Alarcón (Gestor Propietario)')">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>Mi Cuenta / Turno</span>
+          </button>
+
+          <button class="v51-util-btn" id="btnToggleCollapse">
+            <i class="fa-solid fa-angles-left" id="collapseIcon"></i>
+            <span>Colapsar Menú</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- ==================================================================
+           CONTENEDOR PRINCIPAL
+           ================================================================== -->
+      <div class="v51-main-wrapper" id="v51MainWrapper">
+<main class="v51-content-area" style="padding: 2.6vh 2.2vw;">
+
+          <!-- ==============================================================
+               TAB 1: RESUMEN (BANNER SOLGAS + RELOJ GRANDE + CARDS EN 2 LÍNEAS)
+               ============================================================== -->
+          <section id="tab-resumen" class="v51-tab-pane active">
+
+            <!-- BANNER SOLGAS EJECUTIVO CON HORA Y FECHA GRANDES -->
+            <div class="v51-solgas-banner">
+              <div class="v51-banner-left">
+                <div class="v51-banner-flame-icon">
+                  <i class="fa-solid fa-fire"></i>
+                </div>
+                <div class="v51-banner-text">
+                  <h2>
+                    <span id="saludoDinamico">Buenas tardes</span>, <span style="color: var(--v51-primary);">{empresa.administrador}</span> 👋
+                  </h2>
+                  <p>
+                    Bienvenido al Panel de Control de <strong>Solgas Surquillo (Jr. Dante 260)</strong>. Tu turno gerencial y personal operativo están sincronizados.
+                  </p>
+                </div>
+              </div>
+
+              <div class="v51-banner-right">
+                <!-- Reloj Digital Grande en Vivo -->
+                <div class="v51-live-clock-box">
+                  <div class="v51-clock-row">
+                    <i class="fa-regular fa-clock v51-clock-icon"></i>
+                    <span id="relojEnVivo" class="v51-time-display">12:00:00 p. m.</span>
+                  </div>
+                  <div id="fechaEnVivo" class="v51-date-display">Cargando fecha...</div>
+                  <div class="v51-turn-indicator">
+                    <i class="fa-solid fa-circle" style="font-size: 6px;"></i> Turno Activo · Jr. Dante 260
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5 CARDS ORGANIZADOS EN 2 LÍNEAS CON TEXTO EQUILIBRADO -->
+            <div class="v51-kpi-container">
+              
+              <!-- LÍNEA 1: 3 CARDS (CLIENTES, PRODUCTOS, PERSONALES) -->
+              <div class="v51-kpi-row-1">
+                
+                <!-- CARD 1: CLIENTES -->
+                <div class="v51-kpi-card" onclick="activarTab('tab-clientes')">
+                  <div>
+                    <div class="v51-kpi-head">
+                      <span class="v51-kpi-tag">Cartera</span>
+                      <div class="v51-kpi-icon"><i class="fa-solid fa-users"></i></div>
+                    </div>
+                    <div class="v51-kpi-val">192</div>
+                    <div class="v51-kpi-label">Total Clientes Registrados</div>
+                    <p class="v51-kpi-desc">Directorio de hogares y negocios en Surquillo, Miraflores y San Borja.</p>
+                  </div>
+                  <div class="v51-kpi-foot">
+                    <small style="color: var(--v51-emerald);">+14 este mes</small>
+                    <span>Ver directorio <i class="fa-solid fa-arrow-right"></i></span>
+                  </div>
+                </div>
+
+                <!-- CARD 2: PRODUCTOS -->
+                <div class="v51-kpi-card emerald" onclick="activarTab('tab-productos')">
+                  <div>
+                    <div class="v51-kpi-head">
+                      <span class="v51-kpi-tag emerald">Catálogo</span>
+                      <div class="v51-kpi-icon" style="color: var(--v51-emerald);"><i class="fa-solid fa-boxes-stacked"></i></div>
+                    </div>
+                    <div class="v51-kpi-val">4 ítems</div>
+                    <div class="v51-kpi-label">Balones de Gas & Accesorios</div>
+                    <p class="v51-kpi-desc">Cilindros Solgas 10kg, 45kg, Masgas y kits reguladores en tienda oficial.</p>
+                  </div>
+                  <div class="v51-kpi-foot">
+                    <small style="color: var(--v51-emerald);">100% activos en web</small>
+                    <span>Gestionar <i class="fa-solid fa-arrow-right"></i></span>
+                  </div>
+                </div>
+
+                <!-- CARD 3: PERSONALES -->
+                <div class="v51-kpi-card blue" onclick="activarTab('tab-personales')">
+                  <div>
+                    <div class="v51-kpi-head">
+                      <span class="v51-kpi-tag blue">Equipo</span>
+                      <div class="v51-kpi-icon" style="color: var(--v51-blue);"><i class="fa-solid fa-id-badge"></i></div>
+                    </div>
+                    <div class="v51-kpi-val">5 miembros</div>
+                    <div class="v51-kpi-label">Personales & Repartidores</div>
+                    <p class="v51-kpi-desc">Gestor propietario, repartidores de torito y operarios de almacén.</p>
+                  </div>
+                  <div class="v51-kpi-foot">
+                    <small style="color: var(--v51-blue);">4 en turno activo</small>
+                    <span>Control turnos <i class="fa-solid fa-arrow-right"></i></span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- LÍNEA 2: 2 CARDS (COMPROBANTES SUNAT Y STOCK FÍSICO) -->
+              <div class="v51-kpi-row-2">
+                
+                <!-- CARD 4: COMPROBANTES SUNAT -->
+                <div class="v51-kpi-card purple" onclick="activarTab('tab-sunat')">
+                  <div>
+                    <div class="v51-kpi-head">
+                      <span class="v51-kpi-tag purple">Tributario</span>
+                      <div class="v51-kpi-icon" style="color: var(--v51-purple);"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    </div>
+                    <div class="v51-kpi-val">348 comprobantes</div>
+                    <div class="v51-kpi-label">Comprobantes SUNAT del Mes</div>
+                    <p class="v51-kpi-desc">Boletas electrónicas B001 y facturas F001 con descarga oficial en PDF y XML.</p>
+                  </div>
+                  <div class="v51-kpi-foot">
+                    <small style="color: var(--v51-purple);">S/ 24,850.00 facturado</small>
+                    <span>Emitir nuevo CPE <i class="fa-solid fa-arrow-right"></i></span>
+                  </div>
+                </div>
+
+                <!-- CARD 5: STOCK FÍSICO -->
+                <div class="v51-kpi-card amber" onclick="activarTab('tab-productos')">
+                  <div>
+                    <div class="v51-kpi-head">
+                      <span class="v51-kpi-tag amber">Inventario</span>
+                      <div class="v51-kpi-icon" style="color: var(--v51-amber);"><i class="fa-solid fa-warehouse"></i></div>
+                    </div>
+                    <div class="v51-kpi-val">140 balones llenos</div>
+                    <div class="v51-kpi-label">Stock Físico Jr. Dante 260</div>
+                    <p class="v51-kpi-desc">Balones con tara y precinto verificado en planta, más 48 vacíos para canje.</p>
+                  </div>
+                  <div class="v51-kpi-foot">
+                    <small style="color: var(--v51-amber);">S/ 11,170.00 valor stock</small>
+                    <span>Pedir a planta <i class="fa-solid fa-arrow-right"></i></span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- ==============================================================
+               TAB 2: PRODUCTOS (DISEÑO EXACTO A TIENDA CLIENTE CON EDICIÓN)
+               ============================================================== -->
+          <section id="tab-productos" class="v51-tab-pane">
+            <div class="v51-section-banner">
+              <div class="v51-sec-top-row">
+                <div class="v51-sec-title">
+                  <h3><i class="fa-solid fa-boxes-stacked" style="color: var(--v51-primary);"></i> Catálogo Oficial de Cilindros & Accesorios</h3>
+                  <p>Misma apariencia visual de alta conversión con edición instantánea y reposición vía WhatsApp.</p>
+                </div>
+                <div class="v51-sec-actions">
+                  <button class="v51-btn-secondary" onclick="abrirModal('modalReponerStock')">
+                    <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> Pedir Más Stock
+                  </button>
+                  <button class="v51-btn-primary-orange" onclick="abrirModal('modalProducto')">
+                    <i class="fa-solid fa-plus"></i> Nuevo Producto
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 PRODUCTOS CON EL DISEÑO OFICIAL DE TIENDA -->
+            <div class="v51-products-store-grid">
+              {productosIniciales.map((p) => (
+                <div class="v51-prod-card">
+                  <div>
+                    <div class="v51-prod-card-top">
+                      <span class={p.tagClase}>{p.badge}</span>
+                      <span class="v51-prod-use-pill">{p.tipoUso}</span>
+                    </div>
+
+                    <div class="v51-prod-img-box">
+                      <img src={p.imagen} alt={p.nombre} onerror="this.onerror=null;this.src='/imgwii/productos/BALON-10KG.webp';" />
+                      <span class="v51-prod-weight-pill">{p.capacidad}</span>
+                    </div>
+
+                    <h4 class="v51-prod-title">{p.nombre}</h4>
+
+                    <div class="v51-prod-specs">
+                      <div class="v51-spec-line">
+                        <i class="fa-solid fa-fire" style="color: #ff6600;"></i>
+                        <span><strong>Válvula:</strong> {p.valvula}</span>
+                      </div>
+                      <div class="v51-spec-line">
+                        <i class="fa-solid fa-scale-balanced" style="color: #0284c7;"></i>
+                        <span><strong>Peso:</strong> {p.pesoTotal}</span>
+                      </div>
+                      <div class="v51-spec-line">
+                        <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i>
+                        <span><strong>Seguridad:</strong> {p.seguridad}</span>
+                      </div>
+                    </div>
+
+                    <div class="v51-prod-guarantees">
+                      <span class="v51-guarantee-tag">GARANTÍA SOLGAS</span>
+                      {p.garantiasList.map((g) => (
+                        <div class="v51-guarantee-item">
+                          <i class="fa-solid fa-circle-check"></i>
+                          <span>{g}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div class="v51-prod-bottom">
+                    <div class="v51-prod-price-box">
+                      <div>
+                        <small>{p.garantia}</small>
+                        <div class="v51-prod-price-val">S/ {p.precioPEN.toFixed(2)}</div>
+                      </div>
+                      <div style="text-align: right;">
+                        <small style="color: var(--v51-emerald); font-weight: 700;">{p.stockLlenos} llenos</small><br />
+                        <small style="color: var(--v51-text-muted);">Jr. Dante 260</small>
+                      </div>
+                    </div>
+
+                    <div class="v51-prod-action-row">
+                      <button class="v51-btn-edit-prod btn-abrir-editar-prod" 
+                              data-id={p.id} 
+                              data-nombre={p.nombre} 
+                              data-precio={p.precioPEN}
+                              data-costo={p.costoPEN}
+                              data-stock={p.stockLlenos}
+                              data-valvula={p.valvula}>
+                        <i class="fa-solid fa-pen-to-square"></i> Editar Ficha
+                      </button>
+                      <a href={`https://wa.me/51936369384?text=Hola%20deseo%20pedir%20${encodeURIComponent(p.nombre)}`} 
+                         target="_blank" 
+                         class="v51-btn-wa-pedir"
+                         title="Pedir por WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </section>
+
+
+          <!-- ==============================================================
+               TAB 3: CLIENTES (CON EL DISEÑO FIEL DE IMAGEN 2 + BUSCADOR INTEGRADO)
+               ============================================================== -->
+          <section id="tab-clientes" class="v51-tab-pane">
+            
+            <!-- HEADER DE SECCIÓN CON BOTÓN REGISTRAR Y BUSCADOR -->
+            <div class="v51-section-banner">
+              <div class="v51-sec-top-row">
+                <div class="v51-sec-title">
+                  <h3><i class="fa-solid fa-users" style="color: var(--v51-primary);"></i> Directorio de Clientes</h3>
+                  <p>Directorio con tabla, preview completo y envío de link de contraseña por WhatsApp.</p>
+                </div>
+                <div>
+                  <button class="v51-btn-primary-orange" onclick="abrirModal('modalCliente')">
+                    <i class="fa-solid fa-plus"></i> + Registrar Cliente
+                  </button>
+                </div>
+              </div>
+
+              <!-- BUSCADOR DEBAJO DEL BOTÓN -->
+              <div class="v51-search-input-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="filtroClientesInput" placeholder="Buscar cliente por nombre, DNI, RUC o teléfono..." />
+              </div>
+            </div>
+
+            <!-- LAYOUT TABLA LIMPIA + PREVIEW INTEGRAL DE IMAGEN 2 -->
+            <div class="v51-split-layout">
+              <div class="v51-table-card">
+                <table class="v51-table">
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Documento</th>
+                      <th>Teléfono</th>
+                      <th>Activo</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaClientesBody">
+                    {clientesIniciales.map((c, idx) => (
+                      <tr class={`v51-cli-row ${idx === 2 ? 'selected' : ''}`}
+                          data-id={c.id}
+                          data-nombre={c.nombre}
+                          data-contacto={c.contacto}
+                          data-doc={`${c.tipoDoc}: ${c.numDoc}`}
+                          data-tel={c.contacto}
+                          data-dir={c.direccion}
+                          data-ref={c.referencia}
+                          data-cil={c.cilindroHabitual}
+                          data-pedidos={c.totalPedidos}
+                          data-facturado={c.totalFacturado}
+                          data-acceso={c.estadoAcceso}>
+                        <td>
+                          <strong>{c.nombre}</strong><br />
+                          <small style="color: var(--v51-text-muted); font-size: 0.72rem;">{c.direccion}</small>
+                        </td>
+                        <td>
+                          <span>{c.tipoDoc}: {c.numDoc}</span>
+                        </td>
+                        <td>
+                          <span style="color: var(--v51-wa); font-weight: 600;"><i class="fa-brands fa-whatsapp"></i> {c.contacto}</span>
+                        </td>
+                        <td>
+                          <label class="v51-apple-switch">
+                            <input type="checkbox" checked={c.activo} class="apple-toggle-cli" data-nombre={c.nombre} />
+                            <span class="v51-switch-slider"></span>
+                          </label>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- PANEL LATERAL DE DETALLE Y ACCIONES DE CLIENTE -->
+              <div class="v51-preview-card">
+                <div class="v51-preview-pill">
+                  <i class="fa-solid fa-address-card"></i> FICHA INTEGRAL DE CLIENTE
+                </div>
+
+                <div class="v51-avatar-large-box">
+                  <div class="v51-avatar-round" id="prevCliAvatar">CR</div>
+                  <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--v51-text-title);" id="prevCliNombre">Claudia Romero</h3>
+                  <p style="font-size: 0.76rem; color: var(--v51-text-muted);" id="prevCliDoc">DNI: 10745896</p>
+                  <span style="font-size: 0.68rem; font-weight: 800; color: #ffd166; background: rgba(255, 209, 102, 0.12); padding: 0.2vh 0.6vw; border-radius: 999px; margin-top: 0.4vh;" id="prevCliEstadoAcceso">
+                    Invitación Enviada
+                  </span>
+                </div>
+
+                <div class="v51-detail-list">
+                  <div class="v51-detail-row">
+                    <span class="label">WhatsApp:</span>
+                    <span class="val" id="prevCliTel">993 456 789</span>
+                  </div>
+                  <div class="v51-detail-row">
+                    <span class="label">Dirección:</span>
+                    <span class="val" id="prevCliDir">Av. Paseo de la República 4890, Miraflores</span>
+                  </div>
+                  <div class="v51-detail-row">
+                    <span class="label">Referencia:</span>
+                    <span class="val" id="prevCliRef">Edificio Residencial Piso 5</span>
+                  </div>
+                  <div class="v51-detail-row">
+                    <span class="label">Cilindro Habitual:</span>
+                    <span class="val" id="prevCliCil" style="color: var(--v51-primary);">Balón SOLGAS Premium 10 kg</span>
+                  </div>
+                  <div class="v51-detail-row">
+                    <span class="label">Consumo Histórico:</span>
+                    <span class="val" id="prevCliConsumo" style="color: var(--v51-primary);">S/ 520.00 (8 compras)</span>
+                  </div>
+                </div>
+
+                <!-- BOTÓN NARANJA DESTACADO DE IMAGEN 2 -->
+                <button class="v51-btn-send-wa-link" id="btnPreviewEnviarLink">
+                  <i class="fa-solid fa-key"></i> Enviar Link de Contraseña al WhatsApp
+                </button>
+
+                <div style="display: flex; gap: 0.6vw;">
+                  <button class="v51-btn-cpe-shortcut" style="flex: 1;" onclick="cargarClienteEnSunat()">
+                    <i class="fa-solid fa-file-invoice"></i> Emitir CPE
+                  </button>
+                  <button class="v51-btn-cpe-shortcut" style="width: 44px; justify-content: center;" onclick="abrirWaDirecto()">
+                    <i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.1rem;"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+
+          <!-- ==============================================================
+               TAB 4: PERSONALES (CON HEADER MODULAR, BUSCADOR Y PREVIEW)
+               ============================================================== -->
+          <section id="tab-personales" class="v51-tab-pane">
+            <div class="v51-section-banner">
+              <div class="v51-sec-top-row">
+                <div class="v51-sec-title">
+                  <h3><i class="fa-solid fa-id-badge" style="color: var(--v51-primary);"></i> Equipo de Trabajo & Repartidores</h3>
+                  <p>Control de colaboradores en turno con switches Apple y llamada directa.</p>
+                </div>
+                <div>
+                  <button class="v51-btn-primary-orange" onclick="abrirModal('modalPersonal')">
+                    <i class="fa-solid fa-plus"></i> + Agregar Personal
+                  </button>
+                </div>
+              </div>
+
+              <!-- BUSCADOR DEBAJO DEL BOTÓN -->
+              <div class="v51-search-input-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="filtroPersonalInput" placeholder="Buscar personal por nombre, cargo, unidad móvil o teléfono..." />
+              </div>
+            </div>
+
+            <!-- LAYOUT TABLA LIMPIA + PREVIEW -->
+            <div class="v51-split-layout">
+              <div class="v51-table-card">
+                <table class="v51-table">
+                  <thead>
+                    <tr>
+                      <th>Colaborador</th>
+                      <th>Rol / Cargo</th>
+                      <th>Unidad Móvil / Área</th>
+                      <th>Teléfono</th>
+                      <th>En Turno</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tablaPersonalBody">
+                    {equipoPersonal.map((p, idx) => (
+                      <tr class={`v51-staff-row ${idx === 0 ? 'selected' : ''}`}
+                          data-id={p.id}
+                          data-nombre={p.nombre}
+                          data-rol={p.rol}
+                          data-tel={p.telefono}
+                          data-dni={p.dni}
+                          data-area={p.area}
+                          data-turno={p.turno}
+                          data-entregas={p.entregasMes}>
+                        <td>
+                          <strong>{p.nombre}</strong><br />
+                          <small style="color: var(--v51-text-muted);">DNI: {p.dni}</small>
+                        </td>
+                        <td>
+                          <span class="v51-kpi-tag" style="font-size: 0.68rem;">{p.rol}</span>
+                        </td>
+                        <td>
+                          <span style="font-size: 0.78rem;">{p.area}</span>
+                        </td>
+                        <td>
+                          <span>{p.telefono}</span>
+                        </td>
+                        <td>
+                          <label class="v51-apple-switch">
+                            <input type="checkbox" checked={p.activo} class="apple-toggle-staff" data-nombre={p.nombre} />
+                            <span class="v51-switch-slider"></span>
+                          </label>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- PANEL LATERAL DE DETALLE DE PERSONAL -->
+              <div class="v51-preview-card">
+                <div class="v51-preview-pill">
+                  <i class="fa-solid fa-id-card-clip"></i> FICHA OPERATIVA DEL COLABORADOR
+                </div>
+
+                <div class="v51-avatar-large-box">
+                  <div class="v51-avatar-round" style="background: #0284c7;" id="prevStaffAvatar">WA</div>
+                  <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--v51-text-title);" id="prevStaffNombre">Wilder Alarcón</h3>
+                  <p style="font-size: 0.76rem; color: var(--v51-primary); font-weight: 700;" id="prevStaffRol">Gestor Propietario</p>
+                </div>
+
+                <div class="v51-detail-list">
+                  <div class="v51-detail-row">
+                    <span class="label">DNI Identidad:</span>
+                    <span class="val" id="prevStaffDni">10482910</span>
+                  </div>
+                  <div class="v51-detail-row">
+                    <span class="label">Teléfono Directo:</span>
+                    <span class="val" id="prevStaffTel">936 369 384</span>
+                  </div>
+                  <div class="v51-detail-row">
+                    <span class="label">Área / Móvil:</span>
+                    <span class="val" id="prevStaffArea">Administración & Finanzas</span>
+                  </div>
+                  <div class="v51-detail-row">
+                    <span class="label">Turno Asignado:</span>
+                    <span class="val" id="prevStaffTurno">Turno Completo (07:00 - 19:00)</span>
+                  </div>
+                  <div class="v51-detail-row">
+                    <span class="label">Entregas este mes:</span>
+                    <span class="val" id="prevStaffEntregas" style="color: var(--v51-emerald);">Supervisión General</span>
+                  </div>
+                </div>
+
+                <button class="v51-btn-send-wa-link" id="btnStaffLlamar" style="background: #0284c7;">
+                  <i class="fa-solid fa-phone"></i> Llamar al Móvil del Colaborador
+                </button>
+              </div>
+            </div>
+
+          </section>
+
+
+          <!-- ==============================================================
+               TAB 5: FACTURACIÓN ELECTRÓNICA SUNAT
+               ============================================================== -->
+          <section id="tab-sunat" class="v51-tab-pane">
+            <div class="v51-section-banner">
+              <div class="v51-sec-title">
+                <h3><i class="fa-solid fa-file-invoice-dollar" style="color: var(--v51-purple);"></i> Emisión de Comprobantes Electrónicos SUNAT</h3>
+                <p>Genera Boletas B001 o Facturas F001 con selección rápida desde la base de datos y ticket en tiempo real.</p>
+              </div>
+            </div>
+
+            <div class="v51-split-layout">
+              <div class="v51-table-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.8vh;">
+                  <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--v51-text-title);">1. Datos del Comprobante</h4>
+                  <button class="v51-btn-secondary" id="btnElegirClienteBD" style="font-size: 0.78rem;">
+                    <i class="fa-solid fa-database" style="color: var(--v51-primary);"></i> Seleccionar de Base de Datos
+                  </button>
+                </div>
+
+                <div class="v51-grid-2">
+                  <div class="v51-form-group">
+                    <label>Tipo de Documento</label>
+                    <select id="sunatTipoDoc">
+                      <option value="BOLETA">Boleta de Venta Electrónica (B001)</option>
+                      <option value="FACTURA">Factura Electrónica (F001)</option>
+                    </select>
+                  </div>
+                  <div class="v51-form-group">
+                    <label>Serie y Correlativo</label>
+                    <input type="text" id="sunatSerieDoc" value="B001-000453" readonly style="background: var(--v51-surface-alt);" />
+                  </div>
+                </div>
+
+                <div class="v51-form-group">
+                  <label>Nombre / Razón Social del Cliente</label>
+                  <input type="text" id="sunatInputClienteNombre" value="Claudia Romero" placeholder="Ingresa nombre o elige de la base de datos" />
+                </div>
+
+                <div class="v51-grid-2">
+                  <div class="v51-form-group">
+                    <label>DNI / RUC del Cliente</label>
+                    <input type="text" id="sunatInputClienteDoc" value="10745896" placeholder="Número de documento" />
+                  </div>
+                  <div class="v51-form-group">
+                    <label>Dirección de Entrega</label>
+                    <input type="text" id="sunatInputClienteDir" value="Av. Paseo de la República 4890, Miraflores" placeholder="Dirección en Surquillo o distritos vecinos" />
+                  </div>
+                </div>
+
+                <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--v51-text-title); margin: 2vh 0 1.2vh;">2. Balón de Gas / Producto</h4>
+                <div class="v51-grid-2">
+                  <div class="v51-form-group">
+                    <label>Seleccionar Balón</label>
+                    <select id="sunatSelectProducto">
+                      {productosIniciales.map((p) => (
+                        <option value={p.precioPEN} data-nombre={p.nombre}>{p.nombre} - S/ {p.precioPEN.toFixed(2)}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div class="v51-form-group">
+                    <label>Cantidad (Cilindros)</label>
+                    <input type="number" id="sunatInputCantidad" value="1" min="1" max="50" />
+                  </div>
+                </div>
+
+                <div class="v51-form-group">
+                  <label>Método de Pago</label>
+                  <select id="sunatSelectPago">
+                    <option value="Efectivo contraentrega">Efectivo contraentrega</option>
+                    <option value="Yape / Plin en puerta">Yape / Plin en puerta</option>
+                    <option value="POS Tarjeta Visa/Mastercard">POS Tarjeta Visa/Mastercard</option>
+                    <option value="Transferencia BCP/BBVA">Transferencia BCP/BBVA</option>
+                  </select>
+                </div>
+
+                <button class="v51-btn-primary-orange" id="btnEmitirCPE" style="width: 100%; justify-content: center; padding: 1.4vh 1vw; font-size: 0.95rem; margin-top: 1vh;">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Emitir Comprobante a SUNAT
+                </button>
+              </div>
+
+              <!-- TICKET PREVIEW -->
+              <div>
+                <div class="v51-ticket-box" id="ticketPreviewBox">
+                  <div style="text-align: center; border-bottom: 1px dashed #444; padding-bottom: 1.2vh; margin-bottom: 1.2vh;">
+                    <strong>{empresa.razonSocial}</strong><br />
+                    <span style="font-size: 0.72rem;">{empresa.nombreComercial}</span><br />
+                    <span style="font-size: 0.7rem;">RUC: {empresa.ruc}</span><br />
+                    <span style="font-size: 0.68rem;">{empresa.direccionPlanta}</span><br />
+                    <span style="font-size: 0.68rem;">Telf: {empresa.telefonoOficial}</span>
+                  </div>
+
+                  <div style="text-align: center; margin-bottom: 1.2vh;">
+                    <strong id="ticketTipo">BOLETA DE VENTA ELECTRÓNICA</strong><br />
+                    <span id="ticketSerie" style="font-weight: 700;">B001-000453</span>
+                  </div>
+
+                  <div style="margin-bottom: 1.2vh; font-size: 0.74rem;">
+                    <div><strong>CLIENTE:</strong> <span id="ticketCliente">Claudia Romero</span></div>
+                    <div><strong>DOC:</strong> <span id="ticketDoc">10745896</span></div>
+                    <div><strong>DIRECCIÓN:</strong> <span id="ticketDir">Av. Paseo de la República 4890, Miraflores</span></div>
+                    <div><strong>PAGO:</strong> <span id="ticketPago">Efectivo contraentrega</span></div>
+                    <div><strong>FECHA:</strong> <span id="ticketFecha">11/09/2026 13:30</span></div>
+                  </div>
+
+                  <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.2vh; font-size: 0.74rem;">
+                    <thead>
+                      <tr style="border-bottom: 1px solid #333;">
+                        <th style="text-align: left;">Cant</th>
+                        <th style="text-align: left;">Descripción</th>
+                        <th style="text-align: right;">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ticketItems">
+                      <tr>
+                        <td>1</td>
+                        <td>Balón SOLGAS Premium 10 kg</td>
+                        <td style="text-align: right;">S/ 65.00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div style="border-top: 1px dashed #444; padding-top: 1vh; text-align: right; font-size: 0.78rem;">
+                    <div>OP. GRAVADA: <span id="ticketSubtotal">S/ 55.08</span></div>
+                    <div>I.G.V. (18%): <span id="ticketIGV">S/ 9.92</span></div>
+                    <div style="font-size: 0.95rem; font-weight: 900; margin-top: 0.4vh;">TOTAL: <span id="ticketTotal">S/ 65.00</span></div>
+                  </div>
+
+                  <div style="text-align: center; margin-top: 1.5vh; font-size: 0.68rem; color: #555;">
+                    Representación impresa de CPE SUNAT<br />
+                    ¡Gracias por su preferencia en Solgas Surquillo!
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
+          <!-- ==============================================================
+               TAB 6: CENTRO WHATSAPP
+               ============================================================== -->
+          <section id="tab-whatsapp" class="v51-tab-pane">
+            <div class="v51-section-banner">
+              <div class="v51-sec-title">
+                <h3><i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> Asistente de Despacho & Avisos WhatsApp</h3>
+                <p>Envía avisos de salida en ruta, confirmación o comprobante PDF en un clic.</p>
+              </div>
+            </div>
+
+            <div class="v51-split-layout">
+              <div class="v51-table-card">
+                <div class="v51-form-group">
+                  <label>Seleccionar Modelo de Mensaje</label>
+                  <select id="waSelectPlantilla">
+                    <option value="ruta">🛵 Pedido en Ruta (Balón en camino + Tiempo estimado)</option>
+                    <option value="cpe">📄 Envío de Comprobante PDF / SUNAT</option>
+                    <option value="confirmacion">✅ Confirmación de Pedido Recibido</option>
+                  </select>
+                </div>
+
+                <div class="v51-form-group">
+                  <label>Nombre del Cliente</label>
+                  <input type="text" id="waInputNombre" value="Claudia Romero" />
+                </div>
+
+                <div class="v51-grid-2">
+                  <div class="v51-form-group">
+                    <label>Tiempo Estimado (ETA)</label>
+                    <input type="text" id="waInputEta" value="12–15 minutos" />
+                  </div>
+                  <div class="v51-form-group">
+                    <label>Repartidor Asignado</label>
+                    <input type="text" id="waInputMoto" value="Carlos Mendoza (Torito 02)" />
+                  </div>
+                </div>
+
+                <div class="v51-form-group">
+                  <label>Monto a Cobrar</label>
+                  <input type="text" id="waInputCobro" value="S/ 65.00 (Efectivo exacto o Yape)" />
+                </div>
+
+                <div class="v51-form-group">
+                  <label>Número WhatsApp Destino</label>
+                  <input type="text" id="waInputDestino" value="993 456 789" />
+                </div>
+
+                <button class="v51-btn-send-wa-link" id="btnEnviarWhatsAppOficial" style="background: #25d366;">
+                  <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Abrir y Enviar por WhatsApp
+                </button>
+              </div>
+
+              <!-- PREVIEW BURBUJA WA -->
+              <div class="v51-table-card" style="background: #0b141a; border-color: rgba(255, 255, 255, 0.1);">
+                <div style="display: flex; align-items: center; gap: 0.8vw; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1.2vh; margin-bottom: 1.5vh;">
+                  <div class="v51-header-avatar" style="background: #25d366;">
+                    <i class="fa-brands fa-whatsapp"></i>
+                  </div>
+                  <div>
+                    <strong style="color: #e9edef; font-size: 0.88rem;">Solgas Surquillo Oficial</strong><br />
+                    <small style="color: #8696a0;">Canal de Despacho Inmediato</small>
+                  </div>
+                </div>
+
+                <div style="background: #005c4b; color: #e9edef; padding: 1.6vh 1.2vw; border-radius: 0.8rem; font-size: 0.82rem; line-height: 1.5; white-space: pre-line; box-shadow: 0 0.4vh 1.2vh rgba(0, 0, 0, 0.3);" id="waBubblePreview">
+                  ¡Hola Claudia Romero! 👋
+                  Te saludamos de *Solgas Surquillo (Jr. Dante 260)*.
+
+                  🛵 Tu balón de gas ya está *EN CAMINO*.
+                  ⏱️ Tiempo estimado: *12–15 minutos*.
+                  👤 Repartidor: *Carlos Mendoza (Torito 02)*.
+                  💵 Cobro: *S/ 65.00 (Efectivo exacto o Yape)*.
+
+                  ⚖️ Recuerda que tu balón cuenta con *pesaje digital obligatorio en puerta*. ¡Muchas gracias!
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </main>
+      </div>
+    </div>
+<nav class="v51-bottom-nav">
+        <button class="v51-bottom-nav-item active" data-tab="tab-resumen">
+          <i class="fa-solid fa-house"></i>
+          <span>Resumen</span>
+        </button>
+        <button class="v51-bottom-nav-item" data-tab="tab-productos">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <span>Balones</span>
+        </button>
+        <button class="v51-bottom-nav-item" data-tab="tab-clientes">
+          <i class="fa-solid fa-users"></i>
+          <span>Clientes</span>
+        </button>
+        <button class="v51-bottom-nav-item" data-tab="tab-personales">
+          <i class="fa-solid fa-id-badge"></i>
+          <span>Personal</span>
+        </button>
+        <button class="v51-bottom-nav-item" data-tab="tab-sunat">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+          <span>SUNAT</span>
+        </button>
+        <button class="v51-bottom-nav-item" data-tab="tab-whatsapp">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>WhatsApp</span>
+        </button>
+      </nav>
+
+    <!-- ==================================================================
+         MODALES INTERACTIVOS
+         ================================================================== -->
+
+    <!-- MODAL 1: REGISTRAR CLIENTE -->
+    <div id="modalCliente" class="v51-modal-backdrop">
+      <div class="v51-modal-box">
+        <div class="v51-modal-header">
+          <h3><i class="fa-solid fa-user-plus" style="color: var(--v51-primary);"></i> Registrar Nuevo Cliente</h3>
+          <button class="v51-modal-close" onclick="cerrarModal('modalCliente')">&times;</button>
+        </div>
+        <div class="v51-modal-body">
+          <form onsubmit="event.preventDefault(); showToast('✅ Cliente registrado en Solgas Surquillo.'); cerrarModal('modalCliente');">
+            <div class="v51-form-group">
+              <label>Nombre Completo / Razón Social</label>
+              <input type="text" required placeholder="Ej. Mariana Benavides" />
+            </div>
+            <div class="v51-grid-2">
+              <div class="v51-form-group">
+                <label>Tipo Documento</label>
+                <select>
+                  <option value="DNI">DNI (8 dígitos)</option>
+                  <option value="RUC">RUC (11 dígitos)</option>
+                  <option value="CE">Carné de Extranjería</option>
+                </select>
+              </div>
+              <div class="v51-form-group">
+                <label>Número de Documento</label>
+                <input type="text" required placeholder="Ej. 74859612" />
+              </div>
+            </div>
+            <div class="v51-grid-2">
+              <div class="v51-form-group">
+                <label>WhatsApp / Celular</label>
+                <input type="tel" required placeholder="Ej. 987654321" />
+              </div>
+              <div class="v51-form-group">
+                <label>Balón Frecuente</label>
+                <select>
+                  <option>Balón SOLGAS Premium 10 kg</option>
+                  <option>Balón SOLGAS 45 kg</option>
+                  <option>Balón MASGAS 10 kg</option>
+                </select>
+              </div>
+            </div>
+            <div class="v51-form-group">
+              <label>Dirección Completa en Surquillo o Cercanías</label>
+              <input type="text" required placeholder="Ej. Jr. Dante 420, Dpto 201" />
+            </div>
+            <div class="v51-form-group">
+              <label>Referencia de Entrega</label>
+              <input type="text" placeholder="Ej. Frente a bodega San Pedro, reja blanca" />
+            </div>
+            <button type="submit" class="v51-btn-primary-orange" style="width: 100%; justify-content: center; padding: 1.3vh 1vw;">
+              Guardar Cliente en Base de Datos
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 2: REGISTRAR PERSONAL -->
+    <div id="modalPersonal" class="v51-modal-backdrop">
+      <div class="v51-modal-box">
+        <div class="v51-modal-header">
+          <h3><i class="fa-solid fa-id-badge" style="color: var(--v51-primary);"></i> Agregar Colaborador / Personal</h3>
+          <button class="v51-modal-close" onclick="cerrarModal('modalPersonal')">&times;</button>
+        </div>
+        <div class="v51-modal-body">
+          <form onsubmit="event.preventDefault(); showToast('✅ Personal agregado a la nómina.'); cerrarModal('modalPersonal');">
+            <div class="v51-form-group">
+              <label>Nombres y Apellidos</label>
+              <input type="text" required placeholder="Ej. Juan Carlos Salazar" />
+            </div>
+            <div class="v51-grid-2">
+              <div class="v51-form-group">
+                <label>Rol / Cargo Operativo</label>
+                <select>
+                  <option>Repartidor Motorizado (Torito)</option>
+                  <option>Conductor Camión de Reparto</option>
+                  <option>Operario de Pesaje & Almacén</option>
+                  <option>Atención Telefónica & Pedidos</option>
+                </select>
+              </div>
+              <div class="v51-form-group">
+                <label>DNI Identidad</label>
+                <input type="text" required placeholder="Ej. 48751296" />
+              </div>
+            </div>
+            <div class="v51-grid-2">
+              <div class="v51-form-group">
+                <label>Número de Teléfono</label>
+                <input type="tel" required placeholder="Ej. 994556677" />
+              </div>
+              <div class="v51-form-group">
+                <label>Unidad Móvil Asignada</label>
+                <input type="text" placeholder="Ej. Moto Torito 03 (7812-4A)" />
+              </div>
+            </div>
+            <button type="submit" class="v51-btn-primary-orange" style="width: 100%; justify-content: center; padding: 1.3vh 1vw;">
+              Registrar Personal
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 3: ENVIAR LINK DE CONTRASEÑA -->
+    <div id="modalLinkPassword" class="v51-modal-backdrop">
+      <div class="v51-modal-box">
+        <div class="v51-modal-header">
+          <h3><i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> Enviar Link de Contraseña</h3>
+          <button class="v51-modal-close" onclick="cerrarModal('modalLinkPassword')">&times;</button>
+        </div>
+        <div class="v51-modal-body">
+          <p style="font-size: 0.85rem; margin-bottom: 1.5vh; color: var(--v51-text-body);">
+            Se generó un link único para que <strong id="linkNombreCliente">Claudia Romero</strong> cree su contraseña y acceda a su portal de pedidos:
+          </p>
+          <div class="v51-form-group">
+            <label>Enlace Seguro de Activación</label>
+            <input type="text" id="inputUrlAcceso" readonly value="https://gaswii.com/activar?token=CLI-948271" style="font-weight: 700; color: var(--v51-primary);" />
+          </div>
+          <div style="display: flex; gap: 0.8vw; margin-top: 2vh;">
+            <button class="v51-btn-secondary" id="btnCopiarLink" style="flex: 1; justify-content: center;">
+              <i class="fa-solid fa-copy"></i> Copiar Enlace
+            </button>
+            <button class="v51-btn-send-wa-link" id="btnEnviarWaLink" style="flex: 1.2; margin-bottom: 0; background: #25d366;">
+              <i class="fa-brands fa-whatsapp"></i> Enviar por WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 4: EDITAR PRODUCTO -->
+    <div id="modalProducto" class="v51-modal-backdrop">
+      <div class="v51-modal-box">
+        <div class="v51-modal-header">
+          <h3 id="modalProdTitle">Editar Producto</h3>
+          <button class="v51-modal-close" onclick="cerrarModal('modalProducto')">&times;</button>
+        </div>
+        <div class="v51-modal-body">
+          <form id="formProductoV49">
+            <input type="hidden" id="modalProdId" />
+            <div class="v51-form-group">
+              <label>Nombre Oficial del Producto</label>
+              <input type="text" id="modalProdNombre" required />
+            </div>
+            <div class="v51-grid-2">
+              <div class="v51-form-group">
+                <label>Precio al Cliente (S/)</label>
+                <input type="number" step="0.5" id="modalProdPrecio" required />
+              </div>
+              <div class="v51-form-group">
+                <label>Costo de Planta (S/)</label>
+                <input type="number" step="0.5" id="modalProdCosto" required />
+              </div>
+            </div>
+            <div class="v51-grid-2">
+              <div class="v51-form-group">
+                <label>Stock Físico (Llenos)</label>
+                <input type="number" id="modalProdStock" required />
+              </div>
+              <div class="v51-form-group">
+                <label>Tipo de Válvula</label>
+                <input type="text" id="modalProdValvula" />
+              </div>
+            </div>
+            <button type="submit" class="v51-btn-primary-orange" style="width: 100%; justify-content: center; padding: 1.3vh 1vw;">
+              Guardar Cambios del Producto
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 5: SELECCIONAR CLIENTE DE BD PARA SUNAT -->
+    <div id="modalElegirClienteBD" class="v51-modal-backdrop">
+      <div class="v51-modal-box" style="max-width: 650px;">
+        <div class="v51-modal-header">
+          <h3><i class="fa-solid fa-users-viewfinder" style="color: var(--v51-primary);"></i> Seleccionar Cliente de Base de Datos</h3>
+          <button class="v51-modal-close" onclick="cerrarModal('modalElegirClienteBD')">&times;</button>
+        </div>
+        <div class="v51-modal-body">
+          <div style="display: flex; flex-direction: column; gap: 1vh;">
+            {clientesIniciales.map((c) => (
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.4vh 1vw; border: 1px solid var(--v51-border); border-radius: 0.8rem; background: var(--v51-surface-alt);">
+                <div>
+                  <strong>{c.nombre}</strong><br />
+                  <small style="color: var(--v51-text-muted);">{c.tipoDoc}: {c.numDoc} · {c.direccion}</small>
+                </div>
+                <button class="v51-btn-primary-orange btn-seleccionar-cli-bd" 
+                        data-nombre={c.nombre} 
+                        data-doc={c.numDoc} 
+                        data-dir={c.direccion}
+                        style="padding: 0.6vh 0.9vw; font-size: 0.78rem;">
+                  Seleccionar
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 6: PEDIDO REPOSICION A PLANTA -->
+    <div id="modalReponerStock" class="v51-modal-backdrop">
+      <div class="v51-modal-box">
+        <div class="v51-modal-header">
+          <h3><i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> Pedir Reposición a Planta Central</h3>
+          <button class="v51-modal-close" onclick="cerrarModal('modalReponerStock')">&times;</button>
+        </div>
+        <div class="v51-modal-body">
+          <div class="v51-form-group">
+            <label>Cilindros Solgas 10 kg a solicitar</label>
+            <input type="number" id="reponerSolgas10" value="40" min="5" />
+          </div>
+          <div class="v51-form-group">
+            <label>Cilindros Solgas 45 kg a solicitar</label>
+            <input type="number" id="reponerSolgas45" value="10" min="1" />
+          </div>
+          <div class="v51-form-group">
+            <label>Cilindros Masgas 10 kg a solicitar</label>
+            <input type="number" id="reponerMasgas10" value="15" min="5" />
+          </div>
+          <button class="v51-btn-send-wa-link" id="btnEnviarOrdenStockWa" style="margin-top: 1.5vh; background: #25d366;">
+            <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Enviar Pedido a Planta por WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST GLOBAL -->
+    <div id="v51Toast" class="v51-toast">
+      <i class="fa-solid fa-circle-check" style="color: var(--v51-emerald); font-size: 1.15rem;"></i>
+      <span id="v51ToastMsg">Acción completada exitosamente.</span>
+    </div>
+
+    <!-- ==================================================================
+         SCRIPTS NATIVOS
+         ================================================================== -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+
+        // --- 1. RELOJ EN VIVO GRANDE & SALUDO DINÁMICO ---
+        function actualizarReloj() {
+          const ahora = new Date();
+          const horas = ahora.getHours();
+          const horaStr = ahora.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+          const fechaStr = ahora.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+          
+          const elemHora = document.getElementById('relojEnVivo');
+          const elemFecha = document.getElementById('fechaEnVivo');
+          const elemSaludo = document.getElementById('saludoDinamico');
+
+          if (elemHora) elemHora.textContent = horaStr;
+          if (elemFecha) elemFecha.textContent = fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1);
+          
+          if (elemSaludo) {
+            if (horas < 12) elemSaludo.textContent = 'Buenos días';
+            else if (horas < 19) elemSaludo.textContent = 'Buenas tardes';
+            else elemSaludo.textContent = 'Buenas noches';
+          }
+        }
+        actualizarReloj();
+        setInterval(actualizarReloj, 1000);
+
+        // --- 2. GESTOR DE TABS (SIDEBAR + BOTTOM NAV MÓVIL) ---
+        const allNavTriggers = document.querySelectorAll('.v51-nav-btn[data-tab], .v51-bottom-nav-item[data-tab]');
+        const tabPanes = document.querySelectorAll('.v51-tab-pane');
+
+        window.activarTab = function(tabId) {
+          allNavTriggers.forEach(b => {
+            b.classList.toggle('active', b.dataset.tab === tabId);
+          });
+          tabPanes.forEach(p => {
+            p.classList.toggle('active', p.id === tabId);
+          });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        allNavTriggers.forEach(b => b.addEventListener('click', () => activarTab(b.dataset.tab)));
+
+        // --- 3. DROPDOWN DE USUARIO EN HEADER (TIENDA PRINCIPAL + CERRAR TURNO) ---
+        const btnUser = document.getElementById('btnUserDropdown');
+        const userMenu = document.getElementById('userDropdownMenu');
+        const userWrapper = document.getElementById('userDropdownWrapper');
+
+        btnUser?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = userMenu?.classList.toggle('show');
+          btnUser.classList.toggle('open', isOpen);
+          btnUser.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        // Cerrar dropdown al hacer clic afuera
+        document.addEventListener('click', (e) => {
+          if (!userWrapper?.contains(e.target)) {
+            userMenu?.classList.remove('show');
+            btnUser?.classList.remove('open');
+            btnUser?.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        document.getElementById('btnCerrarTurno')?.addEventListener('click', () => {
+          userMenu?.classList.remove('show');
+          btnUser?.classList.remove('open');
+          showToast('👋 Turno finalizado. ¡Excelente jornada en Solgas Surquillo!');
+        });
+
+        // --- 4. COLAPSAR SIDEBAR ---
+        const sidebar = document.getElementById('v51Sidebar');
+        const btnCollapse = document.getElementById('btnToggleCollapse');
+        const collapseIcon = document.getElementById('collapseIcon');
+        
+        btnCollapse?.addEventListener('click', () => {
+          sidebar?.classList.toggle('collapsed');
+          const isCollapsed = sidebar?.classList.contains('collapsed');
+          if (collapseIcon) {
+            collapseIcon.className = isCollapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left';
+          }
+        });
+
+        // --- 5. TOAST CON TIMER DINÁMICO ---
+        const toast = document.getElementById('v51Toast');
+        const toastMsg = document.getElementById('v51ToastMsg');
+        let toastTimer = null;
+        window.showToast = function(msg) {
+          if (!toast || !toastMsg) return;
+          if (toastTimer) clearTimeout(toastTimer);
+          toastMsg.textContent = msg;
+          toast.classList.add('show');
+          toastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+          }, 2800);
+        };
+
+        // --- 6. MODALES ---
+        window.abrirModal = function(id) { document.getElementById(id)?.classList.add('open'); };
+        window.cerrarModal = function(id) { document.getElementById(id)?.classList.remove('open'); };
+
+        // --- 7. BUSCADOR DE CLIENTES ---
+        const filtroClientes = document.getElementById('filtroClientesInput');
+        filtroClientes?.addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          const rows = document.querySelectorAll('#tablaClientesBody tr');
+          rows.forEach(row => {
+            const nom = row.dataset.nombre?.toLowerCase() || '';
+            const doc = row.dataset.doc?.toLowerCase() || '';
+            const tel = row.dataset.tel?.toLowerCase() || '';
+            const dir = row.dataset.dir?.toLowerCase() || '';
+            const coincide = nom.includes(q) || doc.includes(q) || tel.includes(q) || dir.includes(q);
+            row.style.display = coincide ? '' : 'none';
+          });
+        });
+
+        // --- 8. BUSCADOR DE PERSONAL ---
+        const filtroPersonal = document.getElementById('filtroPersonalInput');
+        filtroPersonal?.addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          const rows = document.querySelectorAll('#tablaPersonalBody tr');
+          rows.forEach(row => {
+            const nom = row.dataset.nombre?.toLowerCase() || '';
+            const rol = row.dataset.rol?.toLowerCase() || '';
+            const tel = row.dataset.tel?.toLowerCase() || '';
+            const dni = row.dataset.dni?.toLowerCase() || '';
+            const area = row.dataset.area?.toLowerCase() || '';
+            const coincide = nom.includes(q) || rol.includes(q) || tel.includes(q) || dni.includes(q) || area.includes(q);
+            row.style.display = coincide ? '' : 'none';
+          });
+        });
+
+        // --- 9. APPLE SWITCHES ---
+        document.querySelectorAll('.apple-toggle-cli').forEach(t => {
+          t.addEventListener('change', (e) => {
+            showToast(`👤 Cliente ${t.dataset.nombre}: ${e.target.checked ? 'Cuenta Activa' : 'Suspendida'}`);
+          });
+        });
+
+        document.querySelectorAll('.apple-toggle-staff').forEach(t => {
+          t.addEventListener('change', (e) => {
+            showToast(`👷‍♂️ Colaborador ${t.dataset.nombre}: ${e.target.checked ? 'Activo en Turno' : 'En Descanso'}`);
+          });
+        });
+
+        // --- 10. PREVIEW DE CLIENTE ---
+        const cliRows = document.querySelectorAll('.v51-cli-row');
+        cliRows.forEach(row => {
+          row.addEventListener('click', () => {
+            cliRows.forEach(r => r.classList.remove('selected'));
+            row.classList.add('selected');
+
+            const nom = row.dataset.nombre;
+            document.getElementById('prevCliAvatar').textContent = nom.substring(0, 2).toUpperCase();
+            document.getElementById('prevCliNombre').textContent = nom;
+            document.getElementById('prevCliDoc').textContent = row.dataset.doc;
+            document.getElementById('prevCliTel').textContent = row.dataset.tel;
+            document.getElementById('prevCliDir').textContent = row.dataset.dir;
+            document.getElementById('prevCliRef').textContent = row.dataset.ref;
+            document.getElementById('prevCliCil').textContent = row.dataset.cil;
+            document.getElementById('prevCliConsumo').textContent = `S/ ${parseFloat(row.dataset.facturado || 0).toFixed(2)} (${row.dataset.pedidos} compras)`;
+            document.getElementById('prevCliEstadoAcceso').textContent = row.dataset.acceso;
+          });
+        });
+
+        window.cargarClienteEnSunat = function() {
+          const nom = document.getElementById('prevCliNombre')?.textContent;
+          const doc = document.getElementById('prevCliDoc')?.textContent?.replace(/\D+/g, '');
+          const dir = document.getElementById('prevCliDir')?.textContent;
+
+          document.getElementById('sunatInputClienteNombre').value = nom || '';
+          document.getElementById('sunatInputClienteDoc').value = doc || '';
+          document.getElementById('sunatInputClienteDir').value = dir || '';
+          activarTab('tab-sunat');
+          actualizarTicket();
+          showToast(`📋 Datos de ${nom} cargados en facturación SUNAT.`);
+        };
+
+        window.abrirWaDirecto = function() {
+          const tel = (document.getElementById('prevCliTel')?.textContent || '936369384').replace(/\s+/g, '');
+          const nom = document.getElementById('prevCliNombre')?.textContent || 'Cliente';
+          const msg = `¡Hola ${nom}! Te saludamos de Solgas Surquillo (Jr. Dante 260). ¿En qué podemos ayudarte hoy?`;
+          window.open(`https://wa.me/51${tel}?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        document.getElementById('btnPreviewEnviarLink')?.addEventListener('click', () => {
+          const nom = document.getElementById('prevCliNombre')?.textContent || 'Cliente';
+          document.getElementById('linkNombreCliente').textContent = nom;
+          document.getElementById('inputUrlAcceso').value = `https://gaswii.com/activar?token=CLI-${Math.floor(1000 + Math.random() * 9000)}`;
+          abrirModal('modalLinkPassword');
+        });
+
+        document.getElementById('btnCopiarLink')?.addEventListener('click', () => {
+          const inp = document.getElementById('inputUrlAcceso');
+          inp?.select();
+          navigator.clipboard.writeText(inp.value);
+          showToast('📋 Enlace copiado al portapapeles.');
+        });
+
+        document.getElementById('btnEnviarWaLink')?.addEventListener('click', () => {
+          const nom = document.getElementById('linkNombreCliente')?.textContent || 'Cliente';
+          const link = document.getElementById('inputUrlAcceso')?.value || '';
+          const msg = `¡Hola ${nom}! Te saludamos de Solgas Surquillo (Jr. Dante 260). Tu cuenta express ha sido creada. Crea tu contraseña aquí para pedir gas al instante: ${link}`;
+          window.open(`https://wa.me/51987654321?text=${encodeURIComponent(msg)}`, '_blank');
+          cerrarModal('modalLinkPassword');
+          showToast('📲 Invitación enviada por WhatsApp.');
+        });
+
+        // --- 11. PREVIEW DE PERSONAL ---
+        const staffRows = document.querySelectorAll('.v51-staff-row');
+        staffRows.forEach(row => {
+          row.addEventListener('click', () => {
+            staffRows.forEach(r => r.classList.remove('selected'));
+            row.classList.add('selected');
+
+            const nom = row.dataset.nombre;
+            document.getElementById('prevStaffAvatar').textContent = nom.substring(0, 2).toUpperCase();
+            document.getElementById('prevStaffNombre').textContent = nom;
+            document.getElementById('prevStaffRol').textContent = row.dataset.rol;
+            document.getElementById('prevStaffDni').textContent = row.dataset.dni;
+            document.getElementById('prevStaffTel').textContent = row.dataset.tel;
+            document.getElementById('prevStaffArea').textContent = row.dataset.area;
+            document.getElementById('prevStaffTurno').textContent = row.dataset.turno;
+            document.getElementById('prevStaffEntregas').textContent = `${row.dataset.entregas} entregas este mes`;
+          });
+        });
+
+        document.getElementById('btnStaffLlamar')?.addEventListener('click', () => {
+          const tel = document.getElementById('prevStaffTel')?.textContent || '';
+          window.open(`tel:${tel}`, '_self');
+        });
+
+        // --- 12. EDICIÓN DE PRODUCTOS ---
+        document.querySelectorAll('.btn-abrir-editar-prod').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.getElementById('modalProdTitle').textContent = `Editar ${btn.dataset.nombre}`;
+            document.getElementById('modalProdId').value = btn.dataset.id;
+            document.getElementById('modalProdNombre').value = btn.dataset.nombre;
+            document.getElementById('modalProdPrecio').value = btn.dataset.precio;
+            document.getElementById('modalProdCosto').value = btn.dataset.costo;
+            document.getElementById('modalProdStock').value = btn.dataset.stock;
+            document.getElementById('modalProdValvula').value = btn.dataset.valvula;
+            abrirModal('modalProducto');
+          });
+        });
+
+        document.getElementById('formProductoV49')?.addEventListener('submit', () => {
+          const nom = document.getElementById('modalProdNombre')?.value || 'Producto';
+          showToast(`✅ Ficha de "${nom}" actualizada exitosamente.`);
+          cerrarModal('modalProducto');
+        });
+
+        // --- 13. SUNAT ---
+        document.getElementById('btnElegirClienteBD')?.addEventListener('click', () => {
+          abrirModal('modalElegirClienteBD');
+        });
+
+        document.querySelectorAll('.btn-seleccionar-cli-bd').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const nom = btn.dataset.nombre;
+            const doc = btn.dataset.doc;
+            const dir = btn.dataset.dir;
+
+            document.getElementById('sunatInputClienteNombre').value = nom;
+            document.getElementById('sunatInputClienteDoc').value = doc;
+            document.getElementById('sunatInputClienteDir').value = dir;
+            actualizarTicket();
+            cerrarModal('modalElegirClienteBD');
+            showToast(`✅ Cliente ${nom} cargado desde Base de Datos.`);
+          });
+        });
+
+        function actualizarTicket() {
+          const tipo = document.getElementById('sunatTipoDoc')?.value || 'BOLETA';
+          const serie = tipo === 'FACTURA' ? 'F001-000189' : 'B001-000453';
+          document.getElementById('sunatSerieDoc').value = serie;
+          document.getElementById('ticketTipo').textContent = tipo === 'FACTURA' ? 'FACTURA ELECTRÓNICA' : 'BOLETA DE VENTA ELECTRÓNICA';
+          document.getElementById('ticketSerie').textContent = serie;
+
+          const nom = document.getElementById('sunatInputClienteNombre')?.value || 'Cliente General';
+          const doc = document.getElementById('sunatInputClienteDoc')?.value || '00000000';
+          const dir = document.getElementById('sunatInputClienteDir')?.value || 'Surquillo';
+          const pago = document.getElementById('sunatSelectPago')?.value || 'Efectivo';
+
+          document.getElementById('ticketCliente').textContent = nom;
+          document.getElementById('ticketDoc').textContent = doc;
+          document.getElementById('ticketDir').textContent = dir;
+          document.getElementById('ticketPago').textContent = pago;
+
+          const selectProd = document.getElementById('sunatSelectProducto');
+          const optProd = selectProd?.options[selectProd.selectedIndex];
+          const precio = parseFloat(optProd?.value || '65.00');
+          const nomProd = optProd?.dataset.nombre || 'Balón de Gas';
+          const cant = parseInt(document.getElementById('sunatInputCantidad')?.value || '1', 10);
+
+          const total = precio * cant;
+          const subtotal = total / 1.18;
+          const igv = total - subtotal;
+
+          document.getElementById('ticketItems').innerHTML = `
+            <tr>
+              <td>${cant}</td>
+              <td>${nomProd}</td>
+              <td style="text-align: right;">S/ ${total.toFixed(2)}</td>
+            </tr>
+          `;
+          document.getElementById('ticketSubtotal').textContent = `S/ ${subtotal.toFixed(2)}`;
+          document.getElementById('ticketIGV').textContent = `S/ ${igv.toFixed(2)}`;
+          document.getElementById('ticketTotal').textContent = `S/ ${total.toFixed(2)}`;
+        }
+
+        ['sunatTipoDoc', 'sunatInputClienteNombre', 'sunatInputClienteDoc', 'sunatInputClienteDir', 'sunatSelectProducto', 'sunatInputCantidad', 'sunatSelectPago'].forEach(id => {
+          document.getElementById(id)?.addEventListener('input', actualizarTicket);
+          document.getElementById(id)?.addEventListener('change', actualizarTicket);
+        });
+
+        document.getElementById('btnEmitirCPE')?.addEventListener('click', () => {
+          actualizarTicket();
+          const serie = document.getElementById('sunatSerieDoc')?.value;
+          showToast(`🧾 Comprobante ${serie} emitido y aceptado por SUNAT.`);
+        });
+
+        // --- 14. ASISTENTE WHATSAPP ---
+        const waSelect = document.getElementById('waSelectPlantilla');
+        const waBubble = document.getElementById('waBubblePreview');
+        const waNom = document.getElementById('waInputNombre');
+        const waEta = document.getElementById('waInputEta');
+        const waMoto = document.getElementById('waInputMoto');
+        const waCobro = document.getElementById('waInputCobro');
+
+        function actualizarWaBubble() {
+          const tpl = waSelect?.value || 'ruta';
+          const nom = waNom?.value || 'Claudia Romero';
+          const eta = waEta?.value || '12–15 minutos';
+          const moto = waMoto?.value || 'Carlos Mendoza (Torito 02)';
+          const cobro = waCobro?.value || 'S/ 65.00';
+
+          if (tpl === 'ruta') {
+            waBubble.textContent = `¡Hola ${nom}! 👋\nTe saludamos de *Solgas Surquillo (Jr. Dante 260)*.\n\n🛵 Tu balón de gas ya está *EN CAMINO*.\n⏱️ Tiempo estimado: *${eta}*.\n👤 Repartidor: *${moto}*.\n💵 Cobro: *${cobro}*.\n\n⚖️ Recuerda que tu balón cuenta con *pesaje digital obligatorio en puerta*. ¡Muchas gracias!`;
+          } else if (tpl === 'cpe') {
+            waBubble.textContent = `¡Hola ${nom}! 👋\nTe saludamos de *Solgas Surquillo (Jr. Dante 260)*.\n\n📄 Te adjuntamos tu comprobante oficial:\n💰 Total: *${cobro}*\n⚖️ Pesaje Confirmado: *10.05 kg (Inacal)*\n\n📥 Descarga tu PDF oficial SUNAT aquí:\nhttps://gaswii.com/cpe/B001-000452.pdf\n\n¡Gracias por tu preferencia! 🔥`;
+          } else {
+            waBubble.textContent = `¡Hola ${nom}! 👋\nConfirmamos la recepción de tu pedido:\n\n📦 Balón: *Balón SOLGAS Premium 10 kg*\n💰 Total: *${cobro}*\n📍 Dirección: *Av. Paseo de la República 4890, Miraflores*\n\nDespachando de inmediato. ¡Muchas gracias!`;
+          }
+        }
+
+        [waSelect, waNom, waEta, waMoto, waCobro].forEach(el => el?.addEventListener('input', actualizarWaBubble));
+
+        document.getElementById('btnEnviarWhatsAppOficial')?.addEventListener('click', () => {
+          const tel = (document.getElementById('waInputDestino')?.value || '993456789').replace(/\s+/g, '');
+          const msg = waBubble?.textContent || '';
+          window.open(`https://wa.me/51${tel}?text=${encodeURIComponent(msg)}`, '_blank');
+          showToast(`📲 Abriendo WhatsApp para ${tel}...`);
+        });
+
+        // --- 15. REPOSICION STOCK WHATSAPP ---
+        document.getElementById('btnEnviarOrdenStockWa')?.addEventListener('click', () => {
+          const s10 = document.getElementById('reponerSolgas10')?.value || '40';
+          const s45 = document.getElementById('reponerSolgas45')?.value || '10';
+          const m10 = document.getElementById('reponerMasgas10')?.value || '15';
+          const msg = `*PEDIDO DE REPOSICIÓN - SOLGAS SURQUILLO*\n\nEstimados, requerimos reposición para Jr. Dante 260:\n- Solgas 10kg: *${s10} llenos*\n- Solgas 45kg: *${s45} llenos*\n- Masgas 10kg: *${m10} llenos*\n\nVacíos listos para canje en base. Gracias!`;
+          window.open(`https://wa.me/51936369384?text=${encodeURIComponent(msg)}`, '_blank');
+          cerrarModal('modalReponerStock');
+          showToast('📲 Pedido enviado a Planta Central por WhatsApp.');
+        });
+
+        // Alternar tema
+        document.getElementById('btnToggleTheme')?.addEventListener('click', () => {
+          const current = document.documentElement.dataset.theme;
+          const nuevo = current === 'futuro' || current === 'dark' ? 'luz' : 'futuro';
+          document.documentElement.dataset.theme = nuevo;
+          localStorage.setItem('wiTema_gaswii', nuevo);
+          localStorage.setItem('wiTema', nuevo);
+          showToast(`Tema cambiado a modo ${nuevo === 'futuro' ? 'Oscuro' : 'Claro'}`);
+        });
+
+      });
+    </script>
+  </body>
+</html>
