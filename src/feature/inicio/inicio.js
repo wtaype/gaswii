@@ -326,7 +326,6 @@ export function abrirModalPedido(productoPreseleccionado) {
     const vipBanner = document.getElementById('modalPedidoVipBanner');
     const guestBanner = document.getElementById('modalPedidoGuestBanner');
     const vipNombre = document.getElementById('modalPedidoVipNombre');
-    const vipPuntos = document.getElementById('modalPedidoVipPuntos');
 
     if (smile && (smile.uid || smile.nombre)) {
       const inputNombre = document.getElementById('pedNombre');
@@ -345,7 +344,6 @@ export function abrirModalPedido(productoPreseleccionado) {
       if (vipBanner) vipBanner.style.display = 'flex';
       if (guestBanner) guestBanner.style.display = 'none';
       if (vipNombre) vipNombre.textContent = `¡Hola, ${smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'Cliente')}!`;
-      if (vipPuntos) vipPuntos.textContent = `${smile.puntos !== undefined ? smile.puntos : 50} Pts VIP`;
     } else {
       if (vipBanner) vipBanner.style.display = 'none';
       if (guestBanner) guestBanner.style.display = 'flex';

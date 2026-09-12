@@ -6,7 +6,7 @@
   },
   "nav": {
     "productos": "Productos",
-    "balanza": "Balanza Digital",
+    "balanza": "Peso Exacto",
     "seguridad": "Cero Fugas",
     "calculadora": "Calculadora",
     "ubicacion": "Ubicación",
@@ -17,7 +17,7 @@
     "sticky_pedir": "Pedir Gas Express"
   },
   "footer": {
-    "bio": "Distribución formal de balones de gas GLP Solgas y MásGas. Sede física en Jr. Dante 260, Surquillo. Pesaje obligatorio en puerta y atención los 365 días del año.",
+    "bio": "Distribución formal de balones de gas GLP Solgas y MásGas. Sede física en Jr. Dante 260, Surquillo. Peso exacto garantizado de planta y base, y atención los 365 días del año.",
     "cobertura_titulo": "Distritos de Cobertura",
     "cobertura_surquillo": "Surquillo (Base Jr. Dante 260)",
     "cobertura_miraflores": "Miraflores (Todas las zonas)",

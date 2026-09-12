@@ -7,7 +7,7 @@ export const seo = {
   inicio: {
     es: {
       title: "Solgas Surquillo | Balón con Peso Exacto en 15-20 min",
-      description: "¿Cansado de balones que duran poco? En Solgas Surquillo (Jr. Dante 260) pesamos tu balón frente a tus ojos con balanza digital. Despacho rápido en 15-20 min.",
+      description: "¿Cansado de balones que duran poco? En Solgas Surquillo garantizamos balones con peso exacto desde planta Solgas y base Jr. Dante 260. Despacho en 15-20 min.",
       path: '/',
       keywords: [
         'gas a domicilio surquillo',
@@ -21,14 +21,14 @@ export const seo = {
     },
     en: {
       title: "Solgas Surquillo | 100% Full Gas Cylinder Delivery",
-      description: "Tired of underfilled gas? At Solgas Surquillo (Jr. Dante 260) we weigh your LPG cylinder at your door with a digital scale. Fast delivery in 15-20 min.",
+      description: "Tired of underfilled gas? At Solgas Surquillo we guarantee exact weight cylinders from Solgas plant and central base. Fast delivery in 15-20 min.",
       path: '/en',
       keywords: [
         'gas delivery surquillo',
         'lpg cylinder miraflores',
         'solgas english delivery lima',
         'cooking gas san isidro',
-        'gas cylinder digital scale'
+        'gas cylinder exact weight'
       ],
       audience: ['residents', 'expats', 'families', 'restaurants'],
       intent: 'order home delivery lpg gas cylinder in lima'
@@ -186,8 +186,8 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
             acceptedAnswer: {
               '@type': 'Answer',
               text: isEn 
-                ? "Our delivery driver weighs the cylinder on a calibrated digital scale in front of your door before installation."
-                : "Nuestro motorizado coloca una balanza digital calibrada frente a tu puerta para que compruebes que recibes el peso exacto antes de instalarlo."
+                ? "Our gas cylinders come with calibrated exact weight directly from the official Solgas plant and verified at our central hub in Jr. Dante 260 before dispatch, with factory tamper-evident seals intact."
+                : "Nuestros balones vienen con peso exacto calibrado directamente desde la planta envasadora oficial de Solgas y verificado en nuestra base central de Jr. Dante 260 antes del despacho, con precinto de fábrica 100% intacto."
             }
           },
           {

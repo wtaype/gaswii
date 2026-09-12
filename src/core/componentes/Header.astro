@@ -101,7 +101,6 @@ const esCliente = ruta === '/cliente';
         <!-- Botón LOGIN -->
         <button id="headerBtnLogin" onclick="window.abrirModalLogin && window.abrirModalLogin()" class="header-btn-login" title="Iniciar Sesión o Registrarse">
           <i class="fa-solid fa-circle-user"></i> <span>{t.login}</span>
-          <span class="header-login-badge">+50 Pts</span>
         </button>
 
         <!-- Card Perfil Usuario -->
@@ -112,7 +111,6 @@ const esCliente = ruta === '/cliente';
               <span id="headerUserNombre" class="header-user-name">Cliente</span>
               <div class="header-user-meta">
                 <span id="headerUserBadge" class="header-user-badge">@usuario</span>
-                <span id="headerUserPuntos" class="header-user-puntos">50 Pts</span>
               </div>
             </div>
           </a>
@@ -166,8 +164,6 @@ const esCliente = ruta === '/cliente';
       if (userAvatar) userAvatar.src = foto;
       if (userNombre) userNombre.textContent = smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'VIP');
       if (userBadge) userBadge.textContent = smile.usuario ? `@${smile.usuario.replace('@', '')}` : 'VIP';
-      const userPuntos = document.getElementById('headerUserPuntos');
-      if (userPuntos) userPuntos.textContent = `${smile.puntos !== undefined ? smile.puntos : 50} Pts`;
       if (perfilLink) perfilLink.href = smile.rol === 'personal' ? '/personal' : '/cliente';
     } else {
       if (btnLogin) btnLogin.style.display = 'inline-flex';

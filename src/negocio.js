@@ -89,13 +89,13 @@ export const datosNegocio = {
       caracteristicas: [
         "Válvula de seguridad antifugas original",
         "Precinto de garantía termocontraíble Osinergmin",
-        "Pesaje digital obligatorio frente a tu puerta",
+        "Peso exacto certificado de planta Solgas y base",
         "Inspección gratuita de fugas en cada entrega"
       ],
       caracteristicasEn: [
         "Original anti-leak safety valve",
         "Osinergmin heat-shrink guarantee security seal",
-        "Mandatory digital scale weighing at your door",
+        "Certified exact weight from Solgas plant and hub",
         "Free leak inspection on every single delivery"
       ]
     },
@@ -153,13 +153,13 @@ export const datosNegocio = {
       ahorroEn: "Most affordable choice",
       imagen: "/imgwii/productos/MASGAS-10KG.webp",
       caracteristicas: [
-        "Misma garantía de peso exacto con balanza",
+        "Misma garantía de peso exacto de origen y base",
         "Llama azul constante y duradera",
         "Cilindro inspeccionado libre de corrosión",
         "Entrega inmediata sin costo de flete"
       ],
       caracteristicasEn: [
-        "Same exact weight guarantee with digital scale",
+        "Same exact weight guarantee from plant and hub",
         "Consistent and long-lasting blue flame",
         "Inspected cylinder free of corrosion",
         "Immediate delivery with zero freight charge"

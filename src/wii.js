@@ -2,7 +2,7 @@
 export const id = 'gaswii-web';
 export const app = 'Solgas Surquillo';
 export const by = '@wilder.taype';
-export const linkweb = 'https://gaswii.amorwii.workers.dev/';
+export const linkweb = 'https://gaswii.lourdesinformatica10.workers.dev/';
 export const linkme = 'https://wtaype.github.io/';
 export const version = 1.0;
 export const versionName = '1.0.0';

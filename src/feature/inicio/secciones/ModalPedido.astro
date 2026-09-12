@@ -37,13 +37,13 @@ const t = getI18n(idioma);
           <strong id="modalPedidoVipNombre">¡Hola!</strong> Tus datos habituales se han <strong>autocompletado</strong>. Solo confirma tu pedido.
         </span>
       </div>
-      <span id="modalPedidoVipPuntos" class="modal-vip-badge">50 Pts</span>
+      <span class="modal-vip-badge"><i class="fa-solid fa-bolt"></i> VIP</span>
     </div>
 
-    <!-- Banner Visitante (Para Nuevos Clientes: Incentivo Registro) -->
+    <!-- Banner Visitante (Para Nuevos Clientes: Cero Digitación en Próximas Recargas) -->
     <div id="modalPedidoGuestBanner" class="modal-guest-banner">
       <span class="modal-guest-text">
-        <i class="fa-solid fa-gift color-primary mr-1"></i> <strong class="modal-guest-strong">Gana 50 Puntos</strong> y guarda tus datos para pedir en 1 solo clic en tus próximas recargas.
+        <i class="fa-solid fa-bolt color-primary mr-1"></i> <strong class="modal-guest-strong">Guarda tus datos</strong> para pedir en 1 solo clic en tus próximas recargas.
       </span>
       <button type="button" onclick="cerrarModalPedido(); abrirModalLogin();" class="modal-guest-action">
         Crear cuenta
@@ -127,7 +127,7 @@ const t = getI18n(idioma);
           <i class="fa-brands fa-whatsapp modal-btn-whatsapp-icon"></i> {t.modales.btn_enviar} ({negocio.telefonoMostrado || '+51 936 369 384'})
         </button>
         <div class="modal-footer-notice">
-          <i class="fa-solid fa-shield-halved"></i> Verificación obligatoria con balanza digital Inacal y prueba de fugas gratuita.
+          <i class="fa-solid fa-shield-halved"></i> {idioma === 'en' ? 'Guaranteed exact weight from Solgas plant and central hub with free leak test.' : 'Peso exacto garantizado de planta Solgas y base central con prueba de fugas gratuita.'}
         </div>
       </div>
 
