@@ -172,6 +172,10 @@
   gap: 0.85rem 0.85rem;
 }
 
+.wilg_grupo.wilg_col_full {
+  grid-column: 1 / -1;
+}
+
 .wilg_grupo {
   position: relative;
   width: 100%;
@@ -225,6 +229,17 @@
   opacity: 0.85;
 }
 
+/* PREVENCIÓN DE FONDO BLANCO EN AUTOCOMPLETADO DE NAVEGADOR */
+.wilg_grupo input:-webkit-autofill,
+.wilg_grupo input:-webkit-autofill:hover,
+.wilg_grupo input:-webkit-autofill:focus,
+.wilg_grupo input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #131b2e inset !important;
+  box-shadow: 0 0 0 1000px #131b2e inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 /* OJO CONTRASEÑA (Especificidad limpia sin !important) */
 #liForm .wilg_ojo {
   position: absolute;
@@ -274,6 +289,64 @@
   transform: none;
   box-shadow: none;
   pointer-events: none;
+}
+
+/* CHECKBOX DE TÉRMINOS Y CONDICIONES */
+.wilg_terminos_check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.4;
+  padding: 0.2rem 0.2rem 0.1rem;
+}
+
+.wilg_terminos_check input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  margin-top: 2px;
+  accent-color: #ff6600;
+  cursor: pointer;
+}
+
+.wilg_terminos_check a {
+  color: #ff6600;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.wilg_terminos_check a:hover {
+  color: #ff8533;
+}
+
+/* PREVIEW USUARIO GOOGLE */
+.wilg_user_preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  margin-bottom: 0.4rem;
+  text-align: center;
+}
+
+.wilg_user_preview strong {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.wilg_user_preview small {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  margin-top: 0.15rem;
 }
 
 #liForm #CompletarGoogle {

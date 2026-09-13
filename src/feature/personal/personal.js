@@ -11,7 +11,7 @@ export function initPersonal() {
   const user = getSmileLocal();
   if (user) {
     const nombre = user.nombre || user.usuario || 'Gestor Propietario';
-    const iniciales = nombre.substring(0, 2).toUpperCase();
+    const iniciales = user.iniciales || nombre.substring(0, 2).toUpperCase();
     const rolStr = user.rol ? user.rol.toUpperCase() : 'PERSONAL';
 
     const topbarName = document.getElementById('topbarUserName');
@@ -21,10 +21,20 @@ export function initPersonal() {
     const dropdownRole = document.getElementById('dropdownUserRole');
 
     if (topbarName) topbarName.textContent = nombre;
-    if (topbarAvatar) topbarAvatar.textContent = iniciales;
     if (dropdownName) dropdownName.textContent = nombre;
-    if (dropdownAvatar) dropdownAvatar.textContent = iniciales;
     if (dropdownRole) dropdownRole.textContent = `Rol: ${rolStr}`;
+
+    const renderAvatar = (el) => {
+      if (!el) return;
+      if (user.avatar && user.avatar.startsWith('http')) {
+        el.innerHTML = `<img src="${user.avatar}" alt="${nombre}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent='${iniciales}'">`;
+      } else {
+        el.textContent = iniciales;
+      }
+    };
+
+    renderAvatar(topbarAvatar);
+    renderAvatar(dropdownAvatar);
   }
 
   // 1. RELOJ EN VIVO GRANDE & SALUDO DINÁMICO

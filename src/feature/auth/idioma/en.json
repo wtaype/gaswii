@@ -7,8 +7,10 @@
   "recuperar_sub": "We will send a reset link to your email",
   "usuario_o_correo_label": "Username or Email:",
   "usuario_o_correo_ph": "username or you@email.com",
-  "nombre_label": "Full Name:",
-  "nombre_ph": "Ex. John Doe",
+  "nombre_label": "First Name:",
+  "nombre_ph": "Your first name",
+  "apellidos_label": "Last Name:",
+  "apellidos_ph": "Your last name",
   "usuario_label": "Username:",
   "usuario_ph": "Ex. john_home",
   "celular_label": "Contact Phone:",
@@ -70,9 +72,18 @@
   "connecting": "Connecting...",
   "val_invalid_email": "Invalid email format",
   "val_min3": "Minimum 3 characters",
-  "val_nombre_requerido": "Enter your full name",
+  "val_nombre_requerido": "Enter your first name",
+  "val_apellidos_requerido": "Enter your last name",
   "val_celular_min9": "Enter a valid phone number (9 digits)",
   "val_min6": "Minimum 6 characters",
-  "val_pass_no_match": "Passwords do not match"
+  "val_pass_no_match": "Passwords do not match",
+  "direccion_ph": "e.g. Jr. Dante 260",
+  "distrito_ph": "e.g. Surquillo",
+  "acepto_terminos_1": "I accept the",
+  "acepto_terminos_link": "Terms and Conditions",
+  "acepto_terminos_2": "of Solgas Surquillo.",
+  "val_direccion_requerida": "Please enter your delivery address",
+  "val_distrito_requerido": "Please enter your district",
+  "val_terminos_requeridos": "You must accept the terms and conditions"
 }
 

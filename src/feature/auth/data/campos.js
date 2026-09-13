@@ -5,21 +5,12 @@
 
 export const camposRegistro = [
   {
-    id:     'regNombre',
-    ico:    'user',
-    tipo:   'text',
-    key_ph: 'nombre_ph',
-    san:    'sanName',
-    regla:  'regNombre',
-    col:    'full'
-  },
-  {
-    id:     'regCelular',
-    ico:    'mobile-screen',
-    tipo:   'tel',
-    key_ph: 'celular_ph',
-    san:    'sanCelular',
-    regla:  'regCelular',
+    id:     'regEmail',
+    ico:    'envelope',
+    tipo:   'email',
+    key_ph: 'correo_ph',
+    san:    'sanEmail',
+    regla:  'regEmail',
     col:    'half'
   },
   {
@@ -32,13 +23,22 @@ export const camposRegistro = [
     col:    'half'
   },
   {
-    id:     'regEmail',
-    ico:    'envelope',
-    tipo:   'email',
-    key_ph: 'correo_ph',
-    san:    'sanEmail',
-    regla:  'regEmail',
-    col:    'full'
+    id:     'regNombre',
+    ico:    'user',
+    tipo:   'text',
+    key_ph: 'nombre_ph',
+    san:    'sanName',
+    regla:  'regNombre',
+    col:    'half'
+  },
+  {
+    id:     'regApellidos',
+    ico:    'user-tag',
+    tipo:   'text',
+    key_ph: 'apellidos_ph',
+    san:    'sanName',
+    regla:  'regApellidos',
+    col:    'half'
   },
   {
     id:     'regPassword',

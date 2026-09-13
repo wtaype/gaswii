@@ -112,26 +112,44 @@ export const sincronizarSmile = async (user, extraData = {}) => {
   let docSnap = null;
   try { docSnap = await getDoc(docRef); } catch (e) { console.warn('Firestore offline:', e); }
 
+  const imgEmail = 'https://imgwii.web.app/smile.avif';
+  const { avatar: calcIniciales } = await import('../../core/widev/nombre.js');
+
   let smileData;
   if (docSnap?.exists()) {
     const ex = docSnap.data();
-    const foto = user.photoURL || extraData.foto || ex.foto || generarAvatarUrl(ex.nombre || user.displayName, ex.usuario);
-    smileData = { ...ex, ...extraData, foto, actualizado: new Date().toISOString() };
-    const payload = { ...extraData, foto, actualizado: serverTimestamp() };
+    const avatar = user.photoURL || extraData.avatar || ex.avatar || imgEmail;
+    const iniciales = extraData.iniciales || ex.iniciales || calcIniciales(ex.nombre || user.displayName || 'Vecino Solgas');
+    smileData = { ...ex, ...extraData, avatar, iniciales, actualizado: new Date().toISOString() };
+    const payload = { ...extraData, avatar, iniciales, actualizado: serverTimestamp() };
     Object.keys(payload).forEach(k => payload[k] === undefined && delete payload[k]);
     updateDoc(docRef, payload).catch(() => {});
   } else {
     const nombre = extraData.nombre || user.displayName || 'Vecino Solgas';
-    const usuario = extraData.usuario || (user.email?.split('@')[0] || 'usuario') + '_' + Math.floor(100 + Math.random() * 900);
-    const foto = user.photoURL || extraData.foto || generarAvatarUrl(nombre, usuario);
+    const usuario = extraData.usuario || (user.email?.split('@')[0] || 'usuario').toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    const avatar = user.photoURL || extraData.avatar || imgEmail;
+    const iniciales = extraData.iniciales || calcIniciales(nombre);
     smileData = {
-      uid: user.uid, usuario, email: user.email || '', nombre, foto,
-      celular: extraData.celular || '', rol: extraData.rol || 'cliente',
-      plan: 'vip', activo: true, estado: 'activo',
-      puntos: 50, direcciones: extraData.direcciones || [],
-      creado: new Date().toISOString(), actualizado: new Date().toISOString()
+      uid: user.uid,
+      usuario,
+      email: user.email || '',
+      nombre,
+      apellidos: extraData.apellidos || '',
+      avatar,
+      iniciales,
+      celular: extraData.celular || '',
+      rol: extraData.rol || 'cliente',
+      plan: 'estandar',
+      activo: true,
+      estado: 'activo',
+      puntos: 0,
+      direcciones: extraData.direcciones || [],
+      terminos: true,
+      terminosFecha: new Date().toISOString(),
+      creado: new Date().toISOString(),
+      actualizado: new Date().toISOString()
     };
-    await setDoc(docRef, { ...smileData, creado: serverTimestamp(), actualizado: serverTimestamp() });
+    await setDoc(docRef, { ...smileData, terminosFecha: serverTimestamp(), creado: serverTimestamp(), actualizado: serverTimestamp() });
   }
 
   savels('wiSmile', smileData);

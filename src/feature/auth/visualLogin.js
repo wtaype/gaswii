@@ -3,8 +3,9 @@
 // Solgas Surquillo (Gaswii)
 
 import './login.css';
+import { wiTip } from '../../core/widev/widev.js';
 import { wiAuth, entrar, ROL_PATH, salir } from './sesion.js';
-import { tplLogin, tplUsername, checkLoginBtn, iniciarGoogleSSO, iniciarSesionOrdinaria } from './components/ingresar.js';
+import { tplLogin, tplUsername, checkLoginBtn, checkGoogleBtn, iniciarGoogleSSO, iniciarSesionOrdinaria, completarRegistroGoogle } from './components/ingresar.js';
 import { tplRegistrar, checkRegisterBtn, checkField, registrarUsuario, reglas } from './components/registrar.js';
 import { tplRestablecer, enviarEnlaceRecuperacion } from './components/recuperar.js';
 
@@ -32,10 +33,16 @@ const setupFormState = (v) => {
     if (btn) { btn.classList.add('inactivo'); btn.disabled = true; }
     requestAnimationFrame(checkRegisterBtn);
   }
+  if (v === 'username') {
+    const btn = document.getElementById('CompletarGoogle');
+    if (btn) { btn.classList.add('inactivo'); btn.disabled = true; }
+    requestAnimationFrame(checkGoogleBtn);
+  }
 };
 
 // Cambiar de vista (sincrono — todos los templates son sync)
 export const swap = (v) => {
+  wiTip.ocultar();
   const form = document.getElementById('liForm');
   if (!form || !tpls[v]) return;
   form.innerHTML = tpls[v]();
@@ -45,6 +52,7 @@ export const swap = (v) => {
 };
 
 export const cerrarModalAuth = () => {
+  wiTip.ocultar();
   const modal = document.getElementById('wi_auth_modal');
   if (modal) {
     modal.classList.remove('active');
@@ -112,7 +120,10 @@ export const initListeners = () => {
 
     // Acciones
     const btnGoogle = target.closest('#btnGoogle');
-    if (btnGoogle) { e.preventDefault(); await iniciarGoogleSSO(btnGoogle); return; }
+    if (btnGoogle) { e.preventDefault(); await iniciarGoogleSSO(btnGoogle, (v) => swap(v)); return; }
+
+    const btnCompletarGoogle = target.closest('#CompletarGoogle');
+    if (btnCompletarGoogle) { e.preventDefault(); await completarRegistroGoogle(btnCompletarGoogle); return; }
 
     const btnLogin = target.closest('#Login');
     if (btnLogin) { e.preventDefault(); await iniciarSesionOrdinaria(btnLogin); return; }
@@ -130,6 +141,7 @@ export const initListeners = () => {
     if (id === 'password') document.getElementById('Login')?.click();
     if (id === 'regPassword1') document.getElementById('Registrar')?.click();
     if (id === 'recEmail') document.getElementById('Recuperar')?.click();
+    if (id === 'regUsuarioGoogle') document.getElementById('CompletarGoogle')?.click();
   });
 
   document.addEventListener('input', (e) => {
@@ -137,10 +149,22 @@ export const initListeners = () => {
     if (!target.closest('#liForm input')) return;
     const { id } = target;
     if (id === 'email' || id === 'password') checkLoginBtn();
+    if (id === 'regUsuarioGoogle') checkGoogleBtn();
     if (reglas[id]) {
+      checkRegisterBtn();
       if (vTimeout) clearTimeout(vTimeout);
       vTimeout = setTimeout(() => checkField(target), 300);
     }
+  });
+
+  document.addEventListener('change', (e) => {
+    const id = e.target?.id;
+    if (id === 'checkTerminosRegistro') checkRegisterBtn();
+    if (id === 'checkTerminosGoogle') checkGoogleBtn();
+  });
+
+  document.addEventListener('auth:swap', (e) => {
+    if (e.detail) swap(e.detail);
   });
 
   document.addEventListener('blur', (e) => {
