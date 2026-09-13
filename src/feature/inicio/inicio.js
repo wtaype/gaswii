@@ -83,7 +83,7 @@ export function initCalculator() {
 // 3. AUTH MODAL ON-DEMAND (Carga diferida ultraligera - 0 KB de Auth al inicio)
 // --------------------------------------------------------------------------
 export function abrirModalLogin(modoInicial = 'login') {
-  import('../auth/visual.js').then((m) => {
+  import('../auth/visualLogin.js').then((m) => {
     m.initListeners();
     m.abrirLogin(modoInicial);
   });

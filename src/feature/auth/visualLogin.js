@@ -1,12 +1,12 @@
-// src/feature/auth/visual.js
+// src/feature/auth/visualLogin.js
 // Controlador de eventos del DOM y orquestador visual bajo demanda
 // Solgas Surquillo (Gaswii)
 
 import './login.css';
 import { wiAuth, entrar, ROL_PATH, salir } from './sesion.js';
-import { tplLogin, tplUsername, checkLoginBtn, iniciarGoogleSSO, iniciarSesionOrdinaria } from './login.js';
-import { tplRegistrar, checkRegisterBtn, checkField, registrarUsuario, reglas } from './registro.js';
-import { tplRestablecer, enviarEnlaceRecuperacion } from './recuperar.js';
+import { tplLogin, tplUsername, checkLoginBtn, iniciarGoogleSSO, iniciarSesionOrdinaria } from './components/ingresar.js';
+import { tplRegistrar, checkRegisterBtn, checkField, registrarUsuario, reglas } from './components/registrar.js';
+import { tplRestablecer, enviarEnlaceRecuperacion } from './components/recuperar.js';
 
 let vTimeout = null;
 
@@ -34,7 +34,7 @@ const setupFormState = (v) => {
   }
 };
 
-// Cambiar de vista (sincrono — todos los templates son sync ahora)
+// Cambiar de vista (sincrono — todos los templates son sync)
 export const swap = (v) => {
   const form = document.getElementById('liForm');
   if (!form || !tpls[v]) return;

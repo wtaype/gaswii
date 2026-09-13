@@ -1,12 +1,12 @@
-// src/feature/auth/login.js
+// src/feature/auth/components/ingresar.js
 // Formulario de inicio de sesión, plantillas localizadas y llamadas de autenticación bajo demanda
 // Solgas Surquillo (Gaswii)
 
-import { wiSpin, Mensaje } from '../../core/widev/widev.js';
-import { entrar } from './sesion.js';
-import { t } from './idioma.js';
-import { auth, googleProvider } from '../../core/config/firebase-auth.ts';
-import { db } from '../../core/config/firebase-db.ts';
+import { wiSpin, Mensaje } from '../../../core/widev/widev.js';
+import { entrar } from '../sesion.js';
+import { t } from '../idioma/idioma.js';
+import { auth, googleProvider } from '../../../core/config/firebase-auth.ts';
+import { db } from '../../../core/config/firebase-db.ts';
 import {
   signInWithEmailAndPassword,
   signInWithPopup

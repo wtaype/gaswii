@@ -107,7 +107,7 @@ const jsonLd = getJsonLd(ruta, idioma);
     // Puente de compatibilidad global ultra-ligero para interacción
     (window as any).toggleTema = () => wiTema.toggle();
     (window as any).abrirModalLogin = (vista = 'login') => {
-      import('../../feature/auth/visual.js').then((m) => {
+      import('../../feature/auth/visualLogin.js').then((m) => {
         m.initListeners();
         m.abrirLogin(vista);
       });

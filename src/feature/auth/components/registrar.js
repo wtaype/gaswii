@@ -1,14 +1,14 @@
-// src/feature/auth/registro.js
+// src/feature/auth/components/registrar.js
 // Plantilla de registro, sanitizacion, validaciones y creacion de cuenta bajo demanda
 // Solgas Surquillo (Gaswii)
 
-import { wiSpin, Mensaje, wiTip, wiRateLimit } from '../../core/widev/widev.js';
-import { entrar } from './sesion.js';
-import { campo, mapearErrorAuth } from './login.js';
-import { t } from './idioma.js';
-import { camposRegistro } from './data/campos.js';
-import { auth } from '../../core/config/firebase-auth.ts';
-import { db } from '../../core/config/firebase-db.ts';
+import { wiSpin, Mensaje, wiTip, wiRateLimit } from '../../../core/widev/widev.js';
+import { entrar } from '../sesion.js';
+import { campo, mapearErrorAuth } from './ingresar.js';
+import { t } from '../idioma/idioma.js';
+import { camposRegistro } from '../data/campos.js';
+import { auth } from '../../../core/config/firebase-auth.ts';
+import { db } from '../../../core/config/firebase-db.ts';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc, getDocs, collection, query, where, limit, serverTimestamp } from 'firebase/firestore';
 
