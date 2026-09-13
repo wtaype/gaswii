@@ -5,16 +5,7 @@
 import { wiSpin, Mensaje } from '../../../core/widev/widev.js';
 import { entrar } from '../sesion.js';
 import { t } from '../idioma/idioma.js';
-import { auth, googleProvider } from '../../../core/config/firebase-auth.ts';
-import { db } from '../../../core/config/firebase-db.ts';
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup
-} from 'firebase/auth';
-import {
-  doc, getDoc, setDoc, getDocs,
-  collection, query, where, limit, serverTimestamp
-} from 'firebase/firestore';
+import { loadFirebaseAuth, precargarFirebaseAuth } from '../firebaseAuthLoader.js';
 
 // Mapeo de errores Firebase — claves del JSON, sin exponer códigos internos
 export const mapearErrorAuth = (e) => {
@@ -76,7 +67,7 @@ export const setPendingGoogleUser = (u) => { pendingGoogleUser = u; };
 // Template HTML para completar usuario nuevo de Google SSO
 export const tplUsername = () => {
   const txt = t();
-  const u = pendingGoogleUser || auth.currentUser;
+  const u = pendingGoogleUser;
   const sugerenciaUser = (u?.email?.split('@')[0] || 'usuario').toLowerCase().replace(/[^a-z0-9_-]/g, '');
   return `
   <div class="wilg_head">
@@ -132,6 +123,12 @@ export const iniciarSesionOrdinaria = async (btn) => {
   const txt = t();
   wiSpin(btn, true, txt.signing_in);
   try {
+    const {
+      auth, db, signInWithEmailAndPassword,
+      query, collection, where, limit, getDocs,
+      doc, getDoc, setDoc, serverTimestamp
+    } = await loadFirebaseAuth();
+
     let email = input;
 
     // Resolver username → email solo si no contiene '@'
@@ -176,6 +173,7 @@ export const iniciarSesionOrdinaria = async (btn) => {
 export const iniciarGoogleSSO = async (btn, onNuevoUsuario) => {
   wiSpin(btn, true, t().connecting);
   try {
+    const { auth, googleProvider, db, signInWithPopup, doc, getDoc } = await loadFirebaseAuth();
     const res  = await signInWithPopup(auth, googleProvider);
     const user = res.user;
     const docRef  = doc(db, 'smiles', user.uid);
@@ -206,7 +204,8 @@ export const iniciarGoogleSSO = async (btn, onNuevoUsuario) => {
 
 // Completar registro del usuario nuevo de Google
 export const completarRegistroGoogle = async (btn) => {
-  const user = pendingGoogleUser || auth.currentUser;
+  const { auth, db, doc, setDoc, query, collection, where, limit, getDocs, serverTimestamp } = await loadFirebaseAuth();
+  const user = pendingGoogleUser || auth?.currentUser;
   const txt = t();
   if (!user) {
     Mensaje(txt.err_unexpected, 'error');

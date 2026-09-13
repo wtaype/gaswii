@@ -5,10 +5,7 @@
 import { wiSpin, Mensaje } from '../../../core/widev/widev.js';
 import { campo, mapearErrorAuth } from './ingresar.js';
 import { t } from '../idioma/idioma.js';
-import { auth } from '../../../core/config/firebase-auth.ts';
-import { db } from '../../../core/config/firebase-db.ts';
-import { sendPasswordResetEmail } from 'firebase/auth';
-import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { loadFirebaseAuth } from '../firebaseAuthLoader.js';
 
 // Template HTML para formulario de recuperación
 export const tplRestablecer = () => {
@@ -36,6 +33,7 @@ export const enviarEnlaceRecuperacion = async (btn) => {
   const txt = t();
   wiSpin(btn, true, txt.sending_link);
   try {
+    const { auth, db, sendPasswordResetEmail, collection, query, where, getDocs, limit } = await loadFirebaseAuth();
     let email = input;
 
     if (!input.includes('@')) {

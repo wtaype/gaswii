@@ -8,6 +8,7 @@ import { wiAuth, entrar, ROL_PATH, salir } from './sesion.js';
 import { tplLogin, tplUsername, checkLoginBtn, checkGoogleBtn, iniciarGoogleSSO, iniciarSesionOrdinaria, completarRegistroGoogle } from './components/ingresar.js';
 import { tplRegistrar, checkRegisterBtn, checkField, registrarUsuario, reglas } from './components/registrar.js';
 import { tplRestablecer, enviarEnlaceRecuperacion } from './components/recuperar.js';
+import { precargarFirebaseAuth } from './firebaseAuthLoader.js';
 
 let vTimeout = null;
 
@@ -74,6 +75,7 @@ export const abrirLogin = (vista = 'login') => {
     </div>
   </div>`;
   document.body.appendChild(wrapper.firstElementChild);
+  precargarFirebaseAuth();
   setTimeout(() => setupFormState(vista), 40);
 };
 

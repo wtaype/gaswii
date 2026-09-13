@@ -2,7 +2,6 @@
 // Controlador de la pestaña Mis Direcciones de Recarga Frecuentes
 
 import { getSmileLocal, sincronizarSmile } from '../../auth/sesion.js';
-import { auth } from '../../../core/config/firebase.ts';
 
 export function initTabDirecciones() {
   const smile = getSmileLocal();

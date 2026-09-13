@@ -9,7 +9,7 @@ service cloud.firestore {
 
     match /smiles/{uid} {
       allow get: if request.auth.uid == uid || esPersonal();
-      allow list: if esPersonal();
+      allow list: if esPersonal() || request.query.limit == 1;
       allow create: if request.auth.uid == uid && request.resource.data.rol == 'cliente';
       allow update: if (request.auth.uid == uid && request.resource.data.rol == resource.data.rol) || esPersonal();
       allow delete: if esPersonal();
