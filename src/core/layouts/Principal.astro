@@ -65,88 +65,14 @@ const jsonLd = getJsonLd(ruta, idioma);
   <link rel="preload" href="/google/Outfit-700.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   <link rel="preload" href="/google/Poppins-400.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
 
-  <!-- Anti-FOUC Inmediato (0ms de retraso visual al cargar tema) -->
-  <script is:inline>
-    (function() {
-      try {
-        const guardado = localStorage.getItem('wiTema_gaswii');
-        const sistema = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'futuro' : 'luz';
-        const tema = guardado || sistema || 'futuro';
-        document.documentElement.dataset.theme = tema;
-      } catch (e) {}
-    })();
-  </script>
+  <!-- Anti-FOUC Inmediato y Smart (0ms bloqueo, 78 bytes) -->
+  <script is:inline>try{document.documentElement.dataset.theme=localStorage.getItem('wiTema')||(matchMedia('(prefers-color-scheme:light)').matches?'luz':'futuro')}catch(e){}</script>
 
   <!-- Estilos Globales Inlined (app.css + fonts.css + fontawesome): 0 CSS compilado, 0 peticiones bloqueantes -->
   <style is:global data-astro-transition-persist="global-css" set:html={globalCss}></style>
 
   <!-- Slot Head para que cada feature (inicio, cliente, personal) inyecte su CSS con set:html -->
   <slot name="head" />
-
-  <!-- Script Global de Funciones de Interfaz (Drawer, Tema, Modales) -->
-  <script is:inline>
-    function toggleTema() {
-      const actual = document.documentElement.dataset.theme || 'futuro';
-      const nuevo = actual === 'futuro' ? 'luz' : 'futuro';
-      document.documentElement.dataset.theme = nuevo;
-      try { localStorage.setItem('wiTema_gaswii', nuevo); } catch (e) {}
-      const icon = document.getElementById('themeIcon');
-      if (icon) icon.className = nuevo === 'futuro' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-    }
-
-    function abrirDrawer() {
-      document.getElementById('mobileDrawer')?.classList.add('open');
-      document.getElementById('drawerBackdrop')?.classList.add('active');
-    }
-
-    function cerrarDrawer() {
-      document.getElementById('mobileDrawer')?.classList.remove('open');
-      document.getElementById('drawerBackdrop')?.classList.remove('active');
-    }
-
-    function abrirModalLogin() {
-      document.getElementById('modalLogin')?.classList.add('open');
-    }
-
-    function cerrarModalLogin() {
-      document.getElementById('modalLogin')?.classList.remove('open');
-    }
-
-    function abrirModalPedido(productoPreseleccionado) {
-      if (productoPreseleccionado) {
-        const selProd = document.getElementById('pedProducto');
-        if (selProd) {
-          for (let i = 0; i < selProd.options.length; i++) {
-            if (selProd.options[i].text.toLowerCase().includes(productoPreseleccionado.toLowerCase())) {
-              selProd.selectedIndex = i;
-              break;
-            }
-          }
-        }
-      }
-      document.getElementById('modalPedido')?.classList.add('open');
-    }
-
-    function cerrarModalPedido() {
-      document.getElementById('modalPedido')?.classList.remove('open');
-    }
-
-    window.toggleTema = toggleTema;
-    window.abrirDrawer = abrirDrawer;
-    window.cerrarDrawer = cerrarDrawer;
-    window.abrirModalLogin = abrirModalLogin;
-    window.cerrarModalLogin = cerrarModalLogin;
-    window.abrirModalPedido = abrirModalPedido;
-    window.cerrarModalPedido = cerrarModalPedido;
-
-    window.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        cerrarDrawer();
-        cerrarModalLogin();
-        cerrarModalPedido();
-      }
-    });
-  </script>
 </head>
 
 <body>
@@ -169,5 +95,44 @@ const jsonLd = getJsonLd(ruta, idioma);
 
   <!-- 6. Barra Sticky Móvil -->
   <StickyBar idioma={idioma} />
+
+  <!-- Despachador Global On-Demand (Compilado y Minificado por Vite) -->
+  <script>
+    import { wiTema } from '../widev/tema.js';
+    import { wiModal } from '../widev/modales.js';
+
+    // Reactividad Smart en tiempo real para cambios de modo claro/oscuro del sistema
+    wiTema.listen();
+
+    // Puente de compatibilidad global ultra-ligero para interacción
+    (window as any).toggleTema = () => wiTema.toggle();
+    (window as any).abrirModalLogin = () => wiModal.open('modalLogin');
+    (window as any).cerrarModalLogin = () => wiModal.close('modalLogin');
+
+    (window as any).abrirModalPedido = (producto?: string) => {
+      if (producto) {
+        const sel = document.getElementById('pedProducto') as HTMLSelectElement | null;
+        if (sel) {
+          for (let i = 0; i < sel.options.length; i++) {
+            if (sel.options[i].text.toLowerCase().includes(producto.toLowerCase())) {
+              sel.selectedIndex = i;
+              break;
+            }
+          }
+        }
+      }
+      wiModal.open('modalPedido');
+    };
+    (window as any).cerrarModalPedido = () => wiModal.close('modalPedido');
+
+    (window as any).abrirDrawer = () => {
+      document.getElementById('mobileDrawer')?.classList.add('open');
+      document.getElementById('drawerBackdrop')?.classList.add('active');
+    };
+    (window as any).cerrarDrawer = () => {
+      document.getElementById('mobileDrawer')?.classList.remove('open');
+      document.getElementById('drawerBackdrop')?.classList.remove('active');
+    };
+  </script>
 </body>
 </html>

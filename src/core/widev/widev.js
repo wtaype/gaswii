@@ -11,7 +11,7 @@ export { year, wiDate, fechaHoy, formatearFechaParaInput, formatearFechaHora, wi
 export { imgwii } from './imgwii.js';
 export { Mensaje, Notificacion } from './mensajes.js';
 export { wiConfirmar } from './confirmar.js';
-export { abrirModal, cerrarModal, cerrarTodos } from './modales.js';
+export { wiModal, abrirModal, cerrarModal, cerrarTodos } from './modales.js';
 export { wiPath } from './navegador.js';
 export { Capit, NombreApellido, getNombre, avatar } from './nombre.js';
 export { wiRateLimit } from './ratelimit.js';
@@ -20,7 +20,7 @@ export { setMeta } from './seometa.js';
 export { wiSpin } from './spin.js';
 export { savels, getls, removels, gosave, getsave, gosaves, getsaves } from './storage.js';
 export { superFun } from './superfun.js';
-export { witema, witemas, setTema } from './tema.js';
+export { wiTema, witema, witemas, setTema } from './tema.js';
 export { Mayu, Capi, mis10, minus } from './texto.js';
 export { wiCode } from './wicode.js';
 export { wiIp } from './wiip.js';

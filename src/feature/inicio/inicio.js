@@ -5,6 +5,7 @@
 
 import negocio from '../../negocio';
 import { Saludar } from '../../core/widev/saludo.js';
+import { wiModal } from '../../core/widev/modales.js';
 
 
 // Estado local de la página
@@ -201,11 +202,11 @@ export function alternarModoRecuperar() {
 
 export function abrirModalLogin(modoInicial = 'login') {
   setModoAuth(modoInicial);
-  document.getElementById('modalLogin')?.classList.add('open');
+  wiModal.open('modalLogin');
 }
 
 export function cerrarModalLogin() {
-  document.getElementById('modalLogin')?.classList.remove('open');
+  wiModal.close('modalLogin');
 }
 
 export async function procesarAuth() {
@@ -352,11 +353,11 @@ export function abrirModalPedido(productoPreseleccionado) {
     console.warn('Error autocompletando pedido:', e);
   }
 
-  document.getElementById('modalPedido')?.classList.add('open');
+  wiModal.open('modalPedido');
 }
 
 export function cerrarModalPedido() {
-  document.getElementById('modalPedido')?.classList.remove('open');
+  wiModal.close('modalPedido');
 }
 
 // --------------------------------------------------------------------------

@@ -1,7 +1,9 @@
 // src/lib/widev/seometa.js
 // seometa v10.1: Gestor dinámico de metaetiquetas SEO y esquemas JSON-LD (Schema.org) en el cliente
 
-import { app, descri, keywii, linkweb } from '@wii';
+import { app, linkweb } from '../../wii.js';
+const descri = 'Solgas Surquillo Distribuidor';
+const keywii = 'gas glp surquillo';
 
 const setTag = (id, val) => {
   if (typeof document === 'undefined') return;
