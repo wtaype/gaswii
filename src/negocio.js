@@ -205,7 +205,7 @@ export const datosNegocio = {
     { nombre: "Efectivo", icon: "fa-money-bill-wave" },
     { nombre: "Yape", icon: "fa-mobile-screen-button" },
     { nombre: "Plin", icon: "fa-mobile-screen-button" },
-    { nombre: "Tarjeta POS", icon: "fa-credit-card" }
+    { nombre: "Transferencia", icon: "fa-building-columns" }
   ]
 };
 

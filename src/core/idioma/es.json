@@ -29,7 +29,7 @@
     "horario_horas": "6:00 a.m. a 11:00 p.m. (365 días)",
     "pago_yape": "YAPE",
     "pago_plin": "PLIN",
-    "pago_pos": "POS (VISA/MC)",
+    "pago_transferencia": "TRANSFERENCIA",
     "pago_efectivo": "EFECTIVO",
     "reclamos_titulo": "Libro de Reclamaciones",
     "reclamos_desc": "Conforme a lo establecido por el Código de Protección y Defensa del Consumidor de INDECOPI.",
