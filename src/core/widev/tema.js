@@ -4,13 +4,7 @@ const STORAGE_KEY = 'wiTema';
 
 export const witemas = {
   futuro: '#05080c',
-  luz: '#f4f7fb',
-  cielo: '#0EBEFF',
-  dulce: '#FF5C69',
-  paz: '#29C72E',
-  oro: '#FFDA34',
-  mora: '#7000FF',
-  formal: '#1d4ed8'
+  luz: '#f4f7fb'
 };
 
 export const wiTema = {
