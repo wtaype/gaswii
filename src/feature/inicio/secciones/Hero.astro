@@ -13,17 +13,36 @@ const t = getI18n(idioma).hero;
 ---
 
 <section id="hero" class="hero-section">
-  <div class="page-container">
+  <div class="page-container hero-page-container">
     <div class="hero-layout">
       
       <!-- Columna Izquierda: Problema ➔ Solución -->
-      <div>
-        <div class="mb-3">
-          <span class="badge-fire hero-badge">
-            <i class="fa-solid fa-face-smile-beam"></i> <span>{t.badge}</span>
-          </span>
+      <div class="hero-txt">
+        
+        <!-- Grupo Superior: Badge Oficial y Ubicación Google Maps -->
+        <div class="hero-meta-group">
+          <!-- Item 1: Delivery Oficial Solgas Surquillo -->
+          <div class="hero-saludo">
+            <span class="badge-fire hero-badge">
+              <i class="fa-solid fa-face-smile-beam"></i> <span>{t.badge}</span>
+            </span>
+          </div>
+
+          <!-- Item 2: Ubicación Sede Central Google Maps -->
+          <a 
+            href={datosNegocio.mapsUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="hero-maps-line"
+            title={`${t.maps_cta} - ${datosNegocio.direccionSede}`}
+          >
+            <span class="hero-maps-icon"><i class="fa-solid fa-map-location-dot"></i></span>
+            <span class="hero-maps-text">{t.maps_sede}</span>
+            <i class="fa-solid fa-arrow-up-right-from-square hero-maps-arrow"></i>
+          </a>
         </div>
 
+        <!-- Línea 3: Pregunta Titular "¿Cansado de Balones que Duran Poco?" -->
         <h1 class="hero-main-heading">
           <span>{t.titulo_1}</span><br />
           <span class="hero-title-highlight">
@@ -31,6 +50,7 @@ const t = getI18n(idioma).hero;
           </span>
         </h1>
 
+        <!-- Línea 4: Subtítulo Explicativo -->
         <p class="hero-main-sub">
           {t.subtitulo}
         </p>
@@ -103,7 +123,7 @@ const t = getI18n(idioma).hero;
       </div>
 
       <!-- Columna Derecha: Fotografía Limpia y Garantía -->
-      <div>
+      <div class="hero-visual">
         <div class="hero-right-card">
           
           <div class="hero-img-box">
