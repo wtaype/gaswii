@@ -1,7 +1,7 @@
 // src/feature/cliente/tabs/puntos.js
 // Controlador de la pestaña Puntos, Billetera y Recompensas VIP
 
-import { getSmileLocal } from '../../auth/auth.js';
+import { getSmileLocal } from '../../auth/sesion.js';
 
 export function initTabPuntos() {
   const smile = getSmileLocal();

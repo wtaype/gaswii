@@ -1,7 +1,7 @@
 // src/feature/cliente/tabs/comprobantes.js
 // Controlador de la pestaña Comprobantes Electrónicos Oficiales (Boletas / Facturas)
 
-import { getSmileLocal } from '../../auth/auth.js';
+import { getSmileLocal } from '../../auth/sesion.js';
 
 export function initTabComprobantes() {
   const smile = getSmileLocal();

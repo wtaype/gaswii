@@ -138,7 +138,7 @@ const esCliente = ruta === '/cliente';
 </header>
 
 <script>
-  import { getSmileLocal, escucharAuth, cerrarSesion, generarAvatarUrl } from '../../feature/auth/auth.js';
+  import { wiAuth, salir, generarAvatarUrl } from '../../feature/auth/sesion.js';
   import type { SmileData } from '../tipos/auth';
 
   declare global {
@@ -172,17 +172,12 @@ const esCliente = ruta === '/cliente';
   }
 
   window.cerrarSesionHeader = async () => {
-    await cerrarSesion();
+    await salir();
     actualizarHeaderAuth(null);
-    if (window.location.pathname.includes('/cliente') || window.location.pathname.includes('/personal')) {
-      window.location.href = '/';
-    }
   };
 
-  const localSmile = getSmileLocal() as SmileData | null;
-  actualizarHeaderAuth(localSmile);
-
-  escucharAuth((_user: any, smile: SmileData | null) => {
+  // Reactividad con 0ms de latencia (Local-First sin cargar Firebase de inicio)
+  wiAuth.on((smile: any) => {
     actualizarHeaderAuth(smile);
   });
 </script>

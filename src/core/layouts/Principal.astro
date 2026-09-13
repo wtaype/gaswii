@@ -85,8 +85,8 @@ const jsonLd = getJsonLd(ruta, idioma);
   <!-- 3. Drawer Móvil con Navegación y Llamada Rápida -->
   <MobileDrawer idioma={idioma} ruta={ruta} />
 
-  <!-- 4. Contenido Principal de la Página -->
-  <main>
+  <!-- 4. Contenido Principal de la Página (Estándar Workwii #wimain) -->
+  <main id="wimain">
     <slot />
   </main>
 
@@ -106,8 +106,19 @@ const jsonLd = getJsonLd(ruta, idioma);
 
     // Puente de compatibilidad global ultra-ligero para interacción
     (window as any).toggleTema = () => wiTema.toggle();
-    (window as any).abrirModalLogin = () => wiModal.open('modalLogin');
-    (window as any).cerrarModalLogin = () => wiModal.close('modalLogin');
+    (window as any).abrirModalLogin = (vista = 'login') => {
+      import('../../feature/auth/visual.js').then((m) => {
+        m.initListeners();
+        m.abrirLogin(vista);
+      });
+    };
+    (window as any).cerrarModalLogin = () => {
+      const modal = document.getElementById('wi_auth_modal');
+      if (modal) {
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 200);
+      }
+    };
 
     (window as any).abrirModalPedido = (producto?: string) => {
       if (producto) {

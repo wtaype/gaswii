@@ -10,10 +10,9 @@ import PuntosBilletera from './secciones/PuntosBilletera.astro';
 import BoletasSunat from './secciones/BoletasSunat.astro';
 import DireccionesRecarga from './secciones/DireccionesRecarga.astro';
 import clienteCss from './cliente.css?inline';
-import authCss from '../auth/auth.css?inline';
 import { getI18n, type Idioma } from '../../core/idioma/idioma';
 
-const featureCss = clienteCss + '\n' + authCss;
+const featureCss = clienteCss;
 
 interface Props {
   idioma?: Idioma;
@@ -24,6 +23,24 @@ const t = getI18n(idioma).cliente;
 ---
 
 <Principal idioma={idioma} ruta="/cliente">
+  <!-- ⚡ GUARD ANTI-FOUC DE CLIENTE VIP (0ms) -->
+  <script slot="head" is:inline>
+    try {
+      const item = localStorage.getItem('wiSmile');
+      if (!item) {
+        window.location.replace('/login?redirect=' + encodeURIComponent(window.location.pathname));
+      } else {
+        const parsed = JSON.parse(item);
+        const smile = (parsed && parsed.value) ? parsed.value : parsed;
+        const isExpired = parsed && parsed.expiry && Date.now() > parsed.expiry;
+        if (!smile || isExpired) {
+          window.location.replace('/login?redirect=' + encodeURIComponent(window.location.pathname));
+        }
+      }
+    } catch (e) {
+      window.location.replace('/login?redirect=' + encodeURIComponent(window.location.pathname));
+    }
+  </script>
   <style slot="head" is:global set:html={featureCss}></style>
   <div class="page-container cliente-page-box">
     
@@ -121,7 +138,7 @@ const t = getI18n(idioma).cliente;
 </Principal>
 
 <script>
-  import { getSmileLocal, escucharAuth, generarAvatarUrl } from '../auth/auth.js';
+  import { wiAuth, generarAvatarUrl } from '../auth/sesion.js';
   import { inicializarTabsCliente } from './tabs/tabsController.js';
   import { inicializarResumenTab } from './tabs/resumen.js';
   import { inicializarPedidosTab } from './tabs/pedidos.js';
@@ -166,10 +183,8 @@ const t = getI18n(idioma).cliente;
 
   inicializarTabsCliente();
 
-  const localSmile = getSmileLocal() as SmileData | null;
-  aplicarDatosCliente(localSmile);
-
-  escucharAuth((_user: any, smile: SmileData | null) => {
+  // Escuchar estado reactivo Local-First con 0ms
+  wiAuth.on((smile: any) => {
     aplicarDatosCliente(smile);
   });
 </script>

@@ -85,7 +85,7 @@ const baseHash = idioma === 'en' ? '/en' : (ruta !== '/' ? '/' : '');
 </aside>
 
 <script>
-  import { getSmileLocal, escucharAuth, generarAvatarUrl } from '../../feature/auth/auth.js';
+  import { wiAuth, generarAvatarUrl } from '../../feature/auth/sesion.js';
   import type { SmileData } from '../tipos/auth';
 
   function actualizarDrawerAuth(smile: SmileData | null) {
@@ -111,10 +111,8 @@ const baseHash = idioma === 'en' ? '/en' : (ruta !== '/' ? '/' : '');
     }
   }
 
-  const localSmile = getSmileLocal() as SmileData | null;
-  actualizarDrawerAuth(localSmile);
-
-  escucharAuth((_user: any, smile: SmileData | null) => {
+  // Reactividad Local-First (0ms de latencia)
+  wiAuth.on((smile: any) => {
     actualizarDrawerAuth(smile);
   });
 

@@ -4,8 +4,17 @@
 export const RUTAS = {
   inicio: '/',
   inicioEn: '/en',
+  login: '/login',
+  loginEn: '/en/login',
   cliente: '/cliente',
   personal: '/personal'
+};
+
+export const ROL_PATH = {
+  cliente: '/cliente',
+  personal: '/personal',
+  gestor: '/personal',
+  admin: '/personal'
 };
 
 export const NAV_LINKS = [
@@ -17,4 +26,4 @@ export const NAV_LINKS = [
   { id: 'nosotros', key: 'nav_about', href: '#nosotros', icon: 'fa-solid fa-clock-rotate-left' }
 ];
 
-export default { RUTAS, NAV_LINKS };
+export default { RUTAS, NAV_LINKS, ROL_PATH };

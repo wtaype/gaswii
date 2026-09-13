@@ -1,7 +1,7 @@
 // src/feature/cliente/tabs/pedidos.js
 // Controlador de la pestaña Mis Pedidos y Radar de Motorizado en Tiempo Real
 
-import { getSmileLocal } from '../../auth/auth.js';
+import { getSmileLocal } from '../../auth/sesion.js';
 
 export function initTabPedidos() {
   const smile = getSmileLocal();

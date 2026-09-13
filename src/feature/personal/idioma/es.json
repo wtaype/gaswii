@@ -1,1 +1,19 @@
-﻿
+﻿{
+  "titulo": "Consola Staff & Despachos",
+  "central_badge": "Base Central Jr. Dante 260",
+  "tabs": {
+    "resumen": "Resumen",
+    "tabla": "Tabla de Ventas",
+    "kanban": "Kanban Despachos",
+    "inventario": "Inventario Planta",
+    "flota": "Flota Motos"
+  },
+  "secciones": {
+    "metricas_hoy": "Métricas de Venta y Cuadre de Caja",
+    "registro_rapido": "Registro Rápido de Venta",
+    "tabla_ventas": "Tabla Ejecutiva de Registro y Medición Diaria",
+    "kanban_despacho": "Tablero Kanban de Despacho y Cobranza en Vivo",
+    "inventario_planta": "Inventario Físico de Planta (Jr. Dante 260)",
+    "flota_motos": "Flota de Motocicletas de Reparto"
+  }
+}

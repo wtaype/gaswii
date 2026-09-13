@@ -1,7 +1,7 @@
 // src/feature/cliente/tabs/resumen.js
 // Controlador de la pestaña Resumen (Reorden en 1 Clic, Nivel de Gas y Estado General)
 
-import { getSmileLocal } from '../../auth/auth.js';
+import { getSmileLocal } from '../../auth/sesion.js';
 import negocio from '../../../negocio.js';
 
 export function initTabResumen() {

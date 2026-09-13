@@ -105,12 +105,14 @@ body {
   flex-direction: column;
 }
 
-main {
+#wimain, main {
   flex: 1;
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
   box-sizing: border-box;
+  min-height: calc(100vh - 140px);
+  position: relative;
 }
 
 section {
