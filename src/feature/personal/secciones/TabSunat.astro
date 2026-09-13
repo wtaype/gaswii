@@ -1,0 +1,166 @@
+---
+// src/feature/personal/secciones/TabSunat.astro
+// Tab 5: Emisión y previsualización de Comprobantes Electrónicos SUNAT (Boletas y Facturas)
+import { empresa } from '../data/empresa.js';
+import { productosIniciales } from '../data/productos.js';
+
+interface Props {
+  t: {
+    titulo: string;
+    subtitulo: string;
+    sec1_titulo: string;
+    btn_seleccionar_bd: string;
+    lbl_tipo_doc: string;
+    lbl_serie_correlativo: string;
+    lbl_cliente_nombre: string;
+    cliente_nombre_ph: string;
+    lbl_cliente_doc: string;
+    cliente_doc_ph: string;
+    lbl_direccion: string;
+    direccion_ph: string;
+    sec2_titulo: string;
+    lbl_seleccionar_balon: string;
+    lbl_cantidad: string;
+    lbl_metodo_pago: string;
+    btn_emitir: string;
+    rep_impresa: string;
+    gracias: string;
+  };
+}
+
+const { t } = Astro.props;
+---
+
+<section id="tab-sunat" class="v51-tab-pane">
+  <div class="v51-section-banner">
+    <div class="v51-sec-title">
+      <h3><i class="fa-solid fa-file-invoice-dollar" style="color: var(--v51-purple);"></i> {t.titulo}</h3>
+      <p>{t.subtitulo}</p>
+    </div>
+  </div>
+
+  <div class="v51-split-layout">
+    <div class="v51-table-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.8vh;">
+        <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--v51-text-title);">{t.sec1_titulo}</h4>
+        <button class="v51-btn-secondary" id="btnElegirClienteBD" style="font-size: 0.78rem;" type="button">
+          <i class="fa-solid fa-database" style="color: var(--v51-primary);"></i> {t.btn_seleccionar_bd}
+        </button>
+      </div>
+
+      <div class="v51-grid-2">
+        <div class="v51-form-group">
+          <label for="sunatTipoDoc">{t.lbl_tipo_doc}</label>
+          <select id="sunatTipoDoc">
+            <option value="BOLETA">Boleta de Venta Electrónica (B001)</option>
+            <option value="FACTURA">Factura Electrónica (F001)</option>
+          </select>
+        </div>
+        <div class="v51-form-group">
+          <label for="sunatSerieDoc">{t.lbl_serie_correlativo}</label>
+          <input type="text" id="sunatSerieDoc" value="B001-000453" readonly style="background: var(--v51-surface-alt);" />
+        </div>
+      </div>
+
+      <div class="v51-form-group">
+        <label for="sunatInputClienteNombre">{t.lbl_cliente_nombre}</label>
+        <input type="text" id="sunatInputClienteNombre" value="Claudia Romero" placeholder={t.cliente_nombre_ph} />
+      </div>
+
+      <div class="v51-grid-2">
+        <div class="v51-form-group">
+          <label for="sunatInputClienteDoc">{t.lbl_cliente_doc}</label>
+          <input type="text" id="sunatInputClienteDoc" value="10745896" placeholder={t.cliente_doc_ph} />
+        </div>
+        <div class="v51-form-group">
+          <label for="sunatInputClienteDir">{t.lbl_direccion}</label>
+          <input type="text" id="sunatInputClienteDir" value="Av. Paseo de la República 4890, Miraflores" placeholder={t.direccion_ph} />
+        </div>
+      </div>
+
+      <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--v51-text-title); margin: 2vh 0 1.2vh;">{t.sec2_titulo}</h4>
+      <div class="v51-grid-2">
+        <div class="v51-form-group">
+          <label for="sunatSelectProducto">{t.lbl_seleccionar_balon}</label>
+          <select id="sunatSelectProducto">
+            {productosIniciales.map((p) => (
+              <option value={p.precioPEN} data-nombre={p.nombre}>{p.nombre} - S/ {p.precioPEN.toFixed(2)}</option>
+            ))}
+          </select>
+        </div>
+        <div class="v51-form-group">
+          <label for="sunatInputCantidad">{t.lbl_cantidad}</label>
+          <input type="number" id="sunatInputCantidad" value="1" min="1" max="50" />
+        </div>
+      </div>
+
+      <div class="v51-form-group">
+        <label for="sunatSelectPago">{t.lbl_metodo_pago}</label>
+        <select id="sunatSelectPago">
+          <option value="Efectivo contraentrega">Efectivo contraentrega</option>
+          <option value="Yape / Plin en puerta">Yape / Plin en puerta</option>
+          <option value="POS Tarjeta Visa/Mastercard">POS Tarjeta Visa/Mastercard</option>
+          <option value="Transferencia BCP/BBVA">Transferencia BCP/BBVA</option>
+        </select>
+      </div>
+
+      <button class="v51-btn-primary-orange" id="btnEmitirCPE" style="width: 100%; justify-content: center; padding: 1.4vh 1vw; font-size: 0.95rem; margin-top: 1vh;" type="button">
+        <i class="fa-solid fa-cloud-arrow-up"></i> {t.btn_emitir}
+      </button>
+    </div>
+
+    <!-- TICKET PREVIEW -->
+    <div>
+      <div class="v51-ticket-box" id="ticketPreviewBox">
+        <div style="text-align: center; border-bottom: 1px dashed #444; padding-bottom: 1.2vh; margin-bottom: 1.2vh;">
+          <strong>{empresa.razonSocial}</strong><br />
+          <span style="font-size: 0.72rem;">{empresa.nombreComercial}</span><br />
+          <span style="font-size: 0.7rem;">RUC: {empresa.ruc}</span><br />
+          <span style="font-size: 0.68rem;">{empresa.direccionPlanta}</span><br />
+          <span style="font-size: 0.68rem;">Telf: {empresa.telefonoOficial}</span>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 1.2vh;">
+          <strong id="ticketTipo">BOLETA DE VENTA ELECTRÓNICA</strong><br />
+          <span id="ticketSerie" style="font-weight: 700;">B001-000453</span>
+        </div>
+
+        <div style="margin-bottom: 1.2vh; font-size: 0.74rem;">
+          <div><strong>CLIENTE:</strong> <span id="ticketCliente">Claudia Romero</span></div>
+          <div><strong>DOC:</strong> <span id="ticketDoc">10745896</span></div>
+          <div><strong>DIRECCIÓN:</strong> <span id="ticketDir">Av. Paseo de la República 4890, Miraflores</span></div>
+          <div><strong>PAGO:</strong> <span id="ticketPago">Efectivo contraentrega</span></div>
+          <div><strong>FECHA:</strong> <span id="ticketFecha">11/09/2026 13:30</span></div>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.2vh; font-size: 0.74rem;">
+          <thead>
+            <tr style="border-bottom: 1px solid #333;">
+              <th style="text-align: left;">Cant</th>
+              <th style="text-align: left;">Descripción</th>
+              <th style="text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody id="ticketItems">
+            <tr>
+              <td>1</td>
+              <td>Balón SOLGAS Premium 10 kg</td>
+              <td style="text-align: right;">S/ 65.00</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="border-top: 1px dashed #444; padding-top: 1vh; text-align: right; font-size: 0.78rem;">
+          <div>OP. GRAVADA: <span id="ticketSubtotal">S/ 55.08</span></div>
+          <div>I.G.V. (18%): <span id="ticketIGV">S/ 9.92</span></div>
+          <div style="font-size: 0.95rem; font-weight: 900; margin-top: 0.4vh;">TOTAL: <span id="ticketTotal">S/ 65.00</span></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5vh; font-size: 0.68rem; color: #555;">
+          {t.rep_impresa}<br />
+          {t.gracias}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,143 @@
+---
+// src/feature/personal/personalPage.astro
+// Portal Gerencial y Consola Operativa Solgas Surquillo (Gaswii)
+// Layout Privado Autocontenido, Cero CSS Inline, Guard Anti-FOUC (0ms) y Seguridad Estricta
+
+import Topbar from './secciones/Topbar.astro';
+import Sidebar from './secciones/Sidebar.astro';
+import BottomNav from './secciones/BottomNav.astro';
+
+import TabResumen from './secciones/TabResumen.astro';
+import TabProductos from './secciones/TabProductos.astro';
+import TabClientes from './secciones/TabClientes.astro';
+import TabPersonales from './secciones/TabPersonales.astro';
+import TabSunat from './secciones/TabSunat.astro';
+import TabWhatsapp from './secciones/TabWhatsapp.astro';
+
+import ModalCliente from './modales/ModalCliente.astro';
+import ModalPersonal from './modales/ModalPersonal.astro';
+import ModalProducto from './modales/ModalProducto.astro';
+import ModalLinkPassword from './modales/ModalLinkPassword.astro';
+import ModalElegirClienteBD from './modales/ModalElegirClienteBD.astro';
+import ModalReponerStock from './modales/ModalReponerStock.astro';
+
+import personalCss from './personal.css?inline';
+import { getPersonalI18n } from './idioma/idioma.js';
+
+interface Props {
+  idioma?: string;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = getPersonalI18n(idioma);
+---
+
+<!doctype html>
+<html lang={idioma}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- SEGURIDAD ESTRICTA: 0% SEO, NUNCA INDEXAR CONSOLA GERENCIAL -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{t.titulo}</title>
+    <meta name="description" content={t.descripcion} />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/google/fonts.css" />
+    <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+
+    <!-- ⚡ GUARD ANTI-FOUC ULTRA-ESTRICTO (0ms): VALIDACIÓN DE ROLES PERSONAL, GESTOR Y ADMIN -->
+    <script is:inline>
+      (function() {
+        try {
+          // 1. Validar Tema visual de inmediato
+          const savedTheme = localStorage.getItem('wiTema_gaswii') || localStorage.getItem('wiTema');
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.dataset.theme = savedTheme || (prefersDark ? 'futuro' : 'luz');
+
+          // 2. Validar Credenciales de Seguridad antes de pintar la pantalla (0ms)
+          const rawSession = localStorage.getItem('wiSmile');
+          if (!rawSession) {
+            window.location.replace('/');
+            return;
+          }
+
+          const parsed = JSON.parse(rawSession);
+          const user = (parsed && parsed.value) ? parsed.value : parsed;
+          const isExpired = parsed && parsed.expiry && Date.now() > parsed.expiry;
+
+          if (!user || isExpired) {
+            window.location.replace('/');
+            return;
+          }
+
+          const rolesAutorizados = ['personal', 'gestor', 'admin'];
+          if (rolesAutorizados.includes(user.rol)) {
+            // Usuario autorizado para la consola
+            return;
+          }
+
+          // Si es cliente, enviarlo a su portal de cliente
+          if (user.rol === 'cliente') {
+            window.location.replace('/cliente');
+            return;
+          }
+
+          // Cualquier otro caso sin permisos va a inicio
+          window.location.replace('/');
+        } catch (err) {
+          window.location.replace('/');
+        }
+      })();
+    </script>
+
+    <!-- ESTILOS PRIVADOS DE LA CONSOLA (Cero CSS Inline) -->
+    <style is:global set:html={personalCss}></style>
+  </head>
+
+  <body>
+    <!-- 1. Cabecera fija superior -->
+    <Topbar t={t.topbar} />
+
+    <!-- 2. Contenedor de aplicación (Sidebar + Área de Contenido con los 6 Tabs) -->
+    <div class="v51-app-container" id="v51AppContainer">
+      <Sidebar t={t.sidebar} tabs={t.tabs} />
+
+      <div class="v51-main-wrapper" id="v51MainWrapper">
+        <main class="v51-content-area" style="padding: 2.6vh 2.2vw;">
+          <TabResumen t={t.resumen} />
+          <TabProductos t={t.productos} />
+          <TabClientes t={t.clientes} />
+          <TabPersonales t={t.personales} />
+          <TabSunat t={t.sunat} />
+          <TabWhatsapp t={t.whatsapp} />
+        </main>
+      </div>
+    </div>
+
+    <!-- 3. Navegación inferior táctil para smartphones (motorizados) -->
+    <BottomNav tabs={t.tabs} />
+
+    <!-- 4. Los 6 Modales de la Consola -->
+    <ModalCliente t={t.modales} />
+    <ModalPersonal t={t.modales} />
+    <ModalProducto t={t.modales} />
+    <ModalLinkPassword t={t.modales} />
+    <ModalElegirClienteBD t={t.modales} />
+    <ModalReponerStock t={t.modales} />
+
+    <!-- 5. Toast Global de Notificaciones -->
+    <div id="v51Toast" class="v51-toast">
+      <i class="fa-solid fa-circle-check" style="color: var(--v51-emerald); font-size: 1.15rem;"></i>
+      <span id="v51ToastMsg">Acción completada exitosamente.</span>
+    </div>
+
+    <!-- 6. Inicializador del Controlador Interactivo Client-Side -->
+    <script>
+      import { initPersonal } from './personal.js';
+      initPersonal();
+    </script>
+  </body>
+</html>

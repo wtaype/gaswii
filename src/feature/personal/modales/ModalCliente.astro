@@ -1,0 +1,76 @@
+---
+// src/feature/personal/modales/ModalCliente.astro
+// Modal para registrar o editar clientes en la base de datos
+
+interface Props {
+  t: {
+    cliente_titulo: string;
+    lbl_nombre_completo: string;
+    lbl_tipo_doc: string;
+    lbl_num_doc: string;
+    lbl_wa_celular: string;
+    lbl_balon_frecuente: string;
+    lbl_dir_completa: string;
+    lbl_referencia: string;
+    btn_guardar_cliente: string;
+  };
+}
+
+const { t } = Astro.props;
+---
+
+<div id="modalCliente" class="v51-modal-backdrop">
+  <div class="v51-modal-box">
+    <div class="v51-modal-header">
+      <h3><i class="fa-solid fa-user-plus" style="color: var(--v51-primary);"></i> {t.cliente_titulo}</h3>
+      <button class="v51-modal-close" data-close-modal="modalCliente" type="button">&times;</button>
+    </div>
+    <div class="v51-modal-body">
+      <form id="formNuevoCliente">
+        <div class="v51-form-group">
+          <label for="modalCliNombre">{t.lbl_nombre_completo}</label>
+          <input type="text" id="modalCliNombre" required placeholder="Ej. Mariana Benavides" />
+        </div>
+        <div class="v51-grid-2">
+          <div class="v51-form-group">
+            <label for="modalCliTipoDoc">{t.lbl_tipo_doc}</label>
+            <select id="modalCliTipoDoc">
+              <option value="DNI">DNI (8 dígitos)</option>
+              <option value="RUC">RUC (11 dígitos)</option>
+              <option value="CE">Carné de Extranjería</option>
+            </select>
+          </div>
+          <div class="v51-form-group">
+            <label for="modalCliNumDoc">{t.lbl_num_doc}</label>
+            <input type="text" id="modalCliNumDoc" required placeholder="Ej. 74859612" />
+          </div>
+        </div>
+        <div class="v51-grid-2">
+          <div class="v51-form-group">
+            <label for="modalCliTel">{t.lbl_wa_celular}</label>
+            <input type="tel" id="modalCliTel" required placeholder="Ej. 987654321" />
+          </div>
+          <div class="v51-form-group">
+            <label for="modalCliBalon">{t.lbl_balon_frecuente}</label>
+            <select id="modalCliBalon">
+              <option>Balón SOLGAS Premium 10 kg</option>
+              <option>Balón SOLGAS 45 kg</option>
+              <option>Balón MASGAS 10 kg</option>
+            </select>
+          </div>
+        </div>
+        <div class="v51-form-group">
+          <label for="modalCliDir">{t.lbl_dir_completa}</label>
+          <input type="text" id="modalCliDir" required placeholder="Ej. Jr. Dante 420, Dpto 201" />
+        </div>
+        <div class="v51-form-group">
+          <label for="modalCliRef">{t.lbl_referencia}</label>
+          <input type="text" id="modalCliRef" placeholder="Ej. Frente a bodega San Pedro, reja blanca" />
+        </div>
+        <button type="submit" class="v51-btn-primary-orange" style="width: 100%; justify-content: center; padding: 1.3vh 1vw;">
+          {t.btn_guardar_cliente}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

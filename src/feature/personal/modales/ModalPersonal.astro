@@ -1,0 +1,63 @@
+---
+// src/feature/personal/modales/ModalPersonal.astro
+// Modal para registrar o editar colaboradores y repartidores
+
+interface Props {
+  t: {
+    personal_titulo: string;
+    lbl_nombres_apellidos: string;
+    lbl_rol_operativo: string;
+    lbl_dni_identidad: string;
+    lbl_num_telefono: string;
+    lbl_unidad_movil: string;
+    btn_registrar_personal: string;
+  };
+}
+
+const { t } = Astro.props;
+---
+
+<div id="modalPersonal" class="v51-modal-backdrop">
+  <div class="v51-modal-box">
+    <div class="v51-modal-header">
+      <h3><i class="fa-solid fa-id-badge" style="color: var(--v51-primary);"></i> {t.personal_titulo}</h3>
+      <button class="v51-modal-close" data-close-modal="modalPersonal" type="button">&times;</button>
+    </div>
+    <div class="v51-modal-body">
+      <form id="formNuevoPersonal">
+        <div class="v51-form-group">
+          <label for="modalStaffNombre">{t.lbl_nombres_apellidos}</label>
+          <input type="text" id="modalStaffNombre" required placeholder="Ej. Juan Carlos Salazar" />
+        </div>
+        <div class="v51-grid-2">
+          <div class="v51-form-group">
+            <label for="modalStaffRol">{t.lbl_rol_operativo}</label>
+            <select id="modalStaffRol">
+              <option>Repartidor Motorizado (Torito)</option>
+              <option>Conductor Camión de Reparto</option>
+              <option>Operario de Pesaje & Almacén</option>
+              <option>Atención Telefónica & Pedidos</option>
+            </select>
+          </div>
+          <div class="v51-form-group">
+            <label for="modalStaffDni">{t.lbl_dni_identidad}</label>
+            <input type="text" id="modalStaffDni" required placeholder="Ej. 48751296" />
+          </div>
+        </div>
+        <div class="v51-grid-2">
+          <div class="v51-form-group">
+            <label for="modalStaffTel">{t.lbl_num_telefono}</label>
+            <input type="tel" id="modalStaffTel" required placeholder="Ej. 994556677" />
+          </div>
+          <div class="v51-form-group">
+            <label for="modalStaffMovil">{t.lbl_unidad_movil}</label>
+            <input type="text" id="modalStaffMovil" placeholder="Ej. Moto Torito 03 (7812-4A)" />
+          </div>
+        </div>
+        <button type="submit" class="v51-btn-primary-orange" style="width: 100%; justify-content: center; padding: 1.3vh 1vw;">
+          {t.btn_registrar_personal}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,153 @@
+---
+// src/feature/personal/secciones/TabClientes.astro
+// Tab 3: Cartera de clientes registrados, historial de pedidos y estado de credenciales
+import { clientesIniciales } from '../data/clientes.js';
+
+interface Props {
+  t: {
+    titulo: string;
+    subtitulo: string;
+    btn_registrar: string;
+    search_ph: string;
+    th_cliente: string;
+    th_documento: string;
+    th_telefono: string;
+    th_activo: string;
+    preview_pill: string;
+    lbl_wa: string;
+    lbl_dir: string;
+    lbl_ref: string;
+    lbl_cilindro: string;
+    lbl_consumo: string;
+    btn_enviar_link_wa: string;
+    btn_emitir_cpe: string;
+  };
+}
+
+const { t } = Astro.props;
+---
+
+<section id="tab-clientes" class="v51-tab-pane">
+  <!-- HEADER DE SECCIÓN CON BOTÓN REGISTRAR Y BUSCADOR -->
+  <div class="v51-section-banner">
+    <div class="v51-sec-top-row">
+      <div class="v51-sec-title">
+        <h3><i class="fa-solid fa-users" style="color: var(--v51-primary);"></i> {t.titulo}</h3>
+        <p>{t.subtitulo}</p>
+      </div>
+      <div>
+        <button class="v51-btn-primary-orange" id="btnRegistrarCliente" type="button">
+          <i class="fa-solid fa-plus"></i> {t.btn_registrar}
+        </button>
+      </div>
+    </div>
+
+    <!-- BUSCADOR DEBAJO DEL BOTÓN -->
+    <div class="v51-search-input-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="filtroClientesInput" placeholder={t.search_ph} autocomplete="off" />
+    </div>
+  </div>
+
+  <!-- LAYOUT TABLA LIMPIA + PREVIEW INTEGRAL -->
+  <div class="v51-split-layout">
+    <div class="v51-table-card">
+      <table class="v51-table">
+        <thead>
+          <tr>
+            <th>{t.th_cliente}</th>
+            <th>{t.th_documento}</th>
+            <th>{t.th_telefono}</th>
+            <th>{t.th_activo}</th>
+          </tr>
+        </thead>
+        <tbody id="tablaClientesBody">
+          {clientesIniciales.map((c, idx) => (
+            <tr class={`v51-cli-row ${idx === 2 ? 'selected' : ''}`}
+                data-id={c.id}
+                data-nombre={c.nombre}
+                data-contacto={c.contacto}
+                data-doc={`${c.tipoDoc}: ${c.numDoc}`}
+                data-tel={c.contacto}
+                data-dir={c.direccion}
+                data-ref={c.referencia}
+                data-cil={c.cilindroHabitual}
+                data-pedidos={c.totalPedidos}
+                data-facturado={c.totalFacturado}
+                data-acceso={c.estadoAcceso}>
+              <td>
+                <strong>{c.nombre}</strong><br />
+                <small style="color: var(--v51-text-muted); font-size: 0.72rem;">{c.direccion}</small>
+              </td>
+              <td>
+                <span>{c.tipoDoc}: {c.numDoc}</span>
+              </td>
+              <td>
+                <span style="color: var(--v51-wa); font-weight: 600;"><i class="fa-brands fa-whatsapp"></i> {c.contacto}</span>
+              </td>
+              <td>
+                <label class="v51-apple-switch">
+                  <input type="checkbox" checked={c.activo} class="apple-toggle-cli" data-nombre={c.nombre} />
+                  <span class="v51-switch-slider"></span>
+                </label>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PANEL LATERAL DE DETALLE Y ACCIONES DE CLIENTE -->
+    <div class="v51-preview-card">
+      <div class="v51-preview-pill">
+        <i class="fa-solid fa-address-card"></i> {t.preview_pill}
+      </div>
+
+      <div class="v51-avatar-large-box">
+        <div class="v51-avatar-round" id="prevCliAvatar">CR</div>
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--v51-text-title);" id="prevCliNombre">Claudia Romero</h3>
+        <p style="font-size: 0.76rem; color: var(--v51-text-muted);" id="prevCliDoc">DNI: 10745896</p>
+        <span style="font-size: 0.68rem; font-weight: 800; color: #ffd166; background: rgba(255, 209, 102, 0.12); padding: 0.2vh 0.6vw; border-radius: 999px; margin-top: 0.4vh;" id="prevCliEstadoAcceso">
+          Invitación Enviada
+        </span>
+      </div>
+
+      <div class="v51-detail-list">
+        <div class="v51-detail-row">
+          <span class="label">{t.lbl_wa}</span>
+          <span class="val" id="prevCliTel">993 456 789</span>
+        </div>
+        <div class="v51-detail-row">
+          <span class="label">{t.lbl_dir}</span>
+          <span class="val" id="prevCliDir">Av. Paseo de la República 4890, Miraflores</span>
+        </div>
+        <div class="v51-detail-row">
+          <span class="label">{t.lbl_ref}</span>
+          <span class="val" id="prevCliRef">Edificio Residencial Piso 5</span>
+        </div>
+        <div class="v51-detail-row">
+          <span class="label">{t.lbl_cilindro}</span>
+          <span class="val" id="prevCliCil" style="color: var(--v51-primary);">Balón SOLGAS Premium 10 kg</span>
+        </div>
+        <div class="v51-detail-row">
+          <span class="label">{t.lbl_consumo}</span>
+          <span class="val" id="prevCliConsumo" style="color: var(--v51-primary);">S/ 520.00 (8 compras)</span>
+        </div>
+      </div>
+
+      <!-- BOTÓN NARANJA DESTACADO -->
+      <button class="v51-btn-send-wa-link" id="btnPreviewEnviarLink" type="button">
+        <i class="fa-solid fa-key"></i> {t.btn_enviar_link_wa}
+      </button>
+
+      <div style="display: flex; gap: 0.6vw;">
+        <button class="v51-btn-cpe-shortcut" style="flex: 1;" id="btnCargarClienteEnSunat" type="button">
+          <i class="fa-solid fa-file-invoice"></i> {t.btn_emitir_cpe}
+        </button>
+        <button class="v51-btn-cpe-shortcut" style="width: 44px; justify-content: center;" id="btnAbrirWaDirecto" type="button">
+          <i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.1rem;"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
