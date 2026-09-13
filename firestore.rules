@@ -2,97 +2,22 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ====================================================================
-    // 🛡️ FUNCIONES TOP DE SEGURIDAD (Inspiradas en wtaype-web)
-    // ====================================================================
-    function conAuth() {
-      return request.auth != null;
-    }
-
-    // Comprueba existencia para blindar contra errores en documentos nuevos
-    function existeMiSmile() {
-      return conAuth() && exists(/databases/$(database)/documents/smiles/$(request.auth.uid));
-    }
-
-    function getMiSmile() {
-      return get(/databases/$(database)/documents/smiles/$(request.auth.uid)).data;
-    }
-
-    function getRol() {
-      return existeMiSmile() ? getMiSmile().rol : 'anonimo';
-    }
-
-    function esAdmin() {
-      return conAuth() && getRol() == 'admin';
-    }
-
-    function esGestor() {
-      return conAuth() && (esAdmin() || getRol() == 'gestor');
-    }
-
     function esPersonal() {
-      return conAuth() && (esGestor() || getRol() == 'personal');
+      return request.auth != null && 
+        get(/databases/$(database)/documents/smiles/$(request.auth.uid)).data.rol in ['personal', 'gestor', 'admin'];
     }
 
-    function esAutor(uid) {
-      return conAuth() && request.auth.uid == uid;
-    }
-
-    // 🔒 Seguridad: Un usuario jamás puede alterar su propio rol ni su UID
-    function noAlteraRol() {
-      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['rol', 'uid']);
-    }
-
-    // 🔒 Tamaño máximo por documento para prevenir abusos
-    function tamanoOk(kb) {
-      return request.resource == null || request.resource.data.size() < kb * 1024;
-    }
-
-    // ====================================================================
-    // 👤 1. CENTRO UNIFICADO DE REGISTRO: SMILES (Clientes y Personal)
-    // ====================================================================
     match /smiles/{uid} {
-      // 🔒 LECTURA INDIVIDUAL (get):
-      // Nadie anónimo puede leer un perfil ajeno. Solo el dueño de la cuenta o el personal de la planta.
-      allow get: if esAutor(uid) || esPersonal();
-
-      // 🔍 CONSULTAS DE BÚSQUEDA (list):
-      // - Personal y Gestor: Listado completo para la consola gerencial.
-      // - Anónimos: ÚNICAMENTE consultas con limit(1) para validar email/usuario en registro y login.
-      allow list: if esPersonal() || (request.query.limit <= 1);
-
-      // ✍️ CREACIÓN (create):
-      // Resuelve el bug de Google SSO: Si el rol solicitado es 'cliente', permite crear SIN consultar roles inexistentes.
-      allow create: if conAuth() 
-                    && esAutor(uid) 
-                    && (request.resource.data.rol == 'cliente' || esGestor()) 
-                    && tamanoOk(15);
-
-      // ✏️ ACTUALIZACIÓN (update):
-      // - Gestor: Edición total.
-      // - Personal: Puede actualizar datos de clientes.
-      // - Cliente: Solo su propio perfil y NUNCA su propio rol.
-      allow update: if esGestor() 
-                    || (esPersonal() && resource.data.rol == 'cliente') 
-                    || (esAutor(uid) && noAlteraRol() && tamanoOk(15));
-
-      // ❌ ELIMINACIÓN (delete): Solo administradores.
-      allow delete: if esAdmin();
+      allow get: if request.auth.uid == uid || esPersonal();
+      allow list: if esPersonal();
+      allow create: if request.auth.uid == uid && request.resource.data.rol == 'cliente';
+      allow update: if (request.auth.uid == uid && request.resource.data.rol == resource.data.rol) || esPersonal();
+      allow delete: if esPersonal();
     }
 
-    // ====================================================================
-    // 📦 2. CATÁLOGO DE PRODUCTOS (Solgas Surquillo)
-    // ====================================================================
-    match /productos/{prodId} {
-      // Público: Vecinos y clientes ven precios y stock en Inicio y Tienda.
+    match /productos/{id} {
       allow read: if true;
-      // Exclusivo: Solo el personal o gestor de planta pueden editar precios, stock o fichas.
       allow write: if esPersonal();
-    }
-
-    // Bloqueo preventivo de seguridad para cualquier otra ruta
-    match /{document=**} {
-      allow read, write: if esAdmin();
     }
   }
 }
