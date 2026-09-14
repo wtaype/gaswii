@@ -7,7 +7,7 @@ import { entrar } from '../sesion.js';
 import { campo, mapearErrorAuth } from './ingresar.js';
 import { t } from '../idioma/idioma.js';
 import { camposRegistro } from '../data/campos.js';
-import { loadFirebaseAuth } from '../firebaseAuthLoader.js';
+import { loadFirebaseAuth, loadFirebaseDb } from '../firebaseAuthLoader.js';
 
 // --- SANITIZACIÓN ESTRICTA ---
 export const sanName      = v => v.replace(/[<>="'`;/\\$}{]/g, '').replace(/\s{2,}/g, ' ');
@@ -99,7 +99,7 @@ export const checkUsuarioDisponible = debounce(async (el) => {
     return;
   }
   try {
-    const { db, collection, query, where, limit, getDocs } = await loadFirebaseAuth();
+    const { db, collection, query, where, limit, getDocs } = await loadFirebaseDb();
     const snap = await getDocs(query(collection(db, 'smiles'), where('usuario', '==', val), limit(1)));
     const ok = snap.empty;
     el.dataset.ok = ok ? 'true' : 'false';
@@ -126,7 +126,7 @@ export const checkEmailDisponible = debounce(async (el) => {
     return;
   }
   try {
-    const { db, collection, query, where, limit, getDocs } = await loadFirebaseAuth();
+    const { db, collection, query, where, limit, getDocs } = await loadFirebaseDb();
     const snap = await getDocs(query(collection(db, 'smiles'), where('email', '==', val), limit(1)));
     const ok = snap.empty;
     el.dataset.ok = ok ? 'true' : 'false';
@@ -218,7 +218,8 @@ export const registrarUsuario = async (btn) => {
 
   wiSpin(btn, true, txt.btn_registro + '...');
   try {
-    const { auth, db, createUserWithEmailAndPassword, updateProfile, doc, setDoc, serverTimestamp } = await loadFirebaseAuth();
+    const { auth, createUserWithEmailAndPassword, updateProfile } = await loadFirebaseAuth();
+    const { db, doc, setDoc, serverTimestamp } = await loadFirebaseDb();
     const { user } = await createUserWithEmailAndPassword(auth, datos.regEmail, datos.regPassword);
 
     const imgEmail = 'https://imgwii.web.app/smile.avif';

@@ -43,7 +43,7 @@ export const wiAuth = {
 const _actualizarTimestamp = (uid) => {
   if (!uid) return;
   Promise.all([
-    import('../../core/config/firebase-db.ts'),
+    import('../../core/config/firebase.ts'),
     import('firebase/firestore')
   ]).then(([{ db }, { doc, updateDoc, serverTimestamp }]) =>
     updateDoc(doc(db, 'smiles', uid), { actualizado: serverTimestamp() }).catch(() => {})
@@ -70,7 +70,7 @@ export const entrar = (wi) => {
 // Cierre de sesión seguro
 export const salir = async (keep = []) => {
   try {
-    const { auth } = await import('../../core/config/firebase-auth.ts');
+    const { auth } = await import('../../core/config/firebase.ts');
     const { signOut } = await import('firebase/auth');
     await signOut(auth);
   } catch (e) {
@@ -105,7 +105,7 @@ export const getSmileLocal = () => wiAuth.user;
 // Usada por feature/cliente para mantener el perfil al día
 export const sincronizarSmile = async (user, extraData = {}) => {
   if (!user?.uid) return null;
-  const { db } = await import('../../core/config/firebase-db.ts');
+  const { db } = await import('../../core/config/firebase.ts');
   const { doc, getDoc, setDoc, updateDoc, serverTimestamp } = await import('firebase/firestore');
 
   const docRef = doc(db, 'smiles', user.uid);

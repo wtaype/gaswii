@@ -5,7 +5,7 @@
 import { wiSpin, Mensaje } from '../../../core/widev/widev.js';
 import { entrar } from '../sesion.js';
 import { t } from '../idioma/idioma.js';
-import { loadFirebaseAuth, precargarFirebaseAuth } from '../firebaseAuthLoader.js';
+import { loadFirebaseAuth, loadFirebaseDb } from '../firebaseAuthLoader.js';
 
 // Mapeo de errores Firebase — claves del JSON, sin exponer códigos internos
 export const mapearErrorAuth = (e) => {
@@ -123,25 +123,22 @@ export const iniciarSesionOrdinaria = async (btn) => {
   const txt = t();
   wiSpin(btn, true, txt.signing_in);
   try {
-    const {
-      auth, db, signInWithEmailAndPassword,
-      query, collection, where, limit, getDocs,
-      doc, getDoc, setDoc, serverTimestamp
-    } = await loadFirebaseAuth();
-
     let email = input;
 
     // Resolver username → email solo si no contiene '@'
     if (!input.includes('@')) {
+      const { db, query, collection, where, limit, getDocs } = await loadFirebaseDb();
       const q = query(collection(db, 'smiles'), where('usuario', '==', input.toLowerCase()), limit(1));
       const snap = await getDocs(q);
       if (snap.empty) throw { code: 'auth/user-not-found' };
       email = snap.docs[0].data().email;
     }
 
+    const { auth, signInWithEmailAndPassword } = await loadFirebaseAuth();
     const { user } = await signInWithEmailAndPassword(auth, email, pass);
 
     // Leer perfil de Firestore
+    const { db, doc, getDoc, setDoc, serverTimestamp } = await loadFirebaseDb();
     const docSnap = await getDoc(doc(db, 'smiles', user.uid));
     const imgEmail = 'https://imgwii.web.app/smile.avif';
     const { avatar: calcIniciales } = await import('../../../core/widev/nombre.js');
@@ -173,9 +170,11 @@ export const iniciarSesionOrdinaria = async (btn) => {
 export const iniciarGoogleSSO = async (btn, onNuevoUsuario) => {
   wiSpin(btn, true, t().connecting);
   try {
-    const { auth, googleProvider, db, signInWithPopup, doc, getDoc } = await loadFirebaseAuth();
+    const { auth, googleProvider, signInWithPopup } = await loadFirebaseAuth();
     const res  = await signInWithPopup(auth, googleProvider);
     const user = res.user;
+
+    const { db, doc, getDoc } = await loadFirebaseDb();
     const docRef  = doc(db, 'smiles', user.uid);
     const docSnap = await getDoc(docRef);
 
@@ -204,7 +203,7 @@ export const iniciarGoogleSSO = async (btn, onNuevoUsuario) => {
 
 // Completar registro del usuario nuevo de Google
 export const completarRegistroGoogle = async (btn) => {
-  const { auth, db, doc, setDoc, query, collection, where, limit, getDocs, serverTimestamp } = await loadFirebaseAuth();
+  const { auth } = await loadFirebaseAuth();
   const user = pendingGoogleUser || auth?.currentUser;
   const txt = t();
   if (!user) {
@@ -230,6 +229,7 @@ export const completarRegistroGoogle = async (btn) => {
 
   wiSpin(btn, true, txt.completar_registro + '...');
   try {
+    const { db, doc, setDoc, query, collection, where, limit, getDocs, serverTimestamp } = await loadFirebaseDb();
     const usernameLimpio = userInput.toLowerCase().replace(/[^a-z0-9_-]/g, '');
 
     // Comprobar unicidad de username

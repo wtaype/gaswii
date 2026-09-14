@@ -60,7 +60,7 @@ Thumbs.db
 AGENTS.md
 CLAUDE.md
 .gemini/
-
+.firebase
 
 wiscripts
 wiscripts/traducir.mjs

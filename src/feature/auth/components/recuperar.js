@@ -5,7 +5,7 @@
 import { wiSpin, Mensaje } from '../../../core/widev/widev.js';
 import { campo, mapearErrorAuth } from './ingresar.js';
 import { t } from '../idioma/idioma.js';
-import { loadFirebaseAuth } from '../firebaseAuthLoader.js';
+import { loadFirebaseAuth, loadFirebaseDb } from '../firebaseAuthLoader.js';
 
 // Template HTML para formulario de recuperación
 export const tplRestablecer = () => {
@@ -33,15 +33,16 @@ export const enviarEnlaceRecuperacion = async (btn) => {
   const txt = t();
   wiSpin(btn, true, txt.sending_link);
   try {
-    const { auth, db, sendPasswordResetEmail, collection, query, where, getDocs, limit } = await loadFirebaseAuth();
     let email = input;
 
     if (!input.includes('@')) {
+      const { db, collection, query, where, getDocs, limit } = await loadFirebaseDb();
       const snap = await getDocs(query(collection(db, 'smiles'), where('usuario', '==', input.toLowerCase()), limit(1)));
       if (snap.empty) throw { code: 'auth/user-not-found' };
       email = snap.docs[0].data().email;
     }
 
+    const { auth, sendPasswordResetEmail } = await loadFirebaseAuth();
     await sendPasswordResetEmail(auth, email);
     Mensaje(`${txt.reset_sent} ${email}!`, 'success');
   } catch (e) {
