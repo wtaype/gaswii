@@ -8,7 +8,6 @@ export const empresa = {
   telefonoOficial: '936 369 384',
   telefonoFormateado: '+51 936 369 384',
   horarioAtencion: 'Lun - Dom: 06:30 am - 09:00 pm',
-  administrador: 'Wilder Alarcón',
-  cargo: 'Gestor Propietario',
+  cargo: 'Gestor Operativo de Turno',
   autorizadaPor: 'Osinergmin Registro N° 114829-GLP'
 };

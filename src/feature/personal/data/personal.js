@@ -1,21 +1,10 @@
 // src/feature/personal/data/personal.js
-// Directorio de colaboradores, repartidores motorizados y personal de planta
+// Directorio de colaboradores operativos, repartidores motorizados y personal de planta
+// Se sincroniza con Firestore en segundo plano
 
 export const equipoPersonal = [
   {
     id: 'PER-001',
-    nombre: 'Wilder Alarcón',
-    rol: 'Gestor Propietario',
-    tipoRol: 'gestor',
-    telefono: '936 369 384',
-    dni: '10482910',
-    area: 'Administración & Finanzas',
-    turno: 'Turno Completo (07:00 - 19:00)',
-    entregasMes: 0,
-    activo: true
-  },
-  {
-    id: 'PER-002',
     nombre: 'Carlos Mendoza',
     rol: 'Repartidor Motorizado',
     tipoRol: 'personal',
@@ -27,7 +16,7 @@ export const equipoPersonal = [
     activo: true
   },
   {
-    id: 'PER-003',
+    id: 'PER-002',
     nombre: 'Luis Ramos',
     rol: 'Repartidor Motorizado',
     tipoRol: 'personal',
@@ -39,7 +28,7 @@ export const equipoPersonal = [
     activo: true
   },
   {
-    id: 'PER-004',
+    id: 'PER-003',
     nombre: 'Jorge Peralta',
     rol: 'Conductor Camión',
     tipoRol: 'personal',
@@ -51,7 +40,7 @@ export const equipoPersonal = [
     activo: false
   },
   {
-    id: 'PER-005',
+    id: 'PER-004',
     nombre: 'Rosa Quispe',
     rol: 'Almacén, Pesaje & Limpieza',
     tipoRol: 'personal',

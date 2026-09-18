@@ -22,11 +22,12 @@ const { t } = Astro.props;
 <div id="modalCliente" class="v51-modal-backdrop">
   <div class="v51-modal-box">
     <div class="v51-modal-header">
-      <h3><i class="fa-solid fa-user-plus" style="color: var(--v51-primary);"></i> {t.cliente_titulo}</h3>
+      <h3><i class="fa-solid fa-user-plus" style="color: var(--v51-primary);"></i> <span id="modalCliTitle">{t.cliente_titulo}</span></h3>
       <button class="v51-modal-close" data-close-modal="modalCliente" type="button">&times;</button>
     </div>
     <div class="v51-modal-body">
       <form id="formNuevoCliente">
+        <input type="hidden" id="modalCliId" />
         <div class="v51-form-group">
           <label for="modalCliNombre">{t.lbl_nombre_completo}</label>
           <input type="text" id="modalCliNombre" required placeholder="Ej. Mariana Benavides" />
@@ -67,7 +68,7 @@ const { t } = Astro.props;
           <label for="modalCliRef">{t.lbl_referencia}</label>
           <input type="text" id="modalCliRef" placeholder="Ej. Frente a bodega San Pedro, reja blanca" />
         </div>
-        <button type="submit" class="v51-btn-primary-orange" style="width: 100%; justify-content: center; padding: 1.3vh 1vw;">
+        <button type="submit" id="btnGuardarClienteSubmit" class="v51-btn-primary-orange" style="width: 100%; justify-content: center; padding: 1.3vh 1vw;">
           {t.btn_guardar_cliente}
         </button>
       </form>

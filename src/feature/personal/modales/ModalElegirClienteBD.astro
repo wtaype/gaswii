@@ -21,7 +21,7 @@ const { t } = Astro.props;
       <button class="v51-modal-close" data-close-modal="modalElegirClienteBD" type="button">&times;</button>
     </div>
     <div class="v51-modal-body">
-      <div style="display: flex; flex-direction: column; gap: 1vh;">
+      <div id="listaClientesBDModal" style="display: flex; flex-direction: column; gap: 1vh;">
         {clientesIniciales.map((c) => (
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.4vh 1vw; border: 1px solid var(--v51-border); border-radius: 0.8rem; background: var(--v51-surface-alt);">
             <div>

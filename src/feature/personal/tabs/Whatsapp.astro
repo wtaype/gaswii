@@ -1,6 +1,7 @@
 ---
-// src/feature/personal/secciones/TabWhatsapp.astro
+// src/feature/personal/tabs/Whatsapp.astro
 // Tab 6: Plantillas de mensajería express y avisos por WhatsApp
+import { productosIniciales } from '../data/productos.js';
 
 interface Props {
   t: {
@@ -45,7 +46,7 @@ const { t } = Astro.props;
 
       <div class="v51-form-group">
         <label for="waInputNombre">{t.lbl_nombre_cliente}</label>
-        <input type="text" id="waInputNombre" value="Claudia Romero" />
+        <input type="text" id="waInputNombre" placeholder="Nombre del cliente" />
       </div>
 
       <div class="v51-grid-2">
@@ -55,7 +56,7 @@ const { t } = Astro.props;
         </div>
         <div class="v51-form-group">
           <label for="waInputMoto">{t.lbl_repartidor}</label>
-          <input type="text" id="waInputMoto" value="Carlos Mendoza (Torito 02)" />
+          <input type="text" id="waInputMoto" value="Repartidor de Turno" />
         </div>
       </div>
 
@@ -66,7 +67,7 @@ const { t } = Astro.props;
 
       <div class="v51-form-group">
         <label for="waInputDestino">{t.lbl_wa_destino}</label>
-        <input type="text" id="waInputDestino" value="993 456 789" />
+        <input type="tel" id="waInputDestino" placeholder="Ej. 987654321" />
       </div>
 
       <button class="v51-btn-send-wa-link" id="btnEnviarWhatsAppOficial" style="background: #25d366;" type="button">
@@ -87,12 +88,12 @@ const { t } = Astro.props;
       </div>
 
       <div style="background: #005c4b; color: #e9edef; padding: 1.6vh 1.2vw; border-radius: 0.8rem; font-size: 0.82rem; line-height: 1.5; white-space: pre-line; box-shadow: 0 0.4vh 1.2vh rgba(0, 0, 0, 0.3);" id="waBubblePreview">
-        ¡Hola Claudia Romero!
+        ¡Hola!
         Te saludamos de *Solgas Surquillo (Jr. Dante 260)*.
 
         🛵 Tu balón de gas ya está *EN CAMINO*.
         ⏱️ Tiempo estimado: *12–15 minutos*.
-        👤 Repartidor: *Carlos Mendoza (Torito 02)*.
+        👤 Repartidor: *Repartidor de Turno*.
         💵 Cobro: *S/ 65.00 (Efectivo exacto o Yape)*.
 
         ⚖️ Recuerda que tu balón cuenta con *pesaje digital obligatorio en puerta*. ¡Muchas gracias!

@@ -7,12 +7,12 @@ import Topbar from './secciones/Topbar.astro';
 import Sidebar from './secciones/Sidebar.astro';
 import BottomNav from './secciones/BottomNav.astro';
 
-import TabResumen from './secciones/TabResumen.astro';
-import TabProductos from './secciones/TabProductos.astro';
-import TabClientes from './secciones/TabClientes.astro';
-import TabPersonales from './secciones/TabPersonales.astro';
-import TabSunat from './secciones/TabSunat.astro';
-import TabWhatsapp from './secciones/TabWhatsapp.astro';
+import Resumen from './tabs/Resumen.astro';
+import Productos from './tabs/Productos.astro';
+import Clientes from './tabs/Clientes.astro';
+import Personales from './tabs/Personales.astro';
+import Sunat from './tabs/Sunat.astro';
+import Whatsapp from './tabs/Whatsapp.astro';
 
 import ModalCliente from './modales/ModalCliente.astro';
 import ModalPersonal from './modales/ModalPersonal.astro';
@@ -108,12 +108,12 @@ const t = getPersonalI18n(idioma);
 
       <div class="v51-main-wrapper" id="v51MainWrapper">
         <main class="v51-content-area" style="padding: 2.6vh 2.2vw;">
-          <TabResumen t={t.resumen} />
-          <TabProductos t={t.productos} />
-          <TabClientes t={t.clientes} />
-          <TabPersonales t={t.personales} />
-          <TabSunat t={t.sunat} />
-          <TabWhatsapp t={t.whatsapp} />
+          <Resumen t={t.resumen} />
+          <Productos idioma={idioma} t={t.productos} />
+          <Clientes t={t.clientes} />
+          <Personales t={t.personales} />
+          <Sunat t={t.sunat} />
+          <Whatsapp t={t.whatsapp} />
         </main>
       </div>
     </div>

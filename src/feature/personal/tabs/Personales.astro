@@ -1,6 +1,6 @@
 ---
-// src/feature/personal/secciones/TabPersonales.astro
-// Tab 4: Directorio de colaboradores, choferes, repartidores y turnos
+// src/feature/personal/tabs/Personales.astro
+// Tab 4: Directorio operativo de colaboradores, choferes, repartidores y turnos
 import { equipoPersonal } from '../data/personal.js';
 
 interface Props {
@@ -87,7 +87,7 @@ const { t } = Astro.props;
               </td>
               <td>
                 <label class="v51-apple-switch">
-                  <input type="checkbox" checked={p.activo} class="apple-toggle-staff" data-nombre={p.nombre} />
+                  <input type="checkbox" checked={p.activo} class="apple-toggle-staff" data-id={p.id} data-nombre={p.nombre} />
                   <span class="v51-switch-slider"></span>
                 </label>
               </td>
@@ -98,43 +98,48 @@ const { t } = Astro.props;
     </div>
 
     <!-- PANEL LATERAL DE DETALLE DE PERSONAL -->
-    <div class="v51-preview-card">
+    <div class="v51-preview-card" id="prevStaffCard" data-selected-id={equipoPersonal[0]?.id || ''}>
       <div class="v51-preview-pill">
         <i class="fa-solid fa-id-card-clip"></i> {t.preview_pill}
       </div>
 
       <div class="v51-avatar-large-box">
-        <div class="v51-avatar-round" style="background: #0284c7;" id="prevStaffAvatar">WA</div>
-        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--v51-text-title);" id="prevStaffNombre">Wilder Alarcón</h3>
-        <p style="font-size: 0.76rem; color: var(--v51-primary); font-weight: 700;" id="prevStaffRol">Gestor Propietario</p>
+        <div class="v51-avatar-round" style="background: #0284c7;" id="prevStaffAvatar">CM</div>
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--v51-text-title);" id="prevStaffNombre">Carlos Mendoza</h3>
+        <p style="font-size: 0.76rem; color: var(--v51-primary); font-weight: 700;" id="prevStaffRol">Repartidor Motorizado</p>
       </div>
 
       <div class="v51-detail-list">
         <div class="v51-detail-row">
           <span class="label">{t.lbl_dni}</span>
-          <span class="val" id="prevStaffDni">10482910</span>
+          <span class="val" id="prevStaffDni">44556677</span>
         </div>
         <div class="v51-detail-row">
           <span class="label">{t.lbl_tel}</span>
-          <span class="val" id="prevStaffTel">936 369 384</span>
+          <span class="val" id="prevStaffTel">987 112 233</span>
         </div>
         <div class="v51-detail-row">
           <span class="label">{t.lbl_area}</span>
-          <span class="val" id="prevStaffArea">Administración & Finanzas</span>
+          <span class="val" id="prevStaffArea">Moto Torito 02 (4521-3F)</span>
         </div>
         <div class="v51-detail-row">
           <span class="label">{t.lbl_turno}</span>
-          <span class="val" id="prevStaffTurno">Turno Completo (07:00 - 19:00)</span>
+          <span class="val" id="prevStaffTurno">Mañana (07:30 - 15:30)</span>
         </div>
         <div class="v51-detail-row">
           <span class="label">{t.lbl_entregas}</span>
-          <span class="val" id="prevStaffEntregas" style="color: var(--v51-emerald);">Supervisión General</span>
+          <span class="val" id="prevStaffEntregas" style="color: var(--v51-emerald);">412 entregas este mes</span>
         </div>
       </div>
 
-      <button class="v51-btn-send-wa-link" id="btnStaffLlamar" style="background: #0284c7;" type="button">
-        <i class="fa-solid fa-phone"></i> {t.btn_llamar}
-      </button>
+      <div style="display: flex; gap: 0.6rem; margin-top: 1rem;">
+        <button class="v51-btn-secondary" id="btnEditarPersonalFicha" type="button" style="flex: 1; justify-content: center;">
+          <i class="fa-solid fa-pen-to-square"></i> Editar
+        </button>
+        <button class="v51-btn-send-wa-link" id="btnStaffLlamar" style="background: #0284c7; flex: 1.2; justify-content: center; margin-top: 0;" type="button">
+          <i class="fa-solid fa-phone"></i> {t.btn_llamar}
+        </button>
+      </div>
     </div>
   </div>
 </section>

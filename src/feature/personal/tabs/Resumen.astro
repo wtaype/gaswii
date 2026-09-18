@@ -1,6 +1,6 @@
 ---
-// src/feature/personal/secciones/TabResumen.astro
-// Tab 1: Dashboard, KPIs ejecutivos del día y reloj digital de turno
+// src/feature/personal/tabs/Resumen.astro
+// Tab 1: Dashboard, KPIs ejecutivos del día y reloj digital de turno en Jr. Dante 260
 import { empresa } from '../data/empresa.js';
 
 interface Props {
@@ -54,7 +54,7 @@ const { t } = Astro.props;
       </div>
       <div class="v51-banner-text">
         <h2>
-          <span id="saludoDinamico">{t.saludos.tarde}</span>, <span style="color: var(--v51-primary);">{empresa.administrador}</span>
+          <span id="saludoDinamico">{t.saludos.tarde}</span>, <span id="bannerAdminNombre" style="color: var(--v51-primary);">Operador</span>
         </h2>
         <p>{t.bienvenida_texto}</p>
       </div>
@@ -75,7 +75,7 @@ const { t } = Astro.props;
     </div>
   </div>
 
-  <!-- 5 CARDS ORGANIZADOS EN 2 LÍNEAS CON TEXTO EQUILIBRADO -->
+  <!-- 5 CARDS ORGANIZADOS EN 2 LÍNEAS -->
   <div class="v51-kpi-container">
     <!-- LÍNEA 1: 3 CARDS (CLIENTES, PRODUCTOS, PERSONALES) -->
     <div class="v51-kpi-row-1">
@@ -86,7 +86,7 @@ const { t } = Astro.props;
             <span class="v51-kpi-tag">{t.kpis.cartera_tag}</span>
             <div class="v51-kpi-icon"><i class="fa-solid fa-users"></i></div>
           </div>
-          <div class="v51-kpi-val">192</div>
+          <div class="v51-kpi-val" id="kpiClientesVal">0</div>
           <div class="v51-kpi-label">{t.kpis.cartera_label}</div>
           <p class="v51-kpi-desc">{t.kpis.cartera_desc}</p>
         </div>
@@ -103,7 +103,7 @@ const { t } = Astro.props;
             <span class="v51-kpi-tag emerald">{t.kpis.catalogo_tag}</span>
             <div class="v51-kpi-icon" style="color: var(--v51-emerald);"><i class="fa-solid fa-boxes-stacked"></i></div>
           </div>
-          <div class="v51-kpi-val">4</div>
+          <div class="v51-kpi-val" id="kpiProductosVal">4</div>
           <div class="v51-kpi-label">{t.kpis.catalogo_label}</div>
           <p class="v51-kpi-desc">{t.kpis.catalogo_desc}</p>
         </div>
@@ -120,12 +120,12 @@ const { t } = Astro.props;
             <span class="v51-kpi-tag blue">{t.kpis.equipo_tag}</span>
             <div class="v51-kpi-icon" style="color: var(--v51-blue);"><i class="fa-solid fa-id-badge"></i></div>
           </div>
-          <div class="v51-kpi-val">5</div>
+          <div class="v51-kpi-val" id="kpiEquipoVal">4</div>
           <div class="v51-kpi-label">{t.kpis.equipo_label}</div>
           <p class="v51-kpi-desc">{t.kpis.equipo_desc}</p>
         </div>
         <div class="v51-kpi-foot">
-          <small style="color: var(--v51-blue);">{t.kpis.equipo_meta}</small>
+          <small style="color: var(--v51-blue);" id="kpiEquipoMeta">{t.kpis.equipo_meta}</small>
           <span>{t.kpis.equipo_link} <i class="fa-solid fa-arrow-right"></i></span>
         </div>
       </div>
@@ -140,12 +140,12 @@ const { t } = Astro.props;
             <span class="v51-kpi-tag purple">{t.kpis.tributario_tag}</span>
             <div class="v51-kpi-icon" style="color: var(--v51-purple);"><i class="fa-solid fa-file-invoice-dollar"></i></div>
           </div>
-          <div class="v51-kpi-val">348</div>
+          <div class="v51-kpi-val" id="kpiSunatVal">348</div>
           <div class="v51-kpi-label">{t.kpis.tributario_label}</div>
           <p class="v51-kpi-desc">{t.kpis.tributario_desc}</p>
         </div>
         <div class="v51-kpi-foot">
-          <small style="color: var(--v51-purple);">{t.kpis.tributario_meta}</small>
+          <small style="color: var(--v51-purple);" id="kpiSunatMeta">{t.kpis.tributario_meta}</small>
           <span>{t.kpis.tributario_link} <i class="fa-solid fa-arrow-right"></i></span>
         </div>
       </div>
@@ -157,12 +157,12 @@ const { t } = Astro.props;
             <span class="v51-kpi-tag amber">{t.kpis.inventario_tag}</span>
             <div class="v51-kpi-icon" style="color: var(--v51-amber);"><i class="fa-solid fa-warehouse"></i></div>
           </div>
-          <div class="v51-kpi-val">140</div>
+          <div class="v51-kpi-val" id="kpiInventarioVal">140</div>
           <div class="v51-kpi-label">{t.kpis.inventario_label}</div>
           <p class="v51-kpi-desc">{t.kpis.inventario_desc}</p>
         </div>
         <div class="v51-kpi-foot">
-          <small style="color: var(--v51-amber);">{t.kpis.inventario_meta}</small>
+          <small style="color: var(--v51-amber);" id="kpiInventarioMeta">{t.kpis.inventario_meta}</small>
           <span>{t.kpis.inventario_link} <i class="fa-solid fa-arrow-right"></i></span>
         </div>
       </div>

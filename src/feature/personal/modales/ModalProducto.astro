@@ -46,11 +46,15 @@ const { t } = Astro.props;
             <input type="number" id="modalProdStock" required />
           </div>
           <div class="v51-form-group">
-            <label for="modalProdValvula">{t.lbl_tipo_valvula}</label>
-            <input type="text" id="modalProdValvula" />
+            <label for="modalProdStockVacios">Stock Vacíos (Canje)</label>
+            <input type="number" id="modalProdStockVacios" value="0" />
           </div>
         </div>
-        <button type="submit" class="v51-btn-primary-orange" style="width: 100%; justify-content: center; padding: 1.3vh 1vw;">
+        <div class="v51-form-group" style="display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5vh;">
+          <input type="checkbox" id="modalProdPin" style="width: 18px; height: 18px; accent-color: var(--v51-primary);" />
+          <label for="modalProdPin" style="margin: 0; cursor: pointer; font-size: 0.82rem;">Fijar / Destacar en portada de tienda (Pin)</label>
+        </div>
+        <button type="submit" id="btnGuardarProdSubmit" class="v51-btn-primary-orange" style="width: 100%; justify-content: center; padding: 1.3vh 1vw;">
           {t.btn_guardar_prod}
         </button>
       </form>

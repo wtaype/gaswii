@@ -1,7 +1,6 @@
 ---
-// src/feature/personal/secciones/TabClientes.astro
-// Tab 3: Cartera de clientes registrados, historial de pedidos y estado de credenciales
-import { clientesIniciales } from '../data/clientes.js';
+// src/feature/personal/tabs/Clientes.astro
+// Tab 3: Cartera de clientes reales consultados desde la colección 'smiles' (rol == 'cliente')
 
 interface Props {
   t: {
@@ -52,7 +51,14 @@ const { t } = Astro.props;
   <!-- LAYOUT TABLA LIMPIA + PREVIEW INTEGRAL -->
   <div class="v51-split-layout">
     <div class="v51-table-card">
-      <table class="v51-table">
+      <!-- Empty State cuando no hay clientes en la base de datos -->
+      <div id="emptyStateClientes" style="display: none; padding: 4vh 2vw; text-align: center; color: var(--v51-text-muted);">
+        <i class="fa-solid fa-user-group" style="font-size: 2.5rem; color: var(--v51-primary); opacity: 0.5; margin-bottom: 1vh;"></i>
+        <h4 style="color: var(--v51-text-title); font-size: 1rem; margin-bottom: 0.5vh;">No hay clientes registrados</h4>
+        <p style="font-size: 0.8rem; max-width: 320px; margin: 0 auto 1.5vh;">Haz clic en el botón naranja superior para registrar al primer cliente en Solgas Surquillo.</p>
+      </div>
+
+      <table class="v51-table" id="tablaClientesMain">
         <thead>
           <tr>
             <th>{t.th_cliente}</th>
@@ -62,76 +68,46 @@ const { t } = Astro.props;
           </tr>
         </thead>
         <tbody id="tablaClientesBody">
-          {clientesIniciales.map((c, idx) => (
-            <tr class={`v51-cli-row ${idx === 2 ? 'selected' : ''}`}
-                data-id={c.id}
-                data-nombre={c.nombre}
-                data-contacto={c.contacto}
-                data-doc={`${c.tipoDoc}: ${c.numDoc}`}
-                data-tel={c.contacto}
-                data-dir={c.direccion}
-                data-ref={c.referencia}
-                data-cil={c.cilindroHabitual}
-                data-pedidos={c.totalPedidos}
-                data-facturado={c.totalFacturado}
-                data-acceso={c.estadoAcceso}>
-              <td>
-                <strong>{c.nombre}</strong><br />
-                <small style="color: var(--v51-text-muted); font-size: 0.72rem;">{c.direccion}</small>
-              </td>
-              <td>
-                <span>{c.tipoDoc}: {c.numDoc}</span>
-              </td>
-              <td>
-                <span style="color: var(--v51-wa); font-weight: 600;"><i class="fa-brands fa-whatsapp"></i> {c.contacto}</span>
-              </td>
-              <td>
-                <label class="v51-apple-switch">
-                  <input type="checkbox" checked={c.activo} class="apple-toggle-cli" data-nombre={c.nombre} />
-                  <span class="v51-switch-slider"></span>
-                </label>
-              </td>
-            </tr>
-          ))}
+          <!-- Se inyecta dinámicamente desde Firestore smiles (rol == cliente) en 0ms -->
         </tbody>
       </table>
     </div>
 
     <!-- PANEL LATERAL DE DETALLE Y ACCIONES DE CLIENTE -->
-    <div class="v51-preview-card">
+    <div class="v51-preview-card" id="prevCliCard" data-selected-id="">
       <div class="v51-preview-pill">
         <i class="fa-solid fa-address-card"></i> {t.preview_pill}
       </div>
 
       <div class="v51-avatar-large-box">
-        <div class="v51-avatar-round" id="prevCliAvatar">CR</div>
-        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--v51-text-title);" id="prevCliNombre">Claudia Romero</h3>
-        <p style="font-size: 0.76rem; color: var(--v51-text-muted);" id="prevCliDoc">DNI: 10745896</p>
+        <div class="v51-avatar-round" id="prevCliAvatar">CL</div>
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--v51-text-title);" id="prevCliNombre">Selecciona un Cliente</h3>
+        <p style="font-size: 0.76rem; color: var(--v51-text-muted);" id="prevCliDoc">Documento: ---</p>
         <span style="font-size: 0.68rem; font-weight: 800; color: #ffd166; background: rgba(255, 209, 102, 0.12); padding: 0.2vh 0.6vw; border-radius: 999px; margin-top: 0.4vh;" id="prevCliEstadoAcceso">
-          Invitación Enviada
+          Activo
         </span>
       </div>
 
       <div class="v51-detail-list">
         <div class="v51-detail-row">
           <span class="label">{t.lbl_wa}</span>
-          <span class="val" id="prevCliTel">993 456 789</span>
+          <span class="val" id="prevCliTel">---</span>
         </div>
         <div class="v51-detail-row">
           <span class="label">{t.lbl_dir}</span>
-          <span class="val" id="prevCliDir">Av. Paseo de la República 4890, Miraflores</span>
+          <span class="val" id="prevCliDir">---</span>
         </div>
         <div class="v51-detail-row">
           <span class="label">{t.lbl_ref}</span>
-          <span class="val" id="prevCliRef">Edificio Residencial Piso 5</span>
+          <span class="val" id="prevCliRef">---</span>
         </div>
         <div class="v51-detail-row">
           <span class="label">{t.lbl_cilindro}</span>
-          <span class="val" id="prevCliCil" style="color: var(--v51-primary);">Balón SOLGAS Premium 10 kg</span>
+          <span class="val" id="prevCliCil" style="color: var(--v51-primary);">---</span>
         </div>
         <div class="v51-detail-row">
           <span class="label">{t.lbl_consumo}</span>
-          <span class="val" id="prevCliConsumo" style="color: var(--v51-primary);">S/ 520.00 (8 compras)</span>
+          <span class="val" id="prevCliConsumo" style="color: var(--v51-primary);">---</span>
         </div>
       </div>
 
@@ -141,7 +117,10 @@ const { t } = Astro.props;
       </button>
 
       <div style="display: flex; gap: 0.6vw;">
-        <button class="v51-btn-cpe-shortcut" style="flex: 1;" id="btnCargarClienteEnSunat" type="button">
+        <button class="v51-btn-secondary" style="flex: 1; justify-content: center;" id="btnEditarClienteFicha" type="button">
+          <i class="fa-solid fa-user-pen"></i> Editar
+        </button>
+        <button class="v51-btn-cpe-shortcut" style="flex: 1.2;" id="btnCargarClienteEnSunat" type="button">
           <i class="fa-solid fa-file-invoice"></i> {t.btn_emitir_cpe}
         </button>
         <button class="v51-btn-cpe-shortcut" style="width: 44px; justify-content: center;" id="btnAbrirWaDirecto" type="button">
