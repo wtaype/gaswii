@@ -45,82 +45,136 @@
   --luz: #18c5c5;
 }
 
-:root[data-theme="futuro"] {
-  --bg: #05080c;
-  --bg-body: #05080c;
-  --bg-card: rgba(13, 19, 28, 0.92);
-  --bg-card-hover: rgba(20, 29, 44, 0.98);
+:root[data-theme="futuro"],
+:root[data-theme="dark"] {
+  /* Lienzo y elevaciones cromáticas */
+  --bg1: #070d19;
+  --bg2: #0e192c;
+  --bg3: #14223a;
+  --bg4: #1b2d4c;
+  --bg5: #21355a;
+
+  --bg: var(--bg1);
+  --bg-body: var(--bg1);
+  --surface: var(--bg2);
+  --raised: var(--bg3);
+  --line: #21314b;
+  --ink: #f3f6fc;
+  --muted: #90a4c3;
+
+  --bg-card: rgba(14, 25, 44, 0.92);
+  --bg-card-hover: rgba(20, 34, 58, 0.98);
   --bg-subtle: rgba(255, 255, 255, 0.04);
-  --border-card: rgba(255, 255, 255, 0.12);
-  --border-accent: rgba(255, 230, 0, 0.6);
+  --border-card: var(--line);
+  --border-accent: rgba(255, 102, 0, 0.6);
+
+  /* Colores Corporativos Solgas Surquillo */
+  --brand-orange: #ff6600;
+  --brand-orange-hover: #ff771a;
+  --brand-blue: #0284c7;
+  --brand-blue-hover: #0369a1;
+  --primary: var(--brand-orange);
+  --orange: var(--brand-orange);
+  --orange-soft: rgba(255, 102, 0, 0.14);
+  --green: #20c396;
+  --blue: #0284c7;
+  --red: #fb7c85;
+
   --neon-yellow: #ffe600;
-  --fire-orange: #ff4500;
+  --fire-orange: var(--brand-orange);
   --glow-cyan: #00f0ff;
   --wa-green: #25d366;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --header-bg: rgba(5, 8, 12, 0.96);
-  --topbar-bg: linear-gradient(90deg, #ffe600, #ff4500, #ffe600);
-  --topbar-text: #000;
+  --text-main: #f3f6fc;
+  --text-muted: #90a4c3;
+  --header-bg: rgba(7, 13, 25, 0.96);
+  --topbar-bg: linear-gradient(90deg, #ff6600, #0284c7, #ff6600);
+  --topbar-text: #ffffff;
   --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
-  --input-bg: #090e17;
+  --input-bg: var(--bg3);
 
-  --wb: #0d131c;
-  --tx: #f8fafc;
-  --tx1: #e2e8f0;
-  --tx2: #94a3b8;
+  --wb: var(--surface);
+  --tx: var(--ink);
+  --tx1: var(--ink);
+  --tx2: var(--muted);
   --tx3: #64748b;
-  --txa: #05080c;
-  --txe: #ffe600;
-  --hv: #ffe600;
-  --hva: #ff4500;
-  --mco: #ffe600;
-  --mbg: #0d131c;
-  --brd: rgba(255, 255, 255, 0.12);
-  --inp: #090e17;
-  --bt: #ffe600;
-  --glass-bg: rgba(13, 19, 28, 0.92);
-  --glass-brd: rgba(255, 255, 255, 0.12);
+  --txa: #070d19;
+  --txe: var(--brand-orange);
+  --hv: var(--brand-orange);
+  --hva: #ff771a;
+  --mco: var(--brand-orange);
+  --mbg: var(--orange-soft);
+  --brd: var(--line);
+  --inp: var(--raised);
+  --bt: var(--brand-orange);
+  --glass-bg: rgba(14, 25, 44, 0.92);
+  --glass-brd: var(--line);
   --glass-shd: 0 20px 40px rgba(0, 0, 0, 0.6);
   --glass-blur: 24px;
 }
 
-:root[data-theme="luz"] {
-  --bg: #f4f7fb;
-  --bg-body: #f4f7fb;
+:root[data-theme="luz"],
+:root[data-theme="light"] {
+  /* Lienzo y elevaciones cromáticas */
+  --bg1: #f3f6fb;
+  --bg2: #ffffff;
+  --bg3: #edf2f8;
+  --bg4: #e2e8f0;
+  --bg5: #cbd5e1;
+
+  --bg: var(--bg1);
+  --bg-body: var(--bg1);
+  --surface: var(--bg2);
+  --raised: var(--bg3);
+  --line: #dde5f0;
+  --ink: #17283f;
+  --muted: #6c7e98;
+
   --bg-card: rgba(255, 255, 255, 0.96);
   --bg-card-hover: rgba(255, 255, 255, 1);
   --bg-subtle: rgba(0, 0, 0, 0.04);
-  --border-card: rgba(0, 0, 0, 0.08);
-  --border-accent: rgba(234, 88, 12, 0.6);
+  --border-card: var(--line);
+  --border-accent: rgba(224, 86, 0, 0.6);
+
+  /* Colores Corporativos Solgas Surquillo */
+  --brand-orange: #e05600;
+  --brand-orange-hover: #c44b00;
+  --brand-blue: #0369a1;
+  --brand-blue-hover: #075985;
+  --primary: var(--brand-orange);
+  --orange: var(--brand-orange);
+  --orange-soft: #fff0e4;
+  --green: #087e61;
+  --blue: #247dad;
+  --red: #c14557;
+
   --neon-yellow: #d97706;
-  --fire-orange: #ea580c;
+  --fire-orange: var(--brand-orange);
   --glow-cyan: #0284c7;
   --wa-green: #16a34a;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
+  --text-main: #17283f;
+  --text-muted: #6c7e98;
   --header-bg: rgba(255, 255, 255, 0.96);
-  --topbar-bg: linear-gradient(90deg, #f59e0b, #ea580c, #f59e0b);
+  --topbar-bg: linear-gradient(90deg, #f59e0b, #e05600, #f59e0b);
   --topbar-text: #fff;
   --shadow-xl: 0 15px 35px rgba(0, 0, 0, 0.08);
-  --input-bg: #f8fafc;
+  --input-bg: var(--bg3);
 
-  --wb: #ffffff;
-  --tx: #0f172a;
-  --tx1: #1e293b;
-  --tx2: #334155;
-  --tx3: #64748b;
+  --wb: var(--surface);
+  --tx: var(--ink);
+  --tx1: var(--ink);
+  --tx2: var(--muted);
+  --tx3: #94a3b8;
   --txa: #ffffff;
-  --txe: #ea580c;
-  --hv: #ea580c;
+  --txe: var(--brand-orange);
+  --hv: var(--brand-orange);
   --hva: #d97706;
-  --mco: #ea580c;
-  --mbg: #ea580c;
-  --brd: rgba(0, 0, 0, 0.08);
-  --inp: #f8fafc;
-  --bt: #ea580c;
+  --mco: var(--brand-orange);
+  --mbg: var(--orange-soft);
+  --brd: var(--line);
+  --inp: var(--raised);
+  --bt: var(--brand-orange);
   --glass-bg: rgba(255, 255, 255, 0.96);
-  --glass-brd: rgba(0, 0, 0, 0.08);
+  --glass-brd: var(--line);
   --glass-shd: 0 15px 35px rgba(0, 0, 0, 0.08);
   --glass-blur: 25px;
 }
@@ -225,9 +279,10 @@ a {
   transform: translate(-50%, -2vh);
   padding: 1.6vh 2.5vh;
   border-radius: 1vh;
-  background: var(--bg3, #ffffff);
-  color: var(--tx1, #212529);
-  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.15);
+  background: var(--bg3, #14223a);
+  border: 1px solid var(--brd, #21314b);
+  color: var(--tx1, #f3f6fc);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.35), 0 8px 10px -6px rgba(0,0,0,0.25);
   z-index: 999999;
   display: flex;
   align-items: center;
@@ -259,18 +314,19 @@ a {
 }
 
 .notification {
-  background: var(--bg3, #ffffff);
-  color: var(--tx1, #212529);
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  background: var(--bg3, #14223a);
+  border: 1px solid var(--brd, #21314b);
+  color: var(--tx1, #f3f6fc);
+  box-shadow: 0 12px 28px -4px rgba(0,0,0,0.45);
   border-radius: 1vh;
-  padding: 2vh 2.5vh;
+  padding: 1.8vh 2.4vh;
   display: flex;
   align-items: center;
   gap: 1.5vh;
   opacity: 0;
   transform: translateX(4vh);
   transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
   pointer-events: auto;
 }
 
@@ -295,7 +351,7 @@ a {
   flex: 1;
   font-size: var(--fz_m);
   font-weight: 500;
-  color: var(--tx1);
+  color: var(--tx1, #f3f6fc);
 }
 
 .notification button {
@@ -303,14 +359,14 @@ a {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: var(--tx2, #6c757d);
+  color: var(--tx2, #90a4c3);
   transition: color 0.2s;
   line-height: 1;
   padding: 0;
   margin-left: 1vh;
 }
 
-.notification button:hover { color: var(--tx1, #212529); }
+.notification button:hover { color: var(--tx1, #f3f6fc); }
 
 /* ── 2. TOOLTIPS DINÁMICOS WITIP() (widev/witip.js) ────────── */
 .wiTip {

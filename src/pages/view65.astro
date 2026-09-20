@@ -1,0 +1,2029 @@
+---
+// src/pages/view65.astro
+// Dashboard del Dueño Pro V2 para Gaswii (Solgas Surquillo)
+// 8 Módulos: Dashboard, Notepad (destacado 70/30), Mi negocio, Productos, Galeria, Entradas, Páginas, Ajustes
+// En Inicio: Notepad Rápido en vez de Borrador de Blog
+// Sin tooltips witip en header y sidebar (limpieza visual)
+// 100% Cero CSS inline · Doble tema (futuro / luz) · Tipografía compacta: var(--fz_m) y var(--fz_m2)
+
+import witemaCss from '../core/wicss/witema.css?inline';
+
+const modulos = [
+  { id: 'dashboard', nombre: 'Dashboard', icono: 'fa-solid fa-chart-pie' },
+  { id: 'notepad',   nombre: 'Notepad',   icono: 'fa-solid fa-note-sticky' },
+  { id: 'business',  nombre: 'Mi negocio', icono: 'fa-solid fa-store' },
+  { id: 'products',  nombre: 'Productos',  icono: 'fa-solid fa-box-archive' },
+  { id: 'gallery',   nombre: 'Galeria',    icono: 'fa-solid fa-images' },
+  { id: 'posts',     nombre: 'Entradas',   icono: 'fa-solid fa-newspaper' },
+  { id: 'pages',     nombre: 'Páginas',    icono: 'fa-solid fa-file-lines' },
+  { id: 'settings',  nombre: 'Ajustes',    icono: 'fa-solid fa-gear' }
+];
+
+const fotosGaleriaDemo = [
+  { id: 'f1', nombre: 'BALON-10KG.webp', url: '/imgwii/productos/BALON-10KG.webp', peso: '42 KB', dim: '640x640', fecha: '20 Sep' },
+  { id: 'f2', nombre: 'BALON-45KG.webp', url: '/imgwii/productos/BALON-45KG.webp', peso: '48 KB', dim: '640x640', fecha: '19 Sep' },
+  { id: 'f3', nombre: 'VALVULA-PREMIUM.webp', url: '/imgwii/productos/VALVULA-PREMIUM.webp', peso: '35 KB', dim: '640x640', fecha: '18 Sep' },
+  { id: 'f4', nombre: 'BALON-SOLGAS-AZUL.webp', url: '/imgwii/productos/BALON-10KG.webp', peso: '44 KB', dim: '640x640', fecha: '17 Sep' },
+  { id: 'f5', nombre: 'SEDE-DANTE-FACHADA.webp', url: '/imgwii/logo.webp', peso: '28 KB', dim: '480x280', fecha: '15 Sep' },
+  { id: 'f6', nombre: 'BALANZA-INACAL.webp', url: '/imgwii/productos/BALON-10KG.webp', peso: '39 KB', dim: '640x640', fecha: '14 Sep' }
+];
+
+const articulosDemo = [
+  { id: 'art-1', titulo: 'Cómo verificar el peso exacto de tu balón de gas de 10 kg', categoria: 'Seguridad', estado: 'Publicado', fecha: '20 Sep 2026', visitas: 342 },
+  { id: 'art-2', titulo: '5 Consejos para ahorrar gas en la cocina de tu hogar', categoria: 'Ahorro', estado: 'Publicado', fecha: '18 Sep 2026', visitas: 215 },
+  { id: 'art-3', titulo: 'Válvula Premium Click-On vs Regulador Tradicional: Diferencias', categoria: 'Equipos', estado: 'Publicado', fecha: '15 Sep 2026', visitas: 189 },
+  { id: 'art-4', titulo: 'Protocolo de instalación segura y detección de fugas', categoria: 'Seguridad', estado: 'Borrador', fecha: 'Ayer', visitas: 0 },
+  { id: 'art-5', titulo: 'Nuevos distritos de cobertura express en Lima Sur', categoria: 'Novedades', estado: 'Borrador', fecha: '12 Sep 2026', visitas: 0 }
+];
+
+const paginasDemo = [
+  { id: 'pag-1', titulo: 'Inicio (Página Principal)', slug: '/', estado: 'Activa', modif: 'Hoy 02:40' },
+  { id: 'pag-2', titulo: 'Nosotros y 25 Años en Lima', slug: '/#nosotros', estado: 'Activa', modif: '18 Sep' },
+  { id: 'pag-3', titulo: 'Garantía de Pesaje Digital Inacal', slug: '/#pesaje', estado: 'Activa', modif: '16 Sep' },
+  { id: 'pag-4', titulo: 'Protocolo Cero Fugas y Seguridad', slug: '/#seguridad', estado: 'Activa', modif: '15 Sep' },
+  { id: 'pag-5', titulo: 'Preguntas Frecuentes (FAQ)', slug: '/#faq', estado: 'Activa', modif: '14 Sep' },
+  { id: 'pag-6', titulo: 'Sede Jr. Dante 260 y Cobertura', slug: '/#mapa', estado: 'Activa', modif: '10 Sep' }
+];
+
+const productosDemo = [
+  { id: 'p1', nombre: 'Balón Solgas Premium 10 Kg', tipo: 'Gas Doméstico', precio: '65.00', envase: '120.00', stock: 45, estado: 'Activo' },
+  { id: 'p2', nombre: 'Balón Solgas Comercial 45 Kg', tipo: 'Gas Industrial', precio: '220.00', envase: '350.00', stock: 12, estado: 'Activo' },
+  { id: 'p3', nombre: 'Regulador Premium Solgas Click-On', tipo: 'Accesorio', precio: '45.00', envase: '0.00', stock: 28, estado: 'Activo' },
+  { id: 'p4', nombre: 'Manguera Reforzada para Gas GLP', tipo: 'Accesorio', precio: '25.00', envase: '0.00', stock: 35, estado: 'Activo' }
+];
+---
+
+<!DOCTYPE html>
+<html lang="es" data-theme="futuro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Dashboard del Dueño · Solgas Surquillo (View 65)</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <!-- Anti-FOUC Inmediato -->
+  <script is:inline>
+    try {
+      const savedTheme = localStorage.getItem('gaswii-theme') || 'futuro';
+      document.documentElement.dataset.theme = savedTheme;
+      if (localStorage.getItem('gaswii_sidebar_collapsed') === 'true') {
+        document.documentElement.classList.add('is-collapsed');
+      }
+    } catch (e) {}
+  </script>
+
+  <!-- Tipografías e Iconos -->
+  <link rel="stylesheet" href="/google/fonts.css" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+
+  <!-- Estilos WiTema V2.0 Inlined -->
+  <style is:global set:html={witemaCss}></style>
+
+  <!-- Estilos Estructurados de View65 -->
+  <style is:global>
+    :root {
+      --side-w: 240px;
+      --side-collapsed-w: 72px;
+      --topbar-h: 62px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--ff_P, 'Poppins', sans-serif);
+      font-size: var(--fz_m);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, p { margin: 0; }
+    button, input, select, textarea { font-family: inherit; font-size: inherit; }
+
+    /* Topbar */
+    .v65-topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      gap: 16px;
+      backdrop-filter: blur(16px);
+    }
+    .v65-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .v65-logo {
+      height: 32px;
+      width: auto;
+      object-fit: contain;
+    }
+    .v65-brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .v65-brand-title {
+      font-size: var(--fz_m1);
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .v65-brand-sub {
+      font-size: var(--fz_s3);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .v65-badge-online {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .v65-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .v65-search-box {
+      position: relative;
+      width: 280px;
+    }
+    .v65-search-box input {
+      width: 100%;
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 7px 12px 7px 34px;
+      color: var(--ink);
+      font-size: var(--fz_s4);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .v65-search-box input:focus {
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
+    }
+    .v65-search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: var(--fz_s3);
+      pointer-events: none;
+    }
+
+    .v65-btn-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--raised);
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    }
+    .v65-btn-icon:hover {
+      border-color: var(--brand-orange);
+      color: var(--brand-orange);
+      transform: translateY(-1px);
+    }
+
+    .v65-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 10px 4px 4px;
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .v65-user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-orange), #ff9900);
+      color: #fff;
+      font-weight: 700;
+      font-size: var(--fz_s3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .v65-user-name {
+      font-size: var(--fz_s4);
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .v65-user-role {
+      font-size: var(--fz_s2);
+      color: var(--brand-orange);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* Sidebar */
+    .v65-sidebar {
+      position: fixed;
+      top: var(--topbar-h);
+      bottom: 0;
+      left: 0;
+      width: var(--side-w);
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+      transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    html.is-collapsed .v65-sidebar {
+      width: var(--side-collapsed-w);
+    }
+
+    .v65-nav {
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .v65-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      color: var(--muted);
+      border: none;
+      background: none;
+      cursor: pointer;
+      text-align: left;
+      font-size: var(--fz_m);
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+      position: relative;
+    }
+    .v65-nav-item:hover {
+      background: var(--raised);
+      color: var(--ink);
+    }
+    .v65-nav-item.active {
+      background: var(--raised);
+      color: var(--brand-orange);
+      font-weight: 600;
+    }
+    .v65-nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--brand-orange);
+    }
+    .v65-nav-item i {
+      font-size: 15px;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    html.is-collapsed .v65-nav-item {
+      justify-content: center;
+      padding: 10px 0;
+    }
+    html.is-collapsed .v65-nav-item span {
+      display: none;
+    }
+
+    .v65-sidebar-footer {
+      padding: 12px 10px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .v65-btn-collapse {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: none;
+      border: 1px solid transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: var(--fz_s4);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .v65-btn-collapse:hover {
+      background: var(--raised);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+    html.is-collapsed .v65-btn-collapse {
+      justify-content: center;
+      padding: 8px 0;
+    }
+    html.is-collapsed .v65-btn-collapse span {
+      display: none;
+    }
+
+    /* Main Shell */
+    .v65-main-shell {
+      margin-left: var(--side-w);
+      margin-top: var(--topbar-h);
+      padding: 24px 28px 60px;
+      min-height: calc(100vh - var(--topbar-h));
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    html.is-collapsed .v65-main-shell {
+      margin-left: var(--side-collapsed-w);
+    }
+
+    /* Section Headers */
+    .v65-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .v65-section-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .v65-section-title {
+      font-size: var(--fz_m3);
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--ink);
+    }
+    .v65-section-sub {
+      font-size: var(--fz_s4);
+      color: var(--muted);
+    }
+
+    /* Buttons */
+    .v65-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: var(--fz_s4);
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s, transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    .v65-btn:hover { transform: translateY(-1px); }
+    .v65-btn-primary {
+      background: var(--brand-orange);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(255, 102, 0, 0.25);
+    }
+    .v65-btn-primary:hover {
+      background: var(--brand-orange-hover);
+    }
+    .v65-btn-secondary {
+      background: var(--raised);
+      border-color: var(--line);
+      color: var(--ink);
+    }
+    .v65-btn-secondary:hover {
+      border-color: var(--brand-orange);
+      color: var(--brand-orange);
+    }
+    .v65-btn-danger {
+      background: rgba(251, 124, 133, 0.12);
+      border-color: rgba(251, 124, 133, 0.3);
+      color: var(--red);
+    }
+    .v65-btn-danger:hover {
+      background: var(--red);
+      color: #ffffff;
+    }
+
+    /* Panels */
+    .v65-panel {
+      display: none;
+      animation: v65FadeIn 0.2s ease-out;
+    }
+    .v65-panel.active {
+      display: block;
+    }
+    @keyframes v65FadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* KPI Cards */
+    .v65-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .v65-kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .v65-kpi-card:hover {
+      border-color: rgba(255, 102, 0, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    .v65-kpi-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .v65-kpi-label {
+      font-size: var(--fz_s3);
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .v65-kpi-val {
+      font-size: var(--fz_m3);
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .v65-kpi-note {
+      font-size: var(--fz_s2);
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .v65-kpi-icon-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--raised);
+      color: var(--brand-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    /* Cards */
+    .v65-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .v65-card-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .v65-card-head h3 {
+      font-size: var(--fz_m2);
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .v65-card-body {
+      padding: 18px;
+    }
+
+    /* Form Fields */
+    .v65-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .v65-label {
+      font-size: var(--fz_s3);
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .v65-input, .v65-textarea, .v65-select {
+      width: 100%;
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--ink);
+      font-size: var(--fz_m);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .v65-input:focus, .v65-textarea:focus, .v65-select:focus {
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
+    }
+    .v65-textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    /* Dashboard Split Grid: Notepad Rápido + Mi Negocio */
+    .v65-split-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 980px) {
+      .v65-split-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Mini Notas en Dashboard */
+    .v65-dash-note-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: var(--fz_m);
+    }
+    .v65-dash-note-text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ink);
+    }
+    .v65-dash-note-text.done {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    /* ============================================================ */
+    /* 📝 NOTEPAD DEDICADO: ARQUITECTURA 70% EDITOR / 30% LISTA     */
+    /* ============================================================ */
+    .v65-notepad-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(290px, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 1020px) {
+      .v65-notepad-layout { grid-template-columns: 1fr; }
+    }
+
+    /* Canvas del Editor (70%) */
+    .v65-note-editor-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .v65-note-editor-toolbar {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .v65-tag-selector {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .v65-tag-pill {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: var(--fz_s3);
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: var(--raised);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .v65-tag-pill:hover {
+      border-color: var(--brand-orange);
+      color: var(--ink);
+    }
+    .v65-tag-pill.active {
+      background: var(--brand-orange);
+      border-color: var(--brand-orange);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(255, 102, 0, 0.3);
+    }
+
+    .v65-note-canvas {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: var(--surface);
+    }
+    .v65-note-title-input {
+      font-size: var(--fz_m2);
+      font-weight: 600;
+      color: var(--ink);
+      border: none;
+      background: none;
+      outline: none;
+      padding: 4px 0;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .v65-note-title-input:focus {
+      border-bottom-color: var(--brand-orange);
+    }
+    .v65-note-body-textarea {
+      width: 100%;
+      min-height: 280px;
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px;
+      color: var(--ink);
+      font-size: var(--fz_m);
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .v65-note-body-textarea:focus {
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
+    }
+
+    .v65-note-editor-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+    }
+    .v65-note-stats {
+      font-size: var(--fz_s3);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Lista Compacta de Notas (30%) */
+    .v65-note-list-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      max-height: 600px;
+      overflow: hidden;
+    }
+    .v65-note-list-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .v65-note-items-scroll {
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .v65-note-summary-card {
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s, background 0.15s;
+      position: relative;
+    }
+    .v65-note-summary-card:hover {
+      border-color: var(--brand-orange);
+      transform: translateY(-1px);
+    }
+    .v65-note-summary-card.active {
+      border-color: var(--brand-orange);
+      background: rgba(255, 102, 0, 0.06);
+    }
+    .v65-note-summary-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .v65-note-summary-tag {
+      font-size: var(--fz_s2);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .v65-note-summary-date {
+      font-size: var(--fz_s2);
+      color: var(--muted);
+    }
+    .v65-note-summary-snippet {
+      font-size: var(--fz_m);
+      color: var(--ink);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .v65-note-summary-snippet.done {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .v65-note-summary-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+
+    /* Tablas Compactas */
+    .v65-table-wrap {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+    .v65-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: var(--fz_m);
+    }
+    .v65-table th {
+      background: var(--raised);
+      color: var(--muted);
+      font-size: var(--fz_s3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    .v65-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .v65-table tr:last-child td { border-bottom: none; }
+    .v65-table tr:hover td { background: var(--raised); }
+
+    /* Chips y Badges */
+    .v65-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: var(--fz_s2);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .v65-badge-success { background: rgba(32, 195, 150, 0.15); color: var(--green); }
+    .v65-badge-warning { background: rgba(255, 167, 38, 0.15); color: var(--warning); }
+    .v65-badge-orange  { background: rgba(255, 102, 0, 0.15); color: var(--brand-orange); }
+    .v65-badge-blue    { background: rgba(2, 132, 199, 0.15); color: var(--brand-blue); }
+
+    /* Galería Media */
+    .v65-media-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+    }
+    .v65-media-item {
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .v65-media-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--brand-orange);
+    }
+    .v65-media-thumb-wrap {
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.1);
+      padding: 6px;
+    }
+    .v65-media-thumb {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+    .v65-media-meta {
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+    }
+    .v65-media-name {
+      font-size: var(--fz_s3);
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .v65-media-sub {
+      font-size: var(--fz_s2);
+      color: var(--muted);
+    }
+
+    /* Modal emergente para previsualización */
+    .v65-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .v65-modal.active { display: flex; }
+    .v65-modal-content {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      max-width: 540px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      animation: v65ModalZoom 0.2s ease-out;
+    }
+    @keyframes v65ModalZoom {
+      from { transform: scale(0.94); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .v65-modal-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .v65-modal-body {
+      padding: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar Unificada (Sin witip) -->
+  <header class="v65-topbar">
+    <div class="v65-brand">
+      <img src="/imgwii/logo.webp" alt="Solgas Surquillo" class="v65-logo" />
+      <div class="v65-brand-text">
+        <span class="v65-brand-title">SOLGAS SURQUILLO</span>
+        <span class="v65-brand-sub">
+          <span class="v65-badge-online"></span>
+          Sede Jr. Dante 260 · Centro de Operaciones
+        </span>
+      </div>
+    </div>
+
+    <!-- Buscador Global -->
+    <div class="v65-search-box">
+      <i class="fa-solid fa-magnifying-glass v65-search-icon"></i>
+      <input type="text" id="v65GlobalSearch" placeholder="Buscar entradas, productos, páginas…" />
+    </div>
+
+    <!-- Acciones Rápidas del Dueño -->
+    <div class="v65-top-actions">
+      <button class="v65-btn-icon" id="btnThemeToggle" aria-label="Cambiar tema">
+        <i class="fa-solid fa-circle-half-stroke"></i>
+      </button>
+
+      <a href="/" target="_blank" class="v65-btn-icon" aria-label="Sitio web">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      </a>
+
+      <div class="v65-user-badge" id="btnUserBadge">
+        <div class="v65-user-avatar">WT</div>
+        <div>
+          <div class="v65-user-name">Wilder Taype</div>
+          <div class="v65-user-role">Dueño / Admin</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar Jerárquico: 1.Dashboard, 2.Notepad, 3.Mi negocio, etc. (Sin witip) -->
+  <aside class="v65-sidebar" id="sidebarMenu">
+    <nav class="v65-nav" aria-label="Menú del dueño">
+      {modulos.map((m, idx) => (
+        <button 
+          class={`v65-nav-item ${idx === 0 ? 'active' : ''}`} 
+          data-panel-target={m.id}
+        >
+          <i class={m.icono}></i>
+          <span>{m.nombre}</span>
+        </button>
+      ))}
+    </nav>
+
+    <!-- Pie con Botón Plegar Menú -->
+    <div class="v65-sidebar-footer">
+      <button class="v65-btn-collapse" id="btnCollapseSidebar">
+        <i class="fa-solid fa-arrow-left-long" id="iconCollapse"></i>
+        <span id="labelCollapse">Plegar menú</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Shell de Trabajo -->
+  <main class="v65-main-shell">
+
+    <!-- 1. MÓDULO: DASHBOARD -->
+    <section class="v65-panel active" id="panel-dashboard">
+      <div class="v65-section-header">
+        <div class="v65-section-title-wrap">
+          <h1 class="v65-section-title">Dashboard del Dueño</h1>
+          <p class="v65-section-sub">Resumen integral y control directo de la planta de Surquillo.</p>
+        </div>
+        <div class="v65-header-actions">
+          <button class="v65-btn v65-btn-primary" data-jump-to="notepad">
+            <i class="fa-solid fa-note-sticky"></i> Abrir Notepad
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 KPIs Ejecutivos Compactos -->
+      <div class="v65-kpi-grid">
+        <div class="v65-kpi-card">
+          <div class="v65-kpi-info">
+            <span class="v65-kpi-label">Estado de Planta</span>
+            <span class="v65-kpi-val">Operativa</span>
+            <span class="v65-kpi-note"><i class="fa-solid fa-check"></i> Despacho activo</span>
+          </div>
+          <div class="v65-kpi-icon-wrap"><i class="fa-solid fa-truck-fast"></i></div>
+        </div>
+
+        <div class="v65-kpi-card">
+          <div class="v65-kpi-info">
+            <span class="v65-kpi-label">Apuntes Notepad</span>
+            <span class="v65-kpi-val" id="dashNotesCount">3 Notas</span>
+            <span class="v65-kpi-note"><i class="fa-solid fa-pen-nib"></i> Bloc activo</span>
+          </div>
+          <div class="v65-kpi-icon-wrap"><i class="fa-solid fa-note-sticky"></i></div>
+        </div>
+
+        <div class="v65-kpi-card">
+          <div class="v65-kpi-info">
+            <span class="v65-kpi-label">Fotos en Galería</span>
+            <span class="v65-kpi-val">6 en R2</span>
+            <span class="v65-kpi-note"><i class="fa-solid fa-cloud"></i> media.solgas...</span>
+          </div>
+          <div class="v65-kpi-icon-wrap"><i class="fa-solid fa-images"></i></div>
+        </div>
+
+        <div class="v65-kpi-card">
+          <div class="v65-kpi-info">
+            <span class="v65-kpi-label">Balones en Catálogo</span>
+            <span class="v65-kpi-val">4 Productos</span>
+            <span class="v65-kpi-note"><i class="fa-solid fa-layer-group"></i> 10kg, 45kg</span>
+          </div>
+          <div class="v65-kpi-icon-wrap"><i class="fa-solid fa-fire"></i></div>
+        </div>
+      </div>
+
+      <!-- Grilla Dividida: Notepad Rápido + Mi Negocio al Día -->
+      <div class="v65-split-grid">
+        <!-- Notepad Rápido en Dashboard (Sustituye a Borrador de Blog) -->
+        <div class="v65-card">
+          <div class="v65-card-head">
+            <h3><i class="fa-solid fa-note-sticky" style="color:var(--brand-orange)"></i> Notepad Rápido</h3>
+            <button class="v65-btn v65-btn-secondary" data-jump-to="notepad" style="padding:4px 10px; font-size:var(--fz_s3);">
+              Ir al Notepad <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+          <div class="v65-card-body">
+            <!-- Formulario de nota exprés -->
+            <form id="formDashQuickNote" style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+              <div style="display:flex; gap:10px;">
+                <select id="dashQuickNoteTag" class="v65-select" style="max-width:140px;">
+                  <option value="Urgente">⚡ Urgente</option>
+                  <option value="Planta">🏢 Planta</option>
+                  <option value="Pedidos">🛵 Pedidos</option>
+                  <option value="Idea">💡 Idea</option>
+                </select>
+                <input type="text" id="dashQuickNoteText" class="v65-input" placeholder="Anotar pendiente rápido de hoy..." required style="flex:1;" />
+                <button type="submit" class="v65-btn v65-btn-primary">
+                  <i class="fa-solid fa-plus"></i> Anotar
+                </button>
+              </div>
+            </form>
+
+            <!-- Lista de últimas 3 notas -->
+            <div style="display:flex; flex-direction:column; gap:8px;" id="dashNotesList">
+              <!-- Renderizado dinámico -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Mi Negocio Glance Card -->
+        <div class="v65-card">
+          <div class="v65-card-head">
+            <h3><i class="fa-solid fa-store" style="color:var(--brand-blue)"></i> Mi Negocio al Día</h3>
+            <button class="v65-btn v65-btn-secondary" data-jump-to="business" style="padding:4px 10px; font-size:var(--fz_s3);">
+              Editar Ficha
+            </button>
+          </div>
+          <div class="v65-card-body">
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <img src="/imgwii/logo.webp" alt="Logo" style="height:38px; border-radius:6px; background:var(--raised); padding:4px;" />
+                <div>
+                  <strong style="font-size:var(--fz_m1); color:var(--ink); display:block;">Solgas Surquillo</strong>
+                  <span style="font-size:var(--fz_s3); color:var(--muted);">RUC: 20608945123 · Sede Oficial</span>
+                </div>
+              </div>
+
+              <div style="background:var(--raised); padding:10px 12px; border-radius:8px; border:1px solid var(--line); font-size:var(--fz_s4); display:flex; flex-direction:column; gap:6px;">
+                <div><i class="fa-solid fa-location-dot" style="color:var(--brand-orange); width:18px;"></i> Jr. Dante 260, Surquillo, Lima</div>
+                <div><i class="fa-solid fa-phone" style="color:var(--green); width:18px;"></i> (01) 241-5555 · 940 200 400</div>
+                <div><i class="fa-solid fa-clock" style="color:var(--brand-blue); width:18px;"></i> Lunes a Sábado: 6:00 am - 10:00 pm</div>
+                <div><i class="fa-solid fa-map" style="color:var(--warning); width:18px;"></i> Surquillo, Miraflores, San Isidro, San Borja, Surco</div>
+              </div>
+
+              <div style="display:flex; gap:8px;">
+                <a href="https://wa.me/51940200400" target="_blank" class="v65-btn v65-btn-secondary" style="flex:1; justify-content:center;">
+                  <i class="fa-brands fa-whatsapp" style="color:var(--green)"></i> Probar WhatsApp
+                </a>
+                <button class="v65-btn v65-btn-secondary" data-jump-to="products" style="flex:1; justify-content:center;">
+                  <i class="fa-solid fa-box-archive"></i> Ver Catálogo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tira de Galería Reciente -->
+      <div class="v65-card">
+        <div class="v65-card-head">
+          <h3><i class="fa-solid fa-images" style="color:var(--green)"></i> Fotos Recientes en Cloudflare R2</h3>
+          <button class="v65-btn v65-btn-secondary" data-jump-to="gallery" style="padding:4px 10px; font-size:var(--fz_s3);">
+            Ver Toda la Galería
+          </button>
+        </div>
+        <div class="v65-card-body">
+          <div class="v65-media-strip">
+            {fotosGaleriaDemo.slice(0, 5).map(f => (
+              <div class="v65-media-item" data-media-url={f.url} data-media-name={f.nombre}>
+                <div class="v65-media-thumb-wrap">
+                  <img src={f.url} alt={f.nombre} class="v65-media-thumb" />
+                </div>
+                <div class="v65-media-meta">
+                  <span class="v65-media-name">{f.nombre}</span>
+                  <span class="v65-media-sub">{f.peso} · {f.dim}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. MÓDULO: NOTEPAD (ARQUITECTURA 70% EDITOR / 30% LISTA) -->
+    <section class="v65-panel" id="panel-notepad">
+      <div class="v65-section-header">
+        <div class="v65-section-title-wrap">
+          <h1 class="v65-section-title">Notepad del Dueño</h1>
+          <p class="v65-section-sub">Espacio amplio para anotaciones diarias, compras a planta y recordatorios.</p>
+        </div>
+        <div class="v65-header-actions">
+          <button class="v65-btn v65-btn-secondary" id="btnNewNoteCanvas">
+            <i class="fa-solid fa-file-circle-plus"></i> Nueva Nota en Blanco
+          </button>
+        </div>
+      </div>
+
+      <div class="v65-notepad-layout">
+        <!-- 70%: Lienzo de Escritura Amplio y Cómodo -->
+        <div class="v65-note-editor-card">
+          <div class="v65-note-editor-toolbar">
+            <div class="v65-tag-selector" id="tagPillGroup">
+              <span class="v65-tag-pill active" data-tag="Urgente">⚡ Urgente</span>
+              <span class="v65-tag-pill" data-tag="Planta">🏢 Planta Solgas</span>
+              <span class="v65-tag-pill" data-tag="Pedidos">🛵 Pedido Especial</span>
+              <span class="v65-tag-pill" data-tag="Idea">💡 Idea / Proyecto</span>
+              <span class="v65-tag-pill" data-tag="Cliente">📞 Cliente</span>
+            </div>
+            <span id="noteEditorStatus" style="font-size:var(--fz_s3); color:var(--muted);">Editando nota</span>
+          </div>
+
+          <form id="formNotepadFull" class="v65-note-canvas">
+            <input type="hidden" id="notepadCurrentId" value="" />
+            <input 
+              type="text" 
+              id="notepadTitle" 
+              class="v65-note-title-input" 
+              placeholder="Título o Asunto de la nota (ej: Pedido urgente de 50 balones para el fin de semana)..." 
+              required 
+            />
+            <textarea 
+              id="notepadContent" 
+              class="v65-note-body-textarea" 
+              placeholder="Escribe libremente todos los detalles aquí: números de teléfono, direcciones, acuerdos con planta, cantidades, recordatorios..." 
+              required
+            ></textarea>
+          </form>
+
+          <div class="v65-note-editor-footer">
+            <div class="v65-note-stats">
+              <span id="noteCharCount">0 caracteres</span>
+              <span>·</span>
+              <span id="noteWordCount">0 palabras</span>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button type="button" class="v65-btn v65-btn-secondary" id="btnClearNote">
+                Limpiar
+              </button>
+              <button type="button" class="v65-btn v65-btn-primary" id="btnSaveNotepadFull">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar Nota
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 30%: Lista Compacta de Notas (10 palabras + ...) -->
+        <div class="v65-note-list-card">
+          <div class="v65-note-list-head">
+            <h3 style="font-size:var(--fz_m2);"><i class="fa-solid fa-list-ul"></i> Notas Guardadas</h3>
+            <span class="v65-badge v65-badge-blue" id="notepadBadgeCount">3 notas</span>
+          </div>
+          <div class="v65-note-items-scroll" id="notepadCompactList">
+            <!-- Renderizado dinámico con recorte de 10 palabras -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MÓDULO: MI NEGOCIO -->
+    <section class="v65-panel" id="panel-business">
+      <div class="v65-section-header">
+        <div class="v65-section-title-wrap">
+          <h1 class="v65-section-title">Mi Negocio</h1>
+          <p class="v65-section-sub">Información fiscal, canales de despacho y cobertura de la planta.</p>
+        </div>
+        <div class="v65-header-actions">
+          <button class="v65-btn v65-btn-primary" id="btnSaveBusiness">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+          </button>
+        </div>
+      </div>
+
+      <div class="v65-card">
+        <div class="v65-card-body">
+          <form id="formBusinessDetails" style="display:flex; flex-direction:column; gap:20px;">
+            <!-- 01 Identidad -->
+            <div>
+              <h3 style="font-size:var(--fz_m2); margin-bottom:12px; color:var(--brand-orange);">
+                01. Identidad Corporativa
+              </h3>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px;">
+                <div class="v65-field-group">
+                  <label class="v65-label">Nombre Comercial</label>
+                  <input type="text" class="v65-input" id="bizNombre" value="Solgas Surquillo" required />
+                </div>
+                <div class="v65-field-group">
+                  <label class="v65-label">RUC de Planta</label>
+                  <input type="text" class="v65-input" id="bizRuc" value="20608945123" maxlength="11" />
+                </div>
+                <div class="v65-field-group" style="grid-column:1/-1;">
+                  <label class="v65-label">Razón Social</label>
+                  <input type="text" class="v65-input" id="bizLegal" value="DISTRIBUIDORA GASWII SOLGAS S.A.C." />
+                </div>
+                <div class="v65-field-group" style="grid-column:1/-1;">
+                  <label class="v65-label">Descripción de la Empresa</label>
+                  <textarea class="v65-textarea" id="bizDesc" rows="2">Distribuidor Oficial de Solgas en Surquillo y distritos aledaños. Más de 25 años garantizando pesaje exacto, válvulas de seguridad y despacho express a domicilio.</textarea>
+                </div>
+              </div>
+            </div>
+
+            <hr style="border:0; border-top:1px solid var(--line); margin:0;" />
+
+            <!-- 02 Contacto -->
+            <div>
+              <h3 style="font-size:var(--fz_m2); margin-bottom:12px; color:var(--green);">
+                02. Canales de Contacto y Despacho
+              </h3>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px;">
+                <div class="v65-field-group">
+                  <label class="v65-label">Teléfono Fijo Central</label>
+                  <input type="tel" class="v65-input" id="bizPhone" value="(01) 241-5555" />
+                </div>
+                <div class="v65-field-group">
+                  <label class="v65-label">WhatsApp de Despacho (con +51)</label>
+                  <input type="tel" class="v65-input" id="bizWhatsapp" value="+51 940 200 400" />
+                </div>
+                <div class="v65-field-group">
+                  <label class="v65-label">Correo Electrónico</label>
+                  <input type="email" class="v65-input" id="bizEmail" value="pedidos@solgassurquillo.com" />
+                </div>
+              </div>
+            </div>
+
+            <hr style="border:0; border-top:1px solid var(--line); margin:0;" />
+
+            <!-- 03 Ubicación y Cobertura -->
+            <div>
+              <h3 style="font-size:var(--fz_m2); margin-bottom:12px; color:var(--brand-blue);">
+                03. Ubicación y Zonas de Cobertura
+              </h3>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px;">
+                <div class="v65-field-group" style="grid-column:1/-1;">
+                  <label class="v65-label">Dirección Física de la Planta</label>
+                  <input type="text" class="v65-input" id="bizAddress" value="Jr. Dante 260, Surquillo, Lima" />
+                </div>
+                <div class="v65-field-group">
+                  <label class="v65-label">Referencia</label>
+                  <input type="text" class="v65-input" id="bizRef" value="A media cuadra de Av. Angamos Este" />
+                </div>
+                <div class="v65-field-group">
+                  <label class="v65-label">Enlace de Google Maps</label>
+                  <input type="url" class="v65-input" id="bizMap" value="https://maps.google.com/?q=Jr.+Dante+260+Surquillo" />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MÓDULO: PRODUCTOS -->
+    <section class="v65-panel" id="panel-products">
+      <div class="v65-section-header">
+        <div class="v65-section-title-wrap">
+          <h1 class="v65-section-title">Catálogo de Productos</h1>
+          <p class="v65-section-sub">Control de balones Solgas, stocks y precios sincronizados.</p>
+        </div>
+        <div class="v65-header-actions">
+          <button class="v65-btn v65-btn-primary">
+            <i class="fa-solid fa-plus"></i> Nuevo Producto
+          </button>
+        </div>
+      </div>
+
+      <div class="v65-table-wrap">
+        <table class="v65-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Tipo</th>
+              <th>Precio Reg.</th>
+              <th>Con Envase</th>
+              <th>Stock</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {productosDemo.map(p => (
+              <tr>
+                <td><strong style="color:var(--ink);">{p.nombre}</strong></td>
+                <td><span class="v65-badge v65-badge-blue">{p.tipo}</span></td>
+                <td><strong style="color:var(--brand-orange)">S/ {p.precio}</strong></td>
+                <td>S/ {p.envase}</td>
+                <td><span class="v65-badge v65-badge-success">{p.stock} unid.</span></td>
+                <td><span class="v65-badge v65-badge-orange">{p.estado}</span></td>
+                <td>
+                  <button class="v65-btn v65-btn-secondary" style="padding:4px 8px;">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5. MÓDULO: GALERIA -->
+    <section class="v65-panel" id="panel-gallery">
+      <div class="v65-section-header">
+        <div class="v65-section-title-wrap">
+          <h1 class="v65-section-title">Galería Multimedia</h1>
+          <p class="v65-section-sub">Imágenes optimizadas en Cloudflare R2 (media.solgassurquillo.com).</p>
+        </div>
+        <div class="v65-header-actions">
+          <label class="v65-btn v65-btn-primary" style="cursor:pointer;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Subir Foto a R2
+            <input type="file" id="r2InputFile" accept="image/*" hidden />
+          </label>
+        </div>
+      </div>
+
+      <div class="v65-media-strip" style="grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));">
+        {fotosGaleriaDemo.map(f => (
+          <div class="v65-media-item" data-media-url={f.url} data-media-name={f.nombre}>
+            <div class="v65-media-thumb-wrap" style="height:120px;">
+              <img src={f.url} alt={f.nombre} class="v65-media-thumb" />
+            </div>
+            <div class="v65-media-meta">
+              <span class="v65-media-name">{f.nombre}</span>
+              <span class="v65-media-sub">{f.peso} · {f.dim} · {f.fecha}</span>
+              <button class="v65-btn v65-btn-secondary btn-copy-url" data-url={f.url} style="margin-top:6px; padding:4px 8px; font-size:var(--fz_s2);">
+                <i class="fa-solid fa-copy"></i> Copiar URL
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 6. MÓDULO: ENTRADAS -->
+    <section class="v65-panel" id="panel-posts">
+      <div class="v65-section-header">
+        <div class="v65-section-title-wrap">
+          <h1 class="v65-section-title">Entradas y Blog</h1>
+          <p class="v65-section-sub">Publicaciones de consejos de seguridad, ahorro y cocina con GLP.</p>
+        </div>
+        <div class="v65-header-actions">
+          <button class="v65-btn v65-btn-primary">
+            <i class="fa-solid fa-plus"></i> Nueva Entrada
+          </button>
+        </div>
+      </div>
+
+      <div class="v65-table-wrap">
+        <table class="v65-table">
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Categoría</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th>Vistas</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {articulosDemo.map(a => (
+              <tr>
+                <td><strong>{a.titulo}</strong></td>
+                <td><span class="v65-badge v65-badge-blue">{a.categoria}</span></td>
+                <td>
+                  <span class={`v65-badge ${a.estado === 'Publicado' ? 'v65-badge-success' : 'v65-badge-warning'}`}>
+                    {a.estado}
+                  </span>
+                </td>
+                <td>{a.fecha}</td>
+                <td>{a.visitas > 0 ? `${a.visitas} lecturas` : '—'}</td>
+                <td>
+                  <div style="display:flex; gap:6px;">
+                    <button class="v65-btn v65-btn-secondary" style="padding:4px 8px;">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="v65-btn v65-btn-danger btn-delete-post" data-title={a.titulo} style="padding:4px 8px;">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 7. MÓDULO: PÁGINAS -->
+    <section class="v65-panel" id="panel-pages">
+      <div class="v65-section-header">
+        <div class="v65-section-title-wrap">
+          <h1 class="v65-section-title">Páginas del Sitio</h1>
+          <p class="v65-section-sub">Estructura y estado de las páginas oficiales de Solgas Surquillo.</p>
+        </div>
+      </div>
+
+      <div class="v65-table-wrap">
+        <table class="v65-table">
+          <thead>
+            <tr>
+              <th>Nombre de la Página</th>
+              <th>Ruta / Slug</th>
+              <th>Estado</th>
+              <th>Última Modificación</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginasDemo.map(p => (
+              <tr>
+                <td><strong>{p.titulo}</strong></td>
+                <td><code style="background:var(--raised); padding:2px 6px; border-radius:4px; font-size:var(--fz_s3);">{p.slug}</code></td>
+                <td><span class="v65-badge v65-badge-success">{p.estado}</span></td>
+                <td>{p.modif}</td>
+                <td>
+                  <a href={p.slug} target="_blank" class="v65-btn v65-btn-secondary" style="padding:4px 8px;">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 8. MÓDULO: AJUSTES -->
+    <section class="v65-panel" id="panel-settings">
+      <div class="v65-section-header">
+        <div class="v65-section-title-wrap">
+          <h1 class="v65-section-title">Ajustes Generales</h1>
+          <p class="v65-section-sub">Configuración del sitio, SEO, WhatsApp API y credenciales de Cloudflare.</p>
+        </div>
+        <div class="v65-header-actions">
+          <button class="v65-btn v65-btn-primary" id="btnSaveSettings">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Ajustes
+          </button>
+        </div>
+      </div>
+
+      <div class="v65-card">
+        <div class="v65-card-body" style="display:flex; flex-direction:column; gap:18px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px;">
+            <div class="v65-field-group">
+              <label class="v65-label">Título SEO del Sitio</label>
+              <input type="text" class="v65-input" value="Solgas Surquillo · Distribuidor Oficial Autorizado" />
+            </div>
+            <div class="v65-field-group">
+              <label class="v65-label">Dominio Cloudflare R2</label>
+              <input type="text" class="v65-input" value="https://media.solgassurquillo.com" readonly />
+            </div>
+            <div class="v65-field-group" style="grid-column:1/-1;">
+              <label class="v65-label">Descripción Meta (Google Snippet)</label>
+              <textarea class="v65-textarea" rows="2">Pedir balón de gas Solgas de 10kg y 45kg en Surquillo. Despacho rápido a Jr. Dante, Angamos, Miraflores y distritos vecinos con pesaje digital verificado.</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal de Previsualización de Imagen -->
+  <div class="v65-modal" id="modalImgPreview">
+    <div class="v65-modal-content">
+      <div class="v65-modal-head">
+        <h3 style="font-size:var(--fz_m2);" id="modalPreviewTitle">Detalle de Foto</h3>
+        <button class="v65-btn-icon" id="btnClosePreview" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="v65-modal-body" style="text-align:center;">
+        <img id="modalPreviewImg" src="" alt="Preview" style="max-height:280px; max-width:100%; object-fit:contain; border-radius:8px; margin-bottom:14px;" />
+        <p id="modalPreviewUrl" style="font-size:var(--fz_s3); color:var(--muted); word-break:break-all; background:var(--raised); padding:8px; border-radius:6px; border:1px solid var(--line);"></p>
+        <button class="v65-btn v65-btn-primary" id="btnModalCopyUrl" style="margin-top:12px; width:100%; justify-content:center;">
+          <i class="fa-solid fa-copy"></i> Copiar Enlace Directo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts Nativos de View65 (0 TS en runtime) -->
+  <script is:inline>
+    (function () {
+      // 1. Selector de Pestañas
+      const navItems = document.querySelectorAll('.v65-nav-item');
+      const panels = document.querySelectorAll('.v65-panel');
+
+      function switchPanel(targetId) {
+        navItems.forEach(item => {
+          const isTarget = item.getAttribute('data-panel-target') === targetId;
+          item.classList.toggle('active', isTarget);
+        });
+
+        panels.forEach(p => {
+          p.classList.toggle('active', p.id === `panel-${targetId}`);
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      navItems.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-panel-target');
+          if (target) switchPanel(target);
+        });
+      });
+
+      document.querySelectorAll('[data-jump-to]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dest = btn.getAttribute('data-jump-to');
+          if (dest) switchPanel(dest);
+        });
+      });
+
+      // 2. Colapsar Sidebar
+      const btnCollapse = document.getElementById('btnCollapseSidebar');
+      const iconCollapse = document.getElementById('iconCollapse');
+      const labelCollapse = document.getElementById('labelCollapse');
+
+      function toggleSidebar() {
+        const isCollapsed = document.documentElement.classList.toggle('is-collapsed');
+        localStorage.setItem('gaswii_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+        if (iconCollapse && labelCollapse) {
+          if (isCollapsed) {
+            iconCollapse.className = 'fa-solid fa-arrow-right-long';
+            labelCollapse.textContent = 'Expandir';
+          } else {
+            iconCollapse.className = 'fa-solid fa-arrow-left-long';
+            labelCollapse.textContent = 'Plegar menú';
+          }
+        }
+      }
+
+      btnCollapse?.addEventListener('click', toggleSidebar);
+
+      // 3. Conmutador de Temas (Futuro / Luz)
+      const btnTheme = document.getElementById('btnThemeToggle');
+      btnTheme?.addEventListener('click', () => {
+        const current = document.documentElement.dataset.theme || 'futuro';
+        const next = current === 'futuro' ? 'luz' : 'futuro';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('gaswii-theme', next);
+        
+        if (window.Notificacion) {
+          window.Notificacion(`Tema cambiado a ${next === 'futuro' ? 'Modo Futuro (Oscuro)' : 'Modo Luz (Claro)'}`, 'info', 2000);
+        }
+      });
+
+      // ============================================================
+      // 4. GESTOR DE NOTEPAD UNIFICADO (DASHBOARD + MODULO NOTEPAD 70/30)
+      // ============================================================
+      const STORAGE_KEY_NOTES = 'gaswii_owner_notes';
+      let notas = [
+        { 
+          id: 'n1', 
+          tag: 'Urgente', 
+          titulo: 'Coordinación fin de semana con planta', 
+          texto: 'Coordinar con planta Solgas el ingreso de 50 balones de 10kg para el fin de semana por alta demanda proyectada en Surquillo y Miraflores.', 
+          fecha: '20 Sep, 10:30 am', 
+          done: false 
+        },
+        { 
+          id: 'n2', 
+          tag: 'Planta', 
+          titulo: 'Calibración balanza Inacal', 
+          texto: 'Calibración semanal de la balanza digital Inacal programada para el jueves a primera hora con técnico certificado.', 
+          fecha: '19 Sep, 04:15 pm', 
+          done: false 
+        },
+        { 
+          id: 'n3', 
+          tag: 'Pedidos', 
+          titulo: 'Cliente frecuente pollería Angamos', 
+          texto: 'Cliente frecuente Sr. Méndez solicita 2 balones de 45kg para pollería en Angamos con factura a nombre de su empresa.', 
+          fecha: '18 Sep, 02:00 pm', 
+          done: true 
+        }
+      ];
+
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY_NOTES));
+        if (Array.isArray(saved) && saved.length > 0) notas = saved;
+      } catch (e) {}
+
+      // Elementos del módulo Notepad
+      const notepadCompactList = document.getElementById('notepadCompactList');
+      const notepadBadgeCount = document.getElementById('notepadBadgeCount');
+      const notepadTitle = document.getElementById('notepadTitle');
+      const notepadContent = document.getElementById('notepadContent');
+      const notepadCurrentId = document.getElementById('notepadCurrentId');
+      const noteEditorStatus = document.getElementById('noteEditorStatus');
+      const noteCharCount = document.getElementById('noteCharCount');
+      const noteWordCount = document.getElementById('noteWordCount');
+      const tagPillGroup = document.getElementById('tagPillGroup');
+      const btnSaveNotepadFull = document.getElementById('btnSaveNotepadFull');
+      const btnClearNote = document.getElementById('btnClearNote');
+      const btnNewNoteCanvas = document.getElementById('btnNewNoteCanvas');
+
+      // Elementos del Dashboard
+      const dashNotesCount = document.getElementById('dashNotesCount');
+      const dashNotesList = document.getElementById('dashNotesList');
+      const formDashQuickNote = document.getElementById('formDashQuickNote');
+
+      let currentActiveTag = 'Urgente';
+
+      // Selector de pastillas de tags
+      tagPillGroup?.querySelectorAll('.v65-tag-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          tagPillGroup.querySelectorAll('.v65-tag-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          currentActiveTag = pill.getAttribute('data-tag') || 'Urgente';
+        });
+      });
+
+      function setTagPill(tag) {
+        currentActiveTag = tag;
+        tagPillGroup?.querySelectorAll('.v65-tag-pill').forEach(p => {
+          p.classList.toggle('active', p.getAttribute('data-tag') === tag);
+        });
+      }
+
+      function updateCounts() {
+        const chars = notepadContent?.value?.length || 0;
+        const words = (notepadContent?.value?.trim() || '').split(/\s+/).filter(Boolean).length;
+        if (noteCharCount) noteCharCount.textContent = `${chars} caracteres`;
+        if (noteWordCount) noteWordCount.textContent = `${words} palabras`;
+      }
+
+      notepadContent?.addEventListener('input', updateCounts);
+
+      // Función que recorta a ~10 palabras + "..."
+      function recortarDiezPalabras(str) {
+        if (!str) return '';
+        const palabras = str.trim().split(/\s+/);
+        if (palabras.length <= 10) return str;
+        return palabras.slice(0, 10).join(' ') + '...';
+      }
+
+      // Renderizar ambas vistas de notas
+      function renderAllNotes() {
+        // 1. Contador global
+        if (notepadBadgeCount) notepadBadgeCount.textContent = `${notas.length} notas`;
+        if (dashNotesCount) dashNotesCount.textContent = `${notas.length} Notas`;
+
+        // 2. Renderizar lista compacta en módulo Notepad (30%)
+        if (notepadCompactList) {
+          if (notas.length === 0) {
+            notepadCompactList.innerHTML = '<p style="color:var(--muted); font-size:var(--fz_s3); text-align:center; padding:16px;">Sin notas guardadas.</p>';
+          } else {
+            notepadCompactList.innerHTML = notas.map(n => {
+              const resumen10 = recortarDiezPalabras(n.texto || n.titulo);
+              const isActive = notepadCurrentId?.value === n.id;
+              return `
+                <div class="v65-note-summary-card ${isActive ? 'active' : ''}" data-note-id="${n.id}">
+                  <div class="v65-note-summary-top">
+                    <span class="v65-note-summary-tag ${n.tag === 'Urgente' ? 'v65-badge-warning' : 'v65-badge-blue'}">${n.tag}</span>
+                    <span class="v65-note-summary-date">${n.fecha}</span>
+                  </div>
+                  <strong style="font-size:var(--fz_s4); color:var(--ink); line-height:1.3;">${n.titulo || 'Nota sin título'}</strong>
+                  <p class="v65-note-summary-snippet ${n.done ? 'done' : ''}">${resumen10}</p>
+                  <div class="v65-note-summary-bottom">
+                    <button class="v65-btn v65-btn-secondary btn-toggle-done" style="padding:2px 8px; font-size:11px;" title="${n.done ? 'Marcar pendiente' : 'Marcar lista'}">
+                      <i class="fa-solid ${n.done ? 'fa-rotate-left' : 'fa-check'}"></i> ${n.done ? 'Hecha' : 'Completar'}
+                    </button>
+                    <button class="v65-btn v65-btn-danger btn-delete-note" style="padding:2px 6px; font-size:11px;" title="Eliminar">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+
+        // 3. Renderizar miniatura en Dashboard (últimas 3 notas)
+        if (dashNotesList) {
+          const ultimas = notas.slice(0, 3);
+          if (ultimas.length === 0) {
+            dashNotesList.innerHTML = '<p style="color:var(--muted); font-size:var(--fz_s4);">No tienes notas hoy. Puedes anotar arriba.</p>';
+          } else {
+            dashNotesList.innerHTML = ultimas.map(n => `
+              <div class="v65-dash-note-item">
+                <span class="v65-badge ${n.tag === 'Urgente' ? 'v65-badge-warning' : 'v65-badge-blue'}" style="font-size:10px;">${n.tag}</span>
+                <span class="v65-dash-note-text ${n.done ? 'done' : ''}">${n.titulo || recortarDiezPalabras(n.texto)}</span>
+                <button class="v65-btn v65-btn-secondary btn-dash-toggle" data-id="${n.id}" style="padding:2px 6px; font-size:11px;">
+                  <i class="fa-solid ${n.done ? 'fa-rotate-left' : 'fa-check'}"></i>
+                </button>
+              </div>
+            `).join('');
+          }
+        }
+
+        // Vincular eventos de la lista compacta
+        notepadCompactList?.querySelectorAll('.v65-note-summary-card').forEach(card => {
+          card.addEventListener('click', (e) => {
+            if (e.target.closest('.btn-toggle-done') || e.target.closest('.btn-delete-note')) return;
+            const id = card.getAttribute('data-note-id');
+            const targetNote = notas.find(item => item.id === id);
+            if (targetNote) {
+              loadNoteIntoEditor(targetNote);
+            }
+          });
+        });
+
+        notepadCompactList?.querySelectorAll('.btn-toggle-done').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const card = btn.closest('.v65-note-summary-card');
+            const id = card?.getAttribute('data-note-id');
+            const note = notas.find(item => item.id === id);
+            if (note) {
+              note.done = !note.done;
+              saveNotesToStorage();
+              renderAllNotes();
+            }
+          });
+        });
+
+        notepadCompactList?.querySelectorAll('.btn-delete-note').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const card = btn.closest('.v65-note-summary-card');
+            const id = card?.getAttribute('data-note-id');
+            notas = notas.filter(item => item.id !== id);
+            if (notepadCurrentId?.value === id) {
+              clearEditor();
+            }
+            saveNotesToStorage();
+            renderAllNotes();
+            if (window.Notificacion) window.Notificacion('Nota eliminada', 'warning', 2000);
+          });
+        });
+
+        // Eventos del dashboard mini-list
+        dashNotesList?.querySelectorAll('.btn-dash-toggle').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const note = notas.find(item => item.id === id);
+            if (note) {
+              note.done = !note.done;
+              saveNotesToStorage();
+              renderAllNotes();
+            }
+          });
+        });
+      }
+
+      function saveNotesToStorage() {
+        localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(notas));
+      }
+
+      function loadNoteIntoEditor(note) {
+        if (!notepadTitle || !notepadContent) return;
+        notepadCurrentId.value = note.id;
+        notepadTitle.value = note.titulo || '';
+        notepadContent.value = note.texto || '';
+        setTagPill(note.tag || 'Urgente');
+        if (noteEditorStatus) noteEditorStatus.textContent = `Editando nota de ${note.fecha}`;
+        updateCounts();
+        renderAllNotes();
+      }
+
+      function clearEditor() {
+        if (!notepadTitle || !notepadContent) return;
+        notepadCurrentId.value = '';
+        notepadTitle.value = '';
+        notepadContent.value = '';
+        setTagPill('Urgente');
+        if (noteEditorStatus) noteEditorStatus.textContent = 'Nueva nota en blanco';
+        updateCounts();
+        renderAllNotes();
+      }
+
+      btnClearNote?.addEventListener('click', clearEditor);
+      btnNewNoteCanvas?.addEventListener('click', () => {
+        clearEditor();
+        notepadTitle?.focus();
+      });
+
+      // Guardar desde el editor amplio (70%)
+      btnSaveNotepadFull?.addEventListener('click', () => {
+        const titulo = notepadTitle?.value?.trim();
+        const texto = notepadContent?.value?.trim();
+        if (!texto && !titulo) {
+          if (window.Notificacion) window.Notificacion('Escribe al menos un título o texto en la nota', 'warning', 2500);
+          return;
+        }
+
+        const now = new Date();
+        const fechaStr = `${now.getDate()} ${now.toLocaleString('es-ES', { month: 'short' })}, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        const existingId = notepadCurrentId?.value;
+
+        if (existingId) {
+          const idx = notas.findIndex(n => n.id === existingId);
+          if (idx >= 0) {
+            notas[idx].titulo = titulo || 'Nota';
+            notas[idx].texto = texto;
+            notas[idx].tag = currentActiveTag;
+            notas[idx].fecha = fechaStr;
+          }
+        } else {
+          notas.unshift({
+            id: 'n_' + Date.now(),
+            tag: currentActiveTag,
+            titulo: titulo || 'Nota',
+            texto: texto,
+            fecha: fechaStr,
+            done: false
+          });
+        }
+
+        saveNotesToStorage();
+        renderAllNotes();
+        if (window.Notificacion) {
+          window.Notificacion('Nota guardada correctamente en el bloc', 'success', 2500);
+        }
+      });
+
+      // Guardar nota rápida desde el Dashboard
+      formDashQuickNote?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const tag = document.getElementById('dashQuickNoteTag')?.value || 'Urgente';
+        const texto = document.getElementById('dashQuickNoteText')?.value?.trim();
+        if (!texto) return;
+
+        const now = new Date();
+        const fechaStr = `${now.getDate()} ${now.toLocaleString('es-ES', { month: 'short' })}, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+        notas.unshift({
+          id: 'n_' + Date.now(),
+          tag,
+          titulo: texto.length > 35 ? texto.substring(0, 35) + '...' : texto,
+          texto,
+          fecha: fechaStr,
+          done: false
+        });
+
+        saveNotesToStorage();
+        renderAllNotes();
+        formDashQuickNote.reset();
+
+        if (window.Notificacion) {
+          window.Notificacion('Apunte rápido registrado en Notepad', 'success', 2500);
+        }
+      });
+
+      // Inicializar notas y cargar la primera en el editor si existe
+      renderAllNotes();
+      if (notas.length > 0) {
+        loadNoteIntoEditor(notas[0]);
+      }
+
+      // 5. Copiar URL de Medios
+      document.querySelectorAll('.btn-copy-url').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const url = btn.getAttribute('data-url');
+          if (url && navigator.clipboard) {
+            navigator.clipboard.writeText(window.location.origin + url);
+            if (window.Notificacion) {
+              window.Notificacion('Enlace directo copiado al portapapeles', 'success', 2500);
+            }
+          }
+        });
+      });
+
+      // 6. Modal de Previsualización de Fotos
+      const modalPreview = document.getElementById('modalImgPreview');
+      const previewImg = document.getElementById('modalPreviewImg');
+      const previewTitle = document.getElementById('modalPreviewTitle');
+      const previewUrl = document.getElementById('modalPreviewUrl');
+      const btnClosePreview = document.getElementById('btnClosePreview');
+      const btnModalCopy = document.getElementById('btnModalCopyUrl');
+
+      document.querySelectorAll('.v65-media-item').forEach(card => {
+        card.addEventListener('click', () => {
+          const url = card.getAttribute('data-media-url');
+          const name = card.getAttribute('data-media-name');
+          if (previewImg && url) previewImg.src = url;
+          if (previewTitle) previewTitle.textContent = name || 'Foto';
+          if (previewUrl) previewUrl.textContent = window.location.origin + url;
+          if (modalPreview) modalPreview.classList.add('active');
+        });
+      });
+
+      btnClosePreview?.addEventListener('click', () => {
+        modalPreview?.classList.remove('active');
+      });
+      modalPreview?.addEventListener('click', (e) => {
+        if (e.target === modalPreview) modalPreview.classList.remove('active');
+      });
+
+      btnModalCopy?.addEventListener('click', () => {
+        if (previewUrl && navigator.clipboard) {
+          navigator.clipboard.writeText(previewUrl.textContent);
+          if (window.Notificacion) {
+            window.Notificacion('URL de Cloudflare R2 copiada', 'success', 2000);
+          }
+          modalPreview?.classList.remove('active');
+        }
+      });
+
+      // 7. Guardar Mi Negocio
+      document.getElementById('btnSaveBusiness')?.addEventListener('click', () => {
+        if (window.Notificacion) {
+          window.Notificacion('Datos de Mi Negocio guardados con éxito', 'success', 3000);
+        }
+      });
+
+      // 8. Eliminar Entrada con confirmación
+      document.querySelectorAll('.btn-delete-post').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const title = btn.getAttribute('data-title') || 'esta entrada';
+          if (window.wiConfirmar) {
+            const conf = await window.wiConfirmar(`¿Deseas eliminar la entrada <strong>${title}</strong>?`, {
+              tipo: 'danger',
+              siTexto: 'Eliminar',
+              noTexto: 'Cancelar'
+            });
+            if (conf && window.Notificacion) {
+              window.Notificacion(`Entrada eliminada correctamente`, 'warning', 2500);
+              btn.closest('tr')?.remove();
+            }
+          }
+        });
+      });
+
+      // 9. Buscador Global
+      const globalSearch = document.getElementById('v65GlobalSearch');
+      globalSearch?.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        if (!query) return;
+
+        if (query.includes('nota') || query.includes('pad')) switchPanel('notepad');
+        else if (query.includes('negocio')) switchPanel('business');
+        else if (query.includes('prod') || query.includes('balon')) switchPanel('products');
+        else if (query.includes('foto') || query.includes('gal')) switchPanel('gallery');
+        else if (query.includes('blog') || query.includes('entrad')) switchPanel('posts');
+        else if (query.includes('pag')) switchPanel('pages');
+        else if (query.includes('ajuste') || query.includes('seo')) switchPanel('settings');
+      });
+
+    })();
+  </script>
+
+  <!-- Importador dinámico de Notificacion y wiConfirmar de widev.js -->
+  <script type="module">
+    import { Notificacion, wiConfirmar } from '../core/widev/widev.js';
+    window.Notificacion = Notificacion;
+    window.wiConfirmar = wiConfirmar;
+  </script>
+</body>
+</html>

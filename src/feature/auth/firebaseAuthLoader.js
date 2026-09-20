@@ -1,7 +1,7 @@
 // src/feature/auth/firebaseAuthLoader.js
 // ⚡ Cargadores diferidos bajo demanda para 0ms de impacto inicial
 let _fb = null;
-const fb = () => (_fb ||= import('../../core/config/firebase.ts'));
+const fb = () => (_fb ||= import('../../core/servicios/firebase.js'));
 
 export const loadFirebaseAuth = async () => {
   const [{ auth, googleProvider }, fbAuth] = await Promise.all([fb(), import('firebase/auth')]);

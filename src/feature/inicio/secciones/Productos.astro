@@ -10,7 +10,9 @@ interface Props {
 
 const { idioma = 'es' } = Astro.props;
 const t = getI18n(idioma).catalogo;
-const isEn = idioma === 'en';
+const lang = idioma || 'es';
+
+const catalogo: any[] = datosNegocio.productos as any[];
 ---
 
 <section id="productos" class="section-py-body">
@@ -29,29 +31,43 @@ const isEn = idioma === 'en';
     </div>
 
     <div class="catalog-grid">
-      {datosNegocio.productos.map((prod) => {
-        const prodNombre = isEn ? prod.nombreEn : prod.nombre;
-        const prodBadge = isEn ? prod.badgeEn : prod.badge;
-        const prodTipo = isEn ? prod.tipoUsoEn : prod.tipoUso;
-        const prodCapacidad = isEn ? prod.capacidadEn : prod.capacidad;
-        const prodValvula = isEn ? prod.valvulaEn : prod.valvula;
-        const prodAhorro = isEn ? prod.ahorroEn : prod.ahorro;
-        const caracteristicas = isEn ? prod.caracteristicasEn : prod.caracteristicas;
+      {catalogo.map((prod: any) => {
+        const prodNombre = typeof prod.nombre === 'object' ? (prod.nombre[lang] || prod.nombre['es']) : (lang === 'en' ? prod.nombreEn : prod.nombre);
+        const prodBadge = typeof prod.tipo === 'object' ? (prod.tipo[lang] || prod.tipo['es']) : (typeof prod.badge === 'object' ? (prod.badge[lang] || prod.badge['es']) : (lang === 'en' ? prod.badgeEn : prod.badge));
+        const prodTipo = typeof prod.tipoUso === 'object' ? (prod.tipoUso[lang] || prod.tipoUso['es']) : (lang === 'en' ? prod.tipoUsoEn : prod.tipoUso);
+        const prodCapacidad = typeof prod.peso === 'object' ? (prod.peso[lang] || prod.peso['es']) : (typeof prod.capacidad === 'object' ? (prod.capacidad[lang] || prod.capacidad['es']) : (lang === 'en' ? prod.capacidadEn : prod.capacidad));
+        const prodValvula = typeof prod.valvula === 'object' ? (prod.valvula[lang] || prod.valvula['es']) : (lang === 'en' ? prod.valvulaEn : prod.valvula);
+        const prodPeso = typeof prod.pesoFull === 'object' ? (prod.pesoFull[lang] || prod.pesoFull['es']) : (typeof prod.pesoTotal === 'object' ? (prod.pesoTotal[lang] || prod.pesoTotal['es']) : (lang === 'en' ? prod.pesoTotalEn : prod.pesoTotal));
+        const prodAhorro = typeof prod.delivery === 'object' ? (prod.delivery[lang] || prod.delivery['es']) : (typeof prod.ahorro === 'object' ? (prod.ahorro[lang] || prod.ahorro['es']) : (lang === 'en' ? prod.ahorroEn : prod.ahorro));
+        
+        let caracteristicas: string[] = [];
+        if (prod.garantias && typeof prod.garantias === 'object') {
+          caracteristicas = prod.garantias[lang] || prod.garantias['es'] || [];
+        } else if (prod.caracteristicas && typeof prod.caracteristicas === 'object' && !Array.isArray(prod.caracteristicas)) {
+          caracteristicas = prod.caracteristicas[lang] || prod.caracteristicas['es'] || [];
+        } else if (Array.isArray(prod.caracteristicas)) {
+          caracteristicas = prod.caracteristicas;
+        }
+
+        const precio = typeof prod.precio === 'number' ? prod.precio : (typeof prod.precioPEN === 'number' ? prod.precioPEN : (prod.price || 65));
+        const imagenUrl = prod.imagen || prod.img;
+        const tagClase = prod.tagClase || 'badge-fire';
+        const badgeIcon = prod.badgeIcon || prod.icon || 'fa-solid fa-star';
 
         return (
           <div class="clean-card producto-card-box">
             
             <div>
               <div class="producto-top-bar mb-3">
-                <span class={`producto-badge ${prod.tagClase}`}>
-                  <i class={prod.icon}></i> <span>{prodBadge}</span>
+                <span class={`producto-badge ${tagClase}`}>
+                  <i class={badgeIcon}></i> <span>{prodBadge}</span>
                 </span>
                 <span class="producto-tipo-badge">{prodTipo}</span>
               </div>
 
               <div class="producto-media-frame">
                 <img 
-                  src={prod.imagen} 
+                  src={imagenUrl} 
                   alt={prodNombre} 
                   width="220"
                   height="220"
@@ -69,7 +85,7 @@ const isEn = idioma === 'en';
 
               <ul class="flex flex-col gap-1.5 mb-4 list-none p-0 text-xs text-muted">
                 <li class="flex items-center gap-2"><i class="fa-solid fa-tag color-primary"></i> <strong>{t.valvula_label}</strong> <span>{prodValvula}</span></li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-weight-scale color-emerald"></i> <strong>{t.peso_label}</strong> <span>{prod.pesoTotal}</span></li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-weight-scale color-emerald"></i> <strong>{t.peso_label}</strong> <span>{prodPeso}</span></li>
                 <li class="flex items-center gap-2"><i class="fa-solid fa-shield-halved color-brand-blue"></i> <strong>{t.seguridad_label}</strong> <span>{t.precinto_verificado}</span></li>
               </ul>
 
@@ -78,7 +94,7 @@ const isEn = idioma === 'en';
                   {t.garantia_gaswii}
                 </span>
                 <ul class="flex flex-col gap-1 list-none p-0 text-xs text-muted">
-                  {caracteristicas.map((c) => (
+                  {caracteristicas.map((c: any) => (
                     <li class="flex items-start gap-1.5">
                       <i class="fa-solid fa-circle-check color-emerald text-xs mt-0.5"></i>
                       <span>{c}</span>
@@ -93,7 +109,7 @@ const isEn = idioma === 'en';
                 <div>
                   <span class="text-xxs text-emerald-400 font-bold block">{prodAhorro}</span>
                   <div class="producto-price-val">
-                    <span class="text-sm font-bold text-muted">S/</span> {prod.precioPEN.toFixed(2)}
+                    <span class="text-sm font-bold text-muted">S/</span> {precio.toFixed(2)}
                   </div>
                 </div>
                 <div class="text-right">

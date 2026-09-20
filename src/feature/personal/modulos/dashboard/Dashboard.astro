@@ -1,0 +1,279 @@
+---
+// src/feature/personal/modulos/dashboard/Dashboard.astro
+// Módulo 1: Panel General / Dashboard de Operaciones para el Dueño
+import { 
+  estadisticasDemo, 
+  productosResumenDemo, 
+  clientesRecientesDemo, 
+  notasInicialesDemo 
+} from '../../data/personalData.js';
+---
+
+<section class="ps-panel active" id="panel-dashboard">
+  <!-- Encabezado de Sección -->
+  <div class="ps-section-header">
+    <div class="ps-section-title-wrap">
+      <h1 class="ps-section-title">Panel General</h1>
+      <p class="ps-section-sub">Gestión de precios vigentes en la web, atención por WhatsApp y clientes registrados.</p>
+    </div>
+    <div class="ps-header-actions">
+      <a 
+        href="https://wa.me/51940200400" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="ps-btn ps-btn-secondary"
+        title="Abrir canal WhatsApp de Solgas Surquillo"
+      >
+        <i class="fa-brands fa-whatsapp" style="color:var(--green);"></i> WhatsApp Pedidos
+      </a>
+      <button class="ps-btn ps-btn-primary" data-jump-to="products">
+        <i class="fa-solid fa-tags"></i> Actualizar Precios Web
+      </button>
+    </div>
+  </div>
+
+  <!-- Métricas Principales (KPIs) -->
+  <div class="db-stats-grid">
+    {estadisticasDemo.map((st) => (
+      <div class="db-stat-card">
+        <div class={`db-stat-icon ${st.color}`}>
+          <i class={st.icono}></i>
+        </div>
+        <div class="db-stat-info">
+          <span class="db-stat-val" id={st.id === 'stat4' ? 'dashNotesCount' : undefined}>{st.titulo}</span>
+          <span class="db-stat-lbl">{st.subtitulo}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Contenido: Precios Web + Clientes Frecuentes + Widget Notepad -->
+  <div class="db-layout-grid">
+    
+    <!-- Columna Izquierda: Precios y Clientes -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      
+      <!-- Tabla: Precios Vigentes en la Web (Sede Dante 260) -->
+      <div class="db-table-wrap">
+        <div class="db-table-head">
+          <div>
+            <strong class="db-table-head-title">Precios Vigentes en la Web Principal</strong>
+            <p style="font-size:var(--fz_s3); color:var(--muted); margin:0;">Estos son los precios que los clientes ven al entrar a gaswii.com</p>
+          </div>
+          <button class="ps-btn ps-btn-secondary" style="padding:4px 10px; font-size:var(--fz_s3);" data-jump-to="products">
+            <i class="fa-solid fa-pen-to-square"></i> Modificar
+          </button>
+        </div>
+
+        <table class="db-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Tipo</th>
+              <th>Precio Líquido</th>
+              <th>Envase</th>
+              <th>Stock</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {productosResumenDemo.map((p) => (
+              <tr>
+                <td><strong>{p.nombre}</strong></td>
+                <td><span class="ps-badge ps-badge-blue">{p.tipo}</span></td>
+                <td><strong style="color:var(--brand-orange); font-size:var(--fz_m);">S/ {p.precio}</strong></td>
+                <td>{p.envase === '0.00' ? '—' : `S/ ${p.envase}`}</td>
+                <td>{p.stock} unid.</td>
+                <td><span class="ps-badge ps-badge-success">{p.estado}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tabla: Clientes Registrados Recientes -->
+      <div class="db-table-wrap">
+        <div class="db-table-head">
+          <div>
+            <strong class="db-table-head-title">Directorio de Clientes Recientes</strong>
+            <p style="font-size:var(--fz_s3); color:var(--muted); margin:0;">Usuarios registrados desde la web y clientes habituales de Surquillo</p>
+          </div>
+          <button class="ps-btn ps-btn-secondary" style="padding:4px 10px; font-size:var(--fz_s3);" data-jump-to="customers">
+            Ver los 124 clientes
+          </button>
+        </div>
+
+        <table class="db-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Teléfono</th>
+              <th>Dirección de Entrega</th>
+              <th>Pedido Habitual</th>
+              <th>Comprobante</th>
+            </tr>
+          </thead>
+          <tbody>
+            {clientesRecientesDemo.map((c) => (
+              <tr>
+                <td><strong>{c.nombre}</strong></td>
+                <td>
+                  <a href={`tel:${c.telefono.replace(/\s+/g, '')}`} style="color:inherit; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
+                    <i class="fa-solid fa-phone" style="font-size:11px; color:var(--brand-orange);"></i> {c.telefono}
+                  </a>
+                </td>
+                <td style="max-width:200px; font-size:var(--fz_s3); color:var(--muted);">{c.direccion}</td>
+                <td><span class="ps-badge ps-badge-blue">{c.habitual}</span></td>
+                <td><span class="ps-badge ps-badge-purple">{c.comprobante}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Columna Derecha: Widget Notepad Rápido -->
+    <div class="db-quicknote-card">
+      <div class="db-quicknote-head">
+        <strong class="db-quicknote-title">Notepad Rápido</strong>
+        <button class="ps-btn ps-btn-secondary" style="padding:4px 8px; font-size:var(--fz_s3);" data-jump-to="notepad">
+          Abrir Notepad
+        </button>
+      </div>
+
+      <!-- Lista dinámica de notas recientes -->
+      <div id="dashNotesList" class="db-notes-list">
+        {notasInicialesDemo.map((n) => (
+          <div class="db-note-item">
+            <div class="db-note-info">
+              <div class="db-note-title" style={n.done ? 'text-decoration:line-through; opacity:0.6;' : ''}>
+                {n.titulo}
+              </div>
+              <div class="db-note-snippet">{n.texto.substring(0, 45)}…</div>
+            </div>
+            <button 
+              type="button" 
+              class="db-btn-toggle-note" 
+              data-id={n.id} 
+              style={`color: ${n.done ? 'var(--green)' : 'var(--muted)'};`}
+            >
+              <i class={`fa-${n.done ? 'solid fa-circle-check' : 'regular fa-circle'}`}></i>
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <!-- Formulario de apunte express -->
+      <form id="formDashQuickNote" class="db-quicknote-form">
+        <input 
+          type="text" 
+          id="inputDashQuickTitle" 
+          class="db-quicknote-input" 
+          placeholder="Título de apunte…" 
+          autocomplete="off"
+        />
+        <textarea 
+          id="inputDashQuickText" 
+          rows="3" 
+          class="db-quicknote-textarea" 
+          placeholder="Nota o pendiente del día…"
+        ></textarea>
+        <button type="submit" class="ps-btn ps-btn-primary" style="padding:6px 12px; font-size:var(--fz_s4); width:100%;">
+          <i class="fa-solid fa-plus"></i> Guardar en Notepad
+        </button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<!-- Script Cliente Autónomo para Mini-Notepad -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const STORAGE_KEY = 'gaswii_owner_notes';
+    const formQuick = document.getElementById('formDashQuickNote');
+    const inputTitle = document.getElementById('inputDashQuickTitle');
+    const inputText = document.getElementById('inputDashQuickText');
+    const listWrap = document.getElementById('dashNotesList');
+    const countBadge = document.getElementById('dashNotesCount');
+
+    function getNotes() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return [
+        { id: 'n1', titulo: 'Coordinación fin de semana con planta', texto: 'Coordinar con planta Solgas el ingreso de 50 balones.', done: false },
+        { id: 'n2', titulo: 'Calibración balanza Inacal', texto: 'Calibración semanal de balanza digital Inacal.', done: false },
+        { id: 'n3', titulo: 'Cliente frecuente pollería Angamos', texto: 'Cliente solicita 2 balones de 45kg.', done: true }
+      ];
+    }
+
+    function saveNotes(arr) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+      } catch (e) {}
+    }
+
+    function renderQuickNotes() {
+      const notes = getNotes();
+      if (countBadge) countBadge.textContent = `${notes.length} Notas`;
+      if (!listWrap) return;
+
+      const latest = notes.slice(0, 3);
+      listWrap.innerHTML = latest.map(n => `
+        <div class="db-note-item">
+          <div class="db-note-info">
+            <div class="db-note-title" style="${n.done ? 'text-decoration:line-through; opacity:0.6;' : ''}">
+              ${n.titulo || 'Nota sin título'}
+            </div>
+            <div class="db-note-snippet">${(n.texto || '').substring(0, 45)}…</div>
+          </div>
+          <button type="button" class="db-btn-toggle-note btn-dash-toggle" data-id="${n.id}" style="color: ${n.done ? 'var(--green)' : 'var(--muted)'};">
+            <i class="fa-${n.done ? 'solid fa-circle-check' : 'regular fa-circle'}"></i>
+          </button>
+        </div>
+      `).join('');
+
+      listWrap.querySelectorAll('.btn-dash-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const allNotes = getNotes();
+          const target = allNotes.find(x => x.id === id);
+          if (target) {
+            target.done = !target.done;
+            saveNotes(allNotes);
+            renderQuickNotes();
+          }
+        });
+      });
+    }
+
+    formQuick?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const titulo = inputTitle?.value?.trim();
+      const texto = inputText?.value?.trim();
+      if (!titulo && !texto) return;
+
+      const allNotes = getNotes();
+      allNotes.unshift({
+        id: 'n_' + Date.now(),
+        titulo: titulo || 'Apunte rápido',
+        texto: texto || '',
+        done: false,
+        fecha: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+      });
+
+      saveNotes(allNotes);
+      renderQuickNotes();
+      formQuick.reset();
+
+      if (window.Notificacion) {
+        window.Notificacion('Apunte registrado en Notepad', 'success', 2500);
+      }
+    });
+
+    renderQuickNotes();
+  });
+</script>

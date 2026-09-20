@@ -1,0 +1,495 @@
+---
+// src/pages/view63.astro
+// Fase 0: Validador y banco de pruebas de subida directa a Cloudflare R2 (media.solgassurquillo.com)
+// JavaScript 100% puro nativo (0 dependencias npm / Web Crypto API)
+---
+
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View 63 · Probador Nativo Cloudflare R2 (Fase 0)</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/google/fonts.css" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <style is:global>
+    :root {
+      --bg: #050a14;
+      --card-bg: #08111e;
+      --surface: #0e1a2f;
+      --line: #18263e;
+      --text: #ffffff;
+      --text-muted: #8c9eb9;
+      --primary: #ff6600;
+      --emerald: #10b981;
+      --sky: #38bdf8;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --border-card: rgba(255, 255, 255, 0.08);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      padding: 30px 20px 60px;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    
+    /* Encabezado */
+    .view-header {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-brand img {
+      height: 38px;
+      object-fit: contain;
+    }
+    .header-brand h1 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .header-brand p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .badge-fase0 {
+      background: rgba(255, 102, 0, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(255, 102, 0, 0.35);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Grilla de Prueba */
+    .test-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+    @media (max-width: 800px) {
+      .test-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Tarjetas */
+    .test-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 18px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Formulario */
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus {
+      border-color: var(--primary);
+    }
+
+    /* Zona de Arrastre (Dropzone) */
+    .dropzone-box {
+      border: 2px dashed rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 28px 18px;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(14, 26, 47, 0.4);
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 16px;
+    }
+    .dropzone-box:hover, .dropzone-box.dragover {
+      border-color: var(--primary);
+      background: rgba(255, 102, 0, 0.06);
+    }
+    .dropzone-box i {
+      font-size: 32px;
+      color: var(--sky);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .dropzone-box p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .dropzone-box span {
+      font-size: 10.5px;
+      color: #64748b;
+      margin-top: 4px;
+      display: block;
+    }
+    #fileInput {
+      display: none;
+    }
+
+    /* Botón Subir */
+    .btn-upload {
+      background: var(--primary);
+      color: #ffffff;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.2s, background 0.2s;
+      box-shadow: 0 4px 14px rgba(255, 102, 0, 0.3);
+    }
+    .btn-upload:hover:not(:disabled) {
+      background: #e65c00;
+      transform: translateY(-2px);
+    }
+    .btn-upload:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Panel de Resultado / Previsualización */
+    .preview-stage {
+      background: #ffffff;
+      border-radius: 14px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-card);
+      position: relative;
+    }
+    .preview-stage img {
+      max-height: 190px;
+      max-width: 90%;
+      object-fit: contain;
+      display: block;
+    }
+    .empty-preview {
+      color: #94a3b8;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    /* Logs y Estado */
+    .status-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .status-success {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--emerald);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .status-error {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .status-loading {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--sky);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    .result-link-box {
+      margin-top: 10px;
+      word-break: break-all;
+    }
+    .result-link-box a {
+      color: var(--sky);
+      text-decoration: underline;
+      font-weight: 600;
+      font-size: 11px;
+    }
+    .copy-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      color: #ffffff;
+      font-size: 10.5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 8px;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Header -->
+    <header class="view-header">
+      <div class="header-brand">
+        <img src="/imgwii/logo.webp" alt="Solgas Logo" />
+        <div>
+          <h1>Probador de Subida Nativa Cloudflare R2 (Fase 0)</h1>
+          <p>Conexión directa a <code>gaswii-media</code> ➔ <code>https://media.solgassurquillo.com</code></p>
+        </div>
+      </div>
+      <div class="badge-fase0">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+        <span>0 NPM · Web Crypto API</span>
+      </div>
+    </header>
+
+    <main class="test-grid">
+      
+      <!-- Columna 1: Formulario de Subida -->
+      <section class="test-card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-file-arrow-up color-primary"></i>
+          <span>Subir Imagen de Prueba</span>
+        </h2>
+
+        <div class="form-group">
+          <label for="slugInput">Nombre sugerido (Slug del producto):</label>
+          <input 
+            type="text" 
+            id="slugInput" 
+            class="form-input" 
+            placeholder="ej. solgas-10kg" 
+            value="solgas-10kg"
+          />
+        </div>
+
+        <!-- Zona de selección / arrastre de archivo -->
+        <div class="dropzone-box" id="dropzone">
+          <i class="fa-solid fa-image"></i>
+          <p id="dropzoneText">Haz clic o arrastra una imagen aquí (PNG, JPG, WebP)</p>
+          <span id="fileInfo">Máx. 10 MB recomendado</span>
+        </div>
+        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/webp, image/svg+xml" />
+
+        <button type="button" id="btnUpload" class="btn-upload" disabled>
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span id="btnUploadText">Subir a Cloudflare R2</span>
+        </button>
+      </section>
+
+      <!-- Columna 2: Resultado y Previsualización -->
+      <section class="test-card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-circle-check color-emerald"></i>
+          <span>Resultado en Vivo (media.solgassurquillo.com)</span>
+        </h2>
+
+        <!-- Vitrina que carga la imagen directamente desde Cloudflare R2 -->
+        <div class="preview-stage" id="previewStage">
+          <div class="empty-preview" id="emptyPreview">
+            <i class="fa-regular fa-image" style="font-size:32px; display:block; margin-bottom:8px;"></i>
+            La imagen subida a Cloudflare aparecerá aquí
+          </div>
+          <img id="resultImg" src="" alt="Previsualización R2" style="display:none;" />
+        </div>
+
+        <!-- Panel de Estado y Logs -->
+        <div class="status-panel" id="statusPanel">
+          <span class="status-badge status-loading" id="statusBadge">Listo para probar</span>
+          <p id="statusMsg">Selecciona una foto y pulsa "Subir a Cloudflare R2".</p>
+          
+          <div id="resultInfo" style="display:none;" class="result-link-box">
+            <p><strong>URL Oficial CDN:</strong></p>
+            <a id="publicUrlLink" href="" target="_blank" rel="noopener noreferrer"></a>
+            <button type="button" id="btnCopy" class="copy-btn"><i class="fa-solid fa-copy"></i> Copiar</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script>
+    import { subirImagenR2 } from '../core/servicios/r2Storage';
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const dropzoneText = document.getElementById('dropzoneText');
+    const fileInfo = document.getElementById('fileInfo');
+    const slugInput = document.getElementById('slugInput');
+    const btnUpload = document.getElementById('btnUpload');
+    const btnUploadText = document.getElementById('btnUploadText');
+    const previewStage = document.getElementById('previewStage');
+    const emptyPreview = document.getElementById('emptyPreview');
+    const resultImg = document.getElementById('resultImg');
+    const statusBadge = document.getElementById('statusBadge');
+    const statusMsg = document.getElementById('statusMsg');
+    const resultInfo = document.getElementById('resultInfo');
+    const publicUrlLink = document.getElementById('publicUrlLink');
+    const btnCopy = document.getElementById('btnCopy');
+
+    let archivoSeleccionado = null;
+
+    // Clic en dropzone abre explorador
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    // Arrastrar y soltar
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length) {
+        manejarArchivo(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length) {
+        manejarArchivo(e.target.files[0]);
+      }
+    });
+
+    function manejarArchivo(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen válido (PNG, JPG, WebP).');
+        return;
+      }
+      archivoSeleccionado = file;
+      dropzoneText.textContent = file.name;
+      fileInfo.textContent = `${(file.size / 1024).toFixed(1)} KB · ${file.type}`;
+      btnUpload.disabled = false;
+
+      // Vista previa local temporal antes de subir
+      const localUrl = URL.createObjectURL(file);
+      emptyPreview.style.display = 'none';
+      resultImg.src = localUrl;
+      resultImg.style.display = 'block';
+
+      statusBadge.className = 'status-badge status-loading';
+      statusBadge.textContent = 'Archivo preparado';
+      statusMsg.textContent = `Listo para enviar "${file.name}" a Cloudflare R2.`;
+    }
+
+    // Proceso de subida real a Cloudflare R2
+    btnUpload.addEventListener('click', async () => {
+      if (!archivoSeleccionado) return;
+
+      try {
+        btnUpload.disabled = true;
+        btnUploadText.textContent = 'Firmando y subiendo a R2...';
+        statusBadge.className = 'status-badge status-loading';
+        statusBadge.textContent = 'Subiendo a Cloudflare...';
+        statusMsg.textContent = 'Calculando firma criptográfica AWS SigV4 y transfiriendo a gaswii-media...';
+
+        const slug = slugInput.value.trim() || 'producto';
+        const tiempoInicio = performance.now();
+
+        // Llamada a la función nativa pura
+        const resultado = await subirImagenR2(archivoSeleccionado, slug);
+
+        const tiempoTotal = Math.round(performance.now() - tiempoInicio);
+
+        // Éxito
+        statusBadge.className = 'status-badge status-success';
+        statusBadge.textContent = '¡Subida Exitosa en ' + tiempoTotal + ' ms!';
+        statusMsg.textContent = `Archivo guardado en el bucket con clave: "${resultado.key}" (${(resultado.size / 1024).toFixed(1)} KB).`;
+
+        // Mostrar imagen servida directamente desde el dominio público de Cloudflare
+        resultImg.src = resultado.url;
+        publicUrlLink.href = resultado.url;
+        publicUrlLink.textContent = resultado.url;
+        resultInfo.style.display = 'block';
+
+        btnUploadText.textContent = 'Subir Otra Foto';
+        btnUpload.disabled = false;
+      } catch (err) {
+        console.error('Fallo en la prueba de R2:', err);
+        statusBadge.className = 'status-badge status-error';
+        statusBadge.textContent = 'Error en la subida';
+        statusMsg.textContent = `Fallo: ${err.message}`;
+        btnUploadText.textContent = 'Reintentar Subida';
+        btnUpload.disabled = false;
+      }
+    });
+
+    btnCopy.addEventListener('click', () => {
+      if (publicUrlLink.textContent) {
+        navigator.clipboard.writeText(publicUrlLink.textContent);
+        btnCopy.innerHTML = '<i class="fa-solid fa-check"></i> ¡Copiado!';
+        setTimeout(() => {
+          btnCopy.innerHTML = '<i class="fa-solid fa-copy"></i> Copiar';
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>

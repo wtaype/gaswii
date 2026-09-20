@@ -118,8 +118,9 @@ const baseHash = idioma === 'en' ? '/en' : (ruta !== '/' ? '/' : '');
 
   // Accesibilidad: Cerrar Drawer con tecla Escape
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && window.cerrarDrawer) {
-      window.cerrarDrawer();
+    if (e.key === 'Escape') {
+      const win = window as any;
+      win.cerrarDrawer?.();
     }
   });
 </script>
