@@ -1,18 +1,19 @@
 ---
 // src/feature/personal/components/Sidebar.astro
-// Menú lateral con los 14 módulos operacionales y botón Colapsar
-import { modulosNav } from '../data/personalData.js';
+// Menú lateral con los módulos operacionales activos y botón Colapsar
+import { getModulosActivos } from '../modulos.js';
 
 interface Props {
   moduloActivo?: string;
 }
 
 const { moduloActivo = 'dashboard' } = Astro.props;
+const listaModulos = getModulosActivos();
 ---
 
 <aside class="ps-sidebar" id="sidebarMenu">
   <nav class="ps-nav" aria-label="Menú del dueño">
-    {modulosNav.map((m) => {
+    {listaModulos.map((m) => {
       const isActive = m.id === moduloActivo;
       return (
         <button 

@@ -1,22 +1,6 @@
 // src/feature/personal/data/personalData.js
-// Datos maestros de navegación y métricas para el feature Personal (Solgas Surquillo)
+// Datos comerciales y de Firebase para el feature Personal (Solgas Surquillo)
 
-export const modulosNav = [
-  { id: 'dashboard', nombre: 'Dashboard',  icono: 'fa-solid fa-chart-pie' },
-  { id: 'notepad',   nombre: 'Notepad',    icono: 'fa-solid fa-note-sticky' },
-  { id: 'business',  nombre: 'Mi negocio', icono: 'fa-solid fa-store' },
-  { id: 'products',  nombre: 'Productos',  icono: 'fa-solid fa-box-archive' },
-  { id: 'sunat',     nombre: 'SUNAT',      icono: 'fa-solid fa-file-invoice-dollar' },
-  { id: 'email',     nombre: 'Correo',     icono: 'fa-solid fa-envelope' },
-  { id: 'gallery',   nombre: 'Galeria',    icono: 'fa-solid fa-images' },
-  { id: 'posts',     nombre: 'Entradas',   icono: 'fa-solid fa-newspaper' },
-  { id: 'pages',     nombre: 'Páginas',    icono: 'fa-solid fa-file-lines' },
-  { id: 'staff',     nombre: 'Personal',   icono: 'fa-solid fa-users' },
-  { id: 'customers', nombre: 'Clientes',   icono: 'fa-solid fa-address-book', badge: '124' },
-  { id: 'whatsapp',  nombre: 'WhatsApp',   icono: 'fa-brands fa-whatsapp' },
-  { id: 'profile',   nombre: 'Mi perfil',  icono: 'fa-solid fa-user-gear' },
-  { id: 'settings',  nombre: 'Ajustes',    icono: 'fa-solid fa-gear' }
-];
 
 export const estadisticasDemo = [
   { id: 'stat1', titulo: 'S/ 65.00', subtitulo: 'Balón 10kg (Precio Web)', icono: 'fa-solid fa-fire-burner', color: 'orange' },

@@ -14,8 +14,8 @@ import authEn from '../../feature/auth/idioma/en.json';
 import clienteEs from '../../feature/cliente/idioma/es.json';
 import clienteEn from '../../feature/cliente/idioma/en.json';
 
-import personalEs from '../../feature/personal/idioma/es.json';
-import personalEn from '../../feature/personal/idioma/en.json';
+// Feature Personal es 100% español operativo nativo (no requiere diccionarios JSON)
+const localesPersonal = { es: {}, en: {} };
 
 export type Idioma = 'es' | 'en';
 
@@ -44,11 +44,6 @@ const localesAuth: Record<string, typeof authEs> = {
 const localesCliente: Record<string, typeof clienteEs> = {
   es: clienteEs,
   en: clienteEn
-};
-
-const localesPersonal: Record<string, typeof personalEs> = {
-  es: personalEs,
-  en: personalEn
 };
 
 /**

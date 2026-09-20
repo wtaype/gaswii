@@ -2,9 +2,8 @@
 // Controlador de cliente unificado para Feature Personal (Gaswii Solgas Surquillo)
 // Cero TypeScript · 100% JavaScript Nativo · Integrado con widev.js y auth/sesion.js
 
-import { Notificacion, wiConfirmar } from '../../core/widev/widev.js';
-import { getls } from '../../core/widev/storage.js';
-import { salir } from '../auth/sesion.js';
+import { Notificacion, wiConfirmar, getls } from '@widev';
+import { salir } from '@/feature/auth/sesion.js';
 
 // Exponer en window para utilidades modulares
 window.Notificacion = Notificacion;

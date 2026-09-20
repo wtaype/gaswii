@@ -6,7 +6,9 @@
 import Sonrisa from './layout/Sonrisa.astro';
 import Dashboard from './modulos/dashboard/Dashboard.astro';
 import dashboardCss from './modulos/dashboard/dashboard.css?inline';
-import { modulosNav } from './data/personalData.js';
+import Notepad from './modulos/notepad/Notepad.astro';
+import notepadCss from './modulos/notepad/notepad.css?inline';
+import { getModulosActivos } from './modulos.js';
 
 interface Props {
   idioma?: string;
@@ -15,15 +17,18 @@ interface Props {
 const { idioma = 'es' } = Astro.props;
 
 // Módulos que se implementarán progresivamente en fases posteriores
-const modulosPendientes = modulosNav.filter(m => m.id !== 'dashboard');
+const modulosPendientes = getModulosActivos().filter(m => m.id !== 'dashboard' && m.id !== 'notepad');
 ---
 
 <Sonrisa titulo="Dashboard del Dueño · Solgas Surquillo" moduloActivo="dashboard" idioma={idioma}>
-  <!-- Inyección de CSS del módulo Dashboard -->
-  <style slot="modulo-css" is:global set:html={dashboardCss}></style>
+  <!-- Inyección de CSS de los módulos activos -->
+  <style slot="modulo-css" is:global set:html={dashboardCss + '\n' + notepadCss}></style>
 
-  <!-- MÓDULO 1 (FASE 1): DASHBOARD -->
+  <!-- MÓDULO 1: DASHBOARD -->
   <Dashboard />
+
+  <!-- MÓDULO 2: NOTEPAD (70% Canvas / 30% Lista) -->
+  <Notepad />
 
   <!-- CONTENEDORES LISTOS PARA MÓDULOS EN FASES SIGUIENTES -->
   {modulosPendientes.map((m) => (
