@@ -374,6 +374,7 @@ export const wiEditor = (selector, opciones = {}) => {
         e.stopPropagation();
         textarea._links.splice(idx, 1);
         refrescarEnlaces();
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
       });
       
       list.appendChild(pill);
@@ -392,10 +393,11 @@ export const wiEditor = (selector, opciones = {}) => {
       return;
     }
     
-    textarea._links.push({ etiqueta: label, label: label, url: url });
+    textarea._links.push({ titulo: label, etiqueta: label, label: label, url: url });
     labelInput.value = '';
     urlInput.value = '';
     refrescarEnlaces();
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
     Notificacion('Enlace agregado', 'success');
   });
 
@@ -703,4 +705,45 @@ export const wiEditor = (selector, opciones = {}) => {
       }
     });
   });
+
+  // 4. API Pública del Editor en el textarea
+  textarea.getLinks = () => (textarea._links || []).map(l => ({
+    titulo: l.titulo || l.etiqueta || l.label || 'Enlace',
+    url: l.url || ''
+  }));
+
+  textarea.setLinks = (links = []) => {
+    textarea._links = (Array.isArray(links) ? links : []).map(l => ({
+      titulo: l.titulo || l.etiqueta || l.label || 'Enlace',
+      etiqueta: l.titulo || l.etiqueta || l.label || 'Enlace',
+      label: l.titulo || l.etiqueta || l.label || 'Enlace',
+      url: l.url || ''
+    }));
+    refrescarEnlaces();
+  };
+
+  textarea.getImagenes = () => textarea._imagenes || [];
+
+  textarea.setImagenes = (imgs = []) => {
+    textarea._imagenes = Array.isArray(imgs) ? [...imgs] : [];
+    refrescarGaleria();
+  };
+
+  textarea.limpiarEditor = () => {
+    textarea.value = '';
+    textarea._links = [];
+    textarea._imagenes = [];
+    refrescarEnlaces();
+    refrescarGaleria();
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  return {
+    textarea,
+    getLinks: textarea.getLinks,
+    setLinks: textarea.setLinks,
+    getImagenes: textarea.getImagenes,
+    setImagenes: textarea.setImagenes,
+    limpiarEditor: textarea.limpiarEditor
+  };
 };

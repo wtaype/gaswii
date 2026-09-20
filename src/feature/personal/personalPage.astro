@@ -8,19 +8,20 @@ import Dashboard from './modulos/dashboard/Dashboard.astro';
 import dashboardCss from './modulos/dashboard/dashboard.css?inline';
 import Notepad from './modulos/notepad/Notepad.astro';
 import notepadCss from './modulos/notepad/notepad.css?inline';
-import { getModulosActivos } from './modulos.js';
+import { getModulosActivos, moduloDefecto } from './modulos.js';
 
 interface Props {
   idioma?: string;
+  moduloActivo?: string;
 }
 
-const { idioma = 'es' } = Astro.props;
+const { idioma = 'es', moduloActivo = moduloDefecto } = Astro.props;
 
 // Módulos que se implementarán progresivamente en fases posteriores
 const modulosPendientes = getModulosActivos().filter(m => m.id !== 'dashboard' && m.id !== 'notepad');
 ---
 
-<Sonrisa titulo="Dashboard del Dueño · Solgas Surquillo" moduloActivo="dashboard" idioma={idioma}>
+<Sonrisa titulo="Dashboard del Dueño · Solgas Surquillo" moduloActivo={moduloActivo} idioma={idioma}>
   <!-- Inyección de CSS de los módulos activos -->
   <style slot="modulo-css" is:global set:html={dashboardCss + '\n' + notepadCss}></style>
 

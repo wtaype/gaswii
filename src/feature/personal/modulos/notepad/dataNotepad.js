@@ -1,186 +1,142 @@
 // src/feature/personal/modulos/notepad/dataNotepad.js
 // Capa de Datos Local-First con Sincronización en Segundo Plano con Firestore
-// Colección: 'notas_personal' · Zero TypeScript · 100% JavaScript Nativo
-// Utiliza Aliases: @widev y @core
+// Colección: 'notepad' · 100% JS Nativo · Integrado con @widev y @core
 
-import { savels, getls } from '@widev';
+import { savels, getls, formatearFechaHora } from '@widev';
+import { db } from '@core/servicios/firebase.js';
+import { doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
 export const STORAGE_KEY = 'gaswii_owner_notes';
+export const COLECCION_NOTEPAD = 'notepad';
 
 export function getUsuarioActivo() {
-  try {
-    const u = getls('wiSmile');
-    if (u) {
-      return {
-        userId: u.uid || u.id || 'anonimo',
-        email: u.email || '',
-        autor: u.nombre || u.usuario || 'Personal'
-      };
-    }
-  } catch (e) {}
+  const u = getls('wiSmile') || {};
   return {
-    userId: 'personal_local',
-    email: 'personal@solgassurquillo.com',
-    autor: 'Solgas Personal'
+    userId: u.uid || u.id || 'personal_local',
+    email: u.email || 'personal@solgassurquillo.com',
+    autor: u.nombre || u.usuario || 'Solgas Personal'
   };
 }
 
-export function recortar10Palabras(texto) {
-  if (!texto) return '';
-  const palabras = texto.trim().split(/\s+/);
-  if (palabras.length <= 10) return palabras.join(' ');
-  return palabras.slice(0, 10).join(' ') + '...';
+export function recortar10Palabras(txt = '') {
+  const limpio = txt.replace(/[*_#>`~]/g, '').trim();
+  const words = limpio.split(/\s+/).filter(Boolean);
+  return words.length <= 10 ? words.join(' ') : words.slice(0, 10).join(' ') + '...';
 }
 
-function ordenarNotas(arr) {
-  if (!Array.isArray(arr)) return [];
+function ordenarNotas(arr = []) {
   return [...arr].sort((a, b) => {
-    // 1. Fijadas primero
-    if (a.pin && !b.pin) return -1;
-    if (!a.pin && b.pin) return 1;
-    // 2. Más recientes primero
-    const dateA = a.actualizadoTimestamp || (a.id ? a.id.replace(/\D/g, '') : 0);
-    const dateB = b.actualizadoTimestamp || (b.id ? b.id.replace(/\D/g, '') : 0);
-    return dateB > dateA ? 1 : -1;
+    if (a.pin !== b.pin) return a.pin ? -1 : 1;
+    return (b.id || '').localeCompare(a.id || '');
   });
 }
 
 export function obtenerNotas() {
-  try {
-    const guardadas = getls(STORAGE_KEY);
-    if (guardadas && Array.isArray(guardadas)) {
-      // Filtrar semillas de prueba antiguas si existieran (n_101, n_102, n_103)
-      const limpias = guardadas.filter(n => !['n_101', 'n_102', 'n_103'].includes(n.id));
-      if (limpias.length !== guardadas.length) {
-        guardarNotasLocal(limpias);
-      }
-      return ordenarNotas(limpias);
-    }
-  } catch (e) {}
-
-  return [];
+  const guardadas = getls(STORAGE_KEY);
+  return Array.isArray(guardadas) ? ordenarNotas(guardadas) : [];
 }
 
 export function guardarNotasLocal(arr) {
-  try {
-    savels(STORAGE_KEY, ordenarNotas(arr));
-  } catch (e) {}
+  savels(STORAGE_KEY, ordenarNotas(arr));
 }
 
-export function guardarNotaData(notaInput) {
+export function guardarNotaData(input = {}) {
   const todas = obtenerNotas();
   const usuario = getUsuarioActivo();
-  const ahora = new Date();
-  const fechaStr = `${ahora.getDate()} ${ahora.toLocaleString('es-ES', { month: 'short' })}, ${ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-  const timestamp = ahora.getTime();
+  const fecha = formatearFechaHora(Date.now());
+  const id = input.id || `n_${Date.now()}`;
+  const idx = todas.findIndex(n => n.id === id);
+  const esNueva = idx < 0;
+  const existente = esNueva ? {} : todas[idx];
 
-  let notaGuardada = null;
+  const esListo = typeof input.listo === 'boolean'
+    ? input.listo
+    : (typeof input.done === 'boolean' ? input.done : (existente.listo || false));
 
-  if (notaInput.id) {
-    const idx = todas.findIndex(n => n.id === notaInput.id);
-    if (idx >= 0) {
-      todas[idx] = {
-        ...todas[idx],
-        titulo: notaInput.titulo || 'Nota sin título',
-        contenido: notaInput.contenido || '',
-        contenidoMD: notaInput.contenidoMD || notaInput.contenido || '',
-        tag: notaInput.tag || todas[idx].tag || 'Urgente',
-        pin: typeof notaInput.pin === 'boolean' ? notaInput.pin : todas[idx].pin || false,
-        done: typeof notaInput.done === 'boolean' ? notaInput.done : todas[idx].done || false,
-        actualizado: fechaStr,
-        actualizadoTimestamp: timestamp,
-        resumen10: recortar10Palabras(notaInput.contenido || notaInput.titulo)
-      };
-      notaGuardada = todas[idx];
-    }
-  }
+  const nota = {
+    ...existente,
+    id,
+    titulo: input.titulo || 'Nota sin título',
+    contenido: input.contenido || '',
+    tag: input.tag || existente.tag || 'Nota',
+    pin: typeof input.pin === 'boolean' ? input.pin : Boolean(existente.pin),
+    listo: esListo,
+    links: Array.isArray(input.links) ? input.links : (existente.links || []),
+    imagenes: Array.isArray(input.imagenes) ? input.imagenes : (existente.imagenes || []),
+    userId: usuario.userId,
+    email: usuario.email,
+    autor: usuario.autor,
+    creado: esNueva ? fecha : (existente.creado || fecha),
+    actualizado: fecha,
+    resumen10: recortar10Palabras(input.contenido || input.titulo)
+  };
 
-  if (!notaGuardada) {
-    notaGuardada = {
-      id: 'n_' + timestamp,
-      titulo: notaInput.titulo || 'Nota sin título',
-      contenido: notaInput.contenido || '',
-      contenidoMD: notaInput.contenidoMD || notaInput.contenido || '',
-      tag: notaInput.tag || 'Urgente',
-      pin: Boolean(notaInput.pin),
-      done: Boolean(notaInput.done),
-      userId: usuario.userId,
-      email: usuario.email,
-      autor: usuario.autor,
-      creado: fechaStr,
-      creadoTimestamp: timestamp,
-      actualizado: fechaStr,
-      actualizadoTimestamp: timestamp,
-      resumen10: recortar10Palabras(notaInput.contenido || notaInput.titulo)
-    };
-    todas.unshift(notaGuardada);
-  }
+  if (esNueva) todas.unshift(nota);
+  else todas[idx] = nota;
 
   guardarNotasLocal(todas);
-
-  // Sincronización en segundo plano fire-and-forget (0ms en UI)
-  sincronizarNotaFirestoreEnSegundoPlano(notaGuardada);
-
-  return notaGuardada;
+  sincronizarFirestore(nota, esNueva);
+  return nota;
 }
 
 export function eliminarNotaData(id) {
-  let todas = obtenerNotas();
-  todas = todas.filter(n => n.id !== id);
+  const todas = obtenerNotas().filter(n => n.id !== id);
   guardarNotasLocal(todas);
-
-  // Eliminación silenciosa en segundo plano de Firestore
-  eliminarNotaFirestoreEnSegundoPlano(id);
+  eliminarFirestore(id);
   return todas;
 }
 
 export function togglePinNotaData(id) {
+  return actualizarPropiedadNota(id, n => ({ pin: !n.pin }));
+}
+
+export function toggleListoNotaData(id) {
+  return actualizarPropiedadNota(id, n => ({ listo: !n.listo }));
+}
+
+export const toggleDoneNotaData = toggleListoNotaData;
+
+function actualizarPropiedadNota(id, updater) {
   const todas = obtenerNotas();
   const nota = todas.find(n => n.id === id);
   if (nota) {
-    nota.pin = !nota.pin;
+    Object.assign(nota, updater(nota));
     guardarNotasLocal(todas);
-    sincronizarNotaFirestoreEnSegundoPlano(nota);
+    sincronizarFirestore(nota, false);
   }
   return obtenerNotas();
 }
 
-export function toggleDoneNotaData(id) {
-  const todas = obtenerNotas();
-  const nota = todas.find(n => n.id === id);
-  if (nota) {
-    nota.done = !nota.done;
-    guardarNotasLocal(todas);
-    sincronizarNotaFirestoreEnSegundoPlano(nota);
-  }
-  return obtenerNotas();
-}
-
-// Background Firestore Operations usando el alias @core
-async function sincronizarNotaFirestoreEnSegundoPlano(nota) {
-  if (!nota || !nota.id) return;
+async function sincronizarFirestore(nota, esNueva = false) {
+  if (!nota?.id || !db) return;
   try {
-    const { db } = await import('@core/servicios/firebase.js');
-    const { doc, setDoc } = await import('firebase/firestore');
-    if (!db) return;
-    await setDoc(doc(db, 'notas_personal', nota.id), {
-      ...nota,
-      syncTimestamp: new Date().toISOString()
-    }, { merge: true });
+    const payload = {
+      id: nota.id,
+      titulo: nota.titulo,
+      contenido: nota.contenido,
+      tag: nota.tag,
+      pin: Boolean(nota.pin),
+      listo: Boolean(nota.listo),
+      links: Array.isArray(nota.links) ? nota.links : [],
+      imagenes: Array.isArray(nota.imagenes) ? nota.imagenes : [],
+      userId: nota.userId,
+      email: nota.email,
+      autor: nota.autor,
+      resumen10: nota.resumen10,
+      actualizado: serverTimestamp()
+    };
+    if (esNueva) payload.creado = serverTimestamp();
+    await setDoc(doc(db, COLECCION_NOTEPAD, nota.id), payload, { merge: true });
   } catch (err) {
-    // Silencioso en background para no interrumpir el flujo del usuario
-    console.warn('[dataNotepad] Sync background Firestore diferido:', err?.message || err);
+    console.warn('[dataNotepad] Sync diferido Firestore:', err?.message || err);
   }
 }
 
-async function eliminarNotaFirestoreEnSegundoPlano(id) {
-  if (!id) return;
+async function eliminarFirestore(id) {
+  if (!id || !db) return;
   try {
-    const { db } = await import('@core/servicios/firebase.js');
-    const { doc, deleteDoc } = await import('firebase/firestore');
-    if (!db) return;
-    await deleteDoc(doc(db, 'notas_personal', id));
+    await deleteDoc(doc(db, COLECCION_NOTEPAD, id));
   } catch (err) {
-    console.warn('[dataNotepad] Delete background Firestore diferido:', err?.message || err);
+    console.warn('[dataNotepad] Delete diferido Firestore:', err?.message || err);
   }
 }
