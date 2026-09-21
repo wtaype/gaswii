@@ -1,0 +1,62 @@
+---
+import Principal from '../../core/layouts/Principal.astro';
+import type { Idioma } from '../../core/idioma/idioma';
+
+
+import Hero from './secciones/Hero.astro';
+import Productos from './secciones/Productos.astro';
+import Pesaje from './secciones/Pesaje.astro';
+import Seguridad from './secciones/Seguridad.astro';
+import SosBanner from './secciones/SosBanner.astro';
+import Calculadora from './secciones/Calculadora.astro';
+import SedeMapa from './secciones/SedeMapa.astro';
+import Nosotros from './secciones/Nosotros.astro';
+import Faq from './secciones/Faq.astro';
+import ModalPedido from './secciones/ModalPedido.astro';
+
+import inicioCss from './inicio.css?inline';
+
+const featureCss = inicioCss;
+
+interface Props {
+  idioma?: Idioma;
+}
+
+const { idioma = 'es' } = Astro.props;
+const ruta = idioma === 'en' ? '/en' : '/';
+---
+
+<Principal idioma={idioma} ruta={ruta}>
+  <style slot="head" is:global set:html={featureCss}></style>
+  <!-- 1. Hero CRO con selector de distrito -->
+  <Hero idioma={idioma} />
+
+  <!-- 2. Catálogo Oficial de Balones Solgas & MásGas -->
+  <Productos idioma={idioma} />
+
+  <!-- 3. Demostración y Garantía de Pesaje Digital Inacal -->
+  <Pesaje idioma={idioma} />
+
+  <!-- 4. Protocolo de Seguridad y Cero Fugas -->
+  <Seguridad idioma={idioma} />
+
+  <!-- 5. Banner de Despacho Prioritario SOS -->
+  <SosBanner idioma={idioma} />
+
+  <!-- 6. Calculadora de Consumo Inteligente -->
+  <Calculadora idioma={idioma} />
+
+  <!-- 7. Sede Central Física Jr. Dante 260 y Google Maps -->
+  <SedeMapa idioma={idioma} />
+
+  <!-- 8. Historia, Respaldo y 25 Años en Lima -->
+  <Nosotros idioma={idioma} />
+
+  <!-- 9. Preguntas Frecuentes (FAQ) con Rich Snippets -->
+  <Faq idioma={idioma} />
+
+  <!-- Modales Interactivos (Pedido Express; Login se carga On-Demand) -->
+  <ModalPedido idioma={idioma} />
+</Principal>
+
+<script src="./inicio.js"></script>

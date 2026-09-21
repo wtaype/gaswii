@@ -1,0 +1,213 @@
+---
+// src/feature/inicio/secciones/01-hero/Hero.astro
+// 1. HERO CRO AUTÓNOMO: NARRATIVA [PROBLEMA REAL] ➔ [SOLUCIÓN INMEDIATA]
+import { datosNegocio } from '../../../../negocio.js';
+import { resolverIdioma } from '../../idioma/idioma.js';
+import es from './idioma/es.json';
+import en from './idioma/en.json';
+import heroCss from './hero.css?inline';
+
+interface Props {
+  idioma?: string;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = resolverIdioma({ es, en }, idioma);
+
+const distritos = datosNegocio.distritos || [];
+const primerDistrito = distritos[0] || { nombre: 'Surquillo', tiempo: '9 - 18 min' };
+const precioPrimerBalon = (datosNegocio.productos[0]?.precioPEN || 65).toFixed(2);
+---
+
+<style is:global set:html={heroCss}></style>
+
+<section id="hero" class="hero-section">
+  <div class="page-container hero-page-container">
+    <div class="hero-layout">
+      
+      <!-- Columna Izquierda: Problema ➔ Solución -->
+      <div class="hero-txt">
+        
+        <!-- Grupo Superior: Badge Oficial y Ubicación Google Maps -->
+        <div class="hero-meta-group">
+          <!-- Item 1: Insignia Oficial Solgas Surquillo -->
+          <div class="hero-saludo">
+            <span class="badge-fire hero-badge">
+              <i class="fa-solid fa-face-smile-beam"></i> <span>{t.badge}</span>
+            </span>
+          </div>
+
+          <!-- Item 2: Ubicación Sede Central Google Maps -->
+          <a 
+            href={datosNegocio.mapsUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="hero-maps-line"
+            data-negocio-maps
+            title={`${t.maps_cta} - ${datosNegocio.direccionSede}`}
+          >
+            <span class="hero-maps-icon"><i class="fa-solid fa-map-location-dot"></i></span>
+            <span class="hero-maps-text">{t.maps_sede}</span>
+            <i class="fa-solid fa-arrow-up-right-from-square hero-maps-arrow"></i>
+          </a>
+        </div>
+
+        <!-- Línea 3: Pregunta Titular -->
+        <h1 class="hero-main-heading">
+          <span>{t.titulo_1}</span><br />
+          <span class="hero-title-highlight">
+            {t.titulo_resaltado}
+          </span>
+        </h1>
+
+        <!-- Línea 4: Subtítulo Explicativo -->
+        <p class="hero-main-sub">
+          {t.subtitulo}
+        </p>
+
+        <!-- Selector Dinámico de Distrito -->
+        <div class="hero-district-card">
+          <div class="hero-district-title">
+            <i class="fa-solid fa-location-dot"></i> <span>{t.selector_titulo}</span>
+          </div>
+          
+          <div class="hero-district-grid" id="districtSelector" data-negocio-distritos>
+            {distritos.map((dist: any, idx: number) => (
+              <button 
+                type="button"
+                class={`hero-district-btn ${idx === 0 ? 'active' : ''}`}
+                data-district={dist.nombre}
+                data-time={dist.tiempo}
+              >
+                <div class="hero-district-name">{dist.nombre}</div>
+                <div class="hero-district-time"><i class="fa-solid fa-bolt"></i> {dist.tiempo}</div>
+              </button>
+            ))}
+          </div>
+
+          <div class="hero-district-footer">
+            <span>
+              <i class="fa-solid fa-motorcycle color-primary"></i> 
+              <span id="distritoActualInfo">{t.selector_eta} <strong>{primerDistrito.tiempo}</strong></span>
+            </span>
+            <span class="color-emerald font-bold">
+              <i class="fa-solid fa-check"></i> <span>{t.envio_gratis}</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Botones Principales CTAs -->
+        <div class="hero-ctas-group">
+          <button type="button" onclick="window.abrirModalPedido && window.abrirModalPedido()" class="btn-fire hero-btn-cta">
+            <i class="fa-solid fa-cart-shopping text-xl"></i>
+            <div class="hero-btn-text">
+              <span class="hero-btn-sub">{t.btn_modal_sub}</span>
+              <span class="hero-btn-main">{t.btn_modal_main}</span>
+            </div>
+          </button>
+
+          <a href={`tel:${datosNegocio.telefonoLimpio}`} class="btn-call hero-btn-cta" data-negocio-tel-link>
+            <i class="fa-solid fa-phone-volume text-xl"></i>
+            <div class="hero-btn-text">
+              <span class="hero-btn-sub">{t.btn_call_sub}</span>
+              <span class="hero-btn-main" data-negocio-tel-text>{datosNegocio.telefonoMostrado}</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Métricas de Trayectoria -->
+        <div class="stats-grid hero-stats-box">
+          <div>
+            <div class="hero-stat-val color-primary" data-negocio-metrica-clientes>{datosNegocio.metricas.clientes}</div>
+            <div class="hero-stat-label">{t.stat_clientes}</div>
+          </div>
+          <div>
+            <div class="hero-stat-val color-emerald" data-negocio-metrica-balanza>{datosNegocio.metricas.balanza}</div>
+            <div class="hero-stat-label">{t.stat_balanza}</div>
+          </div>
+          <div>
+            <div class="hero-stat-val color-brand-blue" data-negocio-metrica-years>{datosNegocio.metricas.years}</div>
+            <div class="hero-stat-label">{t.stat_anos}</div>
+          </div>
+          <div>
+            <div class="hero-stat-val color-gold" data-negocio-metrica-dias>{datosNegocio.metricas.dias}</div>
+            <div class="hero-stat-label">{t.stat_dias}</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Columna Derecha: Fotografía y Garantía -->
+      <div class="hero-visual">
+        <div class="hero-right-card">
+          
+          <div class="hero-img-box">
+            <img 
+              src={datosNegocio.imagenSede || '/imgwii/hero.webp'} 
+              alt={datosNegocio.nombre} 
+              width="600"
+              height="450"
+              loading="eager"
+              fetchpriority="high"
+              class="hero-img"
+            />
+          </div>
+
+          <div class="hero-guarantee-box">
+            <div class="hero-guarantee-left">
+              <div class="hero-guarantee-icon">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </div>
+              <div>
+                <div class="hero-guarantee-title">
+                  {t.driver_card_titulo}
+                </div>
+                <div class="hero-guarantee-sub">
+                  {t.driver_card_desc}
+                </div>
+              </div>
+            </div>
+            <div class="hero-guarantee-price">
+              <div class="hero-price-sub">{t.precio_desde}</div>
+              <div class="hero-price-val">
+                S/ {precioPrimerBalon}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  function iniciarSelectorDistritos() {
+    const grid = document.getElementById('districtSelector');
+    const info = document.getElementById('distritoActualInfo');
+    if (!grid) return;
+
+    const botones = grid.querySelectorAll('.hero-district-btn');
+    botones.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        botones.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        const time = btn.getAttribute('data-time') || '';
+        const dist = btn.getAttribute('data-district') || '';
+        if (info) {
+          const prefijo = info.textContent?.split(':')[0] || 'Despacho';
+          info.innerHTML = `${prefijo}: <strong>${time}</strong>`;
+        }
+      });
+    });
+  }
+
+  // Inicializar al cargar y ante transiciones de Astro
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciarSelectorDistritos);
+  } else {
+    iniciarSelectorDistritos();
+  }
+  document.addEventListener('astro:page-load', iniciarSelectorDistritos);
+</script>
