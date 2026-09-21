@@ -103,19 +103,19 @@ const t = getI18n(idioma).hero;
         <!-- Métricas de Trayectoria -->
         <div class="stats-grid hero-stats-box">
           <div>
-            <div class="hero-stat-val color-primary">25K+</div>
+            <div class="hero-stat-val color-primary">{datosNegocio.metricas.clientes || '25K+'}</div>
             <div class="hero-stat-label">{t.stat_clientes}</div>
           </div>
           <div>
-            <div class="hero-stat-val color-emerald">100%</div>
+            <div class="hero-stat-val color-emerald">{datosNegocio.metricas.balanza || '100%'}</div>
             <div class="hero-stat-label">{t.stat_balanza}</div>
           </div>
           <div>
-            <div class="hero-stat-val color-brand-blue">25+</div>
+            <div class="hero-stat-val color-brand-blue">{datosNegocio.metricas.years || `${datosNegocio.experienciaAnos}+`}</div>
             <div class="hero-stat-label">{t.stat_anos}</div>
           </div>
           <div>
-            <div class="hero-stat-val color-gold">365</div>
+            <div class="hero-stat-val color-gold">{datosNegocio.metricas.dias || '365'}</div>
             <div class="hero-stat-label">{t.stat_dias}</div>
           </div>
         </div>
@@ -128,8 +128,8 @@ const t = getI18n(idioma).hero;
           
           <div class="hero-img-box">
             <img 
-              src="/imgwii/hero.webp" 
-              alt="Balón Solgas en Cocina Familiar" 
+              src={datosNegocio.imagenSede || "/imgwii/hero.webp"} 
+              alt={datosNegocio.nombre || "Balón Solgas en Cocina Familiar"} 
               width="600"
               height="450"
               loading="eager"

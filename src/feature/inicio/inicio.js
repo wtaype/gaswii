@@ -195,7 +195,7 @@ export function enviarPedidoModalWhatsApp() {
         (comentarios ? `\n📝 *Indicaciones:* ${comentarios}` : '') +
         `\n\nPor favor confirmen mi pedido para esperarlo, ¡muchas gracias!`;
 
-  const urlWa = `https://api.whatsapp.com/send?phone=${negocio.telefonoLimpio || negocio.telefonoRaw}&text=${encodeURIComponent(textoMensaje)}`;
+  const urlWa = `https://api.whatsapp.com/send?phone=${negocio.whatsapp || negocio.telefonoLimpio || negocio.telefonoRaw}&text=${encodeURIComponent(textoMensaje)}`;
   window.open(urlWa, '_blank');
   cerrarModalPedido();
 }

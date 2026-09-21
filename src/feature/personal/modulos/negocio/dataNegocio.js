@@ -5,6 +5,7 @@
 import { savels, getls, formatearFechaParaInput } from '@widev';
 import { db } from '@core/servicios/firebase.js';
 import { doc, setDoc, getDoc, Timestamp, serverTimestamp } from 'firebase/firestore';
+import actualizarData from '../../../../core/actualizar.json';
 
 export const STORAGE_KEY = 'minegocio';
 export const OLD_STORAGE_KEY = 'gaswii_negocio_config';
@@ -96,13 +97,17 @@ export function obtenerDatosNegocio() {
   }
   try {
     const local = getls(STORAGE_KEY) || getls(OLD_STORAGE_KEY);
-    if (local && typeof local === 'object' && local.identidad) {
+    if (local && typeof local === 'object' && local.identidad && local.identidad.nombre) {
       _memoriaNegocio = normalizarConfig(local);
       return _memoriaNegocio;
     }
   } catch (e) {}
 
-  return normalizarConfig(ESQUEMA_BASE_NEGOCIO);
+  // En Node (build time de Cloudflare/Astro) o primer inicio sin caché:
+  // Usa la fuente pre-renderizada oficial de actualizar.json
+  const fuenteBase = actualizarData?.negocio || ESQUEMA_BASE_NEGOCIO;
+  _memoriaNegocio = normalizarConfig(fuenteBase);
+  return _memoriaNegocio;
 }
 
 export function guardarDatosNegocioLocal(config) {
@@ -229,7 +234,7 @@ export async function sincronizarDesdeFirestore() {
 }
 
 function normalizarConfig(c = {}) {
-  const base = JSON.parse(JSON.stringify(ESQUEMA_BASE_NEGOCIO));
+  const base = JSON.parse(JSON.stringify(actualizarData?.negocio || ESQUEMA_BASE_NEGOCIO));
   return {
     ...base,
     ...c,

@@ -44,7 +44,7 @@ const t = getI18n(idioma);
 
       <div>
         <span class="badge-blue mb-3 inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs">
-          <i class="fa-solid fa-award"></i> <span>{t.nosotros.badge}</span>
+          <i class="fa-solid fa-award"></i> <span>{negocio.experienciaAnos ? `${negocio.experienciaAnos} AÑOS DE EXPERIENCIA` : t.nosotros.badge}</span>
         </span>
         <h2 class="section-header-title text-left mb-3">
           {t.nosotros.titulo}
@@ -57,8 +57,8 @@ const t = getI18n(idioma);
         </p>
 
         <div class="flex gap-3 flex-wrap">
-          <a href={`tel:${negocio.telefonoRaw}`} class="btn-call py-3 px-6 text-sm font-bold">
-            <i class="fa-solid fa-phone"></i> <span>{t.nosotros.btn_llamar}</span>
+          <a href={`tel:${negocio.telefonoLimpio || negocio.telefonoRaw}`} class="btn-call py-3 px-6 text-sm font-bold">
+            <i class="fa-solid fa-phone"></i> <span>{negocio.telefonoMostrado ? `Llamar: ${negocio.telefonoMostrado}` : t.nosotros.btn_llamar}</span>
           </a>
           <button onclick="window.abrirModalPedido && window.abrirModalPedido()" class="btn-whatsapp py-3 px-6 text-sm font-bold">
             <i class="fa-brands fa-whatsapp"></i> <span>{t.nosotros.btn_pedir}</span>

@@ -64,7 +64,7 @@ const faqs = [
           />
           <div class="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/90 to-transparent text-white flex items-center justify-between gap-2 flex-wrap">
             <span class="badge-fire text-xs px-2 py-1 rounded-full"><i class="fa-solid fa-shield-halved"></i> 100% {t.faq.badge_garantia}</span>
-            <span class="badge-blue text-xs px-2 py-1 rounded-full font-bold"><i class="fa-solid fa-award"></i> {t.faq.badge_osinergmin}</span>
+            <span class="badge-blue text-xs px-2 py-1 rounded-full font-bold"><i class="fa-solid fa-award"></i> {negocio.registroOsinergmin ? `OSINERGMIN ${negocio.registroOsinergmin}` : t.faq.badge_osinergmin}</span>
           </div>
         </div>
 

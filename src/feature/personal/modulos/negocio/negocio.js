@@ -508,6 +508,19 @@ export function inicializarNegocio() {
     el.addEventListener('input', autoGuardarBorrador);
   });
 
+  // Función para despertar el deploy hook de Cloudflare en segundo plano
+  async function dispararDeployHookCloudflare() {
+    const hookUrl = import.meta.env.PUBLIC_CLOUDFLARE_DEPLOY_HOOK;
+    if (!hookUrl) return;
+
+    try {
+      await fetch(hookUrl, { method: 'POST' });
+      Notificacion('🚀 Cloudflare está cocinando la nueva versión de la web...', 'info', 4000);
+    } catch (err) {
+      console.warn('[Cloudflare Deploy Hook]:', err?.message || err);
+    }
+  }
+
   // 9. Guardar Cambios Centralizado con wiSpin y Notificacion
   function guardarCambiosNegocio() {
     if (isSaving) return;
@@ -523,6 +536,9 @@ export function inicializarNegocio() {
       if (btnGuardarNegocio) wiSpin(btnGuardarNegocio, false);
       Notificacion('Ficha guardada con éxito', 'success', 2500);
       isSaving = false;
+
+      // Disparar re-cocinado en Cloudflare en segundo plano
+      dispararDeployHookCloudflare();
     }, 400);
   }
 
