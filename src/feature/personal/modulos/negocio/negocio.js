@@ -514,7 +514,11 @@ export function inicializarNegocio() {
     if (!hookUrl) return;
 
     try {
-      await fetch(hookUrl, { method: 'POST' });
+      await fetch(hookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' }
+      });
       Notificacion('🚀 Cloudflare está cocinando la nueva versión de la web...', 'info', 4000);
     } catch (err) {
       console.warn('[Cloudflare Deploy Hook]:', err?.message || err);

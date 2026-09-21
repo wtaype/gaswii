@@ -34,6 +34,7 @@ const t = getI18n(idioma).hero;
             target="_blank" 
             rel="noopener noreferrer" 
             class="hero-maps-line"
+            data-negocio-maps
             title={`${t.maps_cta} - ${datosNegocio.direccionSede}`}
           >
             <span class="hero-maps-icon"><i class="fa-solid fa-map-location-dot"></i></span>
@@ -61,7 +62,7 @@ const t = getI18n(idioma).hero;
             <i class="fa-solid fa-location-dot"></i> <span>{t.selector_titulo}</span>
           </div>
           
-          <div class="hero-district-grid" id="districtSelector">
+          <div class="hero-district-grid" id="districtSelector" data-negocio-distritos>
             {datosNegocio.distritos.map((dist: any, idx: number) => (
               <button 
                 type="button"
@@ -76,7 +77,7 @@ const t = getI18n(idioma).hero;
           </div>
 
           <div class="hero-district-footer">
-            <span><i class="fa-solid fa-motorcycle color-primary"></i> <span id="distritoActualInfo">{t.selector_eta} <strong>12 - 18 min</strong></span></span>
+            <span><i class="fa-solid fa-motorcycle color-primary"></i> <span id="distritoActualInfo">{t.selector_eta} <strong>{datosNegocio.distritos[0]?.tiempo || ''}</strong></span></span>
             <span class="color-emerald font-bold"><i class="fa-solid fa-check"></i> <span>{t.envio_gratis}</span></span>
           </div>
         </div>
@@ -91,11 +92,11 @@ const t = getI18n(idioma).hero;
             </div>
           </button>
 
-          <a href={`tel:${datosNegocio.telefonoLimpio}`} class="btn-call hero-btn-cta">
+          <a href={`tel:${datosNegocio.telefonoLimpio}`} class="btn-call hero-btn-cta" data-negocio-tel-link>
             <i class="fa-solid fa-phone-volume text-xl"></i>
             <div class="hero-btn-text">
               <span class="hero-btn-sub">{t.btn_call_sub}</span>
-              <span class="hero-btn-main">{datosNegocio.telefonoMostrado}</span>
+              <span class="hero-btn-main" data-negocio-tel-text>{datosNegocio.telefonoMostrado}</span>
             </div>
           </a>
         </div>
@@ -103,19 +104,19 @@ const t = getI18n(idioma).hero;
         <!-- Métricas de Trayectoria -->
         <div class="stats-grid hero-stats-box">
           <div>
-            <div class="hero-stat-val color-primary">{datosNegocio.metricas.clientes || '25K+'}</div>
+            <div class="hero-stat-val color-primary" data-negocio-metrica-clientes>{datosNegocio.metricas.clientes}</div>
             <div class="hero-stat-label">{t.stat_clientes}</div>
           </div>
           <div>
-            <div class="hero-stat-val color-emerald">{datosNegocio.metricas.balanza || '100%'}</div>
+            <div class="hero-stat-val color-emerald" data-negocio-metrica-balanza>{datosNegocio.metricas.balanza}</div>
             <div class="hero-stat-label">{t.stat_balanza}</div>
           </div>
           <div>
-            <div class="hero-stat-val color-brand-blue">{datosNegocio.metricas.years || `${datosNegocio.experienciaAnos}+`}</div>
+            <div class="hero-stat-val color-brand-blue" data-negocio-metrica-years>{datosNegocio.metricas.years}</div>
             <div class="hero-stat-label">{t.stat_anos}</div>
           </div>
           <div>
-            <div class="hero-stat-val color-gold">{datosNegocio.metricas.dias || '365'}</div>
+            <div class="hero-stat-val color-gold" data-negocio-metrica-dias>{datosNegocio.metricas.dias}</div>
             <div class="hero-stat-label">{t.stat_dias}</div>
           </div>
         </div>
@@ -128,8 +129,8 @@ const t = getI18n(idioma).hero;
           
           <div class="hero-img-box">
             <img 
-              src={datosNegocio.imagenSede || "/imgwii/hero.webp"} 
-              alt={datosNegocio.nombre || "Balón Solgas en Cocina Familiar"} 
+              src={datosNegocio.imagenSede} 
+              alt={datosNegocio.nombre} 
               width="600"
               height="450"
               loading="eager"

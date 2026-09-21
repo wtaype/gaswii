@@ -198,7 +198,8 @@ async function sincronizarNegocioFirestore(config, fechaStr) {
       actualizado: serverTimestamp()
     };
 
-    await setDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID), payload, { merge: true });
+    // Reemplaza el documento completo para eliminar campos planos huérfanos
+    await setDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID), payload);
   } catch (err) {
     console.warn('[dataNegocio] Sincronización diferida Firestore:', err?.message || err);
   }
@@ -211,6 +212,12 @@ export async function sincronizarDesdeFirestore() {
     const snap = await getDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID));
     if (snap.exists()) {
       const data = snap.data();
+      // Validar si el documento en Firestore está corrupto o incompleto
+      if (!data.identidad || !data.identidad.nombre) {
+        const canónico = normalizarConfig(actualizarData?.negocio || ESQUEMA_BASE_NEGOCIO);
+        guardarDatosNegocio(canónico);
+        return canónico;
+      }
       let fechaLanz = "";
       if (data.identidad?.lanzamiento) {
         fechaLanz = formatearFechaParaInput(data.identidad.lanzamiento);
@@ -226,12 +233,19 @@ export async function sincronizarDesdeFirestore() {
       });
       guardarDatosNegocioLocal(normalizado);
       return normalizado;
+    } else {
+      // Si no existe, inicializar en Firestore con la estructura canónica oficial
+      const canónico = normalizarConfig(actualizarData?.negocio || ESQUEMA_BASE_NEGOCIO);
+      guardarDatosNegocio(canónico);
+      return canónico;
     }
   } catch (err) {
     console.warn('[dataNegocio] Lectura Firestore:', err?.message || err);
   }
   return null;
 }
+
+export const consultarNegocioDesdeFirestore = sincronizarDesdeFirestore;
 
 function normalizarConfig(c = {}) {
   const base = JSON.parse(JSON.stringify(actualizarData?.negocio || ESQUEMA_BASE_NEGOCIO));

@@ -7,9 +7,101 @@ import negocio from '../../negocio';
 import { Saludar } from '../../core/widev/saludo.js';
 import { wiModal } from '../../core/widev/modales.js';
 import { getSmileLocal } from '../auth/sesion.js';
+import { obtenerDatosNegocio, consultarNegocioDesdeFirestore } from '../personal/modulos/negocio/dataNegocio.js';
 
 // Estado local de la página
 let idiomaActual = document.documentElement.lang || 'es';
+let _datosNegocioActivos = obtenerDatosNegocio();
+
+// --------------------------------------------------------------------------
+// 0. HIDRATACIÓN REACTIVA EN TIEMPO REAL (LOCAL-FIRST + FIRESTORE)
+// --------------------------------------------------------------------------
+export function hidratarNegocioEnDOM(datos) {
+  if (!datos || typeof datos !== 'object') return;
+  _datosNegocioActivos = datos;
+
+  const telLimpio = datos.contacto?.telefonoLimpio || (datos.contacto?.telefono || '').replace(/\D/g, '');
+  const telMostrado = datos.contacto?.telefono || '';
+  const telFijo = datos.contacto?.telefonoFijo || '';
+  const horario = idiomaActual === 'en' ? (datos.contacto?.horarioEn || datos.contacto?.horario || '') : (datos.contacto?.horario || '');
+  const direccion = datos.ubicacion?.direccion || '';
+  const mapsUrl = datos.ubicacion?.mapsUrl || '';
+  const lat = datos.ubicacion?.coordenadas?.lat;
+  const lng = datos.ubicacion?.coordenadas?.lng;
+
+  // 1. Teléfonos y Enlaces directos
+  if (telLimpio) {
+    document.querySelectorAll('[data-negocio-tel-link]').forEach(a => a.href = `tel:${telLimpio}`);
+  }
+  if (telMostrado) {
+    document.querySelectorAll('[data-negocio-tel-text]').forEach(el => el.textContent = telMostrado);
+    document.querySelectorAll('[data-negocio-tel-mostrado]').forEach(el => el.textContent = telMostrado);
+    document.querySelectorAll('[data-negocio-tel-call]').forEach(el => el.textContent = `Llamar: ${telMostrado}`);
+    document.querySelectorAll('[data-negocio-tel-pedido]').forEach(el => el.textContent = telMostrado);
+  }
+  if (telFijo) {
+    document.querySelectorAll('[data-negocio-tel-fijo]').forEach(el => el.textContent = `Fijo: ${telFijo}`);
+  }
+
+  // 2. Horarios y Ubicación
+  if (horario) {
+    document.querySelectorAll('[data-negocio-horario]').forEach(el => el.textContent = horario);
+  }
+  if (direccion) {
+    document.querySelectorAll('[data-negocio-direccion]').forEach(el => el.textContent = direccion);
+  }
+  if (mapsUrl) {
+    document.querySelectorAll('[data-negocio-maps], [data-negocio-maps-btn]').forEach(a => a.href = mapsUrl);
+  }
+  if (lat && lng) {
+    document.querySelectorAll('[data-negocio-maps-iframe]').forEach(iframe => {
+      iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&hl=${idiomaActual}&z=16&output=embed`;
+    });
+  }
+
+  // 3. Métricas
+  if (datos.metricas) {
+    const elCli = document.querySelector('[data-negocio-metrica-clientes]');
+    if (elCli && datos.metricas.clientes) elCli.textContent = datos.metricas.clientes;
+    const elBal = document.querySelector('[data-negocio-metrica-balanza]');
+    if (elBal && datos.metricas.balanza) elBal.textContent = datos.metricas.balanza;
+    const elYrs = document.querySelector('[data-negocio-metrica-years]');
+    if (elYrs && datos.metricas.years) elYrs.textContent = datos.metricas.years;
+    const elDias = document.querySelector('[data-negocio-metrica-dias]');
+    if (elDias && datos.metricas.dias) elDias.textContent = datos.metricas.dias;
+  }
+
+  // 4. Zonas de Entrega
+  if (Array.isArray(datos.zonas) && datos.zonas.length > 0) {
+    const activas = datos.zonas.filter(z => z.activo !== false);
+    const container = document.getElementById('districtSelector');
+    if (container && activas.length > 0) {
+      container.innerHTML = activas.map((dist, idx) => `
+        <button 
+          type="button"
+          class="hero-district-btn ${idx === 0 ? 'active' : ''}"
+          data-district="${dist.distrito || ''}"
+          data-time="${dist.tiempoMin || 0} - ${dist.tiempoMax || 0} ${dist.unidad || 'min'}"
+        >
+          <div class="hero-district-name">${dist.distrito || ''}</div>
+          <div class="hero-district-time"><i class="fa-solid fa-bolt"></i> ${dist.tiempoMin || 0} - ${dist.tiempoMax || 0} ${dist.unidad || 'min'}</div>
+        </button>
+      `).join('');
+      initDistrictSelector();
+    }
+
+    const selPedDist = document.getElementById('pedDistrito');
+    if (selPedDist && activas.length > 0) {
+      const currentVal = selPedDist.value;
+      selPedDist.innerHTML = activas.map(d => `
+        <option value="${d.distrito || ''}">${d.distrito || ''} (${d.tiempoMin || 0} - ${d.tiempoMax || 0} ${d.unidad || 'min'})</option>
+      `).join('');
+      if (currentVal && activas.some(d => d.distrito === currentVal)) {
+        selPedDist.value = currentVal;
+      }
+    }
+  }
+}
 
 // --------------------------------------------------------------------------
 // 1. SELECTOR DINÁMICO DE DISTRITOS (HERO)
@@ -195,7 +287,8 @@ export function enviarPedidoModalWhatsApp() {
         (comentarios ? `\n📝 *Indicaciones:* ${comentarios}` : '') +
         `\n\nPor favor confirmen mi pedido para esperarlo, ¡muchas gracias!`;
 
-  const urlWa = `https://api.whatsapp.com/send?phone=${negocio.whatsapp || negocio.telefonoLimpio || negocio.telefonoRaw}&text=${encodeURIComponent(textoMensaje)}`;
+  const waDestino = _datosNegocioActivos?.contacto?.whatsapp || _datosNegocioActivos?.contacto?.telefonoLimpio || negocio.whatsapp || negocio.telefonoLimpio || negocio.telefonoRaw;
+  const urlWa = `https://api.whatsapp.com/send?phone=${waDestino}&text=${encodeURIComponent(textoMensaje)}`;
   window.open(urlWa, '_blank');
   cerrarModalPedido();
 }
@@ -209,9 +302,38 @@ if (typeof window !== 'undefined') {
   window.abrirModalPedido = abrirModalPedido;
   window.cerrarModalPedido = cerrarModalPedido;
   window.enviarPedidoModalWhatsApp = enviarPedidoModalWhatsApp;
+  window.hidratarNegocioEnDOM = hidratarNegocioEnDOM;
 
   document.addEventListener('DOMContentLoaded', () => {
+    // 1. Iniciar selectores y calculadoras
     initDistrictSelector();
     initCalculator();
+
+    // 2. Hidratación instantánea Local-First (0ms)
+    const local = obtenerDatosNegocio();
+    if (local) hidratarNegocioEnDOM(local);
+
+    // 3. Sincronización asíncrona en segundo plano con Firebase Firestore
+    consultarNegocioDesdeFirestore().then(remoto => {
+      if (remoto) {
+        hidratarNegocioEnDOM(remoto);
+      }
+    }).catch(err => {
+      console.warn('[inicio.js] Firestore sync diferido:', err?.message || err);
+    });
+
+    // 4. Escuchar cambios en vivo (Cross-Component y Cross-Tab)
+    window.addEventListener('gaswii:negocio-actualizado', (e) => {
+      if (e.detail) hidratarNegocioEnDOM(e.detail);
+    });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'minegocio') {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (parsed) hidratarNegocioEnDOM(parsed);
+        } catch (err) {}
+      }
+    });
   });
 }
