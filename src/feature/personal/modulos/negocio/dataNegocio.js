@@ -5,62 +5,100 @@
 import { savels, getls, formatearFechaParaInput } from '@widev';
 import { db } from '@core/servicios/firebase.js';
 import { doc, setDoc, getDoc, Timestamp, serverTimestamp } from 'firebase/firestore';
-import actualizarData from '../../../../core/actualizar.json';
 
 export const STORAGE_KEY = 'minegocio';
 export const OLD_STORAGE_KEY = 'gaswii_negocio_config';
 export const COLECCION_NEGOCIO = 'negocio';
 export const DOC_NEGOCIO_ID = 'principal';
 
-// Esquema Base Neutro (Estructura Limpia sin Datos Semilla Quemados)
+// Esquema Base Neutro y Oficial en Memoria (Cero Dependencia de JSON Estáticos)
 export const ESQUEMA_BASE_NEGOCIO = {
   id: DOC_NEGOCIO_ID,
   principal: true,
   identidad: {
-    nombre: "",
-    nombreCorto: "",
-    razonSocial: "",
-    ruc: "",
-    registroOsinergmin: "",
-    marcaRespaldo: "",
-    lanzamientoFecha: "",
-    logo: "",
-    imagenSede: ""
+    nombre: "Solgas Surquillo",
+    nombreCorto: "Solgas Surquillo",
+    razonSocial: "Distribuidor Autorizado OSINERGMIN Reg. 208492",
+    ruc: "20601234567",
+    registroOsinergmin: "Reg. 208492",
+    marcaRespaldo: "Solgas S.A.",
+    lanzamientoFecha: "2001-04-13",
+    logo: "/imgwii/logo.webp",
+    imagenSede: "/imgwii/hero.webp"
   },
   contacto: {
-    telefono: "",
-    telefonoFijo: "",
-    telefonoLimpio: "",
-    whatsapp: "",
-    whatsappMensaje: "",
-    email: "",
-    horario: "",
-    horarioEn: ""
+    telefono: "+51 936 369 384",
+    telefonoFijo: "(01) 241-1234",
+    telefonoLimpio: "51936369384",
+    whatsapp: "51936369384",
+    whatsappMensaje: "¡Hola Solgas Surquillo! Deseo pedir un balón de gas para entrega a domicilio.",
+    email: "pedidos@solgassurquillo.com",
+    horario: "Lunes a Domingo: 6:00 a.m. a 11:00 p.m. (365 días)",
+    horarioEn: "Monday to Sunday: 6:00 a.m. to 11:00 p.m. (365 days)"
   },
   ubicacion: {
-    direccion: "",
-    distrito: "",
-    ciudad: "",
+    direccion: "Jr. Dante 260, Surquillo, Lima 15047",
+    distrito: "Surquillo",
+    ciudad: "Lima",
     pais: "PE",
-    mapsUrl: "",
+    mapsUrl: "https://maps.app.goo.gl/s86EmxowFcKetJWL8",
     coordenadas: {
-      lat: 0,
-      lng: 0
+      lat: -12.1177408,
+      lng: -77.0226796
     }
   },
-  zonas: [],
+  zonas: [
+    { id: "surquillo", distrito: "Surquillo", tiempoMin: 9, tiempoMax: 18, unidad: "min", tag: "Sede Central Express", activo: true },
+    { id: "miraflores", distrito: "Miraflores", tiempoMin: 15, tiempoMax: 20, unidad: "min", tag: "Ruta Directa", activo: true },
+    { id: "san-borja", distrito: "San Borja", tiempoMin: 15, tiempoMax: 22, unidad: "min", tag: "Ruta Directa", activo: true },
+    { id: "san-isidro", distrito: "San Isidro", tiempoMin: 18, tiempoMax: 25, unidad: "min", tag: "Ruta Directa", activo: true }
+  ],
   metricas: {
-    clientes: "",
-    balanza: "",
-    years: "",
-    dias: ""
+    clientes: "25K+",
+    balanza: "100%",
+    years: "25+",
+    dias: "365"
   },
   redes: {
-    facebook: "",
-    instagram: "",
-    tiktok: ""
+    facebook: "https://facebook.com/solgassurquillo",
+    instagram: "https://instagram.com/solgassurquillo",
+    tiktok: "https://tiktok.com/@solgassurquillo"
   }
 };
+
+// Parser ultraligero de campos de la REST API de Firestore
+export function parseFirestoreDoc(fields = {}) {
+  const res = {};
+  for (const [k, v] of Object.entries(fields)) {
+    if (v.stringValue !== undefined) res[k] = v.stringValue;
+    else if (v.integerValue !== undefined) res[k] = parseInt(v.integerValue, 10);
+    else if (v.doubleValue !== undefined) res[k] = parseFloat(v.doubleValue);
+    else if (v.booleanValue !== undefined) res[k] = v.booleanValue;
+    else if (v.timestampValue !== undefined) res[k] = v.timestampValue;
+    else if (v.mapValue) res[k] = parseFirestoreDoc(v.mapValue.fields || {});
+    else if (v.arrayValue) res[k] = (v.arrayValue.values || []).map(item => item.mapValue ? parseFirestoreDoc(item.mapValue.fields || {}) : Object.values(item)[0]);
+  }
+  return res;
+}
+
+// Lectura en tiempo de compilación (Astro SSG / Cloudflare Build) directo desde la REST API
+let _datosBuildFirestore = null;
+if (typeof window === 'undefined') {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch('https://firestore.googleapis.com/v1/projects/gaswii/databases/(default)/documents/negocio/principal', {
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (res.ok) {
+      const json = await res.json();
+      _datosBuildFirestore = parseFirestoreDoc(json.fields || {});
+    }
+  } catch (err) {
+    console.warn('[dataNegocio] Build-time Firestore fetch diferido/fallback:', err?.message || err);
+  }
+}
 
 let _memoriaNegocio = null;
 
@@ -103,10 +141,14 @@ export function obtenerDatosNegocio() {
     }
   } catch (e) {}
 
-  // En Node (build time de Cloudflare/Astro) o primer inicio sin caché:
-  // Usa la fuente pre-renderizada oficial de actualizar.json
-  const fuenteBase = actualizarData?.negocio || ESQUEMA_BASE_NEGOCIO;
-  _memoriaNegocio = normalizarConfig(fuenteBase);
+  // En Node (build time de Cloudflare/Astro): usa los datos frescos de Firestore REST
+  if (_datosBuildFirestore && _datosBuildFirestore.identidad?.nombre) {
+    _memoriaNegocio = normalizarConfig(_datosBuildFirestore);
+    return _memoriaNegocio;
+  }
+
+  // Fallback canónico base
+  _memoriaNegocio = normalizarConfig(ESQUEMA_BASE_NEGOCIO);
   return _memoriaNegocio;
 }
 
@@ -214,7 +256,7 @@ export async function sincronizarDesdeFirestore() {
       const data = snap.data();
       // Validar si el documento en Firestore está corrupto o incompleto
       if (!data.identidad || !data.identidad.nombre) {
-        const canónico = normalizarConfig(actualizarData?.negocio || ESQUEMA_BASE_NEGOCIO);
+        const canónico = normalizarConfig(ESQUEMA_BASE_NEGOCIO);
         guardarDatosNegocio(canónico);
         return canónico;
       }
@@ -235,7 +277,7 @@ export async function sincronizarDesdeFirestore() {
       return normalizado;
     } else {
       // Si no existe, inicializar en Firestore con la estructura canónica oficial
-      const canónico = normalizarConfig(actualizarData?.negocio || ESQUEMA_BASE_NEGOCIO);
+      const canónico = normalizarConfig(ESQUEMA_BASE_NEGOCIO);
       guardarDatosNegocio(canónico);
       return canónico;
     }
@@ -248,14 +290,14 @@ export async function sincronizarDesdeFirestore() {
 export const consultarNegocioDesdeFirestore = sincronizarDesdeFirestore;
 
 function normalizarConfig(c = {}) {
-  const base = JSON.parse(JSON.stringify(actualizarData?.negocio || ESQUEMA_BASE_NEGOCIO));
+  const base = JSON.parse(JSON.stringify(ESQUEMA_BASE_NEGOCIO));
   return {
     ...base,
     ...c,
     identidad: { ...base.identidad, ...(c.identidad || {}) },
     contacto: { ...base.contacto, ...(c.contacto || {}) },
     ubicacion: { ...base.ubicacion, ...(c.ubicacion || {}) },
-    zonas: Array.isArray(c.zonas) ? c.zonas : base.zonas,
+    zonas: Array.isArray(c.zonas) && c.zonas.length > 0 ? c.zonas : base.zonas,
     metricas: { ...base.metricas, ...(c.metricas || {}) },
     redes: { ...base.redes, ...(c.redes || {}) }
   };

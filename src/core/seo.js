@@ -154,28 +154,36 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
         }))
       },
       // 2. Catálogo Oficial de Productos con Ofertas
-      ...datosNegocio.productos.map(p => ({
-        '@type': 'Product',
-        '@id': `${urlBase}/#producto-${p.id}`,
-        name: isEn ? p.nombreEn : p.nombre,
-        description: `${p.tipoUso} - ${p.capacidad}. ${p.valvula}.`,
-        image: `${urlBase}${p.imagen}`,
-        brand: {
-          '@type': 'Brand',
-          name: p.id.includes('solgas') ? 'Solgas' : 'Masgas'
-        },
-        offers: {
-          '@type': 'Offer',
-          url: urlBase,
-          priceCurrency: 'PEN',
-          price: p.precioPEN.toFixed(2),
-          availability: 'https://schema.org/InStock',
-          seller: {
-            '@type': 'LocalBusiness',
-            name: datosNegocio.nombre
+      ...datosNegocio.productos.map(p => {
+        const prodNom = typeof p.nombre === 'object' ? (isEn ? (p.nombre.en || p.nombre.es) : p.nombre.es) : (isEn ? (p.nombreEn || p.nombre) : p.nombre);
+        const prodTipo = typeof p.tipoUso === 'object' ? (isEn ? (p.tipoUso.en || p.tipoUso.es) : p.tipoUso.es) : (p.tipoUso || 'GLP');
+        const prodValv = typeof p.valvula === 'object' ? (isEn ? (p.valvula.en || p.valvula.es) : p.valvula.es) : (p.valvula || 'Estándar');
+        const precioNum = Number(p.precioPEN ?? p.precio ?? p.price ?? 65);
+        const imgUrl = p.imagen || p.img || '/imgwii/productos/BALON-10KG.webp';
+
+        return {
+          '@type': 'Product',
+          '@id': `${urlBase}/#producto-${p.id || p.slug || 'solgas-10kg'}`,
+          name: prodNom || 'Balón de Gas GLP',
+          description: `${prodTipo}. Válvula: ${prodValv}.`,
+          image: `${urlBase}${imgUrl}`,
+          brand: {
+            '@type': 'Brand',
+            name: (p.id || '').includes('masgas') ? 'Masgas' : 'Solgas'
+          },
+          offers: {
+            '@type': 'Offer',
+            url: urlBase,
+            priceCurrency: 'PEN',
+            price: isNaN(precioNum) ? '65.00' : precioNum.toFixed(2),
+            availability: 'https://schema.org/InStock',
+            seller: {
+              '@type': 'LocalBusiness',
+              name: datosNegocio.nombre
+            }
           }
-        }
-      })),
+        };
+      }),
       // 3. FAQPage para Preguntas y Respuestas en Google
       {
         '@type': 'FAQPage',
