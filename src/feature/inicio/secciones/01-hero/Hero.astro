@@ -14,9 +14,12 @@ interface Props {
 const { idioma = 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
 
-const distritos = datosNegocio.distritos || [];
-const primerDistrito = distritos[0] || { nombre: 'Surquillo', tiempo: '9 - 18 min' };
-const precioPrimerBalon = (datosNegocio.productos[0]?.precioPEN || 65).toFixed(2);
+const distritos = datosNegocio.distritos;
+const primerDistrito = distritos[0];
+const primerProducto = datosNegocio.productos[0];
+const precioPrimerBalon = primerProducto ? primerProducto.precioPEN.toFixed(2) : '65.00';
+const direccionSede = datosNegocio.direccionSede;
+const mapsUrl = datosNegocio.mapsUrl;
 ---
 
 <style is:global set:html={heroCss}></style>
@@ -33,21 +36,24 @@ const precioPrimerBalon = (datosNegocio.productos[0]?.precioPEN || 65).toFixed(2
           <!-- Item 1: Insignia Oficial Solgas Surquillo -->
           <div class="hero-saludo">
             <span class="badge-fire hero-badge">
-              <i class="fa-solid fa-face-smile-beam"></i> <span>{t.badge}</span>
+              <i class="fa-solid fa-face-smile-beam"></i> 
+              <span data-negocio-badge data-prefijo={t.badge_prefijo}>{t.badge_prefijo} {datosNegocio.nombre.toUpperCase()}</span>
             </span>
           </div>
 
           <!-- Item 2: Ubicación Sede Central Google Maps -->
           <a 
-            href={datosNegocio.mapsUrl} 
+            href={mapsUrl} 
             target="_blank" 
             rel="noopener noreferrer" 
             class="hero-maps-line"
             data-negocio-maps
-            title={`${t.maps_cta} - ${datosNegocio.direccionSede}`}
+            title={`${t.maps_cta} - ${direccionSede}`}
           >
             <span class="hero-maps-icon"><i class="fa-solid fa-map-location-dot"></i></span>
-            <span class="hero-maps-text">{t.maps_sede}</span>
+            <span class="hero-maps-text">
+              <span>{t.maps_sede_prefijo}</span> <span data-negocio-direccion-sede>{direccionSede}</span>
+            </span>
             <i class="fa-solid fa-arrow-up-right-from-square hero-maps-arrow"></i>
           </a>
         </div>
@@ -88,7 +94,9 @@ const precioPrimerBalon = (datosNegocio.productos[0]?.precioPEN || 65).toFixed(2
           <div class="hero-district-footer">
             <span>
               <i class="fa-solid fa-motorcycle color-primary"></i> 
-              <span id="distritoActualInfo">{t.selector_eta} <strong>{primerDistrito.tiempo}</strong></span>
+              <span id="distritoActualInfo" data-prefijo={t.selector_eta_prefijo}>
+                <span class="eta-prefix">{t.selector_eta_prefijo}</span> <span data-negocio-direccion-origen>{direccionSede}</span>: <strong class="eta-time">{primerDistrito.tiempo}</strong>
+              </span>
             </span>
             <span class="color-emerald font-bold">
               <i class="fa-solid fa-check"></i> <span>{t.envio_gratis}</span>
@@ -143,13 +151,14 @@ const precioPrimerBalon = (datosNegocio.productos[0]?.precioPEN || 65).toFixed(2
           
           <div class="hero-img-box">
             <img 
-              src={datosNegocio.imagenSede || '/imgwii/hero.webp'} 
+              src={datosNegocio.imagenSede} 
               alt={datosNegocio.nombre} 
               width="600"
               height="450"
               loading="eager"
               fetchpriority="high"
               class="hero-img"
+              data-negocio-imagen-sede
             />
           </div>
 
@@ -169,7 +178,7 @@ const precioPrimerBalon = (datosNegocio.productos[0]?.precioPEN || 65).toFixed(2
             </div>
             <div class="hero-guarantee-price">
               <div class="hero-price-sub">{t.precio_desde}</div>
-              <div class="hero-price-val">
+              <div class="hero-price-val" data-negocio-precio-primer-balon>
                 S/ {precioPrimerBalon}
               </div>
             </div>
@@ -194,20 +203,109 @@ const precioPrimerBalon = (datosNegocio.productos[0]?.precioPEN || 65).toFixed(2
         botones.forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
         const time = btn.getAttribute('data-time') || '';
-        const dist = btn.getAttribute('data-district') || '';
         if (info) {
-          const prefijo = info.textContent?.split(':')[0] || 'Despacho';
-          info.innerHTML = `${prefijo}: <strong>${time}</strong>`;
+          const timeEl = info.querySelector('.eta-time');
+          if (timeEl) {
+            timeEl.textContent = time;
+          } else {
+            const origenEl = info.querySelector('[data-negocio-direccion-origen]');
+            const dir = origenEl ? origenEl.textContent : '';
+            const prefijo = info.getAttribute('data-prefijo') || 'Despachando desde';
+            info.innerHTML = `<span class="eta-prefix">${prefijo}</span> <span data-negocio-direccion-origen>${dir}</span>: <strong class="eta-time">${time}</strong>`;
+          }
         }
       });
     });
   }
 
-  // Inicializar al cargar y ante transiciones de Astro
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', iniciarSelectorDistritos);
-  } else {
-    iniciarSelectorDistritos();
+  function hidratarHeroDesdeNegocio(datos: any) {
+    if (!datos || typeof datos !== 'object') return;
+
+    const dir = datos.ubicacion?.direccion || '';
+    const maps = datos.ubicacion?.mapsUrl || '';
+    const tel = datos.contacto?.telefono || '';
+    const telLimpio = datos.contacto?.telefonoLimpio || tel.replace(/\D/g, '');
+
+    if (dir) {
+      document.querySelectorAll('[data-negocio-direccion], [data-negocio-direccion-sede], [data-negocio-direccion-origen]').forEach(el => {
+        el.textContent = dir;
+      });
+    }
+
+    if (maps) {
+      document.querySelectorAll('[data-negocio-maps]').forEach(a => {
+        a.setAttribute('href', maps);
+      });
+    }
+
+    if (tel) {
+      document.querySelectorAll('[data-negocio-tel-text]').forEach(el => el.textContent = tel);
+    }
+    if (telLimpio) {
+      document.querySelectorAll('[data-negocio-tel-link]').forEach(a => a.setAttribute('href', `tel:${telLimpio}`));
+    }
+
+    if (datos.identidad?.nombre) {
+      document.querySelectorAll('[data-negocio-badge]').forEach(el => {
+        const prefijo = el.getAttribute('data-prefijo') || 'DELIVERY OFICIAL';
+        el.textContent = `${prefijo} ${datos.identidad.nombre.toUpperCase()}`;
+      });
+    }
+
+    if (datos.identidad?.imagenSede) {
+      document.querySelectorAll('[data-negocio-imagen-sede]').forEach(img => {
+        img.setAttribute('src', datos.identidad.imagenSede);
+      });
+    }
+
+    if (datos.metricas) {
+      if (datos.metricas.clientes) {
+        document.querySelectorAll('[data-negocio-metrica-clientes]').forEach(el => el.textContent = datos.metricas.clientes);
+      }
+      if (datos.metricas.balanza) {
+        document.querySelectorAll('[data-negocio-metrica-balanza]').forEach(el => el.textContent = datos.metricas.balanza);
+      }
+      if (datos.metricas.years) {
+        document.querySelectorAll('[data-negocio-metrica-years]').forEach(el => el.textContent = datos.metricas.years);
+      }
+      if (datos.metricas.dias) {
+        document.querySelectorAll('[data-negocio-metrica-dias]').forEach(el => el.textContent = datos.metricas.dias);
+      }
+    }
   }
-  document.addEventListener('astro:page-load', iniciarSelectorDistritos);
+
+  function iniciarHero() {
+    iniciarSelectorDistritos();
+
+    // 1. Hidratar desde localStorage si el usuario/admin ya guardó cambios
+    try {
+      const raw = localStorage.getItem('minegocio') || localStorage.getItem('gaswii_negocio_config');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed) hidratarHeroDesdeNegocio(parsed);
+      }
+    } catch (e) {}
+  }
+
+  // 2. Escuchar evento en vivo emitido al pulsar Guardar Cambios en /personal/negocio/
+  window.addEventListener('gaswii:negocio-actualizado', (e: Event) => {
+    const customEvt = e as CustomEvent;
+    if (customEvt.detail) hidratarHeroDesdeNegocio(customEvt.detail);
+  });
+
+  // 3. Sincronizar cambios entre pestañas abiertas
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'minegocio' && e.newValue) {
+      try {
+        hidratarHeroDesdeNegocio(JSON.parse(e.newValue));
+      } catch (err) {}
+    }
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciarHero);
+  } else {
+    iniciarHero();
+  }
+  document.addEventListener('astro:page-load', iniciarHero);
 </script>

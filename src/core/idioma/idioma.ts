@@ -15,16 +15,16 @@ import clienteEs from '../../feature/cliente/idioma/es.json';
 import clienteEn from '../../feature/cliente/idioma/en.json';
 
 // Feature Personal es 100% español operativo nativo (no requiere diccionarios JSON)
-const localesPersonal = { es: {}, en: {} };
+const localesPersonal: Record<string, any> = { es: {}, en: {} };
 
-export type Idioma = 'es' | 'en';
+export type Idioma = 'es' | 'en' | string;
 
-export const IDIOMAS: Record<Idioma, { nombre: string; code: string }> = {
+export const IDIOMAS: Record<string, { nombre: string; code: string }> = {
   es: { nombre: 'Español', code: 'es' },
   en: { nombre: 'English', code: 'en' }
 };
 
-export const DEFAULT_LANG: Idioma = 'es';
+export const DEFAULT_LANG = 'es';
 
 const localesCore: Record<string, typeof coreEs> = {
   es: coreEs,
@@ -48,10 +48,10 @@ const localesCliente: Record<string, typeof clienteEs> = {
 
 /**
  * Retorna las traducciones completas unificadas para el idioma solicitado.
- * Mantiene 100% de compatibilidad hacia atrás con getI18n(lang).section
+ * Admite N idiomas sin limitar a solo dos, con fallback al idioma por defecto.
  */
 export function getI18n(lang: string = DEFAULT_LANG) {
-  const l = (lang === 'en' ? 'en' : 'es') as Idioma;
+  const l = localesCore[lang] ? lang : DEFAULT_LANG;
   const core = localesCore[l] || localesCore[DEFAULT_LANG];
   const inicio = localesInicio[l] || localesInicio[DEFAULT_LANG];
   const auth = localesAuth[l] || localesAuth[DEFAULT_LANG];
@@ -92,7 +92,7 @@ export function getI18n(lang: string = DEFAULT_LANG) {
  * Acceso directo a una feature específica
  */
 export function getFeatureI18n(feature: 'inicio' | 'auth' | 'cliente' | 'personal' | 'core', lang: string = DEFAULT_LANG) {
-  const l = (lang === 'en' ? 'en' : 'es') as Idioma;
+  const l = localesCore[lang] ? lang : DEFAULT_LANG;
   switch (feature) {
     case 'inicio': return localesInicio[l] || localesInicio[DEFAULT_LANG];
     case 'auth': return localesAuth[l] || localesAuth[DEFAULT_LANG];
@@ -103,6 +103,3 @@ export function getFeatureI18n(feature: 'inicio' | 'auth' | 'cliente' | 'persona
 }
 
 export const useTraduccion = getI18n;
-
-
-

@@ -1,10 +1,13 @@
 {
   "topbar": {
-    "cobertura": "Sede Central: Jr. Dante 260, Surquillo • Despacho en 15 - 20 min",
-    "horario": "365 días del año",
-    "telefono": "+51 936 369 384"
+    "sede_label": "Sede Central",
+    "despacho_label": "Despacho en 15 - 20 min",
+    "dias_ano": "días al año",
+    "llamar_movil": "Llamar",
+    "llamar_titulo": "Llamar a Central"
   },
   "nav": {
+    "slogan_brand": "Envíos a domicilio y trabajo",
     "productos": "Productos",
     "balanza": "Peso Exacto",
     "seguridad": "Cero Fugas",
@@ -14,26 +17,23 @@
     "login": "Login",
     "pedir": "Pedir Gas",
     "sticky_llamar": "Llamar",
-    "sticky_pedir": "Pedir Gas Express"
+    "sticky_pedir": "Pedir Gas Express",
+    "ir_tienda_publica": "Ir a la Tienda Pública GasWii",
+    "inicio_titulo": "GasWii Inicio"
   },
   "footer": {
-    "bio": "Distribución formal de balones de gas GLP Solgas y MásGas. Sede física en Jr. Dante 260, Surquillo. Peso exacto garantizado de planta y base, y atención los 365 días del año.",
+    "bio": "Distribución formal de balones de gas GLP Solgas y MásGas con peso exacto garantizado de planta y base, y atención continua.",
     "cobertura_titulo": "Distritos de Cobertura",
-    "cobertura_surquillo": "Surquillo (Base Jr. Dante 260)",
-    "cobertura_miraflores": "Miraflores (Todas las zonas)",
-    "cobertura_sanborja": "San Borja (Norte y Sur)",
-    "cobertura_sanisidro": "San Isidro (Financiero y Residencial)",
     "pagos_titulo": "Medios de Pago y Horarios",
     "pagos_desc": "Aceptamos todos los medios de pago al recibir tu balón:",
-    "horario_semana": "Lunes a Domingo:",
-    "horario_horas": "6:00 a.m. a 11:00 p.m. (365 días)",
+    "horario_etiqueta": "Horario de Atención:",
     "pago_yape": "YAPE",
     "pago_plin": "PLIN",
     "pago_transferencia": "TRANSFERENCIA",
     "pago_efectivo": "EFECTIVO",
     "reclamos_titulo": "Libro de Reclamaciones",
     "reclamos_desc": "Conforme a lo establecido por el Código de Protección y Defensa del Consumidor de INDECOPI.",
-    "derechos": "Todos los derechos reservados. Distribuidor Autorizado OSINERGMIN Reg. 208492.",
+    "derechos": "Todos los derechos reservados.",
     "desarrollo": "Desarrollado con alta velocidad por",
     "delivery_central": "Delivery Central:",
     "volver_arriba": "Volver arriba"

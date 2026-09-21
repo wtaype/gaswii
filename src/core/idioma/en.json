@@ -1,10 +1,13 @@
 {
   "topbar": {
-    "cobertura": "Central Hub: Jr. Dante 260, Surquillo • Delivery in 15 - 20 mins",
-    "horario": "365 days a year",
-    "telefono": "+51 936 369 384"
+    "sede_label": "Central Hub",
+    "despacho_label": "Delivery in 15 - 20 mins",
+    "dias_ano": "days a year",
+    "llamar_movil": "Call",
+    "llamar_titulo": "Call Central Hub"
   },
   "nav": {
+    "slogan_brand": "Home & Business Deliveries",
     "productos": "Products",
     "balanza": "Exact Weight",
     "seguridad": "Zero Leaks",
@@ -14,26 +17,23 @@
     "login": "Login",
     "pedir": "Order Gas",
     "sticky_llamar": "Call",
-    "sticky_pedir": "Order Gas Express"
+    "sticky_pedir": "Order Gas Express",
+    "ir_tienda_publica": "Go to GasWii Public Store",
+    "inicio_titulo": "GasWii Home"
   },
   "footer": {
-    "bio": "Licensed distribution of Solgas and MásGas LPG cylinders. Physical central base at Jr. Dante 260, Surquillo. Guaranteed exact weight from plant and base, 365 days a year.",
+    "bio": "Licensed distribution of Solgas and MásGas LPG cylinders with certified exact weight from plant and hub, 365 days a year.",
     "cobertura_titulo": "Coverage Districts",
-    "cobertura_surquillo": "Surquillo (Base Jr. Dante 260)",
-    "cobertura_miraflores": "Miraflores (All zones)",
-    "cobertura_sanborja": "San Borja (North & South)",
-    "cobertura_sanisidro": "San Isidro (Financial & Residential)",
     "pagos_titulo": "Payment Methods & Hours",
     "pagos_desc": "All payment methods accepted at your door:",
-    "horario_semana": "Mon to Sun:",
-    "horario_horas": "6:00 a.m. to 11:00 p.m. (365 days)",
+    "horario_etiqueta": "Business Hours:",
     "pago_yape": "YAPE",
     "pago_plin": "PLIN",
     "pago_transferencia": "BANK TRANSFER",
     "pago_efectivo": "CASH",
     "reclamos_titulo": "Complaints Book",
     "reclamos_desc": "In accordance with INDECOPI Consumer Protection and Defense Code regulations.",
-    "derechos": "All rights reserved. Authorized OSINERGMIN Distributor Reg. 208492.",
+    "derechos": "All rights reserved.",
     "desarrollo": "High performance development by",
     "delivery_central": "Delivery Central:",
     "volver_arriba": "Back to top"

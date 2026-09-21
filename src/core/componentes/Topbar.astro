@@ -1,7 +1,7 @@
 ---
 // src/core/componentes/Topbar.astro
-// 1. TOP BAR OFICIAL - Solgas Surquillo (100% Cero CSS Inline)
-import app from '../../app.js';
+// 1. TOP BAR OFICIAL - Solgas Surquillo (100% Sincronizado con Firestore negocio.md)
+import { datosNegocio } from '../../negocio.js';
 import { getI18n, type Idioma } from '../idioma/idioma';
 
 interface Props {
@@ -16,16 +16,18 @@ const t = getI18n(idioma).topbar;
   <div class="page-container topbar-content">
     <div class="topbar-group">
       <span class="topbar-auth-pill">
-        <i class="fa-solid fa-shield-halved"></i> <span>{app.autorizacion}</span>
+        <i class="fa-solid fa-shield-halved"></i> <span>{datosNegocio.razonSocial}</span>
       </span>
-      <span class="desktop-only">{t.cobertura}</span>
+      <span class="desktop-only">
+        {t.sede_label}: <span data-negocio-direccion>{datosNegocio.direccionSede}</span> • {t.despacho_label}
+      </span>
     </div>
     <div class="topbar-group-right">
-      <span class="desktop-only"><i class="fa-solid fa-clock"></i> <span>{t.horario}</span></span>
-      <a href={`tel:${app.telefonoLimpio}`} class="topbar-phone-link" title="Llamar a Central">
+      <span class="desktop-only"><i class="fa-solid fa-clock"></i> <span data-negocio-metrica-dias>{datosNegocio.metricas.dias}</span> <span>{t.dias_ano}</span></span>
+      <a href={`tel:${datosNegocio.telefonoLimpio}`} class="topbar-phone-link" title={t.llamar_titulo} data-negocio-tel-link>
         <i class="fa-solid fa-phone"></i> 
-        <span class="desktop-only">{app.telefono}</span>
-        <span class="mobile-only">{idioma === 'en' ? 'Call' : 'Llamar'}</span>
+        <span class="desktop-only" data-negocio-tel-text>{datosNegocio.telefonoMostrado}</span>
+        <span class="mobile-only">{t.llamar_movil}</span>
       </a>
     </div>
   </div>

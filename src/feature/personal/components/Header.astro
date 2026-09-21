@@ -2,17 +2,18 @@
 // src/feature/personal/components/Header.astro
 // Barra superior con logo de sede, buscador, conmutador de temas y dropdown de usuario
 import Busqueda from './Busqueda.astro';
+import { datosNegocio } from '@/negocio.js';
 ---
 
 <header class="ps-topbar">
   <!-- Identidad de Sede -->
   <div class="ps-brand">
-    <img src="/imgwii/logo.webp" alt="Solgas Surquillo" class="ps-logo" />
+    <img src={datosNegocio.logo} alt={datosNegocio.nombre} class="ps-logo" />
     <div class="ps-brand-text">
-      <span class="ps-brand-title">SOLGAS SURQUILLO</span>
+      <span class="ps-brand-title">{datosNegocio.nombre.toUpperCase()}</span>
       <span class="ps-brand-sub">
         <span class="ps-badge-online"></span>
-        Sede Jr. Dante 260 · Centro de Operaciones
+        Sede {datosNegocio.direccionSede} · Centro de Operaciones
       </span>
     </div>
   </div>

@@ -2,7 +2,8 @@
 // src/core/componentes/Header.astro
 // 2. HEADER CON BOTONES LOGIN Y PEDIR GAS - Solgas Surquillo (100% Cero CSS Inline)
 import app from '../../app.js';
-import { getI18n, type Idioma } from '../idioma/idioma';
+import { datosNegocio } from '../../negocio.js';
+import { getI18n, IDIOMAS, type Idioma } from '../idioma/idioma';
 
 interface Props {
   idioma?: Idioma;
@@ -11,28 +12,28 @@ interface Props {
 
 const { idioma = 'es', ruta = '/' } = Astro.props;
 const t = getI18n(idioma).nav;
-const urlEs = '/';
-const urlEn = '/en';
-
 const esPersonal = ruta === '/personal';
 const esCliente = ruta === '/cliente';
+
+const baseHash = idioma === 'es' ? '' : `/${idioma}`;
+const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
 ---
 
 <header class="header-main">
   <div class="page-container header-container">
     
     <!-- Logo y Título -->
-    <a href={esPersonal || esCliente ? '/' : (idioma === 'en' ? '/en#hero' : '#hero')} title={esPersonal || esCliente ? 'Ir a la Tienda Pública GasWii' : 'GasWii Inicio'} class="header-brand-link">
+    <a href={urlInicio} title={esPersonal || esCliente ? (t.ir_tienda_publica || 'Ir a la Tienda Pública GasWii') : (t.inicio_titulo || 'GasWii Inicio')} class="header-brand-link">
       <img 
-        src="/imgwii/logo.webp" 
-        alt="Solgas Surquillo" 
+        src={datosNegocio.logo} 
+        alt={datosNegocio.nombre} 
         width="44"
         height="44"
         class="header-logo-img"
       />
       <div>
         <span class="desktop-only header-brand-title">
-          SOLGAS <span>SURQUILLO</span>
+          {datosNegocio.nombre.split(' ')[0]} <span>{datosNegocio.nombre.split(' ').slice(1).join(' ')}</span>
         </span>
         <span class="desktop-only header-brand-sub">
           {esPersonal ? (
@@ -40,7 +41,7 @@ const esCliente = ruta === '/cliente';
           ) : esCliente ? (
             <span class="inline-flex items-center gap-1"><i class="fa-solid fa-star"></i> Portal Cliente VIP</span>
           ) : (
-            <span>{idioma === 'en' ? 'Home & Business Deliveries' : 'Envíos a domicilio y trabajo'}</span>
+            <span>{t.slogan_brand}</span>
           )}
         </span>
       </div>
@@ -50,7 +51,7 @@ const esCliente = ruta === '/cliente';
     {esPersonal ? (
       <div class="desktop-only header-group-desktop">
         <span class="header-badge-status personal">
-          <i class="fa-solid fa-tower-broadcast"></i> Consola Operativa Base Jr. Dante 260
+          <i class="fa-solid fa-tower-broadcast"></i> Consola Operativa Base <span data-negocio-direccion>{datosNegocio.direccionSede}</span>
         </span>
         <a href="/" class="btn-outline btn-compact" title="Ver Tienda Pública">
           <i class="fa-solid fa-store icon-brand-orange"></i> <span>Ver Tienda Pública</span>
@@ -79,10 +80,11 @@ const esCliente = ruta === '/cliente';
     <!-- Controles: Idioma, Tema, Botón Login y Botón Pedir -->
     <div class="header-actions-row">
       
-      <!-- Switcher Idioma (ES / EN) -->
+      <!-- Switcher Dinámico de Idiomas (Escalable para N idiomas) -->
       <div class="header-pill-group" title="Idioma / Language">
-        <a href={urlEs} class={`header-pill-btn ${idioma === 'es' ? 'active' : ''}`}>ES</a>
-        <a href={urlEn} class={`header-pill-btn ${idioma === 'en' ? 'active' : ''}`}>EN</a>
+        {Object.entries(IDIOMAS).map(([code, info]) => (
+          <a href={code === 'es' ? '/' : `/${code}`} class={`header-pill-btn ${idioma === code ? 'active' : ''}`}>{code.toUpperCase()}</a>
+        ))}
       </div>
 
       <!-- Switcher Tema (Luz / Futuro) -->

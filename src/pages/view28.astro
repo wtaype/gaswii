@@ -6,7 +6,7 @@ import '../core/wicss/witema.css';
 
 // Fixture compatible con smiles/{uid} de auth.js. Nunca se escribe en wiSmile ni Firebase.
 const smile = { uid: 'preview-valeria', nombre: 'Valeria Mendoza', usuario: 'valeria.m', email: 'valeria@example.com', rol: 'cliente', plan: 'vip', activo: true, estado: 'activo', puntos: 150, pin: 'Balón SOLGAS de 10 kg' };
-const producto = datosNegocio.productos.find(p => p.id === 'solgas-10kg')!;
+const producto = datosNegocio.productos.find(p => p.id.includes('10-kg') || p.id.includes('10kg')) || datosNegocio.productos[0] || { id: 'bal-n-solgas-premium-10-kg', imagen: '/imgwii/productos/BALON-10KG.webp', precioPEN: 65, nombre: 'Balón SOLGAS Premium 10 kg', valvula: 'Click-On' };
 const money = (n: number) => `S/ ${n.toFixed(2)}`;
 const menu = [['resumen', 'house', 'Mi resumen'], ['pedidos', 'bag-shopping', 'Mis pedidos'], ['direcciones', 'location-dot', 'Mis direcciones'], ['puntos', 'gift', 'Mis puntos'], ['comprobantes', 'file-lines', 'Comprobantes']];
 const pedidos = [{ id: 'GW-1028', fecha: '10 sep 2026', estado: 'En camino' }, { id: 'GW-0984', fecha: '12 ago 2026', estado: 'Entregado' }, { id: 'GW-0916', fecha: '15 jul 2026', estado: 'Entregado' }];

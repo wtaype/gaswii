@@ -12,9 +12,9 @@ export const COLECCION_NOTEPAD = 'notepad';
 export function getUsuarioActivo() {
   const u = getls('wiSmile') || {};
   return {
-    userId: u.uid || u.id || 'personal_local',
-    email: u.email || 'personal@solgassurquillo.com',
-    autor: u.nombre || u.usuario || 'Solgas Personal'
+    userId: u.uid || u.id || '',
+    email: u.email || '',
+    autor: u.nombre || u.usuario || ''
   };
 }
 
@@ -63,9 +63,9 @@ export function guardarNotaData(input = {}) {
     listo: esListo,
     links: Array.isArray(input.links) ? input.links : (existente.links || []),
     imagenes: Array.isArray(input.imagenes) ? input.imagenes : (existente.imagenes || []),
-    userId: usuario.userId,
-    email: usuario.email,
-    autor: usuario.autor,
+    userId: usuario.userId || existente.userId || '',
+    email: usuario.email || existente.email || '',
+    autor: usuario.autor || existente.autor || '',
     creado: esNueva ? fecha : (existente.creado || fecha),
     actualizado: fecha,
     resumen10: recortar10Palabras(input.contenido || input.titulo)

@@ -1,6 +1,7 @@
 // src/feature/personal/modulos/negocio/dataNegocio.js
-// Capa de Datos Local-First de Negocio con Sincronización en Segundo Plano con Firestore
-// Colección: 'negocio' · Documento: 'principal' · 100% JS Nativo · Integrado con @widev
+// 🎯 Capa Canónica Local-First de Negocio: 100% Directo de Firebase Firestore + Caché
+// Colección: 'negocio' · Documento: 'principal' · Cero Semillas / Cero Datos Quemados
+// Integrado con @widev y Firebase SDK
 
 import { savels, getls, formatearFechaParaInput } from '@widev';
 import { db } from '@core/servicios/firebase.js';
@@ -10,61 +11,6 @@ export const STORAGE_KEY = 'minegocio';
 export const OLD_STORAGE_KEY = 'gaswii_negocio_config';
 export const COLECCION_NEGOCIO = 'negocio';
 export const DOC_NEGOCIO_ID = 'principal';
-
-// Esquema Base Neutro y Oficial en Memoria (Cero Dependencia de JSON Estáticos)
-export const ESQUEMA_BASE_NEGOCIO = {
-  id: DOC_NEGOCIO_ID,
-  principal: true,
-  identidad: {
-    nombre: "Solgas Surquillo",
-    nombreCorto: "Solgas Surquillo",
-    razonSocial: "Distribuidor Autorizado OSINERGMIN Reg. 208492",
-    ruc: "20601234567",
-    registroOsinergmin: "Reg. 208492",
-    marcaRespaldo: "Solgas S.A.",
-    lanzamientoFecha: "2001-04-13",
-    logo: "/imgwii/logo.webp",
-    imagenSede: "/imgwii/hero.webp"
-  },
-  contacto: {
-    telefono: "+51 936 369 384",
-    telefonoFijo: "(01) 241-1234",
-    telefonoLimpio: "51936369384",
-    whatsapp: "51936369384",
-    whatsappMensaje: "¡Hola Solgas Surquillo! Deseo pedir un balón de gas para entrega a domicilio.",
-    email: "pedidos@solgassurquillo.com",
-    horario: "Lunes a Domingo: 6:00 a.m. a 11:00 p.m. (365 días)",
-    horarioEn: "Monday to Sunday: 6:00 a.m. to 11:00 p.m. (365 days)"
-  },
-  ubicacion: {
-    direccion: "Jr. Dante 260, Surquillo, Lima 15047",
-    distrito: "Surquillo",
-    ciudad: "Lima",
-    pais: "PE",
-    mapsUrl: "https://maps.app.goo.gl/s86EmxowFcKetJWL8",
-    coordenadas: {
-      lat: -12.1177408,
-      lng: -77.0226796
-    }
-  },
-  zonas: [
-    { id: "surquillo", distrito: "Surquillo", tiempoMin: 9, tiempoMax: 18, unidad: "min", tag: "Sede Central Express", activo: true },
-    { id: "miraflores", distrito: "Miraflores", tiempoMin: 15, tiempoMax: 20, unidad: "min", tag: "Ruta Directa", activo: true },
-    { id: "san-borja", distrito: "San Borja", tiempoMin: 15, tiempoMax: 22, unidad: "min", tag: "Ruta Directa", activo: true },
-    { id: "san-isidro", distrito: "San Isidro", tiempoMin: 18, tiempoMax: 25, unidad: "min", tag: "Ruta Directa", activo: true }
-  ],
-  metricas: {
-    clientes: "25K+",
-    balanza: "100%",
-    years: "25+",
-    dias: "365"
-  },
-  redes: {
-    facebook: "https://facebook.com/solgassurquillo",
-    instagram: "https://instagram.com/solgassurquillo",
-    tiktok: "https://tiktok.com/@solgassurquillo"
-  }
-};
 
 // Parser ultraligero de campos de la REST API de Firestore
 export function parseFirestoreDoc(fields = {}) {
@@ -81,12 +27,41 @@ export function parseFirestoreDoc(fields = {}) {
   return res;
 }
 
-// Lectura en tiempo de compilación (Astro SSG / Cloudflare Build) directo desde la REST API
+// Normalizador neutro de estructura (asegura llaves mínimas sin inyectar datos falsos ni semillas)
+export function normalizarConfig(c = {}) {
+  const cfg = c && typeof c === 'object' ? c : {};
+  return {
+    id: cfg.id || DOC_NEGOCIO_ID,
+    principal: Boolean(cfg.principal ?? true),
+    identidad: cfg.identidad ? { ...cfg.identidad } : {},
+    contacto: cfg.contacto ? { ...cfg.contacto } : {},
+    ubicacion: {
+      direccion: cfg.ubicacion?.direccion || '',
+      distrito: cfg.ubicacion?.distrito || '',
+      ciudad: cfg.ubicacion?.ciudad || '',
+      pais: cfg.ubicacion?.pais || 'PE',
+      mapsUrl: cfg.ubicacion?.mapsUrl || '',
+      coordenadas: {
+        lat: Number(cfg.ubicacion?.coordenadas?.lat ?? 0),
+        lng: Number(cfg.ubicacion?.coordenadas?.lng ?? 0)
+      }
+    },
+    zonas: Array.isArray(cfg.zonas) ? cfg.zonas : [],
+    metricas: cfg.metricas ? { ...cfg.metricas } : {},
+    redes: cfg.redes ? { ...cfg.redes } : {},
+    userId: cfg.userId || '',
+    email: cfg.email || '',
+    autor: cfg.autor || '',
+    actualizado: cfg.actualizado || null
+  };
+}
+
+// Lectura en tiempo de compilación (Astro SSG / Cloudflare Build) directamente desde la REST API de Firestore
 let _datosBuildFirestore = null;
 if (typeof window === 'undefined') {
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3000);
+    const timer = setTimeout(() => controller.abort(), 4000);
     const res = await fetch('https://firestore.googleapis.com/v1/projects/gaswii/databases/(default)/documents/negocio/principal', {
       signal: controller.signal
     });
@@ -96,7 +71,7 @@ if (typeof window === 'undefined') {
       _datosBuildFirestore = parseFirestoreDoc(json.fields || {});
     }
   } catch (err) {
-    console.warn('[dataNegocio] Build-time Firestore fetch diferido/fallback:', err?.message || err);
+    console.warn('[dataNegocio] Build-time Firestore fetch:', err?.message || err);
   }
 }
 
@@ -105,9 +80,9 @@ let _memoriaNegocio = null;
 export function getUsuarioActivo() {
   const u = getls('wiSmile') || {};
   return {
-    userId: u.uid || u.id || 'personal_local',
-    email: u.email || 'personal@solgassurquillo.com',
-    autor: u.nombre || u.usuario || 'Solgas Personal'
+    userId: u.uid || u.id || '',
+    email: u.email || '',
+    autor: u.nombre || u.usuario || ''
   };
 }
 
@@ -129,10 +104,19 @@ export function calcularAnosTrayectoria(fechaInput) {
   return dif > 0 ? `${dif}+` : '1';
 }
 
+/**
+ * Obtiene los datos oficiales del negocio:
+ * 1. Memoria activa en sesión.
+ * 2. Caché local persistente (localStorage 'minegocio').
+ * 3. En SSG/Build: Datos vivos directo desde Firestore REST API.
+ * 4. Neutro si aún no se ha hidratado.
+ */
 export function obtenerDatosNegocio() {
   if (_memoriaNegocio) {
     return _memoriaNegocio;
   }
+
+  // 1. En el cliente: Revisar caché local primero
   try {
     const local = getls(STORAGE_KEY) || getls(OLD_STORAGE_KEY);
     if (local && typeof local === 'object' && local.identidad && local.identidad.nombre) {
@@ -141,17 +125,20 @@ export function obtenerDatosNegocio() {
     }
   } catch (e) {}
 
-  // En Node (build time de Cloudflare/Astro): usa los datos frescos de Firestore REST
+  // 2. En Node (build time de Cloudflare/Astro): usar datos frescos de Firestore REST
   if (_datosBuildFirestore && _datosBuildFirestore.identidad?.nombre) {
     _memoriaNegocio = normalizarConfig(_datosBuildFirestore);
     return _memoriaNegocio;
   }
 
-  // Fallback canónico base
-  _memoriaNegocio = normalizarConfig(ESQUEMA_BASE_NEGOCIO);
+  // 3. Estructura neutra vacía
+  _memoriaNegocio = normalizarConfig({});
   return _memoriaNegocio;
 }
 
+/**
+ * Guarda en caché local y notifica reactivamente a la UI
+ */
 export function guardarDatosNegocioLocal(config) {
   try {
     const normalizado = normalizarConfig(config);
@@ -163,6 +150,9 @@ export function guardarDatosNegocioLocal(config) {
   } catch (e) {}
 }
 
+/**
+ * Guarda en caché local y sincroniza en segundo plano con Firestore
+ */
 export function guardarDatosNegocio(input = {}) {
   const actual = obtenerDatosNegocio();
   const usuario = getUsuarioActivo();
@@ -198,9 +188,9 @@ export function guardarDatosNegocio(input = {}) {
       ...actual.redes,
       ...(input.redes || {})
     },
-    userId: usuario.userId,
-    email: usuario.email,
-    autor: usuario.autor
+    userId: usuario.userId || actual.userId || '',
+    email: usuario.email || actual.email || '',
+    autor: usuario.autor || actual.autor || ''
   };
 
   guardarDatosNegocioLocal(configActualizada);
@@ -211,7 +201,7 @@ export function guardarDatosNegocio(input = {}) {
   return configActualizada;
 }
 
-// Transforma la fecha a Timestamp nativo de Firestore
+// Transforma la fecha a Timestamp nativo y persiste en Firestore
 async function sincronizarNegocioFirestore(config, fechaStr) {
   if (!db) return;
   try {
@@ -240,26 +230,22 @@ async function sincronizarNegocioFirestore(config, fechaStr) {
       actualizado: serverTimestamp()
     };
 
-    // Reemplaza el documento completo para eliminar campos planos huérfanos
+    // Reemplaza el documento completo en la colección 'negocio'
     await setDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID), payload);
   } catch (err) {
     console.warn('[dataNegocio] Sincronización diferida Firestore:', err?.message || err);
   }
 }
 
-// Carga inicial reactiva desde Firestore si existe
+/**
+ * Carga datos frescos desde Firestore en cliente y actualiza la caché local
+ */
 export async function sincronizarDesdeFirestore() {
   if (!db) return null;
   try {
     const snap = await getDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID));
     if (snap.exists()) {
       const data = snap.data();
-      // Validar si el documento en Firestore está corrupto o incompleto
-      if (!data.identidad || !data.identidad.nombre) {
-        const canónico = normalizarConfig(ESQUEMA_BASE_NEGOCIO);
-        guardarDatosNegocio(canónico);
-        return canónico;
-      }
       let fechaLanz = "";
       if (data.identidad?.lanzamiento) {
         fechaLanz = formatearFechaParaInput(data.identidad.lanzamiento);
@@ -275,11 +261,6 @@ export async function sincronizarDesdeFirestore() {
       });
       guardarDatosNegocioLocal(normalizado);
       return normalizado;
-    } else {
-      // Si no existe, inicializar en Firestore con la estructura canónica oficial
-      const canónico = normalizarConfig(ESQUEMA_BASE_NEGOCIO);
-      guardarDatosNegocio(canónico);
-      return canónico;
     }
   } catch (err) {
     console.warn('[dataNegocio] Lectura Firestore:', err?.message || err);
@@ -288,17 +269,3 @@ export async function sincronizarDesdeFirestore() {
 }
 
 export const consultarNegocioDesdeFirestore = sincronizarDesdeFirestore;
-
-function normalizarConfig(c = {}) {
-  const base = JSON.parse(JSON.stringify(ESQUEMA_BASE_NEGOCIO));
-  return {
-    ...base,
-    ...c,
-    identidad: { ...base.identidad, ...(c.identidad || {}) },
-    contacto: { ...base.contacto, ...(c.contacto || {}) },
-    ubicacion: { ...base.ubicacion, ...(c.ubicacion || {}) },
-    zonas: Array.isArray(c.zonas) && c.zonas.length > 0 ? c.zonas : base.zonas,
-    metricas: { ...base.metricas, ...(c.metricas || {}) },
-    redes: { ...base.redes, ...(c.redes || {}) }
-  };
-}

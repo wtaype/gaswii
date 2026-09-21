@@ -2,7 +2,8 @@
 // src/core/componentes/MobileDrawer.astro
 // DRAWER MÓVIL INTERACTIVO - Solgas Surquillo (100% Cero CSS Inline)
 import app from '../../app.js';
-import { getI18n, type Idioma } from '../idioma/idioma';
+import { datosNegocio } from '../../negocio.js';
+import { getI18n, IDIOMAS, type Idioma } from '../idioma/idioma';
 
 interface Props {
   idioma?: Idioma;
@@ -11,7 +12,8 @@ interface Props {
 
 const { idioma = 'es', ruta = '/' } = Astro.props;
 const t = getI18n(idioma).nav;
-const baseHash = idioma === 'en' ? '/en' : (ruta !== '/' ? '/' : '');
+const baseHash = idioma === 'es' ? (ruta !== '/' ? '/' : '') : `/${idioma}`;
+const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.horario;
 ---
 
 <!-- BACKDROP PARA DRAWER MÓVIL -->
@@ -21,14 +23,15 @@ const baseHash = idioma === 'en' ? '/en' : (ruta !== '/' ? '/' : '');
 <aside class="mobile-drawer" id="mobileDrawer">
   <div class="drawer-brand-header">
     <div class="drawer-brand-box">
-      <img src="/imgwii/logo.webp" alt="Logo Solgas" width="44" height="44" class="drawer-logo-img" />
+      <img src={datosNegocio.logo} alt={datosNegocio.nombre} width="44" height="44" class="drawer-logo-img" />
     </div>
     
     <div class="flex items-center gap-2">
-      <!-- Selector Bilingüe Móvil (ES / EN) -->
+      <!-- Selector Dinámico de Idiomas Móvil -->
       <div class="header-pill-group" title="Idioma / Language">
-        <a href="/" class={`header-pill-btn ${idioma === 'es' ? 'active' : ''}`}>ES</a>
-        <a href="/en" class={`header-pill-btn ${idioma === 'en' ? 'active' : ''}`}>EN</a>
+        {Object.entries(IDIOMAS).map(([code, info]) => (
+          <a href={code === 'es' ? '/' : `/${code}`} class={`header-pill-btn ${idioma === code ? 'active' : ''}`}>{code.toUpperCase()}</a>
+        ))}
       </div>
 
       <button onclick="window.cerrarDrawer && window.cerrarDrawer()" aria-label="Cerrar Menú" class="drawer-close-btn">
@@ -74,12 +77,12 @@ const baseHash = idioma === 'en' ? '/en' : (ruta !== '/' ? '/' : '');
     </button>
 
     <!-- Enlace Telefónico Rápido -->
-    <a href={`tel:${app.telefonoLimpio}`} class="btn-outline w-full justify-center">
-      <i class="fa-solid fa-phone"></i> <span>{app.telefono}</span>
+    <a href={`tel:${datosNegocio.telefonoLimpio}`} class="btn-outline w-full justify-center" data-negocio-tel-link>
+      <i class="fa-solid fa-phone"></i> <span data-negocio-tel-text>{datosNegocio.telefonoMostrado}</span>
     </a>
 
     <div class="text-center font-bold text-muted text-xs">
-      <i class="fa-solid fa-clock"></i> <span>{idioma === 'en' ? '6:00 a.m. to 11:00 p.m. (365 days)' : '6:00 a.m. a 11:00 p.m. (365 días)'}</span>
+      <i class="fa-solid fa-clock"></i> <span data-negocio-horario>{horarioTexto}</span>
     </div>
   </div>
 </aside>

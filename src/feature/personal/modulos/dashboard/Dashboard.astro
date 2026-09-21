@@ -2,11 +2,21 @@
 // src/feature/personal/modulos/dashboard/Dashboard.astro
 // Módulo 1: Panel General / Dashboard de Operaciones para el Dueño
 import { 
-  estadisticasDemo, 
-  productosResumenDemo, 
   clientesRecientesDemo, 
   notasInicialesDemo 
 } from '../../data/personalData.js';
+import { datosNegocio } from '@/negocio.js';
+
+const precioBalon10 = datosNegocio.productos[0]?.precioPEN 
+  ? `S/ ${Number(datosNegocio.productos[0].precioPEN).toFixed(2)}` 
+  : 'S/ 65.00';
+
+const estadisticas = [
+  { id: 'stat1', titulo: precioBalon10, subtitulo: `${datosNegocio.productos[0]?.nombre || 'Balón 10kg'} (Precio Web)`, icono: 'fa-solid fa-fire-burner', color: 'orange' },
+  { id: 'stat2', titulo: 'S/ 2,840.00', subtitulo: 'Facturado SUNAT', icono: 'fa-solid fa-file-invoice-dollar', color: 'green' },
+  { id: 'stat3', titulo: '124 Clientes', subtitulo: 'Registrados en Gaswii', icono: 'fa-solid fa-address-book', color: 'blue' },
+  { id: 'stat4', titulo: '3 Notas', subtitulo: 'En tu Notepad', icono: 'fa-solid fa-note-sticky', color: 'purple' }
+];
 ---
 
 <section class="ps-panel active" id="panel-dashboard">
@@ -18,7 +28,7 @@ import {
     </div>
     <div class="ps-header-actions">
       <a 
-        href="https://wa.me/51940200400" 
+        href={`https://wa.me/${datosNegocio.telefonoLimpio || '51936369384'}`}
         target="_blank" 
         rel="noopener noreferrer" 
         class="ps-btn ps-btn-secondary"
@@ -34,7 +44,7 @@ import {
 
   <!-- Métricas Principales (KPIs) -->
   <div class="db-stats-grid">
-    {estadisticasDemo.map((st) => (
+    {estadisticas.map((st) => (
       <div class="db-stat-card">
         <div class={`db-stat-icon ${st.color}`}>
           <i class={st.icono}></i>
@@ -77,14 +87,14 @@ import {
             </tr>
           </thead>
           <tbody>
-            {productosResumenDemo.map((p) => (
+            {datosNegocio.productos.map((p) => (
               <tr>
                 <td><strong>{p.nombre}</strong></td>
-                <td><span class="ps-badge ps-badge-blue">{p.tipo}</span></td>
-                <td><strong style="color:var(--brand-orange); font-size:var(--fz_m);">S/ {p.precio}</strong></td>
-                <td>{p.envase === '0.00' ? '—' : `S/ ${p.envase}`}</td>
+                <td><span class="ps-badge ps-badge-blue">{p.tipo || p.tipoCategoria || 'Gas GLP'}</span></td>
+                <td><strong style="color:var(--brand-orange); font-size:var(--fz_m);">S/ {Number(p.precioPEN || 0).toFixed(2)}</strong></td>
+                <td>{p.precioEnvase && p.precioEnvase > 0 ? `S/ ${Number(p.precioEnvase).toFixed(2)}` : '—'}</td>
                 <td>{p.stock} unid.</td>
-                <td><span class="ps-badge ps-badge-success">{p.estado}</span></td>
+                <td><span class="ps-badge ps-badge-success">{p.estado || 'Activo'}</span></td>
               </tr>
             ))}
           </tbody>
