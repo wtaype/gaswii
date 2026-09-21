@@ -1,68 +1,60 @@
 // src/negocio.js
-// 🎯 Fuente Única de Verdad para Gaswii (Solgas Surquillo)
-// Cualquier cambio de precios, teléfonos, distritos o sedes se realiza aquí
-// y se refleja en toda la aplicación, modales, WhatsApp y Schemas de Google.
+// 🎯 Puente Reactivo Conectado a la Colección Firestore 'negocio' y dataNegocio.js
+// Permite que la tienda pública lea siempre los datos más actualizados registrados en Mi Negocio
+
+import { obtenerDatosNegocio, calcularAnosTrayectoria } from './feature/personal/modulos/negocio/dataNegocio.js';
 
 export const datosNegocio = {
-  nombre: "Solgas Surquillo",
-  nombreCorto: "Solgas Surquillo",
-  razonSocial: "Distribuidor Autorizado OSINERGMIN Reg. 208492",
-  autorizacion: "Distribuidor Autorizado OSINERGMIN",
-  registroOsinergmin: "Reg. 208492",
-  marcaRespaldo: "Solgas S.A.",
-  experienciaAnos: 25,
-  telefono: "+51 936 369 384",
-  telefonoMostrado: "+51 936 369 384",
-  telefonoLimpio: "51936369384",
-  telefonoRaw: "51936369384",
-  direccionSede: "Jr. Dante 260, Surquillo, Lima 15047",
-  distritoSede: "Surquillo",
-  ciudad: "Lima",
-  pais: "PE",
-  mapsUrl: "https://maps.app.goo.gl/s86EmxowFcKetJWL8",
-  coordenadas: {
-    lat: -12.1177408,
-    lng: -77.0226796,
-    string: "-12.1177408,-77.0226796"
+  get nombre() { return obtenerDatosNegocio().identidad?.nombre || ''; },
+  get nombreCorto() { return obtenerDatosNegocio().identidad?.nombreCorto || ''; },
+  get razonSocial() { return obtenerDatosNegocio().identidad?.razonSocial || ''; },
+  get autorizacion() { return obtenerDatosNegocio().identidad?.razonSocial || ''; },
+  get ruc() { return obtenerDatosNegocio().identidad?.ruc || ''; },
+  get registroOsinergmin() { return obtenerDatosNegocio().identidad?.registroOsinergmin || ''; },
+  get marcaRespaldo() { return obtenerDatosNegocio().identidad?.marcaRespaldo || ''; },
+  get logo() { return obtenerDatosNegocio().identidad?.logo || ''; },
+  get imagenSede() { return obtenerDatosNegocio().identidad?.imagenSede || ''; },
+  get experienciaAnos() {
+    const raw = calcularAnosTrayectoria(obtenerDatosNegocio().identidad?.lanzamientoFecha);
+    return parseInt(raw, 10) || 0;
   },
-  horario: "Lunes a Domingo: 6:00 a.m. a 11:00 p.m. (365 días)",
-  horarioEn: "Monday to Sunday: 6:00 a.m. to 11:00 p.m. (365 days)",
-  
-  // Cobertura con tiempos reales de despacho desde Jr. Dante 260
-  distritos: [
-    { 
-      id: "surquillo", 
-      nombre: "Surquillo", 
-      tiempo: "12 - 18 min", 
-      sede: true, 
-      tag: "Sede Central Express",
-      tagEn: "Central Hub Express"
-    },
-    { 
-      id: "miraflores", 
-      nombre: "Miraflores", 
-      tiempo: "15 - 20 min", 
-      sede: false, 
-      tag: "Ruta Directa",
-      tagEn: "Direct Route"
-    },
-    { 
-      id: "san-borja", 
-      nombre: "San Borja", 
-      tiempo: "15 - 22 min", 
-      sede: false, 
-      tag: "Ruta Directa",
-      tagEn: "Direct Route"
-    },
-    { 
-      id: "san-isidro", 
-      nombre: "San Isidro", 
-      tiempo: "18 - 25 min", 
-      sede: false, 
-      tag: "Ruta Directa",
-      tagEn: "Direct Route"
-    }
-  ],
+  get telefono() { return obtenerDatosNegocio().contacto?.telefono || ''; },
+  get telefonoMostrado() { return obtenerDatosNegocio().contacto?.telefono || ''; },
+  get telefonoFijo() { return obtenerDatosNegocio().contacto?.telefonoFijo || ''; },
+  get telefonoLimpio() {
+    const c = obtenerDatosNegocio().contacto || {};
+    return c.telefonoLimpio || (c.telefono || '').replace(/\D/g, '');
+  },
+  get telefonoRaw() {
+    const c = obtenerDatosNegocio().contacto || {};
+    return c.telefonoLimpio || (c.telefono || '').replace(/\D/g, '');
+  },
+  get whatsapp() { return obtenerDatosNegocio().contacto?.whatsapp || ''; },
+  get whatsappMensaje() { return obtenerDatosNegocio().contacto?.whatsappMensaje || ''; },
+  get email() { return obtenerDatosNegocio().contacto?.email || ''; },
+  get direccionSede() { return obtenerDatosNegocio().ubicacion?.direccion || ''; },
+  get distritoSede() { return obtenerDatosNegocio().ubicacion?.distrito || ''; },
+  get ciudad() { return obtenerDatosNegocio().ubicacion?.ciudad || ''; },
+  get pais() { return obtenerDatosNegocio().ubicacion?.pais || 'PE'; },
+  get mapsUrl() { return obtenerDatosNegocio().ubicacion?.mapsUrl || ''; },
+  get coordenadas() { return obtenerDatosNegocio().ubicacion?.coordenadas || { lat: 0, lng: 0 }; },
+  get horario() { return obtenerDatosNegocio().contacto?.horario || ''; },
+  get horarioEn() { return obtenerDatosNegocio().contacto?.horarioEn || ''; },
+  get metricas() { return obtenerDatosNegocio().metricas || { clientes: '', balanza: '', years: '', dias: '' }; },
+  get redes() { return obtenerDatosNegocio().redes || { facebook: '', instagram: '', tiktok: '' }; },
+  /**
+   * @returns {{ id: string, nombre: string, tiempo: string, tag: string, tagEn: string }[]}
+   */
+  get distritos() {
+    const zonas = obtenerDatosNegocio().zonas || [];
+    return zonas.filter(z => z.activo !== false).map(z => ({
+      id: z.id || (z.distrito || '').toLowerCase().replace(/\s+/g, '-'),
+      nombre: z.distrito || '',
+      tiempo: `${z.tiempoMin || 0} - ${z.tiempoMax || 0} ${z.unidad || 'min'}`,
+      tag: z.tag || '',
+      tagEn: z.tag || ''
+    }));
+  },
 
   // Catálogo Oficial de Cilindros y Accesorios de Gas GLP
   productos: [

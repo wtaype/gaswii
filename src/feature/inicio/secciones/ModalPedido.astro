@@ -67,7 +67,7 @@ const t = getI18n(idioma);
         <div class="form-group">
           <label for="pedDistrito"><i class="fa-solid fa-location-dot"></i> {t.modales.distrito_label}</label>
           <select id="pedDistrito" class="form-select" required>
-            {negocio.distritos.map(d => (
+            {negocio.distritos.map((d: any) => (
               <option value={d.nombre}>{d.nombre} ({d.tiempo})</option>
             ))}
           </select>

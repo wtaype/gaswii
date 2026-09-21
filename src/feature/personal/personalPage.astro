@@ -8,6 +8,8 @@ import Dashboard from './modulos/dashboard/Dashboard.astro';
 import dashboardCss from './modulos/dashboard/dashboard.css?inline';
 import Notepad from './modulos/notepad/Notepad.astro';
 import notepadCss from './modulos/notepad/notepad.css?inline';
+import Negocio from './modulos/negocio/Negocio.astro';
+import negocioCss from './modulos/negocio/negocio.css?inline';
 import { getModulosActivos, moduloDefecto } from './modulos.js';
 
 interface Props {
@@ -18,18 +20,21 @@ interface Props {
 const { idioma = 'es', moduloActivo = moduloDefecto } = Astro.props;
 
 // Módulos que se implementarán progresivamente en fases posteriores
-const modulosPendientes = getModulosActivos().filter(m => m.id !== 'dashboard' && m.id !== 'notepad');
+const modulosPendientes = getModulosActivos().filter(m => m.id !== 'dashboard' && m.id !== 'notepad' && m.id !== 'negocio');
 ---
 
 <Sonrisa titulo="Dashboard del Dueño · Solgas Surquillo" moduloActivo={moduloActivo} idioma={idioma}>
   <!-- Inyección de CSS de los módulos activos -->
-  <style slot="modulo-css" is:global set:html={dashboardCss + '\n' + notepadCss}></style>
+  <style slot="modulo-css" is:global set:html={dashboardCss + '\n' + notepadCss + '\n' + negocioCss}></style>
 
   <!-- MÓDULO 1: DASHBOARD -->
   <Dashboard />
 
   <!-- MÓDULO 2: NOTEPAD (70% Canvas / 30% Lista) -->
   <Notepad />
+
+  <!-- MÓDULO 3: MI NEGOCIO (Ficha de Sede, Canales y Zonas) -->
+  <Negocio />
 
   <!-- CONTENEDORES LISTOS PARA MÓDULOS EN FASES SIGUIENTES -->
   {modulosPendientes.map((m) => (

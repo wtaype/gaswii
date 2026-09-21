@@ -62,7 +62,7 @@ const t = getI18n(idioma).hero;
           </div>
           
           <div class="hero-district-grid" id="districtSelector">
-            {datosNegocio.distritos.map((dist, idx) => (
+            {datosNegocio.distritos.map((dist: any, idx: number) => (
               <button 
                 type="button"
                 class={`hero-district-btn ${idx === 0 ? 'active' : ''}`}
