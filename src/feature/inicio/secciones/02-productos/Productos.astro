@@ -1,0 +1,428 @@
+---
+// src/feature/inicio/secciones/02-productos/Productos.astro
+// 2. SECCIÓN PRODUCTOS CRO AUTÓNOMA · CATÁLOGO OFICIAL SOLGAS
+// Diseño Exacto de Referencia · Consumo 100% Real de Firestore + Caché Local-First
+import { datosNegocio, consultarProductosFirestoreFresco } from '../../../../negocio.js';
+import { resolverIdioma } from '../../idioma/idioma.js';
+import es from './idioma/es.json';
+import en from './idioma/en.json';
+import prodsCss from './productos.css?inline';
+
+interface Props {
+  idioma?: string;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = resolverIdioma({ es, en }, idioma);
+const esEn = idioma === 'en';
+
+// Consulta fresca directa de Firestore (0 semillas ficticias)
+const prodsActivos = await consultarProductosFirestoreFresco();
+const telefonoLimpio = datosNegocio.telefonoLimpio;
+const whatsappNumero = datosNegocio.whatsapp;
+---
+
+<style is:global set:html={prodsCss}></style>
+
+<section id="productos" class="sec-productos">
+  <div class="sec-prods-container">
+    
+    <!-- Encabezado de la Sección -->
+    <header class="sec-prods-header">
+      <span class="sec-prods-badge">
+        <i class="fa-solid fa-certificate"></i> {t.badge}
+      </span>
+      <h2 class="sec-prods-title">{t.titulo}</h2>
+      <p class="sec-prods-sub">{t.subtitulo}</p>
+    </header>
+
+    <!-- Grid de Balones (4 Columnas según Imagen de Referencia) -->
+    {prodsActivos.length > 0 ? (
+      <div 
+        class="sec-prods-grid" 
+        id="publicProdsGrid"
+        data-es-en={esEn ? 'true' : 'false'}
+        data-ws-num={whatsappNumero}
+        data-tel-limpio={telefonoLimpio}
+        data-labels={JSON.stringify(t)}
+      >
+        {prodsActivos.map((p: any) => {
+          const nombre = esEn && p.nombreEn ? p.nombreEn : p.nombre;
+          const peso = esEn && p.pesoEn ? p.pesoEn : (p.peso || '10 kg');
+          const pesoFull = esEn && p.pesoFullEn ? p.pesoFullEn : p.pesoFull;
+          const valvula = esEn && p.valvulaEn ? p.valvulaEn : (p.valvula || 'Click-On');
+          const seguridad = esEn && p.seguridadEn ? p.seguridadEn : (p.seguridad || 'Garantía desde planta');
+          const garantias = (esEn && Array.isArray(p.caracteristicasEn) && p.caracteristicasEn.length > 0)
+            ? p.caracteristicasEn
+            : (Array.isArray(p.caracteristicas) ? p.caracteristicas : []);
+          
+          // Clasificación visual de tarjetas
+          const es45 = p.id.includes('45') || nombre.includes('45');
+          const esMasgas = p.id.includes('masgas') || nombre.toLowerCase().includes('masgas');
+          const esRegulador = p.tipoCategoria === 'accesorio' || nombre.toLowerCase().includes('regulador');
+
+          let pillHighlightTexto = esEn ? 'Most Popular' : 'Más Pedido';
+          let pillHighlightClase = 'orange';
+          let pillHighlightIcon = 'fa-solid fa-star';
+          let pillContexto = esEn ? 'Home' : 'Hogar';
+          let precioCaption = t.precio_exacto_label;
+
+          if (es45) {
+            pillHighlightTexto = esEn ? 'Commercial' : 'Comercial';
+            pillHighlightClase = 'blue';
+            pillHighlightIcon = 'fa-solid fa-store';
+            pillContexto = esEn ? 'Business' : 'Negocios';
+            precioCaption = t.precio_comercial_label;
+          } else if (esMasgas) {
+            pillHighlightTexto = esEn ? 'Best Value' : 'Mejor Precio';
+            pillHighlightClase = 'green';
+            pillHighlightIcon = 'fa-solid fa-tag';
+            pillContexto = esEn ? 'Savings' : 'Ahorro';
+            precioCaption = t.precio_ahorro_label;
+          } else if (esRegulador) {
+            pillHighlightTexto = esEn ? 'Anti-Leak' : 'Antifugas';
+            pillHighlightClase = 'amber';
+            pillHighlightIcon = 'fa-solid fa-shield-halved';
+            pillContexto = esEn ? 'Safety' : 'Seguridad';
+            precioCaption = t.precio_seguridad_label;
+          }
+
+          // Marca para encabezado de garantías
+          const nombreMarca = esMasgas ? 'MASGAS' : 'SOLGAS';
+          const guaranteeHeader = `${nombreMarca} ${t.garantia_titulo.toUpperCase()}`;
+
+          // Mensaje de WhatsApp
+          const wsMsg = esEn
+            ? `Hello Solgas Surquillo, I would like to order: ${nombre}`
+            : `Hola Solgas Surquillo, deseo pedir: ${nombre}`;
+          const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+
+          return (
+            <article class="card-balon" data-prod-id={p.id}>
+              <!-- Cabecera: Badges Superior Izquierdo y Derecho -->
+              <div class="card-header-pills">
+                <span class={`pill-highlight ${pillHighlightClase}`}>
+                  <i class={pillHighlightIcon}></i>
+                  <span>{pillHighlightTexto}</span>
+                </span>
+                <span class="pill-context">{pillContexto}</span>
+              </div>
+
+              <!-- Imagen en Caja Blanca con Pastilla Flotante de Peso -->
+              <div class="card-img-box">
+                <img 
+                  src={p.imagen} 
+                  alt={nombre} 
+                  class="card-img" 
+                  loading="lazy" 
+                  width="220"
+                  height="160"
+                />
+                <span class="card-weight-pill">
+                  <span class="card-weight-dot"></span>
+                  <span>{peso}</span>
+                </span>
+              </div>
+
+              <!-- Título Oficial -->
+              <h3 class="card-title">{nombre}</h3>
+
+              <!-- 3 Filas de Especificaciones Clave con Iconos de Color -->
+              <div class="card-specs-list">
+                <div class="card-spec-row">
+                  <i class="fa-solid fa-fire card-spec-icon valve"></i>
+                  <span><strong class="card-spec-label">{t.valvula_label}</strong>{valvula}</span>
+                </div>
+                <div class="card-spec-row">
+                  <i class="fa-solid fa-scale-balanced card-spec-icon weight"></i>
+                  <span><strong class="card-spec-label">{t.peso_label}</strong>{pesoFull || peso}</span>
+                </div>
+                <div class="card-spec-row">
+                  <i class="fa-solid fa-shield-halved card-spec-icon safety"></i>
+                  <span><strong class="card-spec-label">{t.seguridad_label}</strong>{seguridad}</span>
+                </div>
+              </div>
+
+              <!-- Checklist de Garantías Oficiales -->
+              <span class="card-guarantee-heading">{guaranteeHeader}</span>
+              <ul class="card-guarantee-list">
+                {garantias.slice(0, 4).map((g: string) => (
+                  <li class="card-guarantee-item">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>{g}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <!-- Bloque Inferior: Precio + Delivery -->
+              <div class="card-price-row">
+                <div class="card-price-col-left">
+                  <span class="card-price-caption">{precioCaption}</span>
+                  <div class="card-price-value">
+                    <span class="card-price-curr">S/</span>
+                    <span data-price-id={p.id}>{p.precioPEN ? p.precioPEN.toFixed(2) : (p.precio ? Number(p.precio).toFixed(2) : '0.00')}</span>
+                  </div>
+                </div>
+
+                <div class="card-price-col-right">
+                  <span class="card-delivery-caption">{t.delivery_label}</span>
+                  <span class="card-delivery-badge">{t.delivery_incluido}</span>
+                </div>
+              </div>
+
+              <!-- Botones de Acción Dual: WhatsApp (80%) + Teléfono (20%) -->
+              <div class="card-actions">
+                <a 
+                  href={wsLink} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="btn-card-ws"
+                  title="Atención directa por WhatsApp"
+                >
+                  <i class="fa-brands fa-whatsapp"></i>
+                  <span>{t.btn_ws}</span>
+                </a>
+
+                <a 
+                  href={`tel:${telefonoLimpio}`} 
+                  class="btn-card-call"
+                  title={t.btn_llamar}
+                >
+                  <i class="fa-solid fa-phone"></i>
+                </a>
+              </div>
+
+            </article>
+          );
+        })}
+      </div>
+    ) : (
+      <div style="text-align: center; padding: 40px; color: var(--muted, #94a3b8);">
+        <p>{t.sin_productos}</p>
+      </div>
+    )}
+
+  </div>
+</section>
+
+<!-- Reactividad Local-First: Reconciliación en tiempo real con la caché -->
+<script>
+  function renderCardClient(p, esEn, labels, wsNum, telLimpio) {
+    const id = String(p.id || p.slug || '');
+    
+    const getLangVal = (field) => {
+      if (typeof field === 'object' && field !== null) {
+        return esEn ? (field.en || field.es || '') : (field.es || field.en || '');
+      }
+      return String(field || '');
+    };
+
+    const nombre = getLangVal(p.nombre) || p.nombre || '';
+    const peso = getLangVal(p.peso) || p.peso || '10 kg';
+    const pesoFull = getLangVal(p.pesoFull) || p.pesoFull;
+    const valvula = getLangVal(p.valvula) || p.valvula || 'Click-On';
+    const seguridad = getLangVal(p.seguridad) || p.seguridad || 'Garantía desde planta';
+
+    let garantias = [];
+    if (p.garantias) {
+      if (esEn && Array.isArray(p.garantias.en) && p.garantias.en.length > 0) {
+        garantias = p.garantias.en;
+      } else if (Array.isArray(p.garantias.es)) {
+        garantias = p.garantias.es;
+      } else if (Array.isArray(p.garantias)) {
+        garantias = p.garantias;
+      }
+    } else if (Array.isArray(p.caracteristicas)) {
+      garantias = esEn && Array.isArray(p.caracteristicasEn) && p.caracteristicasEn.length > 0 ? p.caracteristicasEn : p.caracteristicas;
+    }
+
+    const es45 = id.includes('45') || nombre.includes('45');
+    const esMasgas = id.includes('masgas') || nombre.toLowerCase().includes('masgas');
+    const esRegulador = p.tipoCategoria === 'accesorio' || nombre.toLowerCase().includes('regulador');
+
+    let pillHighlightTexto = esEn ? 'Most Popular' : 'Más Pedido';
+    let pillHighlightClase = 'orange';
+    let pillHighlightIcon = 'fa-solid fa-star';
+    let pillContexto = esEn ? 'Home' : 'Hogar';
+    let precioCaption = labels.precio_exacto_label || 'Garantía de peso exacto';
+
+    if (es45) {
+      pillHighlightTexto = esEn ? 'Commercial' : 'Comercial';
+      pillHighlightClase = 'blue';
+      pillHighlightIcon = 'fa-solid fa-store';
+      pillContexto = esEn ? 'Business' : 'Negocios';
+      precioCaption = labels.precio_comercial_label || 'Tarifa especial para negocios';
+    } else if (esMasgas) {
+      pillHighlightTexto = esEn ? 'Best Value' : 'Mejor Precio';
+      pillHighlightClase = 'green';
+      pillHighlightIcon = 'fa-solid fa-tag';
+      pillContexto = esEn ? 'Savings' : 'Ahorro';
+      precioCaption = labels.precio_ahorro_label || 'Opción más económica';
+    } else if (esRegulador) {
+      pillHighlightTexto = esEn ? 'Anti-Leak' : 'Antifugas';
+      pillHighlightClase = 'amber';
+      pillHighlightIcon = 'fa-solid fa-shield-halved';
+      pillContexto = esEn ? 'Safety' : 'Seguridad';
+      precioCaption = labels.precio_seguridad_label || 'Instalación y prueba gratis';
+    }
+
+    const nombreMarca = esMasgas ? 'MASGAS' : 'SOLGAS';
+    const guaranteeHeader = `${nombreMarca} ${(labels.garantia_titulo || 'Garantía Oficial').toUpperCase()}`;
+    const precioNum = Number(p.precio ?? p.precioPEN ?? 0).toFixed(2);
+
+    const wsMsg = esEn
+      ? `Hello Solgas Surquillo, I would like to order: ${nombre}`
+      : `Hola Solgas Surquillo, deseo pedir: ${nombre}`;
+    const wsLink = `https://wa.me/${wsNum}?text=${encodeURIComponent(wsMsg)}`;
+
+    const garantiasHtml = garantias.slice(0, 4).map(g => `
+      <li class="card-guarantee-item">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>${g}</span>
+      </li>
+    `).join('');
+
+    return `
+      <article class="card-balon" data-prod-id="${id}">
+        <div class="card-header-pills">
+          <span class="pill-highlight ${pillHighlightClase}">
+            <i class="${pillHighlightIcon}"></i>
+            <span>${pillHighlightTexto}</span>
+          </span>
+          <span class="pill-context">${pillContexto}</span>
+        </div>
+
+        <div class="card-img-box">
+          <img 
+            src="${p.imagen || '/imgwii/productos/BALON-10KG.webp'}" 
+            alt="${nombre}" 
+            class="card-img" 
+            loading="lazy" 
+            width="220"
+            height="160"
+          />
+          <span class="card-weight-pill">
+            <span class="card-weight-dot"></span>
+            <span>${peso}</span>
+          </span>
+        </div>
+
+        <h3 class="card-title">${nombre}</h3>
+
+        <div class="card-specs-list">
+          <div class="card-spec-row">
+            <i class="fa-solid fa-fire card-spec-icon valve"></i>
+            <span><strong class="card-spec-label">${labels.valvula_label || 'Válvula:'}</strong>${valvula}</span>
+          </div>
+          <div class="card-spec-row">
+            <i class="fa-solid fa-scale-balanced card-spec-icon weight"></i>
+            <span><strong class="card-spec-label">${labels.peso_label || 'Peso:'}</strong>${pesoFull || peso}</span>
+          </div>
+          <div class="card-spec-row">
+            <i class="fa-solid fa-shield-halved card-spec-icon safety"></i>
+            <span><strong class="card-spec-label">${labels.seguridad_label || 'Seguridad:'}</strong>${seguridad}</span>
+          </div>
+        </div>
+
+        <span class="card-guarantee-heading">${guaranteeHeader}</span>
+        <ul class="card-guarantee-list">
+          ${garantiasHtml}
+        </ul>
+
+        <div class="card-price-row">
+          <div class="card-price-col-left">
+            <span class="card-price-caption">${precioCaption}</span>
+            <div class="card-price-value">
+              <span class="card-price-curr">S/</span>
+              <span data-price-id="${id}">${precioNum}</span>
+            </div>
+          </div>
+
+          <div class="card-price-col-right">
+            <span class="card-delivery-caption">${labels.delivery_label || 'Envío a domicilio'}</span>
+            <span class="card-delivery-badge">${labels.delivery_incluido || 'Incluido'}</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <a 
+            href="${wsLink}" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="btn-card-ws"
+            title="Atención directa por WhatsApp"
+          >
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>${labels.btn_ws || 'Pedir por WhatsApp'}</span>
+          </a>
+
+          <a 
+            href="tel:${telLimpio}" 
+            class="btn-card-call"
+            title="${labels.btn_llamar || 'Llamar a sede'}"
+          >
+            <i class="fa-solid fa-phone"></i>
+          </a>
+        </div>
+      </article>
+    `;
+  }
+
+  function sincronizarCatalogoLocalFirst() {
+    try {
+      const grid = document.getElementById('publicProdsGrid');
+      if (!grid) return;
+
+      const raw = localStorage.getItem('gaswii_productos');
+      if (!raw) return;
+      const prods = JSON.parse(raw);
+      if (!Array.isArray(prods) || prods.length === 0) return;
+
+      const activos = prods
+        .filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo')
+        .sort((a, b) => (Number(a.orden ?? 999)) - (Number(b.orden ?? 999)));
+
+      const domCards = Array.from(grid.querySelectorAll('.card-balon'));
+      const domIds = domCards.map(c => c.getAttribute('data-prod-id'));
+      const cacheIds = activos.map(p => String(p.id || p.slug));
+
+      const sonIguales = domIds.length === cacheIds.length && 
+        domIds.every((id, idx) => id === cacheIds[idx]);
+
+      if (sonIguales) {
+        activos.forEach(p => {
+          const id = String(p.id || p.slug);
+          const el = grid.querySelector(`[data-price-id="${id}"]`);
+          if (el && p.precio !== undefined) {
+            el.textContent = Number(p.precio).toFixed(2);
+          }
+        });
+        return;
+      }
+
+      // Reconstruir si la cantidad o los IDs difieren
+      const esEn = grid.getAttribute('data-es-en') === 'true';
+      const wsNum = grid.getAttribute('data-ws-num') || '';
+      const telLimpio = grid.getAttribute('data-tel-limpio') || '';
+      let labels = {};
+      try {
+        labels = JSON.parse(grid.getAttribute('data-labels') || '{}');
+      } catch (e) {}
+
+      grid.innerHTML = activos.map(p => renderCardClient(p, esEn, labels, wsNum, telLimpio)).join('');
+    } catch (e) {
+      console.warn('[catalogo] Sincronización Local-First:', e);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', sincronizarCatalogoLocalFirst);
+  } else {
+    sincronizarCatalogoLocalFirst();
+  }
+
+  window.addEventListener('gaswii:productos-actualizados', sincronizarCatalogoLocalFirst);
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'gaswii_productos') sincronizarCatalogoLocalFirst();
+  });
+</script>

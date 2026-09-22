@@ -12,6 +12,8 @@ import Negocio from './modulos/negocio/Negocio.astro';
 import negocioCss from './modulos/negocio/negocio.css?inline';
 import Correo from './modulos/correo/Correo.astro';
 import correoCss from './modulos/correo/correo.css?inline';
+import Productos from './modulos/productos/Productos.astro';
+import productosCss from './modulos/productos/productos.css?inline';
 import { getModulosActivos, moduloDefecto } from './modulos.js';
 
 interface Props {
@@ -22,12 +24,12 @@ interface Props {
 const { idioma = 'es', moduloActivo = moduloDefecto } = Astro.props;
 
 // Módulos que se implementarán progresivamente en fases posteriores
-const modulosPendientes = getModulosActivos().filter(m => m.id !== 'dashboard' && m.id !== 'notepad' && m.id !== 'negocio' && m.id !== 'correo');
+const modulosPendientes = getModulosActivos().filter(m => m.id !== 'dashboard' && m.id !== 'notepad' && m.id !== 'negocio' && m.id !== 'correo' && m.id !== 'productos');
 ---
 
 <Sonrisa titulo="Dashboard del Dueño · Solgas Surquillo" moduloActivo={moduloActivo} idioma={idioma}>
   <!-- Inyección de CSS de los módulos activos -->
-  <style slot="modulo-css" is:global set:html={dashboardCss + '\n' + notepadCss + '\n' + negocioCss + '\n' + correoCss}></style>
+  <style slot="modulo-css" is:global set:html={dashboardCss + '\n' + notepadCss + '\n' + negocioCss + '\n' + correoCss + '\n' + productosCss}></style>
 
   <!-- MÓDULO 1: DASHBOARD -->
   <Dashboard />
@@ -40,6 +42,9 @@ const modulosPendientes = getModulosActivos().filter(m => m.id !== 'dashboard' &
 
   <!-- MÓDULO 4: CORREO (Centro Oficial de Envíos con Resend) -->
   <Correo />
+
+  <!-- MÓDULO 5: PRODUCTOS (Catálogo Oficial e Inventario) -->
+  <Productos />
 
   <!-- CONTENEDORES LISTOS PARA MÓDULOS EN FASES SIGUIENTES -->
   {modulosPendientes.map((m) => (

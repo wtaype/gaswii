@@ -60,12 +60,25 @@ export function normalizarProductoFirestore(docRaw = {}) {
   };
 }
 
-// Lectura de productos desde Firestore REST en tiempo de build (SSR / SSG)
+// Lectura fresca de productos desde Firestore REST
 let _productosBuildFirestore = [];
-if (typeof window === 'undefined') {
+
+export async function consultarProductosFirestoreFresco() {
+  if (typeof window !== 'undefined') {
+    try {
+      const local = localStorage.getItem('gaswii_productos');
+      if (local) {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo');
+        }
+      }
+    } catch (e) {}
+  }
+
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 4000);
+    const timer = setTimeout(() => controller.abort(), 6000);
     const res = await fetch('https://firestore.googleapis.com/v1/projects/gaswii/databases/(default)/documents/productos', {
       signal: controller.signal
     });
@@ -73,15 +86,23 @@ if (typeof window === 'undefined') {
     if (res.ok) {
       const json = await res.json();
       if (Array.isArray(json.documents) && json.documents.length > 0) {
-        _productosBuildFirestore = json.documents
+        const prods = json.documents
           .map(d => normalizarProductoFirestore(d))
-          .filter(p => p.estado !== 'inactivo')
-          .sort((a, b) => a.orden - b.orden);
+          .filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo')
+          .sort((a, b) => (a.orden || 999) - (b.orden || 999));
+        _productosBuildFirestore = prods;
+        return prods;
       }
     }
   } catch (err) {
     console.warn('[negocio] Build-time productos fetch:', err?.message || err);
   }
+
+  return _productosBuildFirestore;
+}
+
+if (typeof window === 'undefined') {
+  await consultarProductosFirestoreFresco();
 }
 
 /**
@@ -94,13 +115,12 @@ function obtenerProductosActivos() {
       if (local) {
         const parsed = JSON.parse(local);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo');
         }
       }
     } catch (e) {}
   }
 
-  // En build-time o sin cache local, retorna estrictamente los productos de Firestore
   return _productosBuildFirestore;
 }
 

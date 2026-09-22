@@ -4,6 +4,7 @@
 import Principal from '../../core/layouts/Principal.astro';
 import type { Idioma } from '../../core/idioma/idioma';
 import Hero from './secciones/01-hero/Hero.astro';
+import Productos from './secciones/02-productos/Productos.astro';
 import inicioCss from './inicio.css?inline';
 
 interface Props {
@@ -19,4 +20,7 @@ const ruta = idioma === 'en' ? '/en' : '/';
   
   <!-- 1. Hero CRO Autónomo con selector de distritos -->
   <Hero idioma={idioma} />
+
+  <!-- 2. Catálogo Oficial de Balones Solgas -->
+  <Productos idioma={idioma} />
 </Principal>

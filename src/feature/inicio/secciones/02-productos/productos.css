@@ -1,0 +1,400 @@
+/* ==========================================================================
+   02-PRODUCTOS SECTION STYLES - SOLGAS SURQUILLO (GASWII)
+   Diseño Oficial CRO: 4 Columnas, Marco Blanco Fotográfico y Dual CTA
+   100% Cero CSS Inline · Variables de WiTema y Poppins/Outfit
+   ========================================================================== */
+
+#productos, .sec-productos {
+  padding: 8vh 0;
+  background: var(--bg-surface, #091122);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.sec-prods-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+/* ── 1. CABECERA DE LA SECCIÓN ── */
+.sec-prods-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 5vh auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.sec-prods-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(255, 102, 0, 0.12);
+  color: var(--mco, #ff6600);
+  border: 1px solid rgba(255, 102, 0, 0.25);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sec-prods-title {
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+  font-weight: 800;
+  color: var(--ink, #ffffff);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.sec-prods-sub {
+  font-size: clamp(0.92rem, 1.1vw, 1.05rem);
+  color: var(--muted, #94a3b8);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── 2. GRID DE PRODUCTOS (4 Columnas responsivas) ── */
+.sec-prods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* ── 3. TARJETA COMERCIAL CRO (ESTILO IMAGEN DE REFERENCIA) ── */
+.card-balon {
+  background: #0b1329;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+  box-sizing: border-box;
+}
+
+.card-balon:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 102, 0, 0.4);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 102, 0, 0.15);
+}
+
+/* Cabecera de la Tarjeta */
+.card-header-pills {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pill-highlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+.pill-highlight.orange {
+  background: rgba(234, 88, 12, 0.15);
+  color: #ea580c;
+  border: 1px solid rgba(234, 88, 12, 0.35);
+}
+
+.pill-highlight.blue {
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(14, 165, 233, 0.35);
+}
+
+.pill-highlight.green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.pill-highlight.amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.pill-context {
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Área Fotográfica (Caja Blanca Inmaculada) */
+.card-img-box {
+  background: #ffffff;
+  border-radius: 14px;
+  height: 195px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.card-img {
+  max-height: 145px;
+  max-width: 85%;
+  object-fit: contain;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.18));
+}
+
+.card-balon:hover .card-img {
+  transform: scale(1.08);
+}
+
+/* Pastilla flotante inferior dentro de la caja blanca */
+.card-weight-pill {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.card-weight-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+/* Título */
+.card-title {
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  line-height: 1.25;
+  min-height: 2.8rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Especificaciones Rápidas (3 Filas con Iconos) */
+.card-specs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.card-spec-row {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 0.77rem;
+  color: #cbd5e1;
+  line-height: 1.35;
+}
+
+.card-spec-icon {
+  font-size: 12px;
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.card-spec-icon.valve { color: #f97316; }
+.card-spec-icon.weight { color: #10b981; }
+.card-spec-icon.safety { color: #38bdf8; }
+
+.card-spec-label {
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-right: 3px;
+}
+
+/* Sección de Garantías Oficiales */
+.card-guarantee-heading {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 10px 0 6px 0;
+  display: block;
+}
+
+.card-guarantee-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-guarantee-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 0.76rem;
+  color: #94a3b8;
+  line-height: 1.3;
+}
+
+.card-guarantee-item i {
+  color: #10b981;
+  font-size: 13px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+/* ── 4. PIE DE PRECIO Y ACCIONES ── */
+.card-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 14px;
+}
+
+.card-price-col-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-price-caption {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.card-price-value {
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--brand-orange, #ff6600);
+  line-height: 1;
+}
+
+.card-price-curr {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-right: 3px;
+}
+
+.card-price-col-right {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.card-delivery-caption {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.card-delivery-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #10b981;
+}
+
+/* Botones de Acción (WhatsApp + Teléfono) */
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn-card-ws {
+  flex: 1;
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-card-ws:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+}
+
+.btn-card-call {
+  width: 42px;
+  height: 40px;
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  font-size: 15px;
+}
+
+.btn-card-call:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+/* ── 5. RESPONSIVE ── */
+@media (max-width: 640px) {
+  .sec-prods-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .card-balon {
+    padding: 18px;
+  }
+}

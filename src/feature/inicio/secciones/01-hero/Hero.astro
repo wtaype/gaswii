@@ -14,12 +14,14 @@ interface Props {
 const { idioma = 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
 
-const distritos = datosNegocio.distritos;
-const primerDistrito = distritos[0];
+const distritos = datosNegocio.distritos && datosNegocio.distritos.length > 0 
+  ? datosNegocio.distritos 
+  : [{ id: 'surquillo', nombre: 'Surquillo', tiempo: '20 - 30 min', tag: 'Sede Central', tagEn: 'Headquarters' }];
+const primerDistrito = distritos[0] || { id: 'surquillo', nombre: 'Surquillo', tiempo: '20 - 30 min' };
 const primerProducto = datosNegocio.productos[0];
 const precioPrimerBalon = primerProducto ? primerProducto.precioPEN.toFixed(2) : '65.00';
-const direccionSede = datosNegocio.direccionSede;
-const mapsUrl = datosNegocio.mapsUrl;
+const direccionSede = datosNegocio.direccionSede || 'Surquillo, Lima';
+const mapsUrl = datosNegocio.mapsUrl || '#';
 ---
 
 <style is:global set:html={heroCss}></style>
