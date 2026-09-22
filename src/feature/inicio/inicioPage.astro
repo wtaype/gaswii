@@ -3,6 +3,7 @@
 // Orquestador Principal de Secciones de Inicio
 import Principal from '../../core/layouts/Principal.astro';
 import type { Idioma } from '../../core/idioma/idioma';
+import { buildRuta } from '../../core/idioma/idioma';
 import Hero from './secciones/01-hero/Hero.astro';
 import Productos from './secciones/02-productos/Productos.astro';
 import Garantia from './secciones/03-garantia/Garantia.astro';
@@ -18,8 +19,8 @@ interface Props {
   idioma?: Idioma;
 }
 
-const { idioma = 'es' } = Astro.props;
-const ruta = idioma === 'en' ? '/en' : '/';
+const { idioma = Astro.props.idioma || Astro.currentLocale || 'es' } = Astro.props;
+const ruta = buildRuta('/', idioma);
 ---
 
 <Principal idioma={idioma} ruta={ruta}>

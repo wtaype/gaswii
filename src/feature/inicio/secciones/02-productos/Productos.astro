@@ -13,9 +13,8 @@ interface Props {
   idioma?: string;
 }
 
-const { idioma = 'es' } = Astro.props;
+const { idioma = Astro.props.idioma || Astro.currentLocale || 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
-const esEn = idioma === 'en';
 
 // Consulta fresca directa de Firestore
 const prodsActivos = await consultarProductosFirestoreFresco();
@@ -42,52 +41,62 @@ const whatsappNumero = datosNegocio.whatsapp;
       <div 
         class="catalog-grid sec-prods-grid" 
         id="publicProdsGrid"
-        data-es-en={esEn ? 'true' : 'false'}
+        data-idioma={idioma}
         data-ws-num={whatsappNumero}
         data-tel-limpio={telefonoLimpio}
         data-labels={JSON.stringify(t)}
       >
         {prodsActivos.map((p: any) => {
-          const nombre = esEn && p.nombreEn ? p.nombreEn : p.nombre;
-          const peso = esEn && p.pesoEn ? p.pesoEn : (p.peso || '10 kg');
-          const pesoFull = esEn && p.pesoFullEn ? p.pesoFullEn : p.pesoFull;
-          const valvula = esEn && p.valvulaEn ? p.valvulaEn : (p.valvula || 'Click-On');
-          const seguridad = esEn && p.seguridadEn ? p.seguridadEn : (p.seguridad || 'Precinto verificado');
-          const garantias = (esEn && Array.isArray(p.caracteristicasEn) && p.caracteristicasEn.length > 0)
-            ? p.caracteristicasEn
-            : (Array.isArray(p.caracteristicas) ? p.caracteristicas : []);
+          const langSuffix = idioma.charAt(0).toUpperCase() + idioma.slice(1);
+          const nombre = (idioma !== 'es' && p[`nombre${langSuffix}`]) || (typeof p.nombre === 'object' ? (p.nombre[idioma] || p.nombre.es) : p.nombre) || '';
+          const peso = (idioma !== 'es' && p[`peso${langSuffix}`]) || (typeof p.peso === 'object' ? (p.peso[idioma] || p.peso.es) : p.peso) || '10 kg';
+          const pesoFull = (idioma !== 'es' && p[`pesoFull${langSuffix}`]) || (typeof p.pesoFull === 'object' ? (p.pesoFull[idioma] || p.pesoFull.es) : p.pesoFull);
+          const valvula = (idioma !== 'es' && p[`valvula${langSuffix}`]) || (typeof p.valvula === 'object' ? (p.valvula[idioma] || p.valvula.es) : p.valvula) || 'Click-On';
+          const seguridad = (idioma !== 'es' && p[`seguridad${langSuffix}`]) || (typeof p.seguridad === 'object' ? (p.seguridad[idioma] || p.seguridad.es) : p.seguridad) || 'Precinto verificado';
+          
+          let garantias: string[] = [];
+          if (p.garantias) {
+            if (typeof p.garantias === 'object' && !Array.isArray(p.garantias)) {
+              garantias = p.garantias[idioma] || p.garantias['es'] || [];
+            } else if (Array.isArray(p.garantias)) {
+              garantias = p.garantias;
+            }
+          } else if (Array.isArray(p.caracteristicas)) {
+            const carLang = idioma !== 'es' ? p[`caracteristicas${langSuffix}`] : null;
+            garantias = Array.isArray(carLang) && carLang.length > 0 ? carLang : p.caracteristicas;
+          }
           
           // Clasificación visual de tarjetas
           const es45 = p.id.includes('45') || nombre.includes('45');
           const esMasgas = p.id.includes('masgas') || nombre.toLowerCase().includes('masgas');
           const esRegulador = p.tipoCategoria === 'accesorio' || nombre.toLowerCase().includes('regulador');
 
-          let pillHighlightTexto = esEn ? 'Most Popular' : 'Más Pedido';
+          let pillHighlightTexto = t.pill_popular || 'Más Pedido';
           let pillHighlightClase = 'badge-fire';
           let pillHighlightIcon = 'fa-solid fa-star';
-          let pillContexto = esEn ? 'Home' : 'Hogar';
-          let capacidadTexto = esEn ? '10 kg Net' : '10 kg Neto';
+          let pillContexto = t.pill_hogar || 'Hogar';
+          let capacidadTexto = t.capacidad_10kg || '10 kg Neto';
           let precioCaption = t.precio_exacto_label;
 
           if (es45) {
-            pillHighlightTexto = esEn ? 'Commercial' : 'Comercial';
+            pillHighlightTexto = t.pill_comercial || 'Comercial';
             pillHighlightClase = 'badge-blue';
             pillHighlightIcon = 'fa-solid fa-store';
-            pillContexto = esEn ? 'Business' : 'Negocio';
-            capacidadTexto = esEn ? '45 kg Net' : '45 kg Neto';
+            pillContexto = t.pill_negocio || 'Negocio';
+            capacidadTexto = t.capacidad_45kg || '45 kg Neto';
             precioCaption = t.precio_comercial_label;
           } else if (esMasgas) {
-            pillHighlightTexto = esEn ? 'Economical' : 'Económico';
+            pillHighlightTexto = t.pill_economico || 'Económico';
             pillHighlightClase = 'badge-emerald';
             pillHighlightIcon = 'fa-solid fa-wallet';
-            pillContexto = esEn ? 'Savings' : 'Ahorro';
-            capacidadTexto = esEn ? '10 kg Net' : '10 kg Neto';
+            pillContexto = t.pill_ahorro || 'Ahorro';
+            capacidadTexto = t.capacidad_10kg || '10 kg Neto';
             precioCaption = t.precio_ahorro_label;
           } else if (esRegulador) {
-            pillHighlightTexto = esEn ? 'Anti-Leak' : 'Antifugas';
+            pillHighlightTexto = t.pill_antifugas || 'Antifugas';
             pillHighlightClase = 'badge-gold';
             pillHighlightIcon = 'fa-solid fa-shield-halved';
-            pillContexto = esEn ? 'Safety' : 'Seguridad';
+            pillContexto = t.pill_seguridad || 'Seguridad';
             capacidadTexto = 'Click-On';
             precioCaption = t.precio_seguridad_label;
           }
@@ -97,9 +106,8 @@ const whatsappNumero = datosNegocio.whatsapp;
           const guaranteeHeader = `${nombreMarca} ${t.garantia_titulo.toUpperCase()}`;
 
           // Mensaje de WhatsApp
-          const wsMsg = esEn
-            ? `Hello Solgas Surquillo, I would like to order: ${nombre}`
-            : `Hola Solgas Surquillo, deseo pedir: ${nombre}`;
+          const wsTemplate = t.ws_msg || 'Hola {nombre}, deseo pedir: {producto}';
+          const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo').replace('{producto}', nombre);
           const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
 
           return (
@@ -220,65 +228,68 @@ const whatsappNumero = datosNegocio.whatsapp;
 
 <!-- Reactividad Local-First: Reconciliación en tiempo real con la caché -->
 <script>
-  function renderCardClient(p: any, esEn: boolean, labels: any, wsNum: string, telLimpio: string) {
+  function renderCardClient(p: any, lang: string, labels: any, wsNum: string, telLimpio: string) {
     const id = String(p.id || p.slug || '');
+    const langSuffix = lang.charAt(0).toUpperCase() + lang.slice(1);
     
-    const getLangVal = (field: any) => {
+    const getLangVal = (field: any, altKey?: string) => {
       if (typeof field === 'object' && field !== null) {
-        return esEn ? (field.en || field.es || '') : (field.es || field.en || '');
+        return field[lang] || field['es'] || Object.values(field)[0] || '';
+      }
+      if (altKey && lang !== 'es' && p[altKey]) {
+        return String(p[altKey]);
       }
       return String(field || '');
     };
 
-    const nombre = getLangVal(p.nombre) || p.nombre || '';
-    const peso = getLangVal(p.peso) || p.peso || '10 kg';
-    const pesoFull = getLangVal(p.pesoFull) || p.pesoFull;
-    const valvula = getLangVal(p.valvula) || p.valvula || 'Click-On';
-    const seguridad = getLangVal(p.seguridad) || p.seguridad || 'Precinto verificado';
+    const nombre = getLangVal(p.nombre, `nombre${langSuffix}`) || p.nombre || '';
+    const peso = getLangVal(p.peso, `peso${langSuffix}`) || p.peso || '10 kg';
+    const pesoFull = getLangVal(p.pesoFull, `pesoFull${langSuffix}`) || p.pesoFull;
+    const valvula = getLangVal(p.valvula, `valvula${langSuffix}`) || p.valvula || 'Click-On';
+    const seguridad = getLangVal(p.seguridad, `seguridad${langSuffix}`) || p.seguridad || 'Precinto verificado';
 
     let garantias: string[] = [];
     if (p.garantias) {
-      if (esEn && Array.isArray(p.garantias.en) && p.garantias.en.length > 0) {
-        garantias = p.garantias.en;
-      } else if (Array.isArray(p.garantias.es)) {
-        garantias = p.garantias.es;
+      if (typeof p.garantias === 'object' && !Array.isArray(p.garantias)) {
+        garantias = p.garantias[lang] || p.garantias['es'] || [];
       } else if (Array.isArray(p.garantias)) {
         garantias = p.garantias;
       }
     } else if (Array.isArray(p.caracteristicas)) {
-      garantias = esEn && Array.isArray(p.caracteristicasEn) && p.caracteristicasEn.length > 0 ? p.caracteristicasEn : p.caracteristicas;
+      const carLang = lang !== 'es' ? p[`caracteristicas${langSuffix}`] : null;
+      garantias = Array.isArray(carLang) && carLang.length > 0 ? carLang : p.caracteristicas;
     }
 
     const es45 = id.includes('45') || nombre.includes('45');
     const esMasgas = id.includes('masgas') || nombre.toLowerCase().includes('masgas');
     const esRegulador = p.tipoCategoria === 'accesorio' || nombre.toLowerCase().includes('regulador');
 
-    let pillHighlightTexto = esEn ? 'Most Popular' : 'Más Pedido';
+    let pillHighlightTexto = labels.pill_popular || 'Más Pedido';
     let pillHighlightClase = 'badge-fire';
     let pillHighlightIcon = 'fa-solid fa-star';
-    let pillContexto = esEn ? 'Home' : 'Hogar';
-    let capacidadTexto = esEn ? '10 kg Net' : '10 kg Neto';
+    let pillContexto = labels.pill_hogar || 'Hogar';
+    let capacidadTexto = labels.capacidad_10kg || '10 kg Neto';
     let precioCaption = labels.precio_exacto_label || 'Garantía de peso exacto';
 
     if (es45) {
-      pillHighlightTexto = esEn ? 'Commercial' : 'Comercial';
+      pillHighlightTexto = labels.pill_comercial || 'Comercial';
       pillHighlightClase = 'badge-blue';
       pillHighlightIcon = 'fa-solid fa-store';
-      pillContexto = esEn ? 'Business' : 'Negocio';
-      capacidadTexto = esEn ? '45 kg Net' : '45 kg Neto';
+      pillContexto = labels.pill_negocio || 'Negocio';
+      capacidadTexto = labels.capacidad_45kg || '45 kg Neto';
       precioCaption = labels.precio_comercial_label || 'Tarifa especial negocios';
     } else if (esMasgas) {
-      pillHighlightTexto = esEn ? 'Economical' : 'Económico';
+      pillHighlightTexto = labels.pill_economico || 'Económico';
       pillHighlightClase = 'badge-emerald';
       pillHighlightIcon = 'fa-solid fa-wallet';
-      pillContexto = esEn ? 'Savings' : 'Ahorro';
-      capacidadTexto = esEn ? '10 kg Net' : '10 kg Neto';
+      pillContexto = labels.pill_ahorro || 'Ahorro';
+      capacidadTexto = labels.capacidad_10kg || '10 kg Neto';
       precioCaption = labels.precio_ahorro_label || 'Opción más económica';
     } else if (esRegulador) {
-      pillHighlightTexto = esEn ? 'Anti-Leak' : 'Antifugas';
+      pillHighlightTexto = labels.pill_antifugas || 'Antifugas';
       pillHighlightClase = 'badge-gold';
       pillHighlightIcon = 'fa-solid fa-shield-halved';
-      pillContexto = esEn ? 'Safety' : 'Seguridad';
+      pillContexto = labels.pill_seguridad || 'Seguridad';
       capacidadTexto = 'Click-On';
       precioCaption = labels.precio_seguridad_label || 'Instalación y prueba GRATIS';
     }
@@ -287,9 +298,8 @@ const whatsappNumero = datosNegocio.whatsapp;
     const guaranteeHeader = `${nombreMarca} ${(labels.garantia_titulo || 'Garantía Solgas').toUpperCase()}`;
     const precioNum = Number(p.precio ?? p.precioPEN ?? 0).toFixed(2);
 
-    const wsMsg = esEn
-      ? `Hello Solgas Surquillo, I would like to order: ${nombre}`
-      : `Hola Solgas Surquillo, deseo pedir: ${nombre}`;
+    const wsTemplate = labels.ws_msg || 'Hola Solgas Surquillo, deseo pedir: {producto}';
+    const wsMsg = wsTemplate.replace('{nombre}', 'Solgas Surquillo').replace('{producto}', nombre);
     const wsLink = `https://wa.me/${wsNum}?text=${encodeURIComponent(wsMsg)}`;
 
     const garantiasHtml = garantias.slice(0, 4).map(g => `
@@ -424,7 +434,7 @@ const whatsappNumero = datosNegocio.whatsapp;
       }
 
       // Reconstruir si la cantidad o los IDs difieren
-      const esEn = grid.getAttribute('data-es-en') === 'true';
+      const lang = grid.getAttribute('data-idioma') || 'es';
       const wsNum = grid.getAttribute('data-ws-num') || '';
       const telLimpio = grid.getAttribute('data-tel-limpio') || '';
       let labels = {};
@@ -432,7 +442,7 @@ const whatsappNumero = datosNegocio.whatsapp;
         labels = JSON.parse(grid.getAttribute('data-labels') || '{}');
       } catch (e) {}
 
-      grid.innerHTML = activos.map((p: any) => renderCardClient(p, esEn, labels, wsNum, telLimpio)).join('');
+      grid.innerHTML = activos.map((p: any) => renderCardClient(p, lang, labels, wsNum, telLimpio)).join('');
     } catch (e) {
       console.warn('[catalogo] Sincronización Local-First:', e);
     }

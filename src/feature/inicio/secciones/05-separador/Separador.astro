@@ -12,17 +12,14 @@ interface Props {
   idioma?: string;
 }
 
-const { idioma = 'es' } = Astro.props;
+const { idioma = Astro.props.idioma || Astro.currentLocale || 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
-const esEn = idioma === 'en';
 
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
 const whatsappNumero = datosNegocio.whatsapp;
 
-const wsMsg = esEn
-  ? 'EMERGENCY SOS: My gas ran out while cooking, please send a cylinder urgently!'
-  : 'EMERGENCIA SOS: Me quedé sin gas cocinando, ¡envíenme un balón urgente!';
+const wsMsg = t.ws_msg || 'EMERGENCIA SOS: Me quedé sin gas cocinando, ¡envíenme un balón urgente!';
 const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
 ---
 

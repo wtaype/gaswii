@@ -15,18 +15,34 @@ export const IDIOMA_DEFAULT = 'es';
 export function resolverIdioma(locales = {}, lang = IDIOMA_DEFAULT) {
   const codigo = locales[lang] ? lang : IDIOMA_DEFAULT;
   const dataBase = locales[IDIOMA_DEFAULT] || {};
-  const dataLang = locales[codigo] || {};
 
-  // Si es el idioma por defecto, retorna directamente
+  // Si es el idioma por defecto, retorna directamente a 0ms sin clonación
   if (codigo === IDIOMA_DEFAULT) {
     return dataBase;
   }
+
+  const dataLang = locales[codigo] || {};
 
   // Fusión con fallback: si una clave falta en el idioma objetivo, toma la del español
   return {
     ...dataBase,
     ...dataLang
   };
+}
+
+/**
+ * Genera la ruta canónica para cualquier idioma y vista.
+ * Soporta N idiomas sin condicionales binarios.
+ * @param {string} [ruta='/'] - Ruta base relativa (ej: '/', '/personal', '/cliente')
+ * @param {string} [lang='es'] - Idioma actual
+ * @returns {string} Ruta con prefijo correspondiente
+ */
+export function buildRuta(ruta = '/', lang = IDIOMA_DEFAULT) {
+  const cleanPath = ruta.startsWith('/') ? ruta : `/${ruta}`;
+  if (!lang || lang === IDIOMA_DEFAULT) {
+    return cleanPath;
+  }
+  return cleanPath === '/' ? `/${lang}` : `/${lang}${cleanPath}`;
 }
 
 export default resolverIdioma;

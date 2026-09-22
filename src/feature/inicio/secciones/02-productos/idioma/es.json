@@ -15,5 +15,16 @@
   "btn_ws": "Pedir por WhatsApp",
   "btn_llamar": "Llamar para pedir",
   "disponible": "Disponible",
-  "sin_productos": "No hay productos disponibles por el momento."
+  "sin_productos": "No hay productos disponibles por el momento.",
+  "pill_popular": "Más Pedido",
+  "pill_comercial": "Comercial",
+  "pill_economico": "Económico",
+  "pill_antifugas": "Antifugas",
+  "pill_hogar": "Hogar",
+  "pill_negocio": "Negocio",
+  "pill_ahorro": "Ahorro",
+  "pill_seguridad": "Seguridad",
+  "capacidad_10kg": "10 kg Neto",
+  "capacidad_45kg": "45 kg Neto",
+  "ws_msg": "Hola {nombre}, deseo pedir: {producto}"
 }

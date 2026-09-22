@@ -7,6 +7,7 @@
   "side_titulo": "Direct Support & Delivery in 15 - 20 min",
   "side_desc": "Call us or message us on WhatsApp and a certified technician will arrive at your home with your factory-sealed, weight-guaranteed cylinder.",
   "btn_ws": "Order via WhatsApp",
+  "ws_msg": "Hello {nombre}, I have a question about the home delivery gas service",
   "faqs": [
     {
       "pregunta": "Do you have an official OSINERGMIN registry and what is your code?",

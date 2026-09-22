@@ -15,5 +15,6 @@
   "total_val": "= 22.5 kg",
   "total_sub": "Exact Guarantee",
   "btn_ws": "Order with Guaranteed Weight",
-  "btn_llamar_prefijo": "Call:"
+  "btn_llamar_prefijo": "Call:",
+  "ws_msg": "Hello {nombre}, I would like to order with Guaranteed Exact Weight"
 }

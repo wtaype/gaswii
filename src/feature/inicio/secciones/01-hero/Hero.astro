@@ -11,7 +11,7 @@ interface Props {
   idioma?: string;
 }
 
-const { idioma = 'es' } = Astro.props;
+const { idioma = Astro.props.idioma || Astro.currentLocale || 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
 
 const distritos = datosNegocio.distritos || [];

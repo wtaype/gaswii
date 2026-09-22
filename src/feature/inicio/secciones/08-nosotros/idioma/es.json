@@ -6,5 +6,7 @@
   "pie_foto_1": "Flota oficial de balones Solgas",
   "pie_foto_2": "Garantía Solgas S.A.",
   "btn_llamar": "Llamar a Central:",
-  "btn_ws": "Pedir por WhatsApp"
+  "btn_ws": "Pedir por WhatsApp",
+  "anos_badge": "{anos} AÑOS DE EXPERIENCIA EN {distrito}",
+  "ws_msg": "Hola {nombre}, deseo pedir un balón con su garantía de distribuidor autorizado"
 }

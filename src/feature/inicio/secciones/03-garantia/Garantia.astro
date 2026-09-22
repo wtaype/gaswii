@@ -12,18 +12,16 @@ interface Props {
   idioma?: string;
 }
 
-const { idioma = 'es' } = Astro.props;
+const { idioma = Astro.props.idioma || Astro.currentLocale || 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
-const esEn = idioma === 'en';
 
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
 const whatsappNumero = datosNegocio.whatsapp;
 const direccionSede = datosNegocio.direccionSede;
 
-const wsMsg = esEn
-  ? `Hello ${datosNegocio.nombre || 'Solgas Surquillo'}, I would like to order with Guaranteed Exact Weight`
-  : `Hola ${datosNegocio.nombre || 'Solgas Surquillo'}, deseo pedir un balón con Peso Exacto Garantizado`;
+const wsTemplate = t.ws_msg || 'Hola {nombre}, deseo pedir un balón con Peso Exacto Garantizado';
+const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo');
 const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
 ---
 

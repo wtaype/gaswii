@@ -12,9 +12,8 @@ interface Props {
   idioma?: string;
 }
 
-const { idioma = 'es' } = Astro.props;
+const { idioma = Astro.props.idioma || Astro.currentLocale || 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
-const esEn = idioma === 'en';
 
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
@@ -23,9 +22,8 @@ const direccionSede = datosNegocio.direccionSede;
 const horarioDespacho = datosNegocio.horario;
 const registroOsinergmin = datosNegocio.registroOsinergmin;
 
-const wsMsg = esEn
-  ? `Hello ${datosNegocio.nombre || 'Solgas Surquillo'}, I have a question about the home delivery gas service`
-  : `Hola ${datosNegocio.nombre || 'Solgas Surquillo'}, tengo una consulta sobre el servicio de gas a domicilio`;
+const wsTemplate = t.ws_msg || 'Hola {nombre}, tengo una consulta sobre el servicio de gas a domicilio';
+const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo');
 const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
 ---
 

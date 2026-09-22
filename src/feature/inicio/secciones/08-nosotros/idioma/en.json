@@ -6,5 +6,7 @@
   "pie_foto_1": "Official Solgas delivery fleet",
   "pie_foto_2": "Solgas S.A. Guarantee",
   "btn_llamar": "Call Central:",
-  "btn_ws": "Order via WhatsApp"
+  "btn_ws": "Order via WhatsApp",
+  "anos_badge": "{anos} YEARS OF EXPERIENCE IN {distrito}",
+  "ws_msg": "Hello {nombre}, I would like to order and verify your official distribution credentials"
 }

@@ -24,5 +24,6 @@
   "tip_4_tit": "Balón con peso garantizado:",
   "tip_4_desc": "Asegura los 10 kg netos completos verificados de planta y base.",
   "dudas_pregunta": "¿Dudas con tu consumo?",
-  "btn_consultar": "Consultar Técnico"
+  "btn_consultar": "Consultar Técnico",
+  "ws_msg": "Hola {nombre}, según la calculadora requiero un balón de gas, deseo hacer mi pedido"
 }

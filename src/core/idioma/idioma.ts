@@ -26,6 +26,24 @@ export const IDIOMAS: Record<string, { nombre: string; code: string }> = {
 
 export const DEFAULT_LANG = 'es';
 
+/**
+ * Genera la ruta canónica según el idioma actual.
+ * Admite N idiomas sin limitar a solo dos, con fallback al idioma por defecto ('es').
+ * 
+ * Ejemplos:
+ * buildRuta('/', 'es') -> '/'
+ * buildRuta('/', 'en') -> '/en'
+ * buildRuta('/personal', 'en') -> '/en/personal'
+ * buildRuta('/personal', 'es') -> '/personal'
+ */
+export function buildRuta(ruta: string = '/', lang: string = DEFAULT_LANG): string {
+  const cleanPath = ruta.startsWith('/') ? ruta : `/${ruta}`;
+  if (!lang || lang === DEFAULT_LANG) {
+    return cleanPath;
+  }
+  return cleanPath === '/' ? `/${lang}` : `/${lang}${cleanPath}`;
+}
+
 const localesCore: Record<string, typeof coreEs> = {
   es: coreEs,
   en: coreEn

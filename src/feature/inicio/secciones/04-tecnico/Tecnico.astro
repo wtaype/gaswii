@@ -12,14 +12,12 @@ interface Props {
   idioma?: string;
 }
 
-const { idioma = 'es' } = Astro.props;
+const { idioma = Astro.props.idioma || Astro.currentLocale || 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
-const esEn = idioma === 'en';
 
 const whatsappNumero = datosNegocio.whatsapp;
-const wsMsg = esEn
-  ? 'Hello Solgas Surquillo, I would like to order a cylinder with Free Technical Installation'
-  : 'Hola Solgas Surquillo, deseo pedir un balón con Instalación Gratuita y Revisión Técnica';
+const wsTemplate = t.ws_msg || 'Hola {nombre}, deseo pedir un balón con Instalación Gratuita y Revisión Técnica';
+const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo');
 const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
 ---
 

@@ -24,5 +24,6 @@
   "tip_4_tit": "Guaranteed weight cylinder:",
   "tip_4_desc": "Ensures the complete 10 kg net verified from plant and warehouse.",
   "dudas_pregunta": "Questions about your consumption?",
-  "btn_consultar": "Consult Technician"
+  "btn_consultar": "Consult Technician",
+  "ws_msg": "Hello {nombre}, according to the calculator I need a gas cylinder, please take my order"
 }

@@ -15,5 +15,16 @@
   "btn_ws": "Order via WhatsApp",
   "btn_llamar": "Call to order",
   "disponible": "Available",
-  "sin_productos": "No products available at the moment."
+  "sin_productos": "No products available at the moment.",
+  "pill_popular": "Most Popular",
+  "pill_comercial": "Commercial",
+  "pill_economico": "Economical",
+  "pill_antifugas": "Anti-Leak",
+  "pill_hogar": "Home",
+  "pill_negocio": "Business",
+  "pill_ahorro": "Savings",
+  "pill_seguridad": "Safety",
+  "capacidad_10kg": "10 kg Net",
+  "capacidad_45kg": "45 kg Net",
+  "ws_msg": "Hello {nombre}, I would like to order: {producto}"
 }

@@ -15,5 +15,6 @@
   "total_val": "= 22.5 kg",
   "total_sub": "Garantía Exacta",
   "btn_ws": "Pedir con Peso Garantizado",
-  "btn_llamar_prefijo": "Llamar:"
+  "btn_llamar_prefijo": "Llamar:",
+  "ws_msg": "Hola {nombre}, deseo pedir un balón con Peso Exacto Garantizado"
 }

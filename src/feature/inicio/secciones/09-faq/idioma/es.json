@@ -7,6 +7,7 @@
   "side_titulo": "Atención Directa y Despacho en 15 - 20 min",
   "side_desc": "Llámanos o escríbenos por WhatsApp y un técnico acudirá a tu domicilio con tu balón sellado y peso garantizado.",
   "btn_ws": "Pedir por WhatsApp",
+  "ws_msg": "Hola {nombre}, tengo una consulta sobre el servicio de gas a domicilio",
   "faqs": [
     {
       "pregunta": "¿Cuentan con registro oficial de OSINERGMIN y cuál es su código?",
