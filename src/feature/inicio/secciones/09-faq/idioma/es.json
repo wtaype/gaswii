@@ -1,0 +1,36 @@
+{
+  "top_badge": "Preguntas Frecuentes",
+  "titulo": "Resolvemos Todas tus Dudas al Instante",
+  "subtitulo": "Todo lo que necesitas saber sobre nuestro servicio de gas a domicilio con peso exacto garantizado en Lima.",
+  "side_foto_badge_1": "100% Garantía de Satisfacción",
+  "side_foto_badge_2": "OSINERGMIN Reg.",
+  "side_titulo": "Atención Directa y Despacho en 15 - 20 min",
+  "side_desc": "Llámanos o escríbenos por WhatsApp y un técnico acudirá a tu domicilio con tu balón sellado y peso garantizado.",
+  "btn_ws": "Pedir por WhatsApp",
+  "faqs": [
+    {
+      "pregunta": "¿Cuentan con registro oficial de OSINERGMIN y cuál es su código?",
+      "respuesta": "Sí, en Solgas Surquillo somos distribuidores formales acreditados ante OSINERGMIN con Registro Oficial N° 208492. Todos nuestros balones cuentan con precinto de garantía termocontraíble oficial de Solgas S.A., peso exacto garantizado de planta y base, y cumplen rigurosamente las normas técnicas de seguridad peruanas."
+    },
+    {
+      "pregunta": "¿Cómo sé que el balón viene con el peso exacto?",
+      "respuesta": "Nuestros balones vienen con peso exacto calibrado directamente desde la planta envasadora oficial de Solgas y verificado en nuestra base central de Jr. Dante 260. Llegan a tu domicilio con el precinto termocontraíble de fábrica 100% intacto e inviolable, garantizando los 10 kg netos de gas sin adulteraciones."
+    },
+    {
+      "pregunta": "¿Cobran costo adicional por el delivery a domicilio?",
+      "respuesta": "No, el despacho y la instalación técnica con prueba de hermeticidad cero fugas son totalmente gratuitos en Surquillo, Miraflores, San Borja y San Isidro."
+    },
+    {
+      "pregunta": "¿Cuánto tiempo tarda en llegar el balón a mi casa?",
+      "respuesta": "El tiempo estimado es de 12 a 20 minutos despachando desde nuestra sede central en Jr. Dante 260, Surquillo hacia cualquiera de los 4 distritos atendidos."
+    },
+    {
+      "pregunta": "¿Qué medios de pago aceptan?",
+      "respuesta": "Aceptamos Efectivo contra entrega, billeteras digitales Yape y Plin, y Transferencia bancaria directa al recibir tu balón."
+    },
+    {
+      "pregunta": "¿Qué hago si siento olor a gas en mi cocina?",
+      "respuesta": "Cierra de inmediato la perilla del regulador, ventila el ambiente abriendo ventanas y llámanos de inmediato a nuestra Central de Emergencias SOS al 936 369 384."
+    }
+  ]
+}

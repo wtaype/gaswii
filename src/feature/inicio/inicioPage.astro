@@ -5,6 +5,13 @@ import Principal from '../../core/layouts/Principal.astro';
 import type { Idioma } from '../../core/idioma/idioma';
 import Hero from './secciones/01-hero/Hero.astro';
 import Productos from './secciones/02-productos/Productos.astro';
+import Garantia from './secciones/03-garantia/Garantia.astro';
+import Tecnico from './secciones/04-tecnico/Tecnico.astro';
+import Separador from './secciones/05-separador/Separador.astro';
+import Calculadora from './secciones/06-calculadora/Calculadora.astro';
+import Mapa from './secciones/07-mapa/Mapa.astro';
+import Nosotros from './secciones/08-nosotros/Nosotros.astro';
+import Faq from './secciones/09-faq/Faq.astro';
 import inicioCss from './inicio.css?inline';
 
 interface Props {
@@ -23,4 +30,25 @@ const ruta = idioma === 'en' ? '/en' : '/';
 
   <!-- 2. Catálogo Oficial de Balones Solgas -->
   <Productos idioma={idioma} />
+
+  <!-- 3. Garantía de Peso Exacto y Balanza Digital -->
+  <Garantia idioma={idioma} />
+
+  <!-- 4. Protocolo Técnico de Seguridad en 3 Pasos -->
+  <Tecnico idioma={idioma} />
+
+  <!-- 5. Separador SOS / ¡Auxilio Gas Express! -->
+  <Separador idioma={idioma} />
+
+  <!-- 6. Calculadora de Duración de Gas -->
+  <Calculadora idioma={idioma} />
+
+  <!-- 7. Sede Oficial y Cobertura (Mapa Interactivo) -->
+  <Mapa idioma={idioma} />
+
+  <!-- 8. Trayectoria Oficial / Nosotros (26 Años) -->
+  <Nosotros idioma={idioma} />
+
+  <!-- 9. Preguntas Frecuentes y Asistencia Inmediata -->
+  <Faq idioma={idioma} />
 </Principal>

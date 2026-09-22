@@ -1,0 +1,114 @@
+---
+// src/feature/inicio/secciones/04-tecnico/Tecnico.astro
+// 4. SECCIÓN INSTALACIÓN PROFESIONAL Y PRUEBA DE ESPUMA ACTIVA
+// Diseño Oficial CRO: 2 Columnas sobre .pagewii (85vw)
+import { datosNegocio } from '../../../../negocio.js';
+import { resolverIdioma } from '../../idioma/idioma.js';
+import es from './idioma/es.json';
+import en from './idioma/en.json';
+import tecnicoCss from './tecnico.css?inline';
+
+interface Props {
+  idioma?: string;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = resolverIdioma({ es, en }, idioma);
+const esEn = idioma === 'en';
+
+const whatsappNumero = datosNegocio.whatsapp;
+const wsMsg = esEn
+  ? 'Hello Solgas Surquillo, I would like to order a cylinder with Free Technical Installation'
+  : 'Hola Solgas Surquillo, deseo pedir un balón con Instalación Gratuita y Revisión Técnica';
+const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+---
+
+<style is:global set:html={tecnicoCss}></style>
+
+<section id="seguridad" class="sec-seguridad section-py-body">
+  <div class="pagewii">
+    <div class="seguridad-split items-center">
+      
+      <!-- Columna Izquierda: Información de Servicio y Pasos -->
+      <div>
+        <span class="seguridad-badge">
+          <i class="fa-solid fa-shield-halved"></i> 
+          <span>{t.badge.toUpperCase()}</span>
+        </span>
+
+        <h2 class="seguridad-title">{t.titulo}</h2>
+        <p class="seguridad-desc">{t.descripcion}</p>
+
+        <!-- 3 Pasos con Iconos de Color -->
+        <ul class="seguridad-steps-list">
+          <li class="seguridad-step-item">
+            <div class="seguridad-icon-box orange">
+              <i class="fa-solid fa-wrench"></i>
+            </div>
+            <div class="seguridad-step-content">
+              <h4>{t.paso_1_titulo}</h4>
+              <p>{t.paso_1_desc}</p>
+            </div>
+          </li>
+
+          <li class="seguridad-step-item">
+            <div class="seguridad-icon-box blue">
+              <i class="fa-solid fa-pump-soap"></i>
+            </div>
+            <div class="seguridad-step-content">
+              <h4>{t.paso_2_titulo}</h4>
+              <p>{t.paso_2_desc}</p>
+            </div>
+          </li>
+
+          <li class="seguridad-step-item">
+            <div class="seguridad-icon-box emerald">
+              <i class="fa-solid fa-recycle"></i>
+            </div>
+            <div class="seguridad-step-content">
+              <h4>{t.paso_3_titulo}</h4>
+              <p>{t.paso_3_desc}</p>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Botón de Pedido con Instalación -->
+        <a 
+          href={wsLink} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="btn-seguridad-cta"
+          title={t.btn_pedir}
+          data-negocio-ws-link
+        >
+          <i class="fa-solid fa-screwdriver-wrench"></i> 
+          <span>{t.btn_pedir}</span>
+        </a>
+      </div>
+
+      <!-- Columna Derecha: Tarjeta Fotográfica de Instalación con Badge -->
+      <div>
+        <div class="seguridad-image-card">
+          <div class="seguridad-media-box">
+            <img 
+              src="/imgwii/03-solgas-surquillo-instalacion.webp" 
+              alt="Instalación y revisión técnica antifugas Solgas Surquillo" 
+              width="500" 
+              height="400" 
+              loading="lazy" 
+              class="seguridad-media-img"
+            />
+            <div class="seguridad-caption-overlay">
+              <span class="seguridad-caption-badge">
+                <i class="fa-solid fa-shield-halved"></i> 
+                <span>{t.foto_badge}</span>
+              </span>
+              <h4 class="seguridad-caption-title">{t.foto_titulo}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -58,7 +58,7 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
     </button>
 
     <!-- Card Usuario Móvil (Cuando está autenticado) -->
-    <div id="drawerUserPerfil" class="drawer-user-card">
+    <div id="drawerUserPerfil" class="drawer-user-card" data-idioma={idioma}>
       <a id="drawerPerfilLink" href="/cliente" onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-user-link">
         <img id="drawerUserAvatar" src="" alt="Avatar" class="drawer-user-avatar" />
         <div>
@@ -70,6 +70,24 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
         <i class="fa-solid fa-right-from-bracket"></i>
       </button>
     </div>
+
+    <!-- Anti-Flash Inmediato (0ms) para Drawer Móvil Perfil -->
+    <script is:inline>
+      try {
+        const raw = localStorage.getItem('wiSmile');
+        if (raw) {
+          const u = JSON.parse(raw);
+          if (u && (u.uid || u.nombre)) {
+            const r = u.rol || 'cliente';
+            const isStaff = r === 'personal' || r === 'gestor' || r === 'admin';
+            const isEn = window.location.pathname.startsWith('/en');
+            const dest = isStaff ? (isEn ? '/en/personal' : '/personal') : (isEn ? '/en/cliente' : '/cliente');
+            const link = document.getElementById('drawerPerfilLink');
+            if (link) link.href = dest;
+          }
+        }
+      } catch (e) {}
+    </script>
 
     <!-- Botón Pedir Gas Móvil -->
     <button onclick="window.cerrarDrawer && window.cerrarDrawer(); window.abrirModalPedido && window.abrirModalPedido();" class="btn-whatsapp w-full justify-center">
@@ -89,7 +107,17 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
 
 <script>
   import { wiAuth, generarAvatarUrl } from '../../feature/auth/sesion.js';
+  import { ROL_PATH } from '../rutas.js';
   import type { SmileData } from '../tipos/auth';
+
+  function resolverDestinoDashboard(smile: SmileData | null): string {
+    if (!smile) return '/login';
+    const isEn = window.location.pathname.startsWith('/en');
+    const rol = smile.rol || 'cliente';
+    const esStaff = rol === 'personal' || rol === 'gestor' || rol === 'admin';
+    const base = ROL_PATH[rol as keyof typeof ROL_PATH] || (esStaff ? '/personal' : '/cliente');
+    return isEn ? `/en${base}` : base;
+  }
 
   function actualizarDrawerAuth(smile: SmileData | null) {
     const drawerBtnLogin = document.getElementById('drawerBtnLogin');
@@ -106,8 +134,17 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
       const foto = smile.foto || generarAvatarUrl(smile.nombre, smile.usuario);
       if (drawerUserAvatar) drawerUserAvatar.src = foto;
       if (drawerUserNombre) drawerUserNombre.textContent = smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'VIP');
-      if (drawerUserBadge) drawerUserBadge.textContent = smile.usuario ? `@${smile.usuario.replace('@', '')}` : 'VIP';
-      if (drawerPerfilLink) drawerPerfilLink.href = smile.rol === 'personal' ? '/personal' : '/cliente';
+      
+      // Badge inteligente según el rol activo
+      const rol = smile.rol || 'cliente';
+      let rolBadge = smile.usuario ? `@${smile.usuario.replace('@', '')}` : 'VIP';
+      if (rol === 'gestor') rolBadge = 'Gestor';
+      else if (rol === 'admin') rolBadge = 'Admin';
+      else if (rol === 'personal') rolBadge = 'Personal';
+      if (drawerUserBadge) drawerUserBadge.textContent = rolBadge;
+
+      const rutaDestino = resolverDestinoDashboard(smile);
+      if (drawerPerfilLink) drawerPerfilLink.href = rutaDestino;
     } else {
       if (drawerBtnLogin) drawerBtnLogin.style.display = 'flex';
       if (drawerUserPerfil) drawerUserPerfil.style.display = 'none';

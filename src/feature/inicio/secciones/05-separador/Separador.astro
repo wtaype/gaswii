@@ -1,0 +1,73 @@
+---
+// src/feature/inicio/secciones/05-separador/Separador.astro
+// 5. BANNER SEPARADOR SOS · AUXILIO GAS EXPRESS CRO
+// Fondo Naranja Full-Width con Contenido Central en .pagewii (85vw)
+import { datosNegocio } from '../../../../negocio.js';
+import { resolverIdioma } from '../../idioma/idioma.js';
+import es from './idioma/es.json';
+import en from './idioma/en.json';
+import separadorCss from './separador.css?inline';
+
+interface Props {
+  idioma?: string;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = resolverIdioma({ es, en }, idioma);
+const esEn = idioma === 'en';
+
+const telefonoLimpio = datosNegocio.telefonoLimpio;
+const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
+const whatsappNumero = datosNegocio.whatsapp;
+
+const wsMsg = esEn
+  ? 'EMERGENCY SOS: My gas ran out while cooking, please send a cylinder urgently!'
+  : 'EMERGENCIA SOS: Me quedé sin gas cocinando, ¡envíenme un balón urgente!';
+const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+---
+
+<style is:global set:html={separadorCss}></style>
+
+<section class="sos-banner-wrapper">
+  <div class="pagewii sos-banner-content">
+    
+    <!-- Bloque Informativo Izquierdo -->
+    <div class="sos-info-block">
+      <div class="sos-icon-box">
+        <i class="fa-solid fa-utensils"></i>
+      </div>
+      <div class="sos-text-box">
+        <h3 class="sos-title">{t.titulo}</h3>
+        <p class="sos-sub">
+          {t.sub_1} <strong>{t.sub_destacado}</strong> {t.sub_2} <span data-negocio-tel-text>{telefonoMostrado}</span> {t.sub_3}
+        </p>
+      </div>
+    </div>
+
+    <!-- Bloque de Botones Dual de Emergencia -->
+    <div class="sos-actions-block">
+      <a 
+        href={`tel:${telefonoLimpio}`} 
+        class="btn-sos-call"
+        title={t.btn_llamada}
+        data-negocio-tel-link
+      >
+        <i class="fa-solid fa-bolt"></i>
+        <span>{t.btn_llamada}</span>
+      </a>
+
+      <a 
+        href={wsLink} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="btn-sos-wa"
+        title={t.btn_ws}
+        data-negocio-ws-link
+      >
+        <i class="fa-brands fa-whatsapp"></i> 
+        <span>{t.btn_ws}</span>
+      </a>
+    </div>
+
+  </div>
+</section>

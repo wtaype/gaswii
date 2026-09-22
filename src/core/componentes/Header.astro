@@ -106,7 +106,7 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
         </button>
 
         <!-- Card Perfil Usuario -->
-        <div id="headerUserPerfil" class="header-user-card">
+        <div id="headerUserPerfil" class="header-user-card" data-idioma={idioma}>
           <a href="/cliente" id="headerPerfilLink" class="header-user-link">
             <img id="headerUserAvatar" src="" alt="Foto de perfil" class="header-user-avatar" />
             <div class="header-user-info">
@@ -121,6 +121,24 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
           </button>
         </div>
       </div>
+
+      <!-- Anti-Flash Inmediato (0ms) para Header Perfil -->
+      <script is:inline>
+        try {
+          const raw = localStorage.getItem('wiSmile');
+          if (raw) {
+            const u = JSON.parse(raw);
+            if (u && (u.uid || u.nombre)) {
+              const r = u.rol || 'cliente';
+              const isStaff = r === 'personal' || r === 'gestor' || r === 'admin';
+              const isEn = window.location.pathname.startsWith('/en');
+              const dest = isStaff ? (isEn ? '/en/personal' : '/personal') : (isEn ? '/en/cliente' : '/cliente');
+              const link = document.getElementById('headerPerfilLink');
+              if (link) link.href = dest;
+            }
+          }
+        } catch (e) {}
+      </script>
 
       <!-- Botón PEDIR GAS -->
       {!esPersonal && (
@@ -141,6 +159,7 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
 
 <script>
   import { wiAuth, salir, generarAvatarUrl } from '../../feature/auth/sesion.js';
+  import { ROL_PATH } from '../rutas.js';
   import type { SmileData } from '../tipos/auth';
 
   declare global {
@@ -148,6 +167,15 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
       cerrarSesionHeader?: () => Promise<void>;
       abrirDrawer?: () => void;
     }
+  }
+
+  function resolverDestinoDashboard(smile: SmileData | null): string {
+    if (!smile) return '/login';
+    const isEn = window.location.pathname.startsWith('/en');
+    const rol = smile.rol || 'cliente';
+    const esStaff = rol === 'personal' || rol === 'gestor' || rol === 'admin';
+    const base = ROL_PATH[rol as keyof typeof ROL_PATH] || (esStaff ? '/personal' : '/cliente');
+    return isEn ? `/en${base}` : base;
   }
 
   function actualizarHeaderAuth(smile: SmileData | null) {
@@ -165,8 +193,17 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
       const foto = smile.foto || generarAvatarUrl(smile.nombre, smile.usuario);
       if (userAvatar) userAvatar.src = foto;
       if (userNombre) userNombre.textContent = smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'VIP');
-      if (userBadge) userBadge.textContent = smile.usuario ? `@${smile.usuario.replace('@', '')}` : 'VIP';
-      if (perfilLink) perfilLink.href = smile.rol === 'personal' ? '/personal' : '/cliente';
+      
+      // Badge inteligente según el rol activo
+      const rol = smile.rol || 'cliente';
+      let rolBadge = smile.usuario ? `@${smile.usuario.replace('@', '')}` : 'VIP';
+      if (rol === 'gestor') rolBadge = 'Gestor';
+      else if (rol === 'admin') rolBadge = 'Admin';
+      else if (rol === 'personal') rolBadge = 'Personal';
+      if (userBadge) userBadge.textContent = rolBadge;
+
+      const rutaDestino = resolverDestinoDashboard(smile);
+      if (perfilLink) perfilLink.href = rutaDestino;
     } else {
       if (btnLogin) btnLogin.style.display = 'inline-flex';
       if (userPerfil) userPerfil.style.display = 'none';

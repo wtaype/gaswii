@@ -1,0 +1,217 @@
+---
+// src/feature/inicio/secciones/06-calculadora/Calculadora.astro
+// 6. CALCULADORA INTELIGENTE DE CONSUMO Y RENDIMIENTO DE GAS
+// Sliders Interactivos + Cálculo Reactivo en .pagewii (85vw)
+import { datosNegocio } from '../../../../negocio.js';
+import { resolverIdioma } from '../../idioma/idioma.js';
+import es from './idioma/es.json';
+import en from './idioma/en.json';
+import calcCss from './calculadora.css?inline';
+
+interface Props {
+  idioma?: string;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = resolverIdioma({ es, en }, idioma);
+const esEn = idioma === 'en';
+
+const telefonoLimpio = datosNegocio.telefonoLimpio;
+const whatsappNumero = datosNegocio.whatsapp;
+
+const wsMsg = esEn
+  ? 'Hello Solgas Surquillo, according to the calculator I need a gas cylinder, please take my order'
+  : 'Hola Solgas Surquillo, según la calculadora requiero un balón de gas, deseo hacer mi pedido';
+const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+---
+
+<style is:global set:html={calcCss}></style>
+
+<section id="calculadora" class="sec-calculadora section-py-surface" data-lang={idioma}>
+  <div class="pagewii">
+    
+    <!-- Encabezado de Sección Centrado -->
+    <header class="calc-header-box">
+      <span class="calc-top-badge">
+        <i class="fa-solid fa-calculator"></i> 
+        <span>{t.top_badge.toUpperCase()}</span>
+      </span>
+      <h2 class="calc-main-title">{t.titulo}</h2>
+      <p class="calc-main-desc">{t.subtitulo}</p>
+    </header>
+
+    <!-- Grilla 2 Columnas -->
+    <div class="calc-split-grid items-stretch">
+      
+      <!-- Panel Izquierdo: Controles y Resultado -->
+      <div class="calc-card-controls">
+        <div>
+          <!-- Slider 1: Personas -->
+          <div class="calc-range-group">
+            <label class="calc-range-label" for="calcPersonas">
+              <span><i class="fa-solid fa-users"></i> {t.personas_label}</span>
+              <span id="personasDisplay" class="calc-val-display">3 {t.personas_unidad}</span>
+            </label>
+            <input 
+              type="range" 
+              id="calcPersonas" 
+              min="1" 
+              max="8" 
+              value="3" 
+              class="calc-range-slider"
+              data-unidad={t.personas_unidad}
+            />
+          </div>
+
+          <!-- Slider 2: Horas de Cocción -->
+          <div class="calc-range-group">
+            <label class="calc-range-label" for="calcHoras">
+              <span><i class="fa-solid fa-clock"></i> {t.horas_label}</span>
+              <span id="horasDisplay" class="calc-val-display">2.5 {t.horas_unidad}</span>
+            </label>
+            <input 
+              type="range" 
+              id="calcHoras" 
+              min="0.5" 
+              max="6.0" 
+              step="0.5" 
+              value="2.5" 
+              class="calc-range-slider"
+              data-unidad={t.horas_unidad}
+            />
+          </div>
+
+          <!-- Selector de Balón -->
+          <div class="calc-select-group mb-4">
+            <label class="calc-range-label" for="calcTamano">
+              <span><i class="fa-solid fa-fire"></i> {t.tamano_label}</span>
+            </label>
+            <select id="calcTamano" class="calc-select-tamano">
+              <option value="10" selected>{t.opcion_10}</option>
+              <option value="45">{t.opcion_45}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tarjeta Interior de Resultado -->
+        <div class="calc-result-box">
+          <div class="calc-result-label">{t.resultado_label.toUpperCase()}</div>
+          <div id="calcDiasResult" class="calc-result-days" data-unidad={t.dias_unidad}>32 {t.dias_unidad}</div>
+          <div class="calc-result-guarantee">
+            <i class="fa-solid fa-circle-check"></i> 
+            <span>{t.garantia_rendimiento}</span>
+          </div>
+          <a 
+            href={wsLink} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="btn-calc-pedir"
+            title={t.btn_pedir}
+            data-negocio-ws-link
+          >
+            <i class="fa-brands fa-whatsapp"></i> 
+            <span>{t.btn_pedir}</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Panel Derecho: Imagen Cocina y 4 Consejos -->
+      <div class="calc-card-tips">
+        <div>
+          <div class="calc-tips-media">
+            <img 
+              src="/imgwii/04-solgas-surquillo-cocina.webp" 
+              alt="Familia cocinando con seguridad y llama azul pura" 
+              width="600" 
+              height="350" 
+              loading="lazy" 
+              class="calc-tips-img"
+            />
+            <div class="calc-tips-badge-overlay">
+              <span class="calc-media-badge">
+                <i class="fa-solid fa-fire"></i> {t.foto_badge}
+              </span>
+            </div>
+          </div>
+
+          <div class="calc-tips-content">
+            <h4 class="calc-tips-title">
+              <i class="fa-solid fa-lightbulb"></i> 
+              <span>{t.tips_titulo}</span>
+            </h4>
+            <ul class="calc-tips-list">
+              <li class="calc-tip-item">
+                <i class="fa-solid fa-circle-check"></i>
+                <div><strong>{t.tip_1_tit}</strong> {t.tip_1_desc}</div>
+              </li>
+              <li class="calc-tip-item">
+                <i class="fa-solid fa-circle-check"></i>
+                <div><strong>{t.tip_2_tit}</strong> {t.tip_2_desc}</div>
+              </li>
+              <li class="calc-tip-item">
+                <i class="fa-solid fa-circle-check"></i>
+                <div><strong>{t.tip_3_tit}</strong> {t.tip_3_desc}</div>
+              </li>
+              <li class="calc-tip-item">
+                <i class="fa-solid fa-circle-check"></i>
+                <div><strong>{t.tip_4_tit}</strong> {t.tip_4_desc}</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="calc-dudas-row">
+          <span class="calc-dudas-text">{t.dudas_pregunta}</span>
+          <a href={`tel:${telefonoLimpio}`} class="btn-calc-consultar" title={t.btn_consultar} data-negocio-tel-link>
+            <i class="fa-solid fa-phone"></i> 
+            <span>{t.btn_consultar}</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Lógica Reactiva del Slider y Estimación de Días -->
+<script>
+  function initCalculadora() {
+    const sPersonas = document.getElementById('calcPersonas') as HTMLInputElement | null;
+    const sHoras = document.getElementById('calcHoras') as HTMLInputElement | null;
+    const sTamano = document.getElementById('calcTamano') as HTMLSelectElement | null;
+    const dPersonas = document.getElementById('personasDisplay');
+    const dHoras = document.getElementById('horasDisplay');
+    const dDias = document.getElementById('calcDiasResult');
+
+    if (!sPersonas || !sHoras || !sTamano || !dPersonas || !dHoras || !dDias) return;
+
+    const unidadPersonas = sPersonas.getAttribute('data-unidad') || 'personas';
+    const unidadHoras = sHoras.getAttribute('data-unidad') || 'horas / día';
+    const unidadDias = dDias.getAttribute('data-unidad') || 'días';
+
+    function recalcular() {
+      const p = parseFloat(sPersonas?.value || '3');
+      const h = parseFloat(sHoras?.value || '2.5');
+      const kg = parseFloat(sTamano?.value || '10');
+
+      if (dPersonas) dPersonas.textContent = `${p} ${unidadPersonas}`;
+      if (dHoras) dHoras.textContent = `${h} ${unidadHoras}`;
+
+      // Consumo estimado: un quemador promedio consume ~0.12 kg GLP por hora por factor familiar
+      const consumoDiario = Math.max(0.1, (p * 0.04) + (h * 0.1));
+      const diasEstimados = Math.max(1, Math.round(kg / consumoDiario));
+
+      if (dDias) dDias.textContent = `${diasEstimados} ${unidadDias}`;
+    }
+
+    sPersonas.addEventListener('input', recalcular);
+    sHoras.addEventListener('input', recalcular);
+    sTamano.addEventListener('change', recalcular);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCalculadora);
+  } else {
+    initCalculadora();
+  }
+</script>

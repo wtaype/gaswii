@@ -1,0 +1,36 @@
+{
+  "top_badge": "Frequently Asked Questions",
+  "titulo": "We Resolve All Your Questions Instantly",
+  "subtitulo": "Everything you need to know about our home gas delivery service with guaranteed exact weight in Lima.",
+  "side_foto_badge_1": "100% Satisfaction Guarantee",
+  "side_foto_badge_2": "OSINERGMIN Reg.",
+  "side_titulo": "Direct Support & Delivery in 15 - 20 min",
+  "side_desc": "Call us or message us on WhatsApp and a certified technician will arrive at your home with your factory-sealed, weight-guaranteed cylinder.",
+  "btn_ws": "Order via WhatsApp",
+  "faqs": [
+    {
+      "pregunta": "Do you have an official OSINERGMIN registry and what is your code?",
+      "respuesta": "Yes, at Solgas Surquillo we are formal distributors accredited before OSINERGMIN under Official Registry No. 208492. All our cylinders feature the official Solgas S.A. heat-shrink security seal, guaranteed exact weight from plant and warehouse, and strictly comply with Peruvian technical safety standards."
+    },
+    {
+      "pregunta": "How do I know the cylinder comes with the exact weight?",
+      "respuesta": "Our cylinders come with exact weight calibrated directly from the official Solgas packaging plant and verified at our central facility on Jr. Dante 260. They reach your home with the factory tamper-proof heat seal 100% intact, guaranteeing 10 kg net of gas without adulteration."
+    },
+    {
+      "pregunta": "Do you charge an extra fee for home delivery?",
+      "respuesta": "No, delivery and technical installation with zero-leak hermetic inspection are completely free of charge in Surquillo, Miraflores, San Borja, and San Isidro."
+    },
+    {
+      "pregunta": "How long does it take for the cylinder to arrive at my home?",
+      "respuesta": "The estimated delivery time is 12 to 20 minutes from our central dispatch base at Jr. Dante 260, Surquillo to any of the 4 covered districts."
+    },
+    {
+      "pregunta": "What payment methods do you accept?",
+      "respuesta": "We accept Cash on delivery, mobile digital wallets (Yape and Plin), and direct bank transfers upon receiving your cylinder."
+    },
+    {
+      "pregunta": "What should I do if I smell gas in my kitchen?",
+      "respuesta": "Immediately close the knob on the regulator, ventilate the area by opening windows, and call our Emergency SOS Hotline right away at 936 369 384."
+    }
+  ]
+}

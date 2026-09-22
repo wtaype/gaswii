@@ -1,0 +1,122 @@
+---
+// src/feature/inicio/secciones/03-garantia/Garantia.astro
+// 3. SECCIÓN GARANTÍA DE PESO EXACTO · BALANZA DIGITAL CALIBRADA
+// Diseño Oficial CRO: 2 Columnas sobre .pagewii (85vw)
+import { datosNegocio } from '../../../../negocio.js';
+import { resolverIdioma } from '../../idioma/idioma.js';
+import es from './idioma/es.json';
+import en from './idioma/en.json';
+import garantiaCss from './garantia.css?inline';
+
+interface Props {
+  idioma?: string;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = resolverIdioma({ es, en }, idioma);
+const esEn = idioma === 'en';
+
+const telefonoLimpio = datosNegocio.telefonoLimpio;
+const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
+const whatsappNumero = datosNegocio.whatsapp;
+const direccionSede = datosNegocio.direccionSede;
+
+const wsMsg = esEn
+  ? `Hello ${datosNegocio.nombre || 'Solgas Surquillo'}, I would like to order with Guaranteed Exact Weight`
+  : `Hola ${datosNegocio.nombre || 'Solgas Surquillo'}, deseo pedir un balón con Peso Exacto Garantizado`;
+const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+---
+
+<style is:global set:html={garantiaCss}></style>
+
+<section id="pesaje" class="sec-garantia section-py-surface">
+  <div class="pagewii">
+    <div class="split-grid items-center">
+      
+      <!-- Columna Izquierda: Tarjeta con Borde de Acento y Foto de Balanza -->
+      <div>
+        <div class="pesaje-image-frame">
+          <div class="pesaje-media-container">
+            <img 
+              src="/imgwii/02-solgas-surquillo-balanza.webp" 
+              alt="Balón Solgas con peso exacto certificado de planta y base" 
+              width="500" 
+              height="400" 
+              loading="lazy" 
+              class="pesaje-media-img"
+            />
+            <div class="pesaje-caption-overlay">
+              <span class="pesaje-caption-badge">
+                <i class="fa-solid fa-shield-halved"></i> 
+                <span>{t.foto_badge}</span>
+              </span>
+              <h4 class="pesaje-caption-title">{t.foto_titulo}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Información CRO, 3 Tarjetas de Ecuación y Botones -->
+      <div>
+        <div class="pesaje-top-badge">
+          <i class="fa-solid fa-check"></i> 
+          <span>{t.top_badge.toUpperCase()}</span>
+        </div>
+
+        <h2 class="pesaje-main-title">{t.titulo}</h2>
+        
+        <p class="pesaje-main-desc">
+          {t.descripcion_1} <strong>{direccionSede}</strong> {t.descripcion_2}
+        </p>
+
+        <!-- Ecuación de Pesaje: 3 Tarjetas -->
+        <div class="pesaje-stats-grid">
+          <div class="pesaje-stat-card card-tara">
+            <div class="pesaje-stat-label">{t.tara_label}</div>
+            <div class="pesaje-stat-val val-tara">{t.tara_val}</div>
+            <div class="pesaje-stat-sub">{t.tara_sub}</div>
+          </div>
+
+          <div class="pesaje-stat-card card-glp">
+            <div class="pesaje-stat-label">{t.glp_label}</div>
+            <div class="pesaje-stat-val">{t.glp_val}</div>
+            <div class="pesaje-stat-sub">{t.glp_sub}</div>
+          </div>
+
+          <div class="pesaje-stat-card card-total">
+            <div class="pesaje-stat-label">{t.total_label}</div>
+            <div class="pesaje-stat-val">{t.total_val}</div>
+            <div class="pesaje-stat-sub">{t.total_sub}</div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción Dual -->
+        <div class="pesaje-actions-row">
+          <a 
+            href={wsLink} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="btn-pesaje-wa"
+            title={t.btn_ws}
+            data-negocio-ws-link
+          >
+            <i class="fa-brands fa-whatsapp"></i> 
+            <span>{t.btn_ws}</span>
+          </a>
+
+          <a 
+            href={`tel:${telefonoLimpio}`} 
+            class="btn-pesaje-call"
+            title={`${t.btn_llamar_prefijo} ${telefonoMostrado}`}
+            data-negocio-tel-link
+          >
+            <i class="fa-solid fa-phone"></i> 
+            <span>{t.btn_llamar_prefijo} <span data-negocio-tel-text>{telefonoMostrado}</span></span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>

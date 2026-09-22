@@ -1,0 +1,132 @@
+---
+// src/feature/inicio/secciones/09-faq/Faq.astro
+// 9. SECCIÓN PREGUNTAS FRECUENTES CRO (ACORDEÓN + TARJETA DE ASISTENCIA)
+// HTML5 Nativo Details/Summary sobre .pagewii (85vw)
+import { datosNegocio } from '../../../../negocio.js';
+import { resolverIdioma } from '../../idioma/idioma.js';
+import es from './idioma/es.json';
+import en from './idioma/en.json';
+import faqCss from './faq.css?inline';
+
+interface Props {
+  idioma?: string;
+}
+
+const { idioma = 'es' } = Astro.props;
+const t = resolverIdioma({ es, en }, idioma);
+const esEn = idioma === 'en';
+
+const telefonoLimpio = datosNegocio.telefonoLimpio;
+const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
+const whatsappNumero = datosNegocio.whatsapp;
+const direccionSede = datosNegocio.direccionSede;
+const horarioDespacho = datosNegocio.horario;
+const registroOsinergmin = datosNegocio.registroOsinergmin;
+
+const wsMsg = esEn
+  ? `Hello ${datosNegocio.nombre || 'Solgas Surquillo'}, I have a question about the home delivery gas service`
+  : `Hola ${datosNegocio.nombre || 'Solgas Surquillo'}, tengo una consulta sobre el servicio de gas a domicilio`;
+const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+---
+
+<style is:global set:html={faqCss}></style>
+
+<section id="faq" class="seccion-faq section-py-body">
+  <div class="pagewii">
+    
+    <!-- Encabezado de Sección -->
+    <header class="faq-header-box">
+      <span class="faq-top-badge">
+        <i class="fa-solid fa-circle-question"></i> 
+        <span>{t.top_badge.toUpperCase()}</span>
+      </span>
+      <h2 class="faq-main-title">{t.titulo}</h2>
+      <p class="faq-main-desc">{t.subtitulo}</p>
+    </header>
+
+    <div class="faq-grid-layout">
+      
+      <!-- Columna 1: Acordeón Interactivo de FAQ -->
+      <div class="faq-stack">
+        {t.faqs.map((f: any, idx: number) => (
+          <details class="clean-card faq-details-card" open={idx === 0}>
+            <summary class="faq-summary">
+              <span>
+                <i class="fa-solid fa-circle-check"></i>
+                <span>{f.pregunta}</span>
+              </span>
+              <i class="fa-solid fa-chevron-down faq-icon-arrow"></i>
+            </summary>
+            <div class="faq-answer-content">
+              {f.respuesta}
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- Columna 2: Tarjeta Visual de Asistencia y Confianza -->
+      <div class="clean-card faq-side-card">
+        
+        <div class="faq-media-box">
+          <img 
+            src="/imgwii/01-solgas-surquillo.webp" 
+            alt="Atención y confianza Solgas Surquillo" 
+            loading="lazy" 
+            class="faq-media-img"
+          />
+          <div class="faq-media-overlay">
+            <span class="faq-badge-fire">
+              <i class="fa-solid fa-shield-halved"></i> 
+              <span>{t.side_foto_badge_1}</span>
+            </span>
+            <span class="faq-badge-blue">
+              <i class="fa-solid fa-award"></i> 
+              <span data-negocio-registro-osinergmin>{t.side_foto_badge_2} {registroOsinergmin}</span>
+            </span>
+          </div>
+        </div>
+
+        <h3 class="faq-side-title">{t.side_titulo}</h3>
+        <p class="faq-side-desc">{t.side_desc}</p>
+
+        <div class="faq-meta-list">
+          <div class="faq-meta-item">
+            <i class="fa-solid fa-clock"></i> 
+            <span data-negocio-horario>{horarioDespacho}</span>
+          </div>
+          <div class="faq-meta-item">
+            <i class="fa-solid fa-location-dot"></i> 
+            <span data-negocio-direccion-sede>{direccionSede}</span>
+          </div>
+        </div>
+
+        <div class="faq-side-actions">
+          <a 
+            href={`tel:${telefonoLimpio}`} 
+            class="faq-btn-call"
+            title={`Llamar: ${telefonoMostrado}`}
+            data-negocio-tel-link
+          >
+            <i class="fa-solid fa-phone"></i> 
+            <span data-negocio-tel-text>{telefonoMostrado}</span>
+          </a>
+
+          <a 
+            href={wsLink} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="faq-btn-wa"
+            title={t.btn_ws}
+            data-negocio-ws-link
+          >
+            <i class="fa-brands fa-whatsapp"></i> 
+            <span>{t.btn_ws}</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>

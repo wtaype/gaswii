@@ -1,0 +1,19 @@
+{
+  "top_badge": "Garantía de Peso Exacto",
+  "titulo": "Garantía de Peso Exacto: De la Planta Solgas a tu Cocina",
+  "descripcion_1": "En Solgas Surquillo combatimos las malas prácticas del mercado informal. Cada balón sale con el peso exacto calibrado desde la planta envasadora oficial de Solgas y es verificado técnicamente en nuestra base de",
+  "descripcion_2": "con su precinto intacto para que recibas cada gramo garantizado.",
+  "foto_badge": "Peso Certificado de Origen",
+  "foto_titulo": "Peso Exacto Certificado: 10 kg Netos de Gas GLP",
+  "tara_label": "Tara (Balón Vacío)",
+  "tara_val": "12.5 kg",
+  "tara_sub": "Grabado en el asa",
+  "glp_label": "GLP Neto Líquido",
+  "glp_val": "+ 10.0 kg",
+  "glp_sub": "100% puro de planta",
+  "total_label": "Peso Total Certificado",
+  "total_val": "= 22.5 kg",
+  "total_sub": "Garantía Exacta",
+  "btn_ws": "Pedir con Peso Garantizado",
+  "btn_llamar_prefijo": "Llamar:"
+}

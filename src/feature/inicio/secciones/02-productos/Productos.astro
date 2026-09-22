@@ -448,4 +448,7 @@ const whatsappNumero = datosNegocio.whatsapp;
   window.addEventListener('storage', (e) => {
     if (e.key === 'gaswii_productos') sincronizarCatalogoLocalFirst();
   });
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) sincronizarCatalogoLocalFirst();
+  });
 </script>

@@ -14,13 +14,11 @@ interface Props {
 const { idioma = 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
 
-const distritos = datosNegocio.distritos && datosNegocio.distritos.length > 0 
-  ? datosNegocio.distritos 
-  : [{ id: 'surquillo', nombre: 'Surquillo', tiempo: '20 - 30 min', tag: 'Sede Central', tagEn: 'Headquarters' }];
-const primerDistrito = distritos[0] || { id: 'surquillo', nombre: 'Surquillo', tiempo: '20 - 30 min' };
+const distritos = datosNegocio.distritos || [];
+const primerDistrito = distritos[0] || { id: '', nombre: '', tiempo: '' };
 const primerProducto = datosNegocio.productos[0];
-const precioPrimerBalon = primerProducto ? primerProducto.precioPEN.toFixed(2) : '65.00';
-const direccionSede = datosNegocio.direccionSede || 'Surquillo, Lima';
+const precioPrimerBalon = primerProducto ? primerProducto.precioPEN.toFixed(2) : '';
+const direccionSede = datosNegocio.direccionSede;
 const mapsUrl = datosNegocio.mapsUrl || '#';
 ---
 
@@ -247,6 +245,28 @@ const mapsUrl = datosNegocio.mapsUrl || '#';
       document.querySelectorAll('[data-negocio-tel-link]').forEach(a => a.setAttribute('href', `tel:${telLimpio}`));
     }
 
+    const horario = datos.contacto?.horario || '';
+    if (horario) {
+      document.querySelectorAll('[data-negocio-horario]').forEach(el => el.textContent = horario);
+    }
+
+    const whatsapp = datos.contacto?.whatsapp || '';
+    if (whatsapp) {
+      document.querySelectorAll('[data-negocio-ws-link]').forEach(a => {
+        const cur = a.getAttribute('href') || '';
+        if (cur.includes('wa.me/')) {
+          const parts = cur.split('?');
+          a.setAttribute('href', `https://wa.me/${whatsapp}${parts[1] ? '?' + parts[1] : ''}`);
+        }
+      });
+    }
+
+    if (datos.identidad?.registroOsinergmin) {
+      document.querySelectorAll('[data-negocio-registro-osinergmin]').forEach(el => {
+        el.textContent = `OSINERGMIN ${datos.identidad.registroOsinergmin}`;
+      });
+    }
+
     if (datos.identidad?.nombre) {
       document.querySelectorAll('[data-negocio-badge]').forEach(el => {
         const prefijo = el.getAttribute('data-prefijo') || 'DELIVERY OFICIAL';
@@ -310,4 +330,7 @@ const mapsUrl = datosNegocio.mapsUrl || '#';
     iniciarHero();
   }
   document.addEventListener('astro:page-load', iniciarHero);
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) iniciarHero();
+  });
 </script>
