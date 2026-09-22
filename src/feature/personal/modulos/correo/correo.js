@@ -1,6 +1,6 @@
 // src/feature/personal/modulos/correo/correo.js
 // Controlador Frontend Autónomo del Módulo Correo (Solgas Surquillo)
-// 100% JS Nativo · Integrado con dataCorreo.js, plantillasCorreo.js y @widev
+// Markdown Live Editor + Previsualización en Tiempo Real + Datos Dinámicos
 
 import { Notificacion, wiSpin, adrm } from '@widev';
 import {
@@ -16,7 +16,8 @@ import {
   generarPlantillaComprobante,
   generarPlantillaCotizacion,
   generarPlantillaLibre
-} from './plantillasCorreo.js';
+} from './plantillas.js';
+import { obtenerDatosNegocio } from '../negocio/dataNegocio.js';
 
 export function inicializarModuloCorreo() {
   const panel = document.getElementById('panel-correo');
@@ -25,33 +26,61 @@ export function inicializarModuloCorreo() {
 
   let plantillaSeleccionada = 'pedido';
   let isSending = false;
+  let liveDebounceTimer = null;
 
-  // Elementos del formulario principal
+  // Elementos de formulario
   const form = document.getElementById('formEnviarCorreo');
-  const pillsWrap = document.getElementById('crPillsTemplates');
+  const hiddenTipo = document.getElementById('crSelectTipo');
   const inputTo = document.getElementById('crInputTo');
   const inputNombre = document.getElementById('crInputNombre');
-  const btnToggleCc = document.getElementById('btnToggleCc');
-  const wrapCc = document.getElementById('crWrapCc');
   const inputCc = document.getElementById('crInputCc');
-  const hiddenTipo = document.getElementById('crSelectTipo');
+  const wrapCc = document.getElementById('crWrapCc');
+  const btnToggleCc = document.getElementById('btnToggleCc');
   const inputSubject = document.getElementById('crInputSubject');
-  const textMensaje = document.getElementById('crTextMensaje');
+  const textMarkdown = document.getElementById('crTextMarkdown');
+  const btnReset = document.getElementById('btnResetPlantilla');
   const btnEnviar = document.getElementById('btnEnviarCorreo');
-  const btnPreview = document.getElementById('btnPreviewCorreo');
-  const badgeRemitente = document.getElementById('crBadgeRemitenteActivo');
+  const pillsWrap = document.getElementById('crPillsCategorias');
+  const wordsCounter = document.getElementById('crLiveWordsCount');
 
-  // Elementos de la tarjeta de ajustes
+  // Cajas dinámicas por categoría
+  const boxPedido = document.getElementById('crFieldsPedido');
+  const boxComprobante = document.getElementById('crFieldsComprobante');
+  const boxCotizacion = document.getElementById('crFieldsCotizacion');
+
+  // Inputs específicos de Pedido
+  const inPedNumero = document.getElementById('crPedNumero');
+  const inPedPrecio = document.getElementById('crPedPrecio');
+  const inPedProducto = document.getElementById('crPedProducto');
+  const inPedPago = document.getElementById('crPedPago');
+  const inPedDireccion = document.getElementById('crPedDireccion');
+
+  // Inputs específicos de Comprobante SUNAT
+  const inCompTipo = document.getElementById('crCompTipo');
+  const inCompSerie = document.getElementById('crCompSerie');
+  const inCompMonto = document.getElementById('crCompMonto');
+  const inCompDoc = document.getElementById('crCompDoc');
+
+  // Inputs específicos de Cotización
+  const inCotNumero = document.getElementById('crCotNumero');
+  const inCotEmpresa = document.getElementById('crCotEmpresa');
+  const inCotValidez = document.getElementById('crCotValidez');
+
+  // Live Preview Elements
+  const liveFrame = document.getElementById('crLiveFrame');
+  const frameWrap = document.getElementById('crFrameWrap');
+  const deviceButtons = document.querySelectorAll('.cr-device-btn');
+
+  // Elementos de Ajustes y Lista
   const formAjustes = document.getElementById('formAjustesCorreo');
   const inputAjusteNombre = document.getElementById('crAjusteNombre');
   const inputAjusteEmail = document.getElementById('crAjusteEmail');
-
-  // Elementos de la lista y buscador
+  const badgeRemitente = document.getElementById('crBadgeRemitenteActivo');
   const historyList = document.getElementById('crHistoryList');
   const badgeTotal = document.getElementById('crBadgeTotal');
   const inputBuscar = document.getElementById('crInputBuscar');
 
-  // Elementos del modal
+  // Modal
   const modal = document.getElementById('crModalDetalle');
   const modalAsunto = document.getElementById('crModalAsunto');
   const modalInfo = document.getElementById('crModalInfo');
@@ -63,7 +92,7 @@ export function inicializarModuloCorreo() {
     const aj = obtenerAjustesCorreo();
     if (inputAjusteNombre) inputAjusteNombre.value = aj.remitenteNombre || 'Solgas Surquillo';
     if (inputAjusteEmail) inputAjusteEmail.value = aj.remitenteEmail || 'pedidos@solgassurquillo.com';
-    if (badgeRemitente) badgeRemitente.textContent = `Remitente: ${aj.remitenteEmail || 'pedidos@solgassurquillo.com'}`;
+    if (badgeRemitente) badgeRemitente.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${aj.remitenteEmail || 'pedidos@solgassurquillo.com'}`;
   }
 
   formAjustes?.addEventListener('submit', (e) => {
@@ -72,7 +101,6 @@ export function inicializarModuloCorreo() {
     const rawEmail = inputAjusteEmail?.value?.trim() || 'pedidos@solgassurquillo.com';
     const emailLimpio = limpiarEmail(rawEmail) || 'pedidos@solgassurquillo.com';
 
-    // Si el usuario intentó guardar un correo no oficial, asegurarse de mantener el dominio verificado
     const emailFinal = emailLimpio.toLowerCase().endsWith('@solgassurquillo.com')
       ? emailLimpio
       : 'pedidos@solgassurquillo.com';
@@ -86,8 +114,9 @@ export function inicializarModuloCorreo() {
       responderA: emailFinal
     });
 
-    if (badgeRemitente) badgeRemitente.textContent = `Remitente: ${emailFinal}`;
-    Notificacion('Ajustes guardados correctamente (Dominio verificado: solgassurquillo.com)', 'success', 3000);
+    if (badgeRemitente) badgeRemitente.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${emailFinal}`;
+    Notificacion('Ajustes guardados correctamente', 'success', 2500);
+    actualizarLivePreview();
   });
 
   // 2. Toggle opcional para campo CC
@@ -101,143 +130,196 @@ export function inicializarModuloCorreo() {
     if (isHidden && inputCc) inputCc.focus();
   });
 
-  // 3. Aplicar Plantilla / Categoría
+  // 3. Switch de Dispositivo en Live Preview (Desktop / Móvil)
+  deviceButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      deviceButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const dev = btn.getAttribute('data-device');
+      if (dev === 'mobile') {
+        frameWrap?.classList.add('is-mobile');
+      } else {
+        frameWrap?.classList.remove('is-mobile');
+      }
+    });
+  });
+
+  // 4. Construcción Dinámica del Correo
+  function construirCorreoActual() {
+    const cliente = inputNombre?.value?.trim() || 'Estimado/a cliente';
+    const asunto = inputSubject?.value?.trim() || 'Comunicado Oficial';
+    const markdown = textMarkdown?.value || '';
+    const negocio = obtenerDatosNegocio();
+
+    switch (plantillaSeleccionada) {
+      case 'pedido':
+        return generarPlantillaPedido({
+          cliente,
+          pedidoId: inPedNumero?.value?.trim() || 'GW-1029',
+          producto: inPedProducto?.value?.trim() || 'Balón SOLGAS Premium 10 kg',
+          cantidad: 1,
+          precio: inPedPrecio?.value?.trim() || '65.00',
+          direccion: inPedDireccion?.value?.trim() || 'Surquillo, Lima',
+          metodoPago: inPedPago?.value?.trim() || 'Efectivo / Yape',
+          mensajeMarkdown: markdown,
+          negocio
+        });
+
+      case 'comprobante':
+        return generarPlantillaComprobante({
+          cliente,
+          tipoComprobante: inCompTipo?.value || 'Boleta de Venta Electrónica',
+          serieNumero: inCompSerie?.value?.trim() || 'B001-000482',
+          monto: inCompMonto?.value?.trim() || '65.00',
+          docIdentidad: inCompDoc?.value?.trim() || '',
+          mensajeMarkdown: markdown,
+          negocio
+        });
+
+      case 'cotizacion':
+        return generarPlantillaCotizacion({
+          cliente,
+          empresa: inCotEmpresa?.value?.trim() || 'Empresa Solicitante',
+          cotizacionId: inCotNumero?.value?.trim() || 'COT-2026-08',
+          validez: inCotValidez?.value?.trim() || '15 días calendario',
+          mensajeMarkdown: markdown,
+          negocio
+        });
+
+      case 'libre':
+      default:
+        return generarPlantillaLibre({
+          cliente,
+          asunto,
+          mensajeMarkdown: markdown,
+          negocio
+        });
+    }
+  }
+
+  // 5. Renderizado en Tiempo Real en el Iframe (Live Preview)
+  function actualizarLivePreview() {
+    clearTimeout(liveDebounceTimer);
+    liveDebounceTimer = setTimeout(() => {
+      if (!liveFrame) return;
+      const { html } = construirCorreoActual();
+      liveFrame.srcdoc = html;
+      actualizarContadorPalabras();
+    }, 40);
+  }
+
+  // Contador de palabras y tiempo de lectura
+  function actualizarContadorPalabras() {
+    if (!wordsCounter || !textMarkdown) return;
+    const txt = textMarkdown.value.trim();
+    const words = txt ? txt.split(/\s+/).filter(Boolean).length : 0;
+    const min = Math.max(1, Math.ceil(words / 180));
+    wordsCounter.textContent = `${words} palabras · ${min} min lectura`;
+  }
+
+  // 6. Aplicar Plantilla / Categoría
   function aplicarPlantilla(nombrePlantilla) {
     plantillaSeleccionada = nombrePlantilla;
     if (hiddenTipo) hiddenTipo.value = nombrePlantilla;
 
+    // Mostrar/ocultar cajas dinámicas
+    if (boxPedido) boxPedido.style.display = nombrePlantilla === 'pedido' ? 'block' : 'none';
+    if (boxComprobante) boxComprobante.style.display = nombrePlantilla === 'comprobante' ? 'block' : 'none';
+    if (boxCotizacion) boxCotizacion.style.display = nombrePlantilla === 'cotizacion' ? 'block' : 'none';
+
     switch (nombrePlantilla) {
       case 'pedido':
         if (inputSubject) inputSubject.value = '🔥 ¡Tu pedido de gas está confirmado! · Solgas Surquillo';
-        if (textMensaje) textMensaje.value = 'Hemos recibido tu pedido con éxito y nuestra unidad de despacho express ya se encuentra en camino con balanza digital calibrada Inacal.';
+        if (textMarkdown) textMarkdown.value = 'Nota adicional: El repartidor llamará 5 minutos antes de llegar a tu puerta con el POS y la balanza calibrada.';
         break;
 
       case 'comprobante':
         if (inputSubject) inputSubject.value = '📄 Tu Boleta de Venta Electrónica B001-000482 · Solgas Surquillo';
-        if (textMensaje) textMensaje.value = 'Te adjuntamos el comprobante de pago electrónico por tu compra de balón de gas en Solgas Surquillo conforme a las normativas de la SUNAT.';
+        if (textMarkdown) textMarkdown.value = `### Detalle de Facturación:
+- **Operación:** Venta al por menor de gas doméstico GLP.
+- **Tipo:** Venta gravada con IGV incluido.
+- **Canal:** Despacho Express Surquillo.`;
         break;
 
       case 'cotizacion':
         if (inputSubject) inputSubject.value = '📋 Cotización Comercial de Balones de Gas · Solgas Surquillo';
-        if (textMensaje) textMensaje.value = 'Presentamos nuestra propuesta formal de abastecimiento de gas GLP para su negocio con tarifas preferenciales y despacho continuo.';
+        if (textMarkdown) textMarkdown.value = `| Balón Solgas | Cantidad | Precio Unit. | Subtotal |
+| :--- | :---: | :---: | :---: |
+| Balón 45 kg Industrial | 2 | S/ 220.00 | S/ 440.00 |
+| Balón 10 kg Plus | 5 | S/ 65.00 | S/ 325.00 |
+
+### Beneficios para tu establecimiento:
+- Despacho prioritario programado semanal o quincenal.
+- Mantenimiento y verificación de válvulas gratis.`;
         break;
 
       case 'libre':
       default:
-        if (hiddenTipo) hiddenTipo.value = 'general';
         if (inputSubject) inputSubject.value = 'Comunicado Oficial · Solgas Surquillo';
-        if (textMensaje) textMensaje.value = '';
+        if (textMarkdown) textMarkdown.value = `## Estimado cliente,
+
+Te informamos que durante el feriado mantendremos nuestra atención continua en Surquillo, Miraflores, San Borja y San Isidro.
+
+- **Horario:** 06:30 am a 09:30 pm.
+- **Pedidos express:** Vía web y WhatsApp directo.`;
         break;
     }
+
+    actualizarLivePreview();
   }
 
   pillsWrap?.addEventListener('click', (e) => {
     const btn = e.target.closest('.cr-pill-btn');
     if (!btn) return;
-
     adrm(btn, 'active');
     const tpl = btn.getAttribute('data-template') || 'pedido';
     aplicarPlantilla(tpl);
   });
 
-  // 4. Construir HTML
-  function construirHtmlCorreo() {
-    const clienteNombre = inputNombre?.value?.trim() || 'Estimado/a cliente';
-    const mensajeTexto = textMensaje?.value?.trim() || '';
+  // 7. Eventos de la Barra de Herramientas Markdown
+  const toolbar = document.getElementById('crMdToolbar');
+  toolbar?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.cr-md-btn');
+    if (!btn || !textMarkdown) return;
 
-    if (plantillaSeleccionada === 'pedido') {
-      return generarPlantillaPedido({
-        cliente: clienteNombre,
-        pedidoId: 'GW-' + Math.floor(1000 + Math.random() * 9000),
-        producto: 'Balón SOLGAS Premium 10 kg',
-        cantidad: 1,
-        precio: '65.00',
-        direccion: 'Surquillo, Lima'
-      });
+    const tag = btn.getAttribute('data-tag');
+    if (!tag) return;
+
+    const s = textMarkdown.selectionStart;
+    const end = textMarkdown.selectionEnd;
+    const seleccionado = textMarkdown.value.substring(s, end) || 'texto';
+
+    let insercion = '';
+    if (tag === 'table') {
+      insercion = `\n| Producto | Cantidad | Precio Unit. | Subtotal |\n| :--- | :---: | :---: | :---: |\n| Balón 10 kg | 1 | S/ 65.00 | S/ 65.00 |\n`;
+    } else if (tag.includes('texto')) {
+      insercion = tag.replace('texto', seleccionado);
+    } else {
+      insercion = tag;
     }
 
-    if (plantillaSeleccionada === 'comprobante') {
-      return generarPlantillaComprobante({
-        cliente: clienteNombre,
-        tipoComprobante: 'Boleta de Venta Electrónica',
-        serieNumero: 'B001-' + String(Math.floor(100 + Math.random() * 900)).padStart(6, '0'),
-        monto: '65.00'
-      });
-    }
+    textMarkdown.value = textMarkdown.value.substring(0, s) + insercion + textMarkdown.value.substring(end);
+    textMarkdown.focus();
+    textMarkdown.selectionStart = s;
+    textMarkdown.selectionEnd = s + insercion.length;
 
-    if (plantillaSeleccionada === 'cotizacion') {
-      return generarPlantillaCotizacion({
-        contacto: clienteNombre,
-        empresa: clienteNombre.includes(' ') ? clienteNombre : 'Empresa Cliente',
-        detalle: 'Suministro continuo de balones de 10kg / 45kg',
-        precioUnitario: '65.00',
-        cantidad: 2
-      });
-    }
+    actualizarLivePreview();
+  });
 
-    return generarPlantillaLibre({
-      cliente: clienteNombre,
-      asunto: inputSubject?.value?.trim() || 'Comunicado Oficial · Solgas Surquillo',
-      mensaje: mensajeTexto
-    });
-  }
+  // 8. Escucha global de inputs en tiempo real (para cualquier cambio)
+  document.querySelectorAll('.cr-live-input').forEach(input => {
+    input.addEventListener('input', actualizarLivePreview);
+    input.addEventListener('change', actualizarLivePreview);
+  });
+  inputNombre?.addEventListener('input', actualizarLivePreview);
 
-  // 5. Renderizado del historial de correos
-  function renderHistorial(filtro = '') {
-    if (!historyList) return;
+  // Botón Restablecer
+  btnReset?.addEventListener('click', () => {
+    aplicarPlantilla(plantillaSeleccionada);
+    Notificacion('Plantilla restablecida a los valores sugeridos.', 'info', 2000);
+  });
 
-    let items = obtenerCorreos();
-    if (badgeTotal) badgeTotal.textContent = String(items.length);
-
-    if (filtro) {
-      const f = filtro.toLowerCase();
-      items = items.filter(c => 
-        (c.destinatario?.para || '').toLowerCase().includes(f) ||
-        (c.destinatario?.nombre || '').toLowerCase().includes(f) ||
-        (c.mensaje?.asunto || '').toLowerCase().includes(f)
-      );
-    }
-
-    if (items.length === 0) {
-      historyList.innerHTML = `
-        <div class="cr-empty-state">
-          <i class="fa-regular fa-paper-plane"></i>
-          <p>${filtro ? 'No hay correos que coincidan con la búsqueda.' : 'Aún no has enviado correos. Completa el formulario de la izquierda y haz clic en Enviar.'}</p>
-        </div>
-      `;
-      return;
-    }
-
-    historyList.innerHTML = items.map(c => {
-      const tipo = c.mensaje?.tipo || 'general';
-      const to = c.destinatario?.para || '';
-      const nombre = c.destinatario?.nombre || '';
-      const asunto = c.mensaje?.asunto || 'Sin asunto';
-      const fecha = c.fecha || '';
-      const resendId = c.resendId ? c.resendId.substring(0, 8) + '…' : '';
-
-      return `
-        <div class="cr-mail-card btn-view-mail" data-id="${c.id}">
-          <div class="cr-mail-top">
-            <span class="cr-mail-type-badge ${tipo}">${tipo}</span>
-            <span class="cr-mail-date">${fecha}</span>
-          </div>
-          <div class="cr-mail-to">
-            <i class="fa-solid fa-user-check" style="color:var(--brand-orange); font-size:12px;"></i>
-            ${nombre ? `<strong>${nombre}</strong> <small style="color:var(--muted); font-weight:normal;">(${to})</small>` : to}
-          </div>
-          <div class="cr-mail-subject">${asunto}</div>
-          <div class="cr-mail-snippet">${c.mensaje?.resumen || ''}</div>
-          <div class="cr-mail-footer">
-            <span><i class="fa-solid fa-circle-check" style="color:var(--green);"></i> Enviado</span>
-            <span>ID: ${resendId}</span>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // 6. Envío del formulario
+  // 9. Envío del Formulario
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSending) return;
@@ -246,8 +328,7 @@ export function inicializarModuloCorreo() {
     const nombre = inputNombre?.value?.trim();
     const cc = inputCc?.value?.trim();
     const subject = inputSubject?.value?.trim();
-    const tipo = hiddenTipo?.value || 'general';
-    const mensaje = textMensaje?.value?.trim();
+    const tipo = hiddenTipo?.value || 'pedido';
 
     if (!to || !subject) {
       Notificacion('Por favor completa el destinatario y el asunto.', 'warning', 3000);
@@ -258,15 +339,15 @@ export function inicializarModuloCorreo() {
     if (btnEnviar) wiSpin(btnEnviar, true, 'Despachando correo...');
 
     try {
-      const { html, resumen } = construirHtmlCorreo();
+      const { html, resumen, asunto: asuntoFinal } = construirCorreoActual();
 
       await enviarCorreo({
         para: to,
         nombre,
         cc: cc ? cc.split(',').map(s => s.trim()) : [],
-        asunto: subject,
+        asunto: subject || asuntoFinal,
         tipo,
-        mensaje: mensaje || resumen,
+        mensaje: resumen,
         html
       });
 
@@ -289,38 +370,74 @@ export function inicializarModuloCorreo() {
     }
   });
 
-  // 7. Vista Previa en Modal
-  btnPreview?.addEventListener('click', () => {
-    const { html, asunto } = construirHtmlCorreo();
-    const aj = obtenerAjustesCorreo();
-    if (modalAsunto) modalAsunto.textContent = `Previsualización: ${asunto}`;
-    if (modalInfo) modalInfo.textContent = `Destinatario: ${inputTo?.value?.trim() || 'cliente@ejemplo.com'} · Remitente: ${aj.remitenteNombre} <${aj.remitenteEmail}>`;
-    if (modalIframe) modalIframe.srcdoc = html;
-    if (modal) modal.style.display = 'grid';
+  // 10. Renderizar Historial de Correos Enviados
+  function renderHistorial(filtro = '') {
+    if (!historyList) return;
+    const correos = obtenerCorreos();
+    if (badgeTotal) badgeTotal.textContent = String(correos.length);
+
+    const filtrados = filtro
+      ? correos.filter(c => 
+          (c.destinatario?.para || '').toLowerCase().includes(filtro.toLowerCase()) ||
+          (c.destinatario?.nombre || '').toLowerCase().includes(filtro.toLowerCase()) ||
+          (c.mensaje?.asunto || '').toLowerCase().includes(filtro.toLowerCase())
+        )
+      : correos;
+
+    if (filtrados.length === 0) {
+      historyList.innerHTML = `
+        <div class="cr-empty-state">
+          <i class="fa-solid fa-inbox"></i>
+          <div>No hay correos registrados todavía.</div>
+        </div>
+      `;
+      return;
+    }
+
+    historyList.innerHTML = filtrados.map(c => {
+      const fechaTxt = c.fecha || '';
+      const tipoTxt = (c.mensaje?.tipo || 'General').toUpperCase();
+      const para = c.destinatario?.para || 'cliente';
+      const asunto = c.mensaje?.asunto || 'Sin Asunto';
+      const resendId = c.resendId ? c.resendId.substring(0, 10) + '...' : 'OK';
+
+      return `
+        <div class="cr-mail-card" data-id="${c.id}">
+          <div class="cr-mail-head">
+            <span class="cr-mail-tag">${tipoTxt}</span>
+            <span class="cr-mail-date">${fechaTxt}</span>
+          </div>
+          <div class="cr-mail-to"><i class="fa-solid fa-user" style="font-size:10px; opacity:0.6;"></i> ${para}</div>
+          <div class="cr-mail-subject">${asunto}</div>
+          <div class="cr-mail-snippet">${c.mensaje?.resumen || ''}</div>
+          <div class="cr-mail-footer">
+            <span><i class="fa-solid fa-circle-check" style="color:var(--green);"></i> Enviado</span>
+            <span>ID: ${resendId}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Buscador en vivo del historial
+  inputBuscar?.addEventListener('input', (e) => {
+    renderHistorial(e.target.value.trim());
   });
 
-  // 8. Clic en tarjeta de historial para ver detalle
+  // Clic en tarjeta de historial para ver en modal
   historyList?.addEventListener('click', (e) => {
-    const card = e.target.closest('.btn-view-mail');
+    const card = e.target.closest('.cr-mail-card');
     if (!card) return;
-
     const id = card.getAttribute('data-id');
-    const correos = obtenerCorreos();
-    const correo = correos.find(c => c.id === id);
-    if (!correo) return;
+    const correo = obtenerCorreos().find(c => c.id === id);
+    if (!correo || !modal) return;
 
     if (modalAsunto) modalAsunto.textContent = correo.mensaje?.asunto || 'Detalle del Correo';
-    if (modalInfo) {
-      modalInfo.innerHTML = `
-        <strong>Para:</strong> ${correo.destinatario?.nombre ? correo.destinatario.nombre + ' · ' : ''}${correo.destinatario?.para || ''} | 
-        <strong>Fecha:</strong> ${correo.fecha || ''} | 
-        <strong>Resend ID:</strong> ${correo.resendId || 'N/A'}
-      `;
-    }
+    if (modalInfo) modalInfo.textContent = `Para: ${correo.destinatario?.para} · Enviado el ${correo.fecha || ''}`;
     if (modalIframe) {
       modalIframe.srcdoc = correo.mensaje?.html || `<p>${correo.mensaje?.resumen || ''}</p>`;
     }
-    if (modal) modal.style.display = 'grid';
+    modal.style.display = 'grid';
   });
 
   btnCloseModal?.addEventListener('click', () => {
@@ -331,23 +448,11 @@ export function inicializarModuloCorreo() {
     if (e.target === modal) modal.style.display = 'none';
   });
 
-  inputBuscar?.addEventListener('input', () => {
-    renderHistorial(inputBuscar.value.trim());
-  });
-
-  // 9. Inicialización
+  // Inicialización final
   cargarAjustes();
   aplicarPlantilla('pedido');
   renderHistorial();
 
-  sincronizarCorreosDesdeFirestore().then(() => {
-    renderHistorial();
-  });
-}
-
-// Auto-inicialización segura
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', inicializarModuloCorreo);
-} else {
-  inicializarModuloCorreo();
+  // Sincronización en background con Firestore
+  sincronizarCorreosDesdeFirestore().then(() => renderHistorial());
 }
