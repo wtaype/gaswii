@@ -3,6 +3,27 @@
    Estilos y variables compartidas para las secciones de Inicio
    ========================================================================== */
 
+/* ── 0. CONTENEDOR MAESTRO DE INICIO (.pagewii = 85vw) ── */
+.pagewii {
+  width: 100%;
+  max-width: 85vw;
+  margin: 0 auto;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 1024px) {
+  .pagewii {
+    max-width: 92vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .pagewii {
+    max-width: 94vw;
+    padding: 0 10px;
+  }
+}
+
 .section-py-surface {
   padding: 7vh 0;
   background: var(--bg-surface);
