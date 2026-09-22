@@ -19,5 +19,18 @@ service cloud.firestore {
       allow read: if true;
       allow write: if esPersonal();
     }
+
+    match /negocio/{id} {
+      allow read: if true;
+      allow write: if esPersonal();
+    }
+
+    match /notepad/{id} {
+      allow read, write: if esPersonal();
+    }
+
+    match /correos/{id} {
+      allow read, write: if esPersonal();
+    }
   }
 }

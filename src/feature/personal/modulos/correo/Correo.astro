@@ -1,0 +1,255 @@
+---
+// src/feature/personal/modulos/correo/Correo.astro
+// Módulo Oficial de Correo (Solgas Surquillo) · Integrado con Resend y Firestore
+import { datosNegocio } from '@/negocio.js';
+---
+
+<section class="ps-panel" id="panel-correo">
+  <!-- Encabezado de Sección -->
+  <div class="ps-section-header">
+    <div class="ps-section-title-wrap">
+      <h1 class="ps-section-title">Centro de Envíos de Correo</h1>
+      <p class="ps-section-sub">
+        Emisión de confirmaciones de pedido, comprobantes electrónicos y cotizaciones oficiales con el dominio verificado <strong>@solgassurquillo.com</strong>.
+      </p>
+    </div>
+    <div class="ps-header-actions">
+      <a 
+        href="https://resend.com/emails" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="ps-btn ps-btn-secondary"
+        title="Abrir métricas de Resend"
+      >
+        <i class="fa-solid fa-chart-line" style="color:var(--brand-orange);"></i> Métricas Resend
+      </a>
+    </div>
+  </div>
+
+  <!-- Cuadrícula Principal (Redactor a la Izquierda / Ajustes + Historial a la Derecha) -->
+  <div class="cr-grid">
+    
+    <!-- COLUMNA 1: REDACTOR Y PLANTILLAS -->
+    <div class="cr-card">
+      <div class="cr-card-head">
+        <h2 class="cr-card-title">
+          <i class="fa-solid fa-paper-plane"></i> Redactar Nuevo Correo
+        </h2>
+        <span class="ps-badge ps-badge-blue" style="font-size:11px;" id="crBadgeRemitenteActivo">
+          Remitente: pedidos@solgassurquillo.com
+        </span>
+      </div>
+
+      <!-- Selector Rápido de Categoría / Plantilla -->
+      <div class="cr-pills-bar" id="crPillsTemplates">
+        <button type="button" class="cr-pill-btn active" data-template="pedido">
+          <i class="fa-solid fa-fire-burner"></i> Pedido de Gas
+        </button>
+        <button type="button" class="cr-pill-btn" data-template="comprobante">
+          <i class="fa-solid fa-file-invoice"></i> Comprobante SUNAT
+        </button>
+        <button type="button" class="cr-pill-btn" data-template="cotizacion">
+          <i class="fa-solid fa-file-signature"></i> Cotización Negocio
+        </button>
+        <button type="button" class="cr-pill-btn" data-template="libre">
+          <i class="fa-solid fa-pen-nib"></i> Mensaje Libre
+        </button>
+      </div>
+
+      <!-- Formulario de Redacción -->
+      <form id="formEnviarCorreo">
+        <!-- Campo oculto para la categoría activa -->
+        <input type="hidden" id="crSelectTipo" value="pedido" />
+
+        <!-- Fila 1: Para + Nombre -->
+        <div class="cr-form-row">
+          <div class="cr-form-group">
+            <label class="cr-label" for="crInputTo">
+              Destinatario (Email) <span style="color:var(--brand-orange);">*</span>
+            </label>
+            <input 
+              type="email" 
+              id="crInputTo" 
+              class="cr-input" 
+              placeholder="cliente@correo.com" 
+              required 
+              autocomplete="email"
+            />
+          </div>
+          <div class="cr-form-group">
+            <label class="cr-label" for="crInputNombre">
+              Nombre del Cliente <small>(opcional)</small>
+            </label>
+            <input 
+              type="text" 
+              id="crInputNombre" 
+              class="cr-input" 
+              placeholder="Ej. Valeria Mendoza" 
+              autocomplete="name"
+            />
+          </div>
+        </div>
+
+        <!-- Toggle opcional para CC (desplegable) -->
+        <div style="margin-bottom: 12px;">
+          <button type="button" id="btnToggleCc" class="cr-link-btn">
+            <i class="fa-solid fa-plus"></i> Añadir copia CC (opcional)
+          </button>
+          <div id="crWrapCc" style="display: none; margin-top: 8px;">
+            <label class="cr-label" for="crInputCc">
+              Con Copia (CC) <small>(separar con comas si son varios)</small>
+            </label>
+            <input 
+              type="text" 
+              id="crInputCc" 
+              class="cr-input" 
+              placeholder="administracion@empresa.com" 
+            />
+          </div>
+        </div>
+
+        <!-- Asunto -->
+        <div class="cr-form-group">
+          <label class="cr-label" for="crInputSubject">
+            Asunto del Correo <span style="color:var(--brand-orange);">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="crInputSubject" 
+            class="cr-input" 
+            placeholder="Asunto oficial..." 
+            required 
+          />
+        </div>
+
+        <!-- Contenido / Mensaje -->
+        <div class="cr-form-group">
+          <label class="cr-label" for="crTextMensaje">
+            Cuerpo del Mensaje / Personalización
+          </label>
+          <textarea 
+            id="crTextMensaje" 
+            class="cr-textarea" 
+            rows="6" 
+            placeholder="Escribe el mensaje o ajusta los datos de la plantilla..."
+          ></textarea>
+        </div>
+
+        <!-- Barra de Metadatos y Sede -->
+        <div class="cr-meta-strip">
+          <span><i class="fa-solid fa-shield-halved" style="color:var(--green); margin-right:4px;"></i> Dominio Autenticado: <strong>solgassurquillo.com</strong></span>
+          <span>Sede: {datosNegocio.direccionSede}</span>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="cr-actions">
+          <button type="button" class="ps-btn ps-btn-secondary" id="btnPreviewCorreo">
+            <i class="fa-solid fa-eye"></i> Vista Previa
+          </button>
+          <button type="submit" class="cr-btn-send" id="btnEnviarCorreo">
+            <i class="fa-solid fa-paper-plane"></i> Enviar Correo Ahora
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- COLUMNA 2: AJUSTES PREDEFINIDOS + HISTORIAL -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      
+      <!-- TARJETA 1: AJUSTES PREDEFINIDOS DE CORREO -->
+      <div class="cr-settings-card">
+        <div class="cr-card-head" style="margin-bottom: 12px; padding-bottom: 10px;">
+          <h2 class="cr-card-title" style="font-size: 1rem;">
+            <i class="fa-solid fa-sliders"></i> Ajustes Predeterminados
+          </h2>
+          <span class="ps-badge ps-badge-success" style="font-size: 11px;">
+            <i class="fa-solid fa-circle-check"></i> Cloudflare Activo
+          </span>
+        </div>
+
+        <form id="formAjustesCorreo">
+          <div class="cr-settings-grid">
+            <div class="cr-form-group" style="margin-bottom: 0;">
+              <label class="cr-label" for="crAjusteNombre">Nombre Remitente</label>
+              <input type="text" id="crAjusteNombre" class="cr-input" value="Solgas Surquillo" />
+            </div>
+            <div class="cr-form-group" style="margin-bottom: 0;">
+              <label class="cr-label" for="crAjusteEmail">Correo Emisor</label>
+              <input type="email" id="crAjusteEmail" class="cr-input" value="pedidos@solgassurquillo.com" />
+            </div>
+          </div>
+
+          <!-- Variables Dinámicas de Ayuda -->
+          <div style="margin-top: 14px;">
+            <span style="font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">
+              Variables Útiles de Plantillas:
+            </span>
+            <div class="cr-var-tags">
+              <span class="cr-var-chip">&#123;cliente&#125;</span>
+              <span class="cr-var-chip">&#123;pedidoId&#125;</span>
+              <span class="cr-var-chip">&#123;producto&#125;</span>
+              <span class="cr-var-chip">&#123;precio&#125;</span>
+              <span class="cr-var-chip">&#123;direccion&#125;</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; text-align: right;">
+            <button type="submit" class="ps-btn ps-btn-secondary" id="btnGuardarAjustesCorreo" style="padding: 6px 14px; font-size: var(--fz_s3);">
+              <i class="fa-solid fa-floppy-disk"></i> Guardar Ajustes
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TARJETA 2: BANDEJA DE CORREOS ENVIADOS -->
+      <div class="cr-card">
+        <div class="cr-card-head">
+          <h2 class="cr-card-title">
+            <i class="fa-solid fa-clock-rotate-left"></i> Correos Enviados
+          </h2>
+          <span class="ps-badge ps-badge-blue" id="crBadgeTotal">0</span>
+        </div>
+
+        <!-- Buscador en Historial -->
+        <div class="cr-form-group" style="margin-bottom: 12px;">
+          <input 
+            type="text" 
+            id="crInputBuscar" 
+            class="cr-input" 
+            placeholder="Buscar por cliente o asunto..." 
+          />
+        </div>
+
+        <!-- Lista dinámica de correos enviados -->
+        <div class="cr-history-list" id="crHistoryList">
+          <div class="cr-empty-state">
+            <i class="fa-regular fa-envelope-open"></i>
+            <p>Cargando historial de envíos...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- Modal de Vista Previa y Detalle -->
+<div id="crModalDetalle" class="cr-modal-backdrop" style="display:none;">
+  <div class="cr-modal-box">
+    <div class="cr-modal-head">
+      <strong id="crModalAsunto" style="font-family:var(--ff_O); font-size:1.1rem; color:var(--ink);">Detalle del Correo</strong>
+      <button type="button" class="ps-btn-icon" id="btnCloseModalDetalle" title="Cerrar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="cr-modal-body">
+      <div style="font-size:12px; color:var(--muted); margin-bottom:12px;" id="crModalInfo"></div>
+      <iframe id="crModalIframe" class="cr-preview-frame"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  import './correo.js';
+</script>
