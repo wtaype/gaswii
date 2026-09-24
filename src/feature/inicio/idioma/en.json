@@ -22,7 +22,7 @@
   },
   "sos": {
     "titulo": "Did your stove run out of gas mid-cooking?",
-    "subtitulo": "Activate SOS Priority Delivery at 936 369 384 and we will dispatch the closest bike in minutes.",
+    "subtitulo": "Activate SOS Priority Delivery at {telefono} and we will dispatch the closest bike in minutes.",
     "btn_llamar": "Emergency Gas Express!",
     "btn_llamar_movil": "Gas Express!",
     "btn_wa": "WhatsApp SOS"
@@ -72,7 +72,7 @@
     "pilar3_desc": "We carefully take away the empty tank without staining or scratching your floors.",
     "btn_pedir": "Order Gas with Free Installation",
     "btn_inspeccion": "Order Gas with Free Installation",
-    "btn_llamar": "Call Technician at 936 369 384",
+    "btn_llamar": "Call Technician",
     "badge_cero_fugas": "Guaranteed Zero Leaks",
     "caption_cero_fugas": "Technical Installation & Active Foam Test"
   },
@@ -125,7 +125,7 @@
     "p2": "Our commitment goes beyond dropping off the tank: we ensure your stove burns a pure blue flame, odor-free and with maximum energy efficiency.",
     "img1_caption": "Official Solgas delivery fleet",
     "img2_caption": "Backed by Solgas S.A.",
-    "btn_llamar": "Call Dispatch: 936 369 384",
+    "btn_llamar": "Call Dispatch",
     "btn_wa": "Order via WhatsApp",
     "btn_pedir": "Order via WhatsApp"
   },
@@ -142,7 +142,7 @@
     "q4": "What payment methods do you accept?",
     "a4": "We accept Cash upon delivery, mobile wallets Yape and Plin, and direct Bank Transfer when you receive your cylinder.",
     "q5": "What should I do if I smell gas in my kitchen?",
-    "a5": "Immediately close the regulator valve knob, open windows to ventilate the area, and call our Emergency SOS Line right away at 936 369 384.",
+    "a5": "Immediately close the regulator valve knob, open windows to ventilate the area, and call our Emergency SOS Line right away at {telefono}.",
     "q6": "Are you officially authorized by OSINERGMIN and what is your code?",
     "a6": "Yes, Solgas Surquillo is an officially authorized distributor registered with OSINERGMIN under Registration No. 208492. All our cylinders feature the official factory security seal from Solgas S.A., guaranteed exact weight from plant and base, and strict compliance with Peruvian safety regulations.",
     "badge_osinergmin": "OSINERGMIN Reg. 208492",
@@ -160,7 +160,7 @@
     "nombre_label": "Your Name:",
     "nombre_ph": "E.g. John Doe",
     "tel_label": "Phone / WhatsApp:",
-    "tel_ph": "E.g. +51 936 369 384",
+    "tel_ph": "E.g. +51 987 654 321",
     "distrito_label": "Delivery District:",
     "dir_label": "Exact Address (Street, No. or Reference):",
     "dir_ph": "E.g. Jr. Dante 260 apt. 302, Surquillo",

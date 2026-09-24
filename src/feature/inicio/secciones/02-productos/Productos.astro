@@ -4,6 +4,8 @@
 // Diseño Oficial CRO: 4 Columnas sobre .pagewii (85vw), Marco Blanco y Dual CTA
 // Consumo 100% Real de Firestore + Caché Local-First (0 semillas ficticias)
 import { datosNegocio, consultarProductosFirestoreFresco } from '../../../../negocio.js';
+import { crearEnlaceWhatsApp } from '../../lib/whatsapp.js';
+import { imgwii } from '@widev';
 import { resolverIdioma } from '../../idioma/idioma.js';
 import es from './idioma/es.json';
 import en from './idioma/en.json';
@@ -105,10 +107,13 @@ const whatsappNumero = datosNegocio.whatsapp;
           const nombreMarca = esMasgas ? 'MASGAS' : 'SOLGAS';
           const guaranteeHeader = `${nombreMarca} ${t.garantia_titulo.toUpperCase()}`;
 
-          // Mensaje de WhatsApp
-          const wsTemplate = t.ws_msg || 'Hola {nombre}, deseo pedir: {producto}';
-          const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo').replace('{producto}', nombre);
-          const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+          // Mensaje de WhatsApp con atribución inteligente
+          const precioActual = p.precioPEN || p.precio || null;
+          const wsLink = crearEnlaceWhatsApp({
+            origen: `Web Inicio - Card ${nombre}`,
+            producto: nombre,
+            precio: precioActual
+          });
 
           return (
             <article class="clean-card producto-card-box card-balon" data-prod-id={p.id}>
@@ -126,10 +131,11 @@ const whatsappNumero = datosNegocio.whatsapp;
                 <!-- Imagen en Caja Blanca con Pastilla Flotante de Capacidad -->
                 <div class="producto-media-frame card-img-box">
                   <img 
-                    src={p.imagen} 
+                    src={imgwii.svg} 
+                    data-src={p.imagen} 
                     alt={nombre} 
-                    class="producto-img-tag card-img" 
-                    loading="lazy" 
+                    class="producto-img-tag card-img wi_skeleton" 
+                    decoding="async" 
                     width="220"
                     height="220"
                   />
@@ -228,6 +234,8 @@ const whatsappNumero = datosNegocio.whatsapp;
 
 <!-- Reactividad Local-First: Reconciliación en tiempo real con la caché -->
 <script>
+  import { imgwii } from '@widev';
+
   function renderCardClient(p: any, lang: string, labels: any, wsNum: string, telLimpio: string) {
     const id = String(p.id || p.slug || '');
     const langSuffix = lang.charAt(0).toUpperCase() + lang.slice(1);
@@ -298,8 +306,7 @@ const whatsappNumero = datosNegocio.whatsapp;
     const guaranteeHeader = `${nombreMarca} ${(labels.garantia_titulo || 'Garantía Solgas').toUpperCase()}`;
     const precioNum = Number(p.precio ?? p.precioPEN ?? 0).toFixed(2);
 
-    const wsTemplate = labels.ws_msg || 'Hola Solgas Surquillo, deseo pedir: {producto}';
-    const wsMsg = wsTemplate.replace('{nombre}', 'Solgas Surquillo').replace('{producto}', nombre);
+    const wsMsg = `¡Hola Solgas Surquillo! 👋\nHe visto en su página web y deseo consultar / pedir:\n\n🏷️ Origen: [Web Inicio - Card ${nombre}]\n📦 Producto: ${nombre} (S/ ${precioNum})\n\n¿Podrían confirmarme la atención, por favor? ¡Muchas gracias!`;
     const wsLink = `https://wa.me/${wsNum}?text=${encodeURIComponent(wsMsg)}`;
 
     const garantiasHtml = garantias.slice(0, 4).map(g => `
@@ -322,10 +329,11 @@ const whatsappNumero = datosNegocio.whatsapp;
 
           <div class="producto-media-frame card-img-box">
             <img 
-              src="${p.imagen || '/imgwii/productos/BALON-10KG.webp'}" 
+              src="/wpuntos.svg" 
+              data-src="${p.imagen || '/imgwii/productos/BALON-10KG.webp'}" 
               alt="${nombre}" 
-              class="producto-img-tag card-img" 
-              loading="lazy" 
+              class="producto-img-tag card-img wi_skeleton" 
+              decoding="async" 
               width="220"
               height="220"
             />
@@ -443,6 +451,7 @@ const whatsappNumero = datosNegocio.whatsapp;
       } catch (e) {}
 
       grid.innerHTML = activos.map((p: any) => renderCardClient(p, lang, labels, wsNum, telLimpio)).join('');
+      imgwii.ver('#publicProdsGrid');
     } catch (e) {
       console.warn('[catalogo] Sincronización Local-First:', e);
     }

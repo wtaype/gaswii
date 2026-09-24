@@ -3,6 +3,7 @@
 // 5. BANNER SEPARADOR SOS · AUXILIO GAS EXPRESS CRO
 // Fondo Naranja Full-Width con Contenido Central en .pagewii (85vw)
 import { datosNegocio } from '../../../../negocio.js';
+import { crearEnlaceWhatsApp } from '../../lib/whatsapp.js';
 import { resolverIdioma } from '../../idioma/idioma.js';
 import es from './idioma/es.json';
 import en from './idioma/en.json';
@@ -17,10 +18,11 @@ const t = resolverIdioma({ es, en }, idioma);
 
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
-const whatsappNumero = datosNegocio.whatsapp;
 
-const wsMsg = t.ws_msg || 'EMERGENCIA SOS: Me quedé sin gas cocinando, ¡envíenme un balón urgente!';
-const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+const wsLink = crearEnlaceWhatsApp({
+  origen: 'Web Inicio - Auxilio Urgente SOS',
+  detalle: '¡EMERGENCIA SOS! Me quedé sin gas cocinando, necesito un balón de auxilio urgente a domicilio'
+});
 ---
 
 <style is:global set:html={separadorCss}></style>

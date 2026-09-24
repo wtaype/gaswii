@@ -3,6 +3,8 @@
 // 9. SECCIÓN PREGUNTAS FRECUENTES CRO (ACORDEÓN + TARJETA DE ASISTENCIA)
 // HTML5 Nativo Details/Summary sobre .pagewii (85vw)
 import { datosNegocio } from '../../../../negocio.js';
+import { crearEnlaceWhatsApp } from '../../lib/whatsapp.js';
+import { imgwii } from '@widev';
 import { resolverIdioma } from '../../idioma/idioma.js';
 import es from './idioma/es.json';
 import en from './idioma/en.json';
@@ -17,14 +19,14 @@ const t = resolverIdioma({ es, en }, idioma);
 
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
-const whatsappNumero = datosNegocio.whatsapp;
 const direccionSede = datosNegocio.direccionSede;
 const horarioDespacho = datosNegocio.horario;
 const registroOsinergmin = datosNegocio.registroOsinergmin;
 
-const wsTemplate = t.ws_msg || 'Hola {nombre}, tengo una consulta sobre el servicio de gas a domicilio';
-const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo');
-const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+const wsLink = crearEnlaceWhatsApp({
+  origen: 'Web Inicio - Consulta FAQ',
+  detalle: 'Tengo una consulta sobre el servicio de reparto y cobertura de gas a domicilio'
+});
 ---
 
 <style is:global set:html={faqCss}></style>
@@ -67,10 +69,11 @@ const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)
         
         <div class="faq-media-box">
           <img 
-            src="/imgwii/01-solgas-surquillo.webp" 
+            src={imgwii.svg} 
+            data-src="/imgwii/01-solgas-surquillo.webp" 
             alt="Atención y confianza Solgas Surquillo" 
-            loading="lazy" 
-            class="faq-media-img"
+            decoding="async" 
+            class="faq-media-img wi_skeleton"
           />
           <div class="faq-media-overlay">
             <span class="faq-badge-fire">

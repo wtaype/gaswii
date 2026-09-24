@@ -22,7 +22,7 @@
   },
   "sos": {
     "titulo": "¿Se te apagó la hornilla a mitad del almuerzo o cena?",
-    "subtitulo": "Activa el Despacho Prioritario SOS al 936 369 384 y te enviamos la moto más cercana en minutos.",
+    "subtitulo": "Activa el Despacho Prioritario SOS al {telefono} y te enviamos la moto más cercana en minutos.",
     "btn_llamar": "¡Auxilio Gas Express!",
     "btn_llamar_movil": "¡Auxilio Gas Express!",
     "btn_wa": "WhatsApp SOS"
@@ -72,7 +72,7 @@
     "pilar3_desc": "Nos llevamos el cilindro desocupado sin ensuciar tu cocina ni golpear tus pisos.",
     "btn_pedir": "Pedir Balón con Instalación Gratuita",
     "btn_inspeccion": "Pedir Balón con Instalación Gratuita",
-    "btn_llamar": "Pedir Técnico al 936 369 384",
+    "btn_llamar": "Pedir Técnico",
     "badge_cero_fugas": "Cero Fugas Garantizado",
     "caption_cero_fugas": "Instalación Técnica y Prueba de Espuma Activa"
   },
@@ -125,7 +125,7 @@
     "p2": "Nuestro compromiso no termina al dejar el balón: nos aseguramos de que tu cocina funcione con llama azul limpia, sin olores a gas y con el máximo rendimiento que cuida la economía de tu hogar.",
     "img1_caption": "Flota oficial de balones Solgas",
     "img2_caption": "Garantía Solgas S.A.",
-    "btn_llamar": "Llamar a Central: 936 369 384",
+    "btn_llamar": "Llamar a Central",
     "btn_wa": "Pedir por WhatsApp",
     "btn_pedir": "Pedir por WhatsApp"
   },
@@ -142,7 +142,7 @@
     "q4": "¿Qué medios de pago aceptan?",
     "a4": "Aceptamos Efectivo contra entrega, billeteras digitales Yape y Plin, y Transferencia bancaria directa al recibir tu balón.",
     "q5": "¿Qué hago si siento olor a gas en mi cocina?",
-    "a5": "Cierra de inmediato la perilla del regulador, ventila el ambiente abriendo ventanas y llámanos de inmediato a nuestra Central de Emergencias SOS al 936 369 384.",
+    "a5": "Cierra de inmediato la perilla del regulador, ventila el ambiente abriendo ventanas y llámanos de inmediato a nuestra Central de Emergencias SOS al {telefono}.",
     "q6": "¿Cuentan con registro oficial de OSINERGMIN y cuál es su código?",
     "a6": "Sí, en Solgas Surquillo somos distribuidores formales acreditados ante OSINERGMIN con Registro Oficial N° 208492. Todos nuestros balones cuentan con precinto de garantía termocontraíble oficial de Solgas S.A., peso exacto garantizado de planta y base, y cumplen rigurosamente las normas técnicas de seguridad peruanas.",
     "badge_osinergmin": "OSINERGMIN Reg. 208492",
@@ -160,7 +160,7 @@
     "nombre_label": "Tu Nombre:",
     "nombre_ph": "Ej. Carlos Mendoza",
     "tel_label": "Teléfono / WhatsApp:",
-    "tel_ph": "Ej. 936 369 384",
+    "tel_ph": "Ej. 987 654 321",
     "distrito_label": "Distrito de Entrega:",
     "dir_label": "Dirección exacta (Calle, N° o Referencia):",
     "dir_ph": "Ej. Jr. Dante 260 int. 302, Surquillo",

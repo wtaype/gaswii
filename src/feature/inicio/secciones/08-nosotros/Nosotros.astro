@@ -3,6 +3,8 @@
 // 8. SECCIÓN NOSOTROS · AUTORIDAD HISTÓRICA Y ACREDITACIÓN OFICIAL
 // 2 Tarjetas Fotográficas + Autoridad CRO en .pagewii (85vw)
 import { datosNegocio } from '../../../../negocio.js';
+import { crearEnlaceWhatsApp } from '../../lib/whatsapp.js';
+import { imgwii } from '@widev';
 import { resolverIdioma } from '../../idioma/idioma.js';
 import es from './idioma/es.json';
 import en from './idioma/en.json';
@@ -17,16 +19,16 @@ const t = resolverIdioma({ es, en }, idioma);
 
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
-const whatsappNumero = datosNegocio.whatsapp;
 const anosExp = String(datosNegocio.experienciaAnos || 26);
 const distritoNombre = (datosNegocio.distritoSede || 'Surquillo').toUpperCase();
 
 const anosBadgeTemplate = t.anos_badge || '{anos} AÑOS DE EXPERIENCIA EN {distrito}';
 const anosBadgeTexto = anosBadgeTemplate.replace('{anos}', anosExp).replace('{distrito}', distritoNombre);
 
-const wsTemplate = t.ws_msg || 'Hola {nombre}, deseo pedir un balón con su garantía de distribuidor autorizado';
-const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo');
-const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+const wsLink = crearEnlaceWhatsApp({
+  origen: 'Web Inicio - Distribuidor Autorizado',
+  detalle: 'Deseo pedir un balón con su garantía de distribuidor oficial autorizado'
+});
 ---
 
 <style is:global set:html={nosotrosCss}></style>
@@ -42,10 +44,11 @@ const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)
         <div class="nosotros-card-photo">
           <div class="nosotros-img-box">
             <img 
-              src="/imgwii/01-solgas-surquillo.webp" 
+              src={imgwii.svg} 
+              data-src="/imgwii/01-solgas-surquillo.webp" 
               alt="Flota de balones oficiales Solgas" 
-              class="nosotros-card-img" 
-              loading="lazy" 
+              class="nosotros-card-img wi_skeleton" 
+              decoding="async" 
               width="300" 
               height="220"
             />
@@ -57,10 +60,11 @@ const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)
         <div class="nosotros-card-photo">
           <div class="nosotros-img-box">
             <img 
-              src="/imgwii/07-solgas-surquillo-rendidor.webp" 
+              src={imgwii.svg} 
+              data-src="/imgwii/07-solgas-surquillo-rendidor.webp" 
               alt="Garantía Solgas S.A. El balón más rendidor" 
-              class="nosotros-card-img" 
-              loading="lazy" 
+              class="nosotros-card-img wi_skeleton" 
+              decoding="async" 
               width="300" 
               height="220"
             />

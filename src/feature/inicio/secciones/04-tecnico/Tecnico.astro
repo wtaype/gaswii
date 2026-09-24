@@ -3,6 +3,8 @@
 // 4. SECCIÓN INSTALACIÓN PROFESIONAL Y PRUEBA DE ESPUMA ACTIVA
 // Diseño Oficial CRO: 2 Columnas sobre .pagewii (85vw)
 import { datosNegocio } from '../../../../negocio.js';
+import { crearEnlaceWhatsApp } from '../../lib/whatsapp.js';
+import { imgwii } from '@widev';
 import { resolverIdioma } from '../../idioma/idioma.js';
 import es from './idioma/es.json';
 import en from './idioma/en.json';
@@ -15,10 +17,10 @@ interface Props {
 const { idioma = Astro.props.idioma || Astro.currentLocale || 'es' } = Astro.props;
 const t = resolverIdioma({ es, en }, idioma);
 
-const whatsappNumero = datosNegocio.whatsapp;
-const wsTemplate = t.ws_msg || 'Hola {nombre}, deseo pedir un balón con Instalación Gratuita y Revisión Técnica';
-const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo');
-const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+const wsLink = crearEnlaceWhatsApp({
+  origen: 'Web Inicio - Instalación y Revisión Técnica',
+  detalle: 'Deseo pedir un balón con instalación profesional y prueba de fuga con espuma activa'
+});
 ---
 
 <style is:global set:html={tecnicoCss}></style>
@@ -89,12 +91,13 @@ const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)
         <div class="seguridad-image-card">
           <div class="seguridad-media-box">
             <img 
-              src="/imgwii/03-solgas-surquillo-instalacion.webp" 
+              src={imgwii.svg} 
+              data-src="/imgwii/03-solgas-surquillo-instalacion.webp" 
               alt="Instalación y revisión técnica antifugas Solgas Surquillo" 
               width="500" 
               height="400" 
-              loading="lazy" 
-              class="seguridad-media-img"
+              decoding="async" 
+              class="seguridad-media-img wi_skeleton"
             />
             <div class="seguridad-caption-overlay">
               <span class="seguridad-caption-badge">

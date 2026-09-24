@@ -3,6 +3,8 @@
 // 3. SECCIÓN GARANTÍA DE PESO EXACTO · BALANZA DIGITAL CALIBRADA
 // Diseño Oficial CRO: 2 Columnas sobre .pagewii (85vw)
 import { datosNegocio } from '../../../../negocio.js';
+import { crearEnlaceWhatsApp } from '../../lib/whatsapp.js';
+import { imgwii } from '@widev';
 import { resolverIdioma } from '../../idioma/idioma.js';
 import es from './idioma/es.json';
 import en from './idioma/en.json';
@@ -17,12 +19,12 @@ const t = resolverIdioma({ es, en }, idioma);
 
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
-const whatsappNumero = datosNegocio.whatsapp;
 const direccionSede = datosNegocio.direccionSede;
 
-const wsTemplate = t.ws_msg || 'Hola {nombre}, deseo pedir un balón con Peso Exacto Garantizado';
-const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo');
-const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+const wsLink = crearEnlaceWhatsApp({
+  origen: 'Web Inicio - Balanza Digital Garantía',
+  detalle: 'Deseo pedir un balón con verificación de peso en balanza digital calibrada'
+});
 ---
 
 <style is:global set:html={garantiaCss}></style>
@@ -36,12 +38,13 @@ const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)
         <div class="pesaje-image-frame">
           <div class="pesaje-media-container">
             <img 
-              src="/imgwii/02-solgas-surquillo-balanza.webp" 
+              src={imgwii.svg} 
+              data-src="/imgwii/02-solgas-surquillo-balanza.webp" 
               alt="Balón Solgas con peso exacto certificado de planta y base" 
               width="500" 
               height="400" 
-              loading="lazy" 
-              class="pesaje-media-img"
+              decoding="async" 
+              class="pesaje-media-img wi_skeleton"
             />
             <div class="pesaje-caption-overlay">
               <span class="pesaje-caption-badge">

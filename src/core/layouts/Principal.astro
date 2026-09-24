@@ -98,10 +98,11 @@ const jsonLd = getJsonLd(ruta, idioma);
 
   <!-- Despachador Global On-Demand (Compilado y Minificado por Vite) -->
   <script>
-    import { wiTema } from '../widev/tema.js';
+    import { wiTema, imgwii } from '@widev';
 
     // Reactividad Smart en tiempo real para cambios de modo claro/oscuro del sistema
     wiTema.listen();
+    imgwii.ver();
 
     // Puente de compatibilidad global ultra-ligero para interacción
     (window as any).toggleTema = () => wiTema.toggle();

@@ -16,30 +16,46 @@ let instSelectTipoNegocio = null;
 let instSelectBalonCotiz = null;
 let instSelectTipoValvula = null;
 
-const WHATSAPP_SEDE = '51961229280';
-
 /**
- * Actualiza el enlace directo de WhatsApp con mensajes humanos y cálidos
+ * Actualiza el enlace directo de WhatsApp con mensajes humanos y cálidos con atribución
  */
 function actualizarEnlaceWhatsApp(tipo) {
   const btnWa = document.getElementById('spBtnWhatsApp');
   if (!btnWa) return;
 
+  const neg = getls('minegocio') || {};
+  const numWa = neg.contacto?.whatsappLimpio || neg.contacto?.whatsapp || '51936369384';
+  const nombreNegocio = neg.identidad?.nombre || 'Solgas Surquillo';
+
   const user = getls('wiSmile') || (typeof window !== 'undefined' ? window.__GASWII_USER__ : null);
   const clienteNombre = user?.nombre ? ` de ${user.nombre}` : '';
 
-  let mensaje = `Hola Solgas Surquillo, tengo una consulta${clienteNombre}.`;
+  let motivo = 'Tengo una consulta general sobre mi cuenta y pedidos.';
+  let tipoLabel = 'Consulta General';
+
   if (tipo === 'comprobante') {
-    mensaje = `Hola Solgas Surquillo, necesito apoyo con la emisión o copia de mi comprobante de pago${clienteNombre}.`;
+    motivo = 'Necesito apoyo con la emisión o copia de mi comprobante de pago (boleta/factura).';
+    tipoLabel = 'Comprobante';
   } else if (tipo === 'pedido') {
-    mensaje = `Hola Solgas Surquillo, quisiera consultar sobre el estado de entrega de mi pedido a domicilio${clienteNombre}.`;
+    motivo = 'Quisiera consultar sobre el estado de entrega de mi pedido de gas.';
+    tipoLabel = 'Estado de Pedido';
   } else if (tipo === 'cotizacion') {
-    mensaje = `Hola Solgas Surquillo, deseo solicitar una cotización de gas para mi negocio / empresa${clienteNombre}.`;
+    motivo = 'Deseo solicitar una cotización de gas para mi negocio / empresa.';
+    tipoLabel = 'Cotización Comercial';
   } else if (tipo === 'valvula') {
-    mensaje = `Hola Solgas Surquillo, requiero asistencia técnica con mi balón o verificación con balanza digital${clienteNombre}.`;
+    motivo = 'Requiero asistencia técnica con mi balón, válvula o verificación con balanza digital.';
+    tipoLabel = 'Asistencia Técnica';
   }
 
-  btnWa.href = `https://wa.me/${WHATSAPP_SEDE}?text=${encodeURIComponent(mensaje)}`;
+  const mensaje = `¡Hola ${nombreNegocio}! 👋
+He visto en su portal web y solicito atención de soporte:
+
+🏷️ Origen: [Portal Cliente - Soporte / ${tipoLabel}]${clienteNombre ? `\n👤 Cliente:${clienteNombre}` : ''}
+💬 Asunto: ${motivo}
+
+¿Podrían asistirme por favor? ¡Muchas gracias!`;
+
+  btnWa.href = `https://wa.me/${numWa}?text=${encodeURIComponent(mensaje)}`;
 }
 
 /**

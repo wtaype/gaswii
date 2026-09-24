@@ -3,6 +3,8 @@
 // 6. CALCULADORA INTELIGENTE DE CONSUMO Y RENDIMIENTO DE GAS
 // Sliders Interactivos + Cálculo Reactivo en .pagewii (85vw)
 import { datosNegocio } from '../../../../negocio.js';
+import { crearEnlaceWhatsApp } from '../../lib/whatsapp.js';
+import { imgwii } from '@widev';
 import { resolverIdioma } from '../../idioma/idioma.js';
 import es from './idioma/es.json';
 import en from './idioma/en.json';
@@ -18,9 +20,10 @@ const t = resolverIdioma({ es, en }, idioma);
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const whatsappNumero = datosNegocio.whatsapp;
 
-const wsTemplate = t.ws_msg || 'Hola {nombre}, según la calculadora requiero un balón de gas, deseo hacer mi pedido';
-const wsMsg = wsTemplate.replace('{nombre}', datosNegocio.nombre || 'Solgas Surquillo');
-const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)}`;
+const wsLink = crearEnlaceWhatsApp({
+  origen: 'Web Inicio - Calculadora de Consumo',
+  detalle: 'Calculé mi consumo para 3 personas (2.5h/día): estimo 32 días de rendimiento para Balón de 10 kg. Deseo pedir.'
+});
 ---
 
 <style is:global set:html={calcCss}></style>
@@ -106,6 +109,7 @@ const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)
             class="btn-calc-pedir"
             title={t.btn_pedir}
             data-negocio-ws-link
+            data-ws-num={whatsappNumero}
           >
             <i class="fa-brands fa-whatsapp"></i> 
             <span>{t.btn_pedir}</span>
@@ -118,12 +122,13 @@ const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)
         <div>
           <div class="calc-tips-media">
             <img 
-              src="/imgwii/04-solgas-surquillo-cocina.webp" 
+              src={imgwii.svg} 
+              data-src="/imgwii/04-solgas-surquillo-cocina.webp" 
               alt="Familia cocinando con seguridad y llama azul pura" 
               width="600" 
               height="350" 
-              loading="lazy" 
-              class="calc-tips-img"
+              decoding="async" 
+              class="calc-tips-img wi_skeleton"
             />
             <div class="calc-tips-badge-overlay">
               <span class="calc-media-badge">
@@ -200,6 +205,13 @@ const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)
       const diasEstimados = Math.max(1, Math.round(kg / consumoDiario));
 
       if (dDias) dDias.textContent = `${diasEstimados} ${unidadDias}`;
+
+      const btnWa = document.querySelector('.btn-calc-pedir') as HTMLAnchorElement | null;
+      if (btnWa) {
+        const numWa = btnWa.getAttribute('data-ws-num') || '51936369384';
+        const msg = `¡Hola Solgas Surquillo! 👋\nHe visto en su página web y calculé mi consumo:\n\n🏷️ Origen: [Web Inicio - Calculadora de Consumo]\n👥 Familia: ${p} personas\n⏱️ Cocción: ${h} horas/día\n📦 Balón estimado: ${kg} kg (Rendimiento: ~${diasEstimados} días)\n\n¿Me confirman la atención y pedido a domicilio, por favor? ¡Muchas gracias!`;
+        btnWa.href = `https://wa.me/${numWa}?text=${encodeURIComponent(msg)}`;
+      }
     }
 
     sPersonas.addEventListener('input', recalcular);

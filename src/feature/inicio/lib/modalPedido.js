@@ -3,6 +3,7 @@
 // Se inyecta e inicializa exclusivamente cuando el usuario hace clic en "Pedir Balón"
 
 import { datosNegocio } from '../../../negocio.js';
+import { crearEnlaceWhatsApp } from './whatsapp.js';
 
 let modalEl = null;
 
@@ -241,34 +242,29 @@ function asegurarModalEnDOM() {
     });
   });
 
-  // Despacho a WhatsApp
+  // Despacho a WhatsApp con atribución inteligente
   window.__enviarPedidoModal = () => {
     const selOpt = selProd?.selectedOptions[0];
     const nomProd = selOpt?.getAttribute('data-nombre') || 'Balón de Gas';
     const precio = parseFloat(selOpt?.getAttribute('data-precio') || '65');
-    const total = (precio * qty).toFixed(2);
+    const total = precio * qty;
     const distrito = document.getElementById('pedSelectDistrito')?.value || 'Surquillo';
     const direccion = document.getElementById('pedInputDireccion')?.value?.trim() || '';
     const nombreCliente = document.getElementById('pedInputNombre')?.value?.trim() || 'Cliente';
     const celularCliente = document.getElementById('pedInputCelular')?.value?.trim() || '';
 
-    const celTexto = celularCliente ? `\n📱 Teléfono: ${celularCliente}` : '';
-    const dirTexto = direccion ? `${direccion}, ${distrito}` : distrito;
+    const url = crearEnlaceWhatsApp({
+      origen: 'Web Inicio - Modal Express',
+      cliente: nombreCliente,
+      celular: celularCliente,
+      producto: nomProd,
+      precio: total,
+      cantidad: qty,
+      distrito: distrito,
+      direccion: direccion,
+      metodoPago: metodoPago
+    });
 
-    const nombreNegocio = datosNegocio.nombre || 'Solgas Surquillo';
-    const numWa = datosNegocio.whatsapp || '51936369384';
-
-    const mensaje = `¡Hola ${nombreNegocio}! He visto su página web y quiero realizar un pedido express:
-
-🏷️ Origen: [Web Inicio - Modal Express]
-👤 Nombre: ${nombreCliente}${celTexto}
-📦 Producto: ${qty}x ${nomProd} (S/ ${total})
-📍 Entrega: ${dirTexto}
-💳 Método de Pago: ${metodoPago}
-
-¿Me confirman la entrega a domicilio, por favor?`;
-
-    const url = `https://wa.me/${numWa}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
     cerrarModalPedido();
   };
