@@ -31,7 +31,7 @@
     },
     {
       "pregunta": "¿Qué hago si siento olor a gas en mi cocina?",
-      "respuesta": "Cierra de inmediato la perilla del regulador, ventila el ambiente abriendo ventanas y llámanos de inmediato a nuestra Central de Emergencias SOS al 936 369 384."
+      "respuesta": "Cierra de inmediato la perilla del regulador, ventila el ambiente abriendo ventanas y llámanos de inmediato a nuestra Central de Emergencias SOS al {telefono}."
     }
   ]
 }

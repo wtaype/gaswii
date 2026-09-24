@@ -88,14 +88,17 @@ export function inicializarPedidos() {
 
   function buildMessage() {
     const { total, itemsList } = calculateTotals();
+    const neg = getls('minegocio') || {};
+    const nombreNegocio = neg.identidad?.nombre || 'Solgas Surquillo';
     const direccionTexto = state.calle 
       ? `${state.calle}, ${state.distrito}` 
       : `⚠️ (Sin dirección registrada - Por favor indicar al confirmar)`;
 
     const celTexto = state.celular ? `\n📱 Contacto: ${state.celular}` : '';
 
-    let msg = `¡Hola Solgas Surquillo! He visto su página web y quiero realizar un pedido:
+    let msg = `¡Hola ${nombreNegocio}! He visto su página web y quiero realizar un pedido:
 
+🏷️ Origen: [Portal Cliente - Pedido VIP]
 👤 Nombre: ${state.nombre}${celTexto}
 📦 Pedido:
 ${itemsList.join('\n')}
@@ -116,7 +119,9 @@ ${itemsList.join('\n')}
     const { total, count } = calculateTotals();
     const finalMessage = buildMessage();
     const encoded = encodeURIComponent(finalMessage);
-    const waBase = 'https://wa.me/51936369384';
+    const neg = getls('minegocio') || {};
+    const numWa = neg.contacto?.whatsappLimpio || neg.contacto?.whatsapp || '51936369384';
+    const waBase = `https://wa.me/${numWa}`;
 
     // 1. Burbuja de WhatsApp en vivo
     if (bubble) {

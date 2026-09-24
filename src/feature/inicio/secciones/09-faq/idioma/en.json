@@ -31,7 +31,7 @@
     },
     {
       "pregunta": "What should I do if I smell gas in my kitchen?",
-      "respuesta": "Immediately close the knob on the regulator, ventilate the area by opening windows, and call our Emergency SOS Hotline right away at 936 369 384."
+      "respuesta": "Immediately close the knob on the regulator, ventilate the area by opening windows, and call our Emergency SOS Hotline right away at {telefono}."
     }
   ]
 }

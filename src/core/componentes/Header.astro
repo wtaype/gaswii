@@ -177,9 +177,7 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
 </header>
 
 <script>
-  import { wiAuth, salir, generarAvatarUrl } from '../../feature/auth/sesion.js';
   import { ROL_PATH } from '../rutas.js';
-  import type { SmileData } from '../tipos/auth';
 
   declare global {
     interface Window {
@@ -188,7 +186,7 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
     }
   }
 
-  function resolverDestinoDashboard(smile: SmileData | null): string {
+  function resolverDestinoDashboard(smile: any): string {
     if (!smile) return '/login';
     const isEn = window.location.pathname.startsWith('/en');
     const rol = smile.rol || 'cliente';
@@ -197,7 +195,7 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
     return isEn ? `/en${base}` : base;
   }
 
-  function actualizarHeaderAuth(smile: SmileData | null) {
+  function actualizarHeaderAuth(smile: any) {
     const btnLogin = document.getElementById('headerBtnLogin');
     const userPerfil = document.getElementById('headerUserPerfil');
     const userAvatar = document.getElementById('headerUserAvatar') as HTMLImageElement | null;
@@ -209,7 +207,7 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
       if (btnLogin) btnLogin.style.display = 'none';
       if (userPerfil) userPerfil.style.display = 'flex';
       
-      const foto = smile.foto || generarAvatarUrl(smile.nombre, smile.usuario);
+      const foto = smile.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(smile.nombre || smile.usuario || 'VIP')}&background=ff6a00&color=fff&rounded=true`;
       if (userAvatar) userAvatar.src = foto;
       if (userNombre) userNombre.textContent = smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'VIP');
       
@@ -229,15 +227,21 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
     }
   }
 
+  // Lectura Local-First inmediata sin importar dependencias pesadas
+  try {
+    const raw = localStorage.getItem('wiSmile');
+    if (raw) actualizarHeaderAuth(JSON.parse(raw));
+  } catch (e) {}
+
+  window.addEventListener('gaswii:auth-change', (e: any) => {
+    actualizarHeaderAuth(e.detail);
+  });
+
   window.cerrarSesionHeader = async () => {
+    const { salir } = await import('../../feature/auth/sesion.js');
     await salir();
     actualizarHeaderAuth(null);
   };
-
-  // Reactividad con 0ms de latencia (Local-First sin cargar Firebase de inicio)
-  wiAuth.on((smile: any) => {
-    actualizarHeaderAuth(smile);
-  });
 
   // Switcher de idiomas inteligente: preserva la ruta actual exacta en tiempo de ejecución
   document.querySelectorAll('.header-pill-group a[data-lang]').forEach((btn) => {

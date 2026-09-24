@@ -56,7 +56,7 @@ const wsLink = `https://wa.me/${whatsappNumero}?text=${encodeURIComponent(wsMsg)
               <i class="fa-solid fa-chevron-down faq-icon-arrow"></i>
             </summary>
             <div class="faq-answer-content">
-              {f.respuesta}
+              {f.respuesta.replace('{telefono}', telefonoMostrado)}
             </div>
           </details>
         ))}

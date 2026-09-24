@@ -42,7 +42,7 @@ export function generarPlantillaCotizacion({
     ${tablaHtml}
 
     <div style="text-align: center; margin-top: 25px;">
-      <a href="https://wa.me/51936369384?text=${encodeURIComponent('Hola, deseo aprobar la cotización #' + cotizacionId + ' para ' + empresa)}" class="btn-ws">
+      <a href="https://wa.me/${negocio.contacto?.whatsappLimpio || negocio.contacto?.whatsapp || '51936369384'}?text=${encodeURIComponent('Hola, deseo aprobar la cotización #' + cotizacionId + ' para ' + empresa)}" class="btn-ws">
         🤝 Coordinar Entrega por WhatsApp
       </a>
     </div>

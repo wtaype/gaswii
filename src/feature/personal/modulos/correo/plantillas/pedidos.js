@@ -64,7 +64,7 @@ export function generarPlantillaPedido({
     </div>
 
     <div style="text-align: center; margin-top: 22px;">
-      <a href="https://wa.me/51936369384?text=${encodeURIComponent('Hola ' + nombreEmpresa + ', deseo consultar el estado de mi pedido #' + pedidoId)}" class="btn-ws">
+      <a href="https://wa.me/${negocio.contacto?.whatsappLimpio || negocio.contacto?.whatsapp || '51936369384'}?text=${encodeURIComponent('Hola ' + nombreEmpresa + ', deseo consultar el estado de mi pedido #' + pedidoId)}" class="btn-ws">
         📲 Consultar Estado por WhatsApp
       </a>
     </div>

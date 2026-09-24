@@ -126,11 +126,9 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
 </aside>
 
 <script>
-  import { wiAuth, generarAvatarUrl } from '../../feature/auth/sesion.js';
   import { ROL_PATH } from '../rutas.js';
-  import type { SmileData } from '../tipos/auth';
 
-  function resolverDestinoDashboard(smile: SmileData | null): string {
+  function resolverDestinoDashboard(smile: any): string {
     if (!smile) return '/login';
     const isEn = window.location.pathname.startsWith('/en');
     const rol = smile.rol || 'cliente';
@@ -139,7 +137,7 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
     return isEn ? `/en${base}` : base;
   }
 
-  function actualizarDrawerAuth(smile: SmileData | null) {
+  function actualizarDrawerAuth(smile: any) {
     const drawerBtnLogin = document.getElementById('drawerBtnLogin');
     const drawerUserPerfil = document.getElementById('drawerUserPerfil');
     const drawerUserAvatar = document.getElementById('drawerUserAvatar') as HTMLImageElement | null;
@@ -151,7 +149,7 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
       if (drawerBtnLogin) drawerBtnLogin.style.display = 'none';
       if (drawerUserPerfil) drawerUserPerfil.style.display = 'flex';
 
-      const foto = smile.foto || generarAvatarUrl(smile.nombre, smile.usuario);
+      const foto = smile.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(smile.nombre || smile.usuario || 'VIP')}&background=ff6a00&color=fff&rounded=true`;
       if (drawerUserAvatar) drawerUserAvatar.src = foto;
       if (drawerUserNombre) drawerUserNombre.textContent = smile.nombre ? smile.nombre.split(' ')[0] : (smile.usuario || 'VIP');
       
@@ -171,9 +169,14 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
     }
   }
 
-  // Reactividad Local-First (0ms de latencia)
-  wiAuth.on((smile: any) => {
-    actualizarDrawerAuth(smile);
+  // Lectura Local-First (0ms de latencia)
+  try {
+    const raw = localStorage.getItem('wiSmile');
+    if (raw) actualizarDrawerAuth(JSON.parse(raw));
+  } catch (e) {}
+
+  window.addEventListener('gaswii:auth-change', (e: any) => {
+    actualizarDrawerAuth(e.detail);
   });
 
   // Accesibilidad: Cerrar Drawer con tecla Escape
