@@ -91,23 +91,6 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
       </button>
     </div>
 
-    <!-- Anti-Flash Inmediato (0ms) para Drawer Móvil Perfil -->
-    <script is:inline>
-      try {
-        const raw = localStorage.getItem('wiSmile');
-        if (raw) {
-          const u = JSON.parse(raw);
-          if (u && (u.uid || u.nombre)) {
-            const r = u.rol || 'cliente';
-            const isStaff = r === 'personal' || r === 'gestor' || r === 'admin';
-            const isEn = window.location.pathname.startsWith('/en');
-            const dest = isStaff ? (isEn ? '/en/personal' : '/personal') : (isEn ? '/en/cliente' : '/cliente');
-            const link = document.getElementById('drawerPerfilLink');
-            if (link) link.href = dest;
-          }
-        }
-      } catch (e) {}
-    </script>
 
     <!-- Botón Pedir Gas Móvil -->
     <button onclick="window.cerrarDrawer && window.cerrarDrawer(); window.abrirModalPedido && window.abrirModalPedido();" class="btn-whatsapp w-full justify-center">

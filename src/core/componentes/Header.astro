@@ -141,23 +141,8 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
         </div>
       </div>
 
-      <!-- Anti-Flash Inmediato (0ms) para Header Perfil -->
-      <script is:inline>
-        try {
-          const raw = localStorage.getItem('wiSmile');
-          if (raw) {
-            const u = JSON.parse(raw);
-            if (u && (u.uid || u.nombre)) {
-              const r = u.rol || 'cliente';
-              const isStaff = r === 'personal' || r === 'gestor' || r === 'admin';
-              const isEn = window.location.pathname.startsWith('/en');
-              const dest = isStaff ? (isEn ? '/en/personal' : '/personal') : (isEn ? '/en/cliente' : '/cliente');
-              const link = document.getElementById('headerPerfilLink');
-              if (link) link.href = dest;
-            }
-          }
-        } catch (e) {}
-      </script>
+      <!-- Anti-Flash Inmediato (0ms) para Perfil de Usuario -->
+      <script is:inline>try{const u=JSON.parse(localStorage.getItem('wiSmile')||'{}');if(u.uid||u.nombre){const d=(u.rol==='personal'||u.rol==='gestor'||u.rol==='admin')?'/personal':'/cliente';const p=location.pathname.startsWith('/en')?`/en${d}`:d;const a=document.getElementById('headerPerfilLink'),b=document.getElementById('drawerPerfilLink');if(a)a.href=p;if(b)b.href=p;}}catch(e){}</script>
 
       <!-- Botón PEDIR GAS -->
       {!esPersonal && (
