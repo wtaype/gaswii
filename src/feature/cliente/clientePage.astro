@@ -10,6 +10,7 @@ import Soporte from './modulos/04-soporte/Soporte.astro';
 
 import pedidosCss from './modulos/01-pedidos/pedidos.css?inline';
 import direccionCss from './modulos/02-direccion/direccion.css?inline';
+import cuentaCss from './modulos/03-cuenta/cuenta.css?inline';
 
 interface Props {
   titulo?: string;
@@ -26,7 +27,7 @@ const {
 
 <Sonrisas titulo={titulo} moduloActivo={moduloActivo} cliente={cliente}>
   <!-- Inyección inlined de CSS específico de módulos -->
-  <style is:global slot="modulo-css" set:html={`${pedidosCss}\n${direccionCss}`}></style>
+  <style is:global slot="modulo-css" set:html={`${pedidosCss}\n${direccionCss}\n${cuentaCss}`}></style>
 
   <!-- MÓDULO 01: REALIZAR PEDIDOS -->
   <section class={`cl-panel ${moduloActivo === 'pedidos' ? 'active' : ''}`} id="panel-pedidos" aria-label="Módulo Pedidos">

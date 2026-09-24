@@ -5,6 +5,7 @@ import { getls, avatar } from '@widev';
 import { salir } from '../auth/sesion.js';
 import { inicializarPedidos } from './modulos/01-pedidos/pedidos.js';
 import { inicializarDirecciones, renderizarDirecciones } from './modulos/02-direccion/direccion.js';
+import { inicializarCuenta } from './modulos/03-cuenta/cuenta.js';
 import { esModuloValido, moduloDefecto } from './modulos.js';
 
 function resolverModuloDesdeURL() {
@@ -48,6 +49,8 @@ export function cambiarModulo(nuevoModulo, updateUrl = true) {
     inicializarPedidos();
   } else if (nuevoModulo === 'direccion') {
     inicializarDirecciones();
+  } else if (nuevoModulo === 'cuenta') {
+    inicializarCuenta();
   }
 
   // 6. Scroll al inicio si está en móvil
@@ -215,5 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarNavegacion();
   inicializarBuscador();
   inicializarDirecciones();
+  inicializarCuenta();
   cambiarModulo(resolverModuloDesdeURL(), false);
 });

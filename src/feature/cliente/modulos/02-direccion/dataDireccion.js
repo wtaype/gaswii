@@ -204,7 +204,6 @@ function sincronizarSmilesFirestore(uid, listaDirecciones) {
 
       const docRef = doc(db, 'smiles', uid);
       await setDoc(docRef, {
-        userId: uid,
         uid: uid,
         direcciones: direccionesFirestore,
         rol: 'cliente',
