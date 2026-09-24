@@ -1,10 +1,14 @@
 ---
 // src/feature/personal/modulos/notepad/Notepad.astro
 // Módulo 2: Notepad de Gestión (70% Canvas de Escritura / 30% Lista Resumida)
-// Cero TypeScript · 100% JavaScript Nativo · Modularizado
+interface Props {
+  esActivo?: boolean;
+}
+
+const { esActivo = false } = Astro.props;
 ---
 
-<section class="ps-panel" id="panel-notepad">
+<section class={`ps-panel ${esActivo ? 'active' : ''}`} id="panel-notepad">
   <!-- Encabezado de Sección -->
   <div class="ps-section-header">
     <div class="ps-section-title-wrap">

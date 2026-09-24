@@ -1,10 +1,14 @@
 ---
 // src/feature/personal/modulos/productos/Productos.astro
 // Módulo 5: Catálogo de Productos & Inventario (Solgas Surquillo)
-// 100% JS Nativo · Integrado con dataProductos.js, widev.js y modales/ · Cero semillas
+interface Props {
+  esActivo?: boolean;
+}
+
+const { esActivo = false } = Astro.props;
 ---
 
-<section class="ps-panel" id="panel-productos">
+<section class={`ps-panel ${esActivo ? 'active' : ''}`} id="panel-productos">
   <!-- Encabezado de Sección -->
   <div class="ps-section-header">
     <div class="ps-section-title-wrap">

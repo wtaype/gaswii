@@ -17,9 +17,15 @@ const estadisticas = [
   { id: 'stat3', titulo: '124 Clientes', subtitulo: 'Registrados en Gaswii', icono: 'fa-solid fa-address-book', color: 'blue' },
   { id: 'stat4', titulo: '3 Notas', subtitulo: 'En tu Notepad', icono: 'fa-solid fa-note-sticky', color: 'purple' }
 ];
+
+interface Props {
+  esActivo?: boolean;
+}
+
+const { esActivo = true } = Astro.props;
 ---
 
-<section class="ps-panel active" id="panel-dashboard">
+<section class={`ps-panel ${esActivo ? 'active' : ''}`} id="panel-dashboard">
   <!-- Encabezado de Sección -->
   <div class="ps-section-header">
     <div class="ps-section-title-wrap">

@@ -1,10 +1,14 @@
 ---
 // src/feature/personal/modulos/correo/Correo.astro
 // Centro de Envíos de Correo con Editor Markdown y Live Preview en Tiempo Real
-// Integrado con Resend API, Cloudflare Workers y Firestore
+interface Props {
+  esActivo?: boolean;
+}
+
+const { esActivo = false } = Astro.props;
 ---
 
-<section class="ps-panel" id="panel-correo">
+<section class={`ps-panel ${esActivo ? 'active' : ''}`} id="panel-correo">
   
   <!-- Encabezado del Módulo -->
   <div class="ps-panel-head">

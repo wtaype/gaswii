@@ -32,23 +32,23 @@ const modulosPendientes = getModulosActivos().filter(m => m.id !== 'dashboard' &
   <style slot="modulo-css" is:global set:html={dashboardCss + '\n' + notepadCss + '\n' + negocioCss + '\n' + correoCss + '\n' + productosCss}></style>
 
   <!-- MÓDULO 1: DASHBOARD -->
-  <Dashboard />
+  <Dashboard esActivo={moduloActivo === 'dashboard'} />
 
   <!-- MÓDULO 2: NOTEPAD (70% Canvas / 30% Lista) -->
-  <Notepad />
+  <Notepad esActivo={moduloActivo === 'notepad'} />
 
   <!-- MÓDULO 3: MI NEGOCIO (Ficha de Sede, Canales y Zonas) -->
-  <Negocio />
+  <Negocio esActivo={moduloActivo === 'negocio'} />
 
   <!-- MÓDULO 4: CORREO (Centro Oficial de Envíos con Resend) -->
-  <Correo />
+  <Correo esActivo={moduloActivo === 'correo'} />
 
   <!-- MÓDULO 5: PRODUCTOS (Catálogo Oficial e Inventario) -->
-  <Productos />
+  <Productos esActivo={moduloActivo === 'productos'} />
 
   <!-- CONTENEDORES LISTOS PARA MÓDULOS EN FASES SIGUIENTES -->
   {modulosPendientes.map((m) => (
-    <section class="ps-panel" id={`panel-${m.id}`}>
+    <section class={`ps-panel ${moduloActivo === m.id ? 'active' : ''}`} id={`panel-${m.id}`}>
       <div class="ps-section-header">
         <div class="ps-section-title-wrap">
           <h1 class="ps-section-title">{m.nombre}</h1>
