@@ -14,6 +14,7 @@ import {
   inicializarModalProducto,
   abrirModalProducto
 } from './modales.js';
+import { solicitarActualizacionWeb } from '../../../../actualizar.js';
 
 export function inicializarProductos() {
   const panel = document.getElementById('panel-productos');
@@ -219,6 +220,7 @@ export function inicializarProductos() {
         await cambiarEstadoProducto(id, nuevoEstado);
         renderizar();
         Notificacion(`Producto ${nuevoEstado === 'activo' ? 'activado' : 'pausado'}.`, 'success', 2500);
+        solicitarActualizacionWeb({ motivo: 'producto-estado' });
         return;
       }
 
@@ -229,6 +231,7 @@ export function inicializarProductos() {
         const nuevoPrecio = Number(precioEl.value || 0);
         await actualizarPrecioYStock(id, { precio: nuevoPrecio });
         Notificacion(`Precio actualizado a S/ ${nuevoPrecio.toFixed(2)}`, 'success', 2500);
+        solicitarActualizacionWeb({ motivo: 'producto-precio' });
         return;
       }
 
@@ -240,6 +243,7 @@ export function inicializarProductos() {
         await actualizarPrecioYStock(id, { stock: nuevoStock });
         renderizar();
         Notificacion(`Stock actualizado: ${nuevoStock} unidades.`, 'success', 2500);
+        solicitarActualizacionWeb({ motivo: 'producto-stock' });
         return;
       }
     });
@@ -263,6 +267,7 @@ export function inicializarProductos() {
             await eliminarProductoFirestore(id);
             renderizar();
             Notificacion('Producto eliminado del catálogo.', 'success', 3000);
+            solicitarActualizacionWeb({ motivo: 'producto-eliminado' });
           } catch (err) {
             Notificacion('No se pudo eliminar el producto.', 'error', 3500);
           }

@@ -8,6 +8,7 @@ import {
   generarSlug,
   obtenerProductosLocal
 } from '../dataProductos.js';
+import { solicitarActualizacionWeb } from '../../../../../actualizar.js';
 
 export const MODAL_ID = 'prModalBackdrop';
 
@@ -191,6 +192,9 @@ export function inicializarModalProducto() {
           ? `Producto "${nombreEs}" actualizado con éxito.`
           : `Producto "${nombreEs}" registrado con éxito.`;
         Notificacion(msgExito, 'success', 3500);
+
+        // Disparar re-deploy en Cloudflare con debounce de 4s
+        solicitarActualizacionWeb({ motivo: idExistente ? 'producto-actualizado' : 'producto-creado' });
       } catch (err) {
         Notificacion('Error al guardar el producto en Firestore.', 'error', 4000);
       } finally {

@@ -461,4 +461,64 @@ const whatsappNumero = datosNegocio.whatsapp;
   window.addEventListener('pageshow', (e) => {
     if (e.persisted) sincronizarCatalogoLocalFirst();
   });
+
+  // Revalidación Inteligente en Segundo Plano (SWR): 0ms bloqueo en FCP/LCP inicial
+  async function revalidarCatalogoEnBackground() {
+    try {
+      const res = await fetch('https://firestore.googleapis.com/v1/projects/gaswii/databases/(default)/documents/productos');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!Array.isArray(data.documents) || data.documents.length === 0) return;
+
+      const prodsFrescos = data.documents.map((d: any) => {
+        const f = d.fields || {};
+        const id = (d.name || '').split('/').pop() || '';
+        return {
+          id,
+          slug: f.slug?.stringValue || id,
+          nombre: f.nombre?.mapValue ? {
+            es: f.nombre.mapValue.fields?.es?.stringValue || '',
+            en: f.nombre.mapValue.fields?.en?.stringValue || ''
+          } : (f.nombre?.stringValue || ''),
+          precio: Number(f.precio?.doubleValue ?? f.precio?.integerValue ?? f.precioPEN?.doubleValue ?? f.precioPEN?.integerValue ?? 0),
+          stock: Number(f.stock?.integerValue ?? f.stock?.doubleValue ?? 0),
+          estado: f.estado?.stringValue || 'activo',
+          tipoCategoria: f.tipoCategoria?.stringValue || 'gas',
+          tipoUso: f.tipoUso?.mapValue ? {
+            es: f.tipoUso.mapValue.fields?.es?.stringValue || '',
+            en: f.tipoUso.mapValue.fields?.en?.stringValue || ''
+          } : (f.tipoUso?.stringValue || ''),
+          valvula: f.valvula?.mapValue ? {
+            es: f.valvula.mapValue.fields?.es?.stringValue || '',
+            en: f.valvula.mapValue.fields?.en?.stringValue || ''
+          } : (f.valvula?.stringValue || ''),
+          peso: f.peso?.mapValue ? {
+            es: f.peso.mapValue.fields?.es?.stringValue || '',
+            en: f.peso.mapValue.fields?.en?.stringValue || ''
+          } : (f.peso?.stringValue || ''),
+          pesoFull: f.pesoFull?.mapValue ? {
+            es: f.pesoFull.mapValue.fields?.es?.stringValue || '',
+            en: f.pesoFull.mapValue.fields?.en?.stringValue || ''
+          } : (f.pesoFull?.stringValue || ''),
+          seguridad: f.seguridad?.mapValue ? {
+            es: f.seguridad.mapValue.fields?.es?.stringValue || '',
+            en: f.seguridad.mapValue.fields?.en?.stringValue || ''
+          } : (f.seguridad?.stringValue || ''),
+          imagen: f.imagen?.stringValue || '/imgwii/productos/BALON-10KG.webp',
+          orden: Number(f.orden?.integerValue ?? 1)
+        };
+      });
+
+      localStorage.setItem('gaswii_productos', JSON.stringify(prodsFrescos));
+      sincronizarCatalogoLocalFirst();
+    } catch (e) {}
+  }
+
+  if (typeof window !== 'undefined') {
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => revalidarCatalogoEnBackground(), { timeout: 2000 });
+    } else {
+      setTimeout(revalidarCatalogoEnBackground, 1200);
+    }
+  }
 </script>

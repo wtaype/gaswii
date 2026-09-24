@@ -9,6 +9,7 @@ import {
   calcularAnosTrayectoria,
   sincronizarDesdeFirestore
 } from './dataNegocio.js';
+import { solicitarActualizacionWeb } from '../../../../actualizar.js';
 
 export function inicializarNegocio() {
   const panelNegocio = document.getElementById('panel-negocio');
@@ -508,23 +509,6 @@ export function inicializarNegocio() {
     el.addEventListener('input', autoGuardarBorrador);
   });
 
-  // Función para despertar el deploy hook de Cloudflare en segundo plano
-  async function dispararDeployHookCloudflare() {
-    const hookUrl = import.meta.env.PUBLIC_CLOUDFLARE_DEPLOY_HOOK;
-    if (!hookUrl) return;
-
-    try {
-      await fetch(hookUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' }
-      });
-      Notificacion('🚀 Cloudflare está cocinando la nueva versión de la web...', 'info', 4000);
-    } catch (err) {
-      console.warn('[Cloudflare Deploy Hook]:', err?.message || err);
-    }
-  }
-
   // 9. Guardar Cambios Centralizado con wiSpin y Notificacion
   function guardarCambiosNegocio() {
     if (isSaving) return;
@@ -541,8 +525,8 @@ export function inicializarNegocio() {
       Notificacion('Ficha guardada con éxito', 'success', 2500);
       isSaving = false;
 
-      // Disparar re-cocinado en Cloudflare en segundo plano
-      dispararDeployHookCloudflare();
+      // Disparar re-cocinado en Cloudflare con debounce inteligente
+      solicitarActualizacionWeb({ motivo: 'negocio' });
     }, 400);
   }
 
