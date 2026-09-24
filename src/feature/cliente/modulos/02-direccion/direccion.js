@@ -8,7 +8,8 @@ import {
   obtenerDireccionesLocal,
   guardarDireccion,
   eliminarDireccion,
-  establecerPrincipal
+  establecerPrincipal,
+  sincronizarDireccionesDesdeFirestore
 } from './dataDireccion.js';
 
 let inicializado = false;
@@ -132,13 +133,18 @@ export function renderizarDirecciones(filtro = '') {
 
   const filtroClean = (filtro || '').trim().toLowerCase();
   const filtradas = filtroClean
-    ? lista.filter(d => 
-        (d.alias && d.alias.toLowerCase().includes(filtroClean)) ||
-        (d.calle && d.calle.toLowerCase().includes(filtroClean)) ||
-        (d.distrito && d.distrito.toLowerCase().includes(filtroClean)) ||
-        (d.referencia && d.referencia.toLowerCase().includes(filtroClean)) ||
-        (d.celular && d.celular.includes(filtroClean))
-      )
+    ? lista.filter(d => {
+        const alias = String(d.alias || d.etiqueta || '').toLowerCase();
+        const calle = String(d.calle || d.direccion || d.domicilio || '').toLowerCase();
+        const distrito = String(d.distrito || '').toLowerCase();
+        const referencia = String(d.referencia || '').toLowerCase();
+        const celular = String(d.celular || '').toLowerCase();
+        return alias.includes(filtroClean) ||
+               calle.includes(filtroClean) ||
+               distrito.includes(filtroClean) ||
+               referencia.includes(filtroClean) ||
+               celular.includes(filtroClean);
+      })
     : lista;
 
   if (filtradas.length === 0) {
@@ -381,4 +387,5 @@ export function inicializarDirecciones() {
   }
 
   renderizarDirecciones();
+  sincronizarDireccionesDesdeFirestore();
 }

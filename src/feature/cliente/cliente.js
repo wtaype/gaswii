@@ -4,7 +4,7 @@
 import { getls, avatar } from '@widev';
 import { salir } from '../auth/sesion.js';
 import { inicializarPedidos } from './modulos/01-pedidos/pedidos.js';
-import { inicializarDirecciones } from './modulos/02-direccion/direccion.js';
+import { inicializarDirecciones, renderizarDirecciones } from './modulos/02-direccion/direccion.js';
 import { esModuloValido, moduloDefecto } from './modulos.js';
 
 function resolverModuloDesdeURL() {
@@ -171,7 +171,7 @@ function inicializarBuscador() {
   btnCloseMobile?.addEventListener('click', () => {
     mobileBar?.classList.remove('open');
     if (inputMobile) inputMobile.value = '';
-    filtrarProductos('');
+    buscarGlobal('');
   });
 
   function filtrarProductos(query) {
@@ -188,12 +188,22 @@ function inicializarBuscador() {
     });
   }
 
+  function buscarGlobal(query) {
+    if (moduloActivo === 'pedidos') {
+      filtrarProductos(query);
+    } else if (moduloActivo === 'direccion') {
+      renderizarDirecciones(query);
+      const inputDir = document.getElementById('cdSearchDir');
+      if (inputDir && inputDir.value !== query) inputDir.value = query;
+    }
+  }
+
   inputDesktop?.addEventListener('input', (e) => {
-    filtrarProductos(e.target.value);
+    buscarGlobal(e.target.value);
   });
 
   inputMobile?.addEventListener('input', (e) => {
-    filtrarProductos(e.target.value);
+    buscarGlobal(e.target.value);
   });
 }
 

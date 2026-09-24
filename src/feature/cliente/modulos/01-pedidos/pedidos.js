@@ -4,7 +4,7 @@
 // Validación estricta de direcciones y cero datos mock/ficticios
 
 import { Saludar, Notificacion, getls, savels } from '@widev';
-import { normalizarDireccionesMap } from '../02-direccion/dataDireccion.js';
+import { normalizarDireccionesMap, sincronizarDireccionesDesdeFirestore } from '../02-direccion/dataDireccion.js';
 
 const PRODUCTOS_CACHE_KEY = 'gaswii_productos';
 const PRODUCTOS_TS_KEY = 'gaswii_productos_ts';
@@ -349,4 +349,5 @@ ${itemsList.join('\n')}
   // Inicializar UI y sincronizar en background si hace falta
   update();
   sincronizarCatalogoFrescoFirestore();
+  sincronizarDireccionesDesdeFirestore();
 }

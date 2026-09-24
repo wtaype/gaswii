@@ -18,18 +18,41 @@ function serializarFechaISO(val) {
 
 /**
  * Normaliza cualquier formato previo o entrante a un Array puro y canónico de direcciones
+ * Soporta strings sueltos ("Calle Dante 261"), arrays y maps con tolerancia total
  */
 export function normalizarDireccionesArray(rawDirs = []) {
   if (!rawDirs) return [];
 
   let list = [];
   if (Array.isArray(rawDirs)) {
-    list = rawDirs.filter(d => Boolean(d && (d.calle || d.direccion)));
+    list = rawDirs.map((d, idx) => {
+      if (typeof d === 'string' && d.trim()) {
+        return {
+          id: `dir_${idx}`,
+          alias: idx === 0 ? 'Casa' : `Dirección ${idx + 1}`,
+          calle: d.trim(),
+          direccion: d.trim(),
+          distrito: 'Surquillo'
+        };
+      }
+      return d;
+    }).filter(d => Boolean(d && (d.calle || d.direccion || d.domicilio)));
   } else if (typeof rawDirs === 'object') {
-    list = Object.entries(rawDirs).map(([key, d]) => ({
-      ...d,
-      id: d.id || key
-    })).filter(d => Boolean(d && (d.calle || d.direccion)));
+    list = Object.entries(rawDirs).map(([key, d]) => {
+      if (typeof d === 'string' && d.trim()) {
+        return {
+          id: key,
+          alias: 'Casa',
+          calle: d.trim(),
+          direccion: d.trim(),
+          distrito: 'Surquillo'
+        };
+      }
+      return {
+        ...d,
+        id: d.id || key
+      };
+    }).filter(d => Boolean(d && (d.calle || d.direccion || d.domicilio)));
   }
 
   if (list.length === 0) return [];
@@ -39,8 +62,13 @@ export function normalizarDireccionesArray(rawDirs = []) {
     const esPrincipal = Boolean(d.esPrincipal ?? d.predeterminada ?? false);
     if (esPrincipal) hayPrincipal = true;
 
-    const alias = d.alias || d.etiqueta || (idx === 0 ? 'Casa' : `Dirección ${idx + 1}`);
-    const calle = d.calle || d.direccion || '';
+    const alias = String(d.alias || d.etiqueta || (idx === 0 ? 'Casa' : `Dirección ${idx + 1}`)).trim();
+    const calle = String(d.calle || d.direccion || d.domicilio || '').trim();
+    const dpto = String(d.dpto || '').trim();
+    const distrito = String(d.distrito || 'Surquillo').trim();
+    const celular = String(d.celular || '').trim();
+    const referencia = String(d.referencia || '').trim();
+    const eta = String(d.eta || '12–15 min').trim();
 
     return {
       id: String(d.id || `dir_${Date.now()}_${idx}`),
@@ -48,11 +76,11 @@ export function normalizarDireccionesArray(rawDirs = []) {
       etiqueta: alias,
       calle,
       direccion: calle,
-      dpto: d.dpto || '',
-      distrito: d.distrito || 'Surquillo',
-      celular: d.celular || '',
-      referencia: d.referencia || '',
-      eta: d.eta || '12–15 min',
+      dpto,
+      distrito,
+      celular,
+      referencia,
+      eta,
       esPrincipal,
       predeterminada: esPrincipal,
       creado: serializarFechaISO(d.creado),
@@ -71,11 +99,52 @@ export function normalizarDireccionesArray(rawDirs = []) {
 export const normalizarDireccionesMap = normalizarDireccionesArray;
 
 /**
- * Obtiene la lista actual de direcciones desde el almacenamiento local wiSmile
+ * Obtiene la lista actual de direcciones desde el almacenamiento local wiSmile (0ms)
  */
 export function obtenerDireccionesLocal() {
   const user = getls('wiSmile') || (typeof window !== 'undefined' ? window.__GASWII_USER__ : null);
   return user ? normalizarDireccionesArray(user.direcciones) : [];
+}
+
+/**
+ * Sincronización silenciosa en segundo plano con Firestore (smiles/{userId})
+ * Si Firestore tiene direcciones y local no las tenía (o cambiaron), actualiza wiSmile y emite evento
+ */
+let _sincronizando = false;
+export async function sincronizarDireccionesDesdeFirestore() {
+  if (_sincronizando) return;
+  const user = getls('wiSmile') || (typeof window !== 'undefined' ? window.__GASWII_USER__ : null);
+  const userId = user?.userId || user?.uid;
+  if (!userId) return;
+
+  _sincronizando = true;
+  try {
+    const { db } = await import('@core/servicios/firebase.js');
+    const { doc, getDoc } = await import('firebase/firestore');
+
+    const docSnap = await getDoc(doc(db, 'smiles', userId));
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const rawDirs = data.direcciones || (data.direccion ? [data.direccion] : []);
+      const normalizadas = normalizarDireccionesArray(rawDirs);
+      const locales = obtenerDireccionesLocal();
+
+      const cambiaron = JSON.stringify(normalizadas) !== JSON.stringify(locales);
+      if (cambiaron || (normalizadas.length > 0 && locales.length === 0)) {
+        user.direcciones = normalizadas;
+        if (data.celular && !user.celular) user.celular = data.celular;
+        savels('wiSmile', user, 144);
+        if (typeof window !== 'undefined') {
+          window.__GASWII_USER__ = user;
+          document.dispatchEvent(new CustomEvent('direccionesActualizadas', { detail: { direcciones: normalizadas } }));
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[Gaswii Direcciones] Aviso en sincronización en background:', err);
+  } finally {
+    _sincronizando = false;
+  }
 }
 
 /**
@@ -135,6 +204,8 @@ function sincronizarSmilesFirestore(uid, listaDirecciones) {
 
       const docRef = doc(db, 'smiles', uid);
       await setDoc(docRef, {
+        userId: uid,
+        uid: uid,
         direcciones: direccionesFirestore,
         rol: 'cliente',
         actualizado: serverTimestamp()
@@ -148,12 +219,13 @@ function sincronizarSmilesFirestore(uid, listaDirecciones) {
 }
 
 /**
- * Persistencia unificada: Guarda en local, actualiza la UI al instante (0ms) y despacha en segundo plano
+ * Persistencia unificada: Guarda en local wiSmile (0ms) y despacha en segundo plano a Firestore
  */
 function persistirLocalYFondo(nuevaLista) {
   const user = getls('wiSmile') || (typeof window !== 'undefined' ? window.__GASWII_USER__ : null);
   if (!user) throw new Error('No hay sesión de usuario activa.');
 
+  const userId = user.userId || user.uid;
   user.direcciones = nuevaLista;
   savels('wiSmile', user, 144);
   if (typeof window !== 'undefined') {
@@ -161,7 +233,7 @@ function persistirLocalYFondo(nuevaLista) {
     document.dispatchEvent(new CustomEvent('direccionesActualizadas', { detail: { direcciones: nuevaLista } }));
   }
 
-  sincronizarSmilesFirestore(user.uid, nuevaLista);
+  sincronizarSmilesFirestore(userId, nuevaLista);
   return nuevaLista;
 }
 
