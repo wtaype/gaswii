@@ -11,6 +11,9 @@ import inicioEn from '../../feature/inicio/idioma/en.json';
 import authEs from '../../feature/auth/idioma/es.json';
 import authEn from '../../feature/auth/idioma/en.json';
 
+import acercasEs from '../../feature/acercas/idioma/es.json';
+import acercasEn from '../../feature/acercas/idioma/en.json';
+
 // Feature Personal y Feature Cliente son 100% español operativo nativo (no requieren diccionarios JSON)
 const localesPersonal: Record<string, any> = { es: {}, en: {} };
 const localesCliente: Record<string, any> = { es: {}, en: {} };
@@ -57,6 +60,10 @@ const localesAuth: Record<string, typeof authEs> = {
   en: authEn
 };
 
+const localesAcercas: Record<string, typeof acercasEs> = {
+  es: acercasEs,
+  en: acercasEn
+};
 
 /**
  * Retorna las traducciones completas unificadas para el idioma solicitado.
@@ -67,6 +74,7 @@ export function getI18n(lang: string = DEFAULT_LANG) {
   const core = localesCore[l] || localesCore[DEFAULT_LANG];
   const inicio = localesInicio[l] || localesInicio[DEFAULT_LANG];
   const auth = localesAuth[l] || localesAuth[DEFAULT_LANG];
+  const acercas = localesAcercas[l] || localesAcercas[DEFAULT_LANG];
   const cliente = localesCliente[l] || localesCliente[DEFAULT_LANG];
   const personal = localesPersonal[l] || localesPersonal[DEFAULT_LANG];
 
@@ -92,6 +100,9 @@ export function getI18n(lang: string = DEFAULT_LANG) {
     // 🔐 Feature Auth
     auth,
 
+    // 🏛️ Feature Acercas (Institucional y Legal)
+    acercas,
+
     // 👑 Feature Cliente VIP
     cliente,
 
@@ -103,11 +114,12 @@ export function getI18n(lang: string = DEFAULT_LANG) {
 /**
  * Acceso directo a una feature específica
  */
-export function getFeatureI18n(feature: 'inicio' | 'auth' | 'cliente' | 'personal' | 'core', lang: string = DEFAULT_LANG) {
+export function getFeatureI18n(feature: 'inicio' | 'auth' | 'acercas' | 'cliente' | 'personal' | 'core', lang: string = DEFAULT_LANG) {
   const l = localesCore[lang] ? lang : DEFAULT_LANG;
   switch (feature) {
     case 'inicio': return localesInicio[l] || localesInicio[DEFAULT_LANG];
     case 'auth': return localesAuth[l] || localesAuth[DEFAULT_LANG];
+    case 'acercas': return localesAcercas[l] || localesAcercas[DEFAULT_LANG];
     case 'cliente': return localesCliente[l] || localesCliente[DEFAULT_LANG];
     case 'personal': return localesPersonal[l] || localesPersonal[DEFAULT_LANG];
     default: return localesCore[l] || localesCore[DEFAULT_LANG];

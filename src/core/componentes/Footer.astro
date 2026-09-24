@@ -2,7 +2,7 @@
 // src/core/componentes/Footer.astro
 // 10. FOOTER INSTITUCIONAL UX/UI 10/10 - Solgas Surquillo (100% Sincronizado con Firestore negocio.md)
 import { datosNegocio } from '../../negocio.js';
-import { getI18n, type Idioma } from '../idioma/idioma';
+import { getI18n, buildRuta, type Idioma } from '../idioma/idioma';
 
 interface Props {
   idioma?: Idioma;
@@ -45,18 +45,40 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
         </div>
       </div>
 
-      <!-- Columna 2: Distritos de Cobertura Dinámicos desde Firestore -->
+      <!-- Columna 2: Páginas Institucionales y Legales -->
       <div class="footer-col-distritos">
         <h4 class="footer-col-title">
-          <i class="fa-solid fa-location-dot color-primary"></i> {t.cobertura_titulo}
+          <i class="fa-solid fa-landmark-flag color-primary"></i> {idioma === 'en' ? 'Institutional Pages' : 'Páginas Oficiales'}
         </h4>
-        <ul class="footer-nav-list" data-negocio-distritos-footer>
-          {datosNegocio.distritos.map((dist: any) => (
-            <li>
-              <i class="fa-solid fa-chevron-right"></i> 
-              <span>{dist.nombre} ({dist.tiempo})</span>
-            </li>
-          ))}
+        <ul class="footer-nav-list">
+          <li>
+            <i class="fa-solid fa-chevron-right"></i> 
+            <a href={buildRuta('/acerca', idioma)}>{idioma === 'en' ? 'About Us' : 'Nosotros'}</a>
+          </li>
+          <li>
+            <i class="fa-solid fa-chevron-right"></i> 
+            <a href={buildRuta('/terminos', idioma)}>{idioma === 'en' ? 'Terms of Service' : 'Términos del Servicio'}</a>
+          </li>
+          <li>
+            <i class="fa-solid fa-chevron-right"></i> 
+            <a href={buildRuta('/privacidad', idioma)}>{idioma === 'en' ? 'Privacy Policy' : 'Política de Privacidad'}</a>
+          </li>
+          <li>
+            <i class="fa-solid fa-chevron-right"></i> 
+            <a href={buildRuta('/cookies', idioma)}>{idioma === 'en' ? 'Cookies Policy' : 'Política de Cookies'}</a>
+          </li>
+          <li>
+            <i class="fa-solid fa-chevron-right"></i> 
+            <a href={buildRuta('/contacto', idioma)}>{idioma === 'en' ? 'Contact & Hub' : 'Contacto y Sede'}</a>
+          </li>
+          <li>
+            <i class="fa-solid fa-chevron-right"></i> 
+            <a href={buildRuta('/redes', idioma)}>{idioma === 'en' ? 'Official Networks' : 'Canales y Redes'}</a>
+          </li>
+          <li>
+            <i class="fa-solid fa-chevron-right"></i> 
+            <a href={buildRuta('/feedback', idioma)}>{idioma === 'en' ? 'Service Feedback' : 'Feedback y Sugerencias'}</a>
+          </li>
         </ul>
       </div>
 
@@ -91,9 +113,9 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
           {t.reclamos_desc}
         </p>
         <a 
-          href={`mailto:${datosNegocio.email}?subject=Libro%20de%20Reclamaciones%20${encodeURIComponent(datosNegocio.nombre)}`} 
+          href={buildRuta('/libro-reclamaciones', idioma)} 
           class="footer-claims-card"
-          title="Abrir Libro de Reclamaciones Virtual"
+          title={idioma === 'en' ? 'Open Virtual Complaints Book' : 'Abrir Libro de Reclamaciones Virtual'}
         >
           <img 
             src="/imgwii/Libro-de-reclamaciones.webp" 
@@ -103,7 +125,7 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
             class="footer-claims-img"
           />
           <span class="footer-claims-tag">
-            <i class="fa-solid fa-shield-check"></i> Libro Virtual 100% Conforme
+            <i class="fa-solid fa-shield-check"></i> {idioma === 'en' ? 'Virtual Book 100% Compliant' : 'Libro Virtual 100% Conforme'}
           </span>
         </a>
       </div>

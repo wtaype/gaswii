@@ -3,7 +3,7 @@
 // 2. HEADER CON BOTONES LOGIN Y PEDIR GAS - Solgas Surquillo (100% Cero CSS Inline)
 import app from '../../app.js';
 import { datosNegocio } from '../../negocio.js';
-import { getI18n, IDIOMAS, type Idioma } from '../idioma/idioma';
+import { getI18n, IDIOMAS, buildRuta, type Idioma } from '../idioma/idioma';
 
 interface Props {
   idioma?: Idioma;
@@ -14,6 +14,19 @@ const { idioma = 'es', ruta = '/' } = Astro.props;
 const t = getI18n(idioma).nav;
 const esPersonal = ruta === '/personal';
 const esCliente = ruta === '/cliente';
+
+// Extraer ruta base canónica sin prefijos de idioma existentes
+let rutaBase = (ruta || '/').replace(/\/$/, '') || '/';
+for (const code of Object.keys(IDIOMAS)) {
+  if (rutaBase === `/${code}`) {
+    rutaBase = '/';
+    break;
+  }
+  if (rutaBase.startsWith(`/${code}/`)) {
+    rutaBase = rutaBase.slice(code.length + 1) || '/';
+    break;
+  }
+}
 
 const baseHash = idioma === 'es' ? '' : `/${idioma}`;
 const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
@@ -83,7 +96,13 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
       <!-- Switcher Dinámico de Idiomas (Escalable para N idiomas) -->
       <div class="header-pill-group" title="Idioma / Language">
         {Object.entries(IDIOMAS).map(([code, info]) => (
-          <a href={code === 'es' ? '/' : `/${code}`} class={`header-pill-btn ${idioma === code ? 'active' : ''}`}>{code.toUpperCase()}</a>
+          <a 
+            href={buildRuta(rutaBase, code)} 
+            data-lang={code}
+            class={`header-pill-btn ${idioma === code ? 'active' : ''}`}
+          >
+            {code.toUpperCase()}
+          </a>
         ))}
       </div>
 
@@ -218,5 +237,27 @@ const urlInicio = esPersonal || esCliente ? '/' : `${baseHash}#hero`;
   // Reactividad con 0ms de latencia (Local-First sin cargar Firebase de inicio)
   wiAuth.on((smile: any) => {
     actualizarHeaderAuth(smile);
+  });
+
+  // Switcher de idiomas inteligente: preserva la ruta actual exacta en tiempo de ejecución
+  document.querySelectorAll('.header-pill-group a[data-lang]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const targetLang = btn.getAttribute('data-lang');
+      if (!targetLang) return;
+      e.preventDefault();
+      const pathActual = window.location.pathname.replace(/\/$/, '') || '/';
+      let limpia = pathActual;
+      if (limpia === '/en') limpia = '/';
+      else if (limpia.startsWith('/en/')) limpia = limpia.slice(3) || '/';
+      const hash = window.location.hash || '';
+
+      let dest = '';
+      if (targetLang === 'es') {
+        dest = limpia;
+      } else {
+        dest = limpia === '/' ? `/${targetLang}` : `/${targetLang}${limpia}`;
+      }
+      window.location.href = dest + hash;
+    });
   });
 </script>

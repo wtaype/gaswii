@@ -3,7 +3,7 @@
 // DRAWER MÓVIL INTERACTIVO - Solgas Surquillo (100% Cero CSS Inline)
 import app from '../../app.js';
 import { datosNegocio } from '../../negocio.js';
-import { getI18n, IDIOMAS, type Idioma } from '../idioma/idioma';
+import { getI18n, IDIOMAS, buildRuta, type Idioma } from '../idioma/idioma';
 
 interface Props {
   idioma?: Idioma;
@@ -12,6 +12,20 @@ interface Props {
 
 const { idioma = 'es', ruta = '/' } = Astro.props;
 const t = getI18n(idioma).nav;
+
+// Extraer ruta base canónica sin prefijos de idioma existentes
+let rutaBase = (ruta || '/').replace(/\/$/, '') || '/';
+for (const code of Object.keys(IDIOMAS)) {
+  if (rutaBase === `/${code}`) {
+    rutaBase = '/';
+    break;
+  }
+  if (rutaBase.startsWith(`/${code}/`)) {
+    rutaBase = rutaBase.slice(code.length + 1) || '/';
+    break;
+  }
+}
+
 const baseHash = idioma === 'es' ? (ruta !== '/' ? '/' : '') : `/${idioma}`;
 const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.horario;
 ---
@@ -30,7 +44,13 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
       <!-- Selector Dinámico de Idiomas Móvil -->
       <div class="header-pill-group" title="Idioma / Language">
         {Object.entries(IDIOMAS).map(([code, info]) => (
-          <a href={code === 'es' ? '/' : `/${code}`} class={`header-pill-btn ${idioma === code ? 'active' : ''}`}>{code.toUpperCase()}</a>
+          <a 
+            href={buildRuta(rutaBase, code)} 
+            data-lang={code}
+            class={`header-pill-btn ${idioma === code ? 'active' : ''}`}
+          >
+            {code.toUpperCase()}
+          </a>
         ))}
       </div>
 
