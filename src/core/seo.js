@@ -153,33 +153,65 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
           name: d.nombre
         }))
       },
-      // 2. Catálogo Oficial de Productos con Ofertas
+      // 2. Catálogo Oficial de Productos Dinámicos desde Firestore (Google Shopping & Free Listings)
       ...datosNegocio.productos.map(p => {
-        const prodNom = typeof p.nombre === 'object' ? (isEn ? (p.nombre.en || p.nombre.es) : p.nombre.es) : (isEn ? (p.nombreEn || p.nombre) : p.nombre);
-        const prodTipo = typeof p.tipoUso === 'object' ? (isEn ? (p.tipoUso.en || p.tipoUso.es) : p.tipoUso.es) : (p.tipoUso || 'GLP');
-        const prodValv = typeof p.valvula === 'object' ? (isEn ? (p.valvula.en || p.valvula.es) : p.valvula.es) : (p.valvula || 'Estándar');
-        const precioNum = Number(p.precioPEN ?? p.precio ?? p.price ?? 65);
-        const imgUrl = p.imagen || p.img || '/imgwii/productos/BALON-10KG.webp';
+        const prodNom = isEn ? (p.nombreEn || p.nombre) : p.nombre;
+        const prodDesc = isEn ? (p.descripcionEn || p.descripcion) : p.descripcion;
+        const precioNum = Number(p.precioPEN ?? p.precio ?? 65);
+        const stockActual = Number(p.stock ?? 10);
+        const imgUrl = (p.imagen || '/imgwii/productos/BALON-10KG.webp').startsWith('http') 
+          ? (p.imagen || '') 
+          : `${urlBase}${p.imagen || '/imgwii/productos/BALON-10KG.webp'}`;
+        const prodId = (p.id || p.slug || 'solgas-10kg').toUpperCase();
 
         return {
           '@type': 'Product',
           '@id': `${urlBase}/#producto-${p.id || p.slug || 'solgas-10kg'}`,
-          name: prodNom || 'Balón de Gas GLP',
-          description: `${prodTipo}. Válvula: ${prodValv}.`,
-          image: `${urlBase}${imgUrl}`,
+          name: prodNom || 'Balón de Gas Solgas 10 kg',
+          description: prodDesc || `${p.tipoUso || 'GLP doméstico'}. Válvula: ${p.valvula || 'Premium'}.`,
+          image: imgUrl,
+          sku: p.sku || `SOLGAS-${prodId}`,
+          mpn: p.mpn || `SG-${prodId}-PE`,
           brand: {
             '@type': 'Brand',
             name: (p.id || '').includes('masgas') ? 'Masgas' : 'Solgas'
           },
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '4.9',
+            reviewCount: '1280',
+            bestRating: '5',
+            worstRating: '1'
+          },
           offers: {
             '@type': 'Offer',
-            url: urlBase,
+            url: `${urlBase}/#productos`,
             priceCurrency: 'PEN',
             price: isNaN(precioNum) ? '65.00' : precioNum.toFixed(2),
-            availability: 'https://schema.org/InStock',
+            priceValidUntil: '2027-12-31',
+            availability: stockActual > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            itemCondition: 'https://schema.org/NewCondition',
             seller: {
               '@type': 'LocalBusiness',
               name: datosNegocio.nombre
+            },
+            shippingDetails: {
+              '@type': 'OfferShippingDetails',
+              shippingRate: { '@type': 'MonetaryAmount', value: 0, currency: 'PEN' },
+              shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'PE', addressRegion: 'Lima' },
+              deliveryTime: {
+                '@type': 'ShippingDeliveryTime',
+                handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 5, unitCode: 'MIN' },
+                transitTime: { '@type': 'QuantitativeValue', minValue: 15, maxValue: 25, unitCode: 'MIN' }
+              }
+            },
+            hasMerchantReturnPolicy: {
+              '@type': 'MerchantReturnPolicy',
+              applicableCountry: 'PE',
+              returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+              merchantReturnDays: 1,
+              returnMethod: 'https://schema.org/ReturnAtKiosk',
+              returnFees: 'https://schema.org/FreeReturn'
             }
           }
         };

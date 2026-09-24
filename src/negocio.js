@@ -125,8 +125,8 @@ function obtenerProductosActivos() {
 }
 
 export const datosNegocio = {
-  get nombre() { return obtenerDatosNegocio().identidad?.nombre || ''; },
-  get nombreCorto() { return obtenerDatosNegocio().identidad?.nombreCorto || ''; },
+  get nombre() { return (obtenerDatosNegocio().identidad?.nombre || 'Solgas Surquillo').replace(/Surquilloo/gi, 'Surquillo'); },
+  get nombreCorto() { return (obtenerDatosNegocio().identidad?.nombreCorto || 'Solgas').replace(/Surquilloo/gi, 'Surquillo'); },
   get razonSocial() { return obtenerDatosNegocio().identidad?.razonSocial || ''; },
   get autorizacion() { return obtenerDatosNegocio().identidad?.razonSocial || ''; },
   get ruc() { return obtenerDatosNegocio().identidad?.ruc || ''; },
