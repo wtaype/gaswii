@@ -1,0 +1,1239 @@
+---
+// src/pages/view75.astro
+// VIEW 75: Ultra-Fit 100vh Executive (Cero Scroll en Desktop + App Nativa en Móvil)
+// Unidades fluidas vh/vw · 4 Productos con imágenes grandes y títulos centrados
+// Bottom Navigation Bar nativa para móvil · 100% Español · Cero build pesado
+import { avatar } from '../core/widev/nombre.js';
+import witemaCss from '../core/wicss/witema.css?inline';
+
+const cliente = {
+  nombre: 'Valeria',
+  apellido: 'Mendoza',
+  nombreCompleto: 'Valeria Mendoza',
+  usuario: 'valeria.m',
+  telefono: '+51 987 654 321',
+  email: 'valeria.mendoza@gmail.com',
+  dni: '74829103',
+  tipoComprobante: 'boleta',
+  direcciones: [
+    {
+      id: 'dir-1',
+      alias: 'Casa Principal',
+      icono: 'fa-house',
+      calle: 'Jr. Dante 260, Dpto 301',
+      distrito: 'Surquillo',
+      referencia: 'Frente al parque, portón marrón',
+      eta: '12–15 min',
+      esPrincipal: true
+    },
+    {
+      id: 'dir-2',
+      alias: 'Oficina / Estudio',
+      icono: 'fa-briefcase',
+      calle: 'Av. República de Panamá 3565',
+      distrito: 'San Isidro',
+      referencia: 'Edificio Platino, Piso 4',
+      eta: '18–25 min',
+      esPrincipal: false
+    }
+  ]
+};
+
+const productos = [
+  {
+    id: 'bal-n-solgas-premium-10-kg',
+    nombre: 'Balón SOLGAS Premium 10 kg',
+    nombreCorto: 'Solgas 10 kg',
+    badge: 'MÁS PEDIDO',
+    tagClase: 'badge-fire',
+    tipoUso: 'Hogar',
+    capacidad: '10 kg Neto',
+    precioPEN: 65.00,
+    imagen: '/imgwii/productos/BALON-10KG.webp',
+    checks: [
+      { label: 'Válvula', valor: 'Click-On o Rosca estándar' },
+      { label: 'Pesaje', valor: 'Balanza digital Inacal en puerta' }
+    ]
+  },
+  {
+    id: 'balon-solgas-45-kg',
+    nombre: 'Balón SOLGAS 45 kg',
+    nombreCorto: 'Solgas 45 kg',
+    badge: 'COMERCIAL',
+    tagClase: 'badge-blue',
+    tipoUso: 'Negocio',
+    capacidad: '45 kg Neto',
+    precioPEN: 230.00,
+    imagen: '/imgwii/productos/BALON-45KG.webp',
+    checks: [
+      { label: 'Conexión', valor: 'Rosca industrial alta presión' },
+      { label: 'Capacidad', valor: 'Caudal continuo para negocios' }
+    ]
+  },
+  {
+    id: 'balon-masgas-de-10-kg',
+    nombre: 'Balón MASGAS de 10 kg',
+    nombreCorto: 'Masgas 10 kg',
+    badge: 'ECONÓMICO',
+    tagClase: 'badge-emerald',
+    tipoUso: 'Ahorro',
+    capacidad: '10 kg Neto',
+    precioPEN: 55.00,
+    imagen: '/imgwii/productos/MASGAS-10KG.webp',
+    checks: [
+      { label: 'Conexión', valor: 'Universal estándar para hogar' },
+      { label: 'Rendimiento', valor: 'Larga duración garantizada' }
+    ]
+  },
+  {
+    id: 'kit-regulador-solgas',
+    nombre: 'Kit Regulador SOLGAS',
+    nombreCorto: 'Regulador Solgas',
+    badge: 'SEGURIDAD',
+    tagClase: 'badge-gold',
+    tipoUso: 'Antifugas',
+    capacidad: 'Click-On',
+    precioPEN: 70.00,
+    imagen: '/imgwii/productos/REGULADOR.webp',
+    checks: [
+      { label: 'Seguridad', valor: 'Traba automática antifugas' },
+      { label: 'Certificación', valor: 'Homologado por Osinergmin' }
+    ]
+  }
+];
+---
+
+<!doctype html>
+<html lang="es" data-theme="futuro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Portal Cliente Ultra-Fit · Solgas Surquillo | View 75</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <script is:inline>
+    try {
+      const savedTheme = localStorage.getItem('gaswii_theme_cliente') || localStorage.getItem('wiTema') || 'futuro';
+      document.documentElement.dataset.theme = savedTheme;
+      if (localStorage.getItem('gaswii_sidebar_v75') === 'true') {
+        document.documentElement.classList.add('is-collapsed');
+      }
+    } catch (e) {}
+  </script>
+
+  <link rel="stylesheet" href="/google/fonts.css" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <style is:global set:html={witemaCss}></style>
+
+  <style>
+    :root {
+      --side-w: 230px;
+      --side-collapsed-w: 68px;
+      --topbar-h: clamp(52px, 6.5vh, 60px);
+      --cl-orange: #ff6600;
+      --cl-orange-hover: #ff771a;
+      --cl-wa: #25d366;
+      --cl-wa-hover: #1ebd5b;
+      --cl-emerald: #10b981;
+      --cl-card-bg: #0d1424;
+      --cl-card-border: rgba(255, 255, 255, 0.08);
+      --cl-input-bg: #070c18;
+    }
+
+    html[data-theme="luz"] {
+      --cl-card-bg: #ffffff;
+      --cl-card-border: #e2e8f0;
+      --cl-input-bg: #f8fafc;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden; /* CERO SCROLLBAR EN DESKTOP */
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--ff_P, 'Poppins', sans-serif);
+      font-size: var(--fz_m);
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @media (max-width: 960px) {
+      html, body {
+        height: auto;
+        overflow-y: auto; /* Scroll natural solo en smartphones */
+        padding-bottom: 75px; /* Espacio para bottom bar */
+      }
+    }
+
+    /* TOPBAR */
+    .v75-topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2vw;
+      backdrop-filter: blur(14px);
+    }
+
+    .v75-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .v75-logo { height: clamp(28px, 3.8vh, 34px); width: auto; object-fit: contain; }
+
+    .v75-brand-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(0.88rem, 1.1vw, 1.05rem);
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.15;
+    }
+    .v75-brand-title span { color: var(--cl-orange); }
+
+    .v75-brand-sede {
+      font-size: clamp(0.65rem, 0.72vw, 0.74rem);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .v75-live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cl-emerald);
+      box-shadow: 0 0 8px var(--cl-emerald);
+    }
+
+    .v75-topbar-right { display: flex; align-items: center; gap: 10px; }
+
+    .v75-btn-icon {
+      background: var(--surface2, rgba(255,255,255,0.05));
+      border: 1px solid var(--line);
+      color: var(--ink);
+      width: clamp(32px, 4vh, 36px);
+      height: clamp(32px, 4vh, 36px);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 0.82rem;
+      transition: all 0.18s;
+    }
+    .v75-btn-icon:hover { border-color: var(--cl-orange); color: var(--cl-orange); }
+
+    .v75-user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px 4px 5px;
+      background: var(--surface2, rgba(255,255,255,0.04));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+    }
+
+    .v75-avatar-sm {
+      width: clamp(24px, 3.2vh, 28px);
+      height: clamp(24px, 3.2vh, 28px);
+      border-radius: 50%;
+      background: var(--cl-orange);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    /* SIDEBAR */
+    .v75-sidebar {
+      position: fixed;
+      top: var(--topbar-h);
+      left: 0;
+      bottom: 0;
+      width: var(--side-w);
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.4vh 0.8vw;
+      z-index: 50;
+      transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html.is-collapsed .v75-sidebar { width: var(--side-collapsed-w); }
+
+    @media (max-width: 960px) {
+      .v75-sidebar { display: none; } /* En móvil se oculta a favor de la bottom bar nativa */
+    }
+
+    .v75-nav { display: flex; flex-direction: column; gap: 0.6vh; }
+
+    .v75-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: clamp(7px, 1.1vh, 10px) 12px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: clamp(0.78rem, 0.85vw, 0.86rem);
+      text-align: left;
+      transition: all 0.16s;
+      width: 100%;
+      position: relative;
+    }
+
+    .v75-nav-item i { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+    .v75-nav-item:hover { background: var(--surface2, rgba(255,255,255,0.05)); color: var(--ink); }
+    .v75-nav-item.active { background: rgba(255, 102, 0, 0.12); color: var(--cl-orange); font-weight: 700; }
+    .v75-nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      background: var(--cl-orange);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .v75-nav-badge {
+      margin-left: auto;
+      background: rgba(255, 102, 0, 0.18);
+      color: var(--cl-orange);
+      font-size: 0.68rem;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    html.is-collapsed .v75-nav-text,
+    html.is-collapsed .v75-nav-badge,
+    html.is-collapsed #lblCollapse75 { display: none; }
+
+    .v75-sidebar-foot { border-top: 1px solid var(--line); padding-top: 1vh; }
+
+    .v75-btn-collapse {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 7px 10px;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
+    /* CONTENEDOR 100VH EXACTO */
+    .v75-main {
+      margin-top: var(--topbar-h);
+      margin-left: var(--side-w);
+      height: calc(100vh - var(--topbar-h));
+      padding: 1.6vh 1.8vw;
+      box-sizing: border-box;
+      overflow: hidden;
+      transition: margin-left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html.is-collapsed .v75-main { margin-left: var(--side-collapsed-w); }
+
+    @media (max-width: 960px) {
+      .v75-main {
+        margin-left: 0 !important;
+        height: auto;
+        overflow: visible;
+        padding: 14px;
+      }
+    }
+
+    .v75-panel { height: 100%; display: none; }
+    .v75-panel.active { display: block; }
+
+    /* LAYOUT PEDIR GAS: 1.2fr / 0.8fr AJUSTADO A 100VH */
+    .v75-grid-pedir {
+      display: grid;
+      grid-template-columns: 1.22fr 0.78fr;
+      gap: 1.6vw;
+      height: 100%;
+      align-items: stretch;
+    }
+
+    @media (max-width: 1100px) {
+      .v75-grid-pedir {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+    }
+
+    .v75-col-prods {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    /* HEADER BANNER COMPACTO */
+    .v75-hero-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2vh;
+    }
+
+    .v75-hero-banner h1 {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(1.05rem, 1.35vw, 1.35rem);
+      font-weight: 800;
+      color: var(--ink);
+      margin: 0;
+    }
+    .v75-hero-banner h1 span { color: var(--cl-orange); }
+
+    .v75-btn-manage-ficha {
+      background: transparent;
+      border: 1px solid rgba(255, 102, 0, 0.4);
+      color: var(--cl-orange);
+      padding: 0.5vh 1vw;
+      border-radius: 8px;
+      font-size: clamp(0.72rem, 0.8vw, 0.8rem);
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.16s;
+    }
+    .v75-btn-manage-ficha:hover { background: rgba(255, 102, 0, 0.1); }
+
+    .v75-sec-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(0.78rem, 0.85vw, 0.88rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8vh;
+    }
+
+    /* GRID 4 PRODUCTOS REPARTIDOS PERFECTAMENTE EN ALTURA */
+    .v75-cards-prods {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.1vw;
+      flex: 1;
+      margin-bottom: 0.5vh;
+    }
+
+    @media (max-width: 600px) {
+      .v75-cards-prods { grid-template-columns: 1fr; }
+    }
+
+    .v75-card-p {
+      background: var(--cl-card-bg);
+      border: 1.5px solid var(--cl-card-border);
+      border-radius: 1.4vh;
+      padding: 1.2vh 1vw;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+      transition: all 0.18s;
+      position: relative;
+    }
+
+    .v75-card-p:hover {
+      border-color: rgba(255, 102, 0, 0.55);
+      transform: translateY(-2px);
+    }
+
+    .v75-card-p.active {
+      border-color: var(--cl-orange);
+      background: rgba(255, 102, 0, 0.04);
+      box-shadow: 0 4px 18px rgba(255, 102, 0, 0.15);
+    }
+
+    .v75-card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .v75-p-badge {
+      font-size: clamp(0.6rem, 0.65vw, 0.68rem);
+      font-weight: 800;
+      font-family: var(--ff_O, sans-serif);
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+    .badge-fire { background: rgba(255, 102, 0, 0.2); color: #ff771a; }
+    .badge-blue { background: rgba(2, 132, 199, 0.2); color: #38bdf8; }
+    .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .badge-gold { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+
+    .v75-p-uso {
+      font-size: clamp(0.65rem, 0.7vw, 0.72rem);
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* IMAGEN ADAPTABLE FLUIDA (CERO OVERFLOW) */
+    .v75-p-img-box {
+      text-align: center;
+      position: relative;
+      margin: 0.6vh auto;
+      height: clamp(75px, 11vh, 105px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .v75-p-img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+    }
+
+    .v75-p-pill-weight {
+      position: absolute;
+      bottom: 0;
+      right: 50%;
+      transform: translateX(50%);
+      background: rgba(0,0,0,0.72);
+      color: #fff;
+      font-size: clamp(0.58rem, 0.65vw, 0.68rem);
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .v75-p-name {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(0.85rem, 0.98vw, 1.05rem);
+      font-weight: 800;
+      color: var(--ink);
+      margin: 0.3vh 0 0.5vh;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .v75-p-checks {
+      border-top: 1px dashed var(--line);
+      padding-top: 0.6vh;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3vh;
+      margin-bottom: 0.6vh;
+      text-align: left;
+    }
+
+    .v75-p-check-item {
+      font-size: clamp(0.66rem, 0.72vw, 0.74rem);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .v75-p-check-item i { color: var(--cl-emerald); font-size: 0.65rem; }
+
+    .v75-p-foot-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-top: 1px solid var(--line);
+      padding-top: 0.6vh;
+    }
+
+    .v75-p-price {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(1.1rem, 1.35vw, 1.35rem);
+      font-weight: 800;
+      color: var(--cl-orange);
+    }
+
+    .v75-p-free-delivery {
+      color: var(--cl-emerald);
+      font-size: clamp(0.66rem, 0.72vw, 0.74rem);
+      font-weight: 700;
+    }
+
+    /* COLUMNA DERECHA: CONFIGURACIÓN + WHATSAPP EN 100VH */
+    .v75-col-preview {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      gap: 1vh;
+    }
+
+    .v75-order-card {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 1.4vh;
+      padding: 1.2vh 1vw;
+    }
+
+    .v75-config-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8vh;
+    }
+
+    .v75-config-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(0.78rem, 0.85vw, 0.88rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--cl-orange);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .v75-dest-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 0.8vh;
+      background: var(--surface2, rgba(255,255,255,0.03));
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.4vh 0.6vw;
+    }
+
+    .v75-dest-row label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .v75-select-dir {
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 3px 6px;
+      outline: none;
+      cursor: pointer;
+      flex: 1;
+      max-width: 190px;
+    }
+
+    .v75-tabs-pago { display: flex; gap: 6px; margin-bottom: 0.6vh; }
+
+    .v75-btn-tab {
+      flex: 1;
+      padding: 0.5vh 0.6vw;
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.74rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .v75-btn-tab.active {
+      border-color: var(--cl-orange);
+      color: var(--cl-orange);
+      background: rgba(255, 102, 0, 0.1);
+    }
+
+    .v75-chips-vuelto { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.5vh; }
+
+    .v75-chip-btn {
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .v75-chip-btn.active { background: var(--cl-orange); color: #fff; border-color: var(--cl-orange); }
+
+    .v75-vuelto-calc-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 5px;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--cl-emerald);
+      margin-bottom: 0.6vh;
+    }
+
+    .v75-quick-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.5vh; }
+
+    .v75-quick-tag {
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .v75-quick-tag:hover { color: var(--cl-orange); border-color: var(--cl-orange); }
+
+    .v75-notes-input {
+      width: 100%;
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+      padding: 5px 8px;
+      font-size: 0.74rem;
+      resize: none;
+      height: 38px;
+      outline: none;
+    }
+
+    /* MOCKUP WHATSAPP COMPACTO Y ELEGANTE */
+    .v75-wa-card {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 1.4vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .v75-wa-header {
+      background: #008069;
+      color: #fff;
+      padding: 0.8vh 0.9vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .v75-wa-header-left { display: flex; align-items: center; gap: 8px; }
+
+    .v75-wa-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #fff;
+      object-fit: contain;
+      padding: 2px;
+    }
+
+    .v75-wa-header-info strong { font-size: 0.8rem; display: block; line-height: 1.1; }
+    .v75-wa-header-info small { font-size: 0.65rem; opacity: 0.9; }
+
+    .v75-wa-body {
+      background: #efeae2;
+      padding: 1vh 0.8vw;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.8vh;
+    }
+    html[data-theme="futuro"] .v75-wa-body { background: #0b141a; }
+
+    .v75-bubble-out {
+      background: #d9fdd3;
+      color: #111b21;
+      border-radius: 8px 8px 2px 8px;
+      padding: 0.8vh 0.8vw;
+      font-size: clamp(0.72rem, 0.78vw, 0.82rem);
+      max-width: 95%;
+      margin-left: auto;
+      white-space: pre-line;
+      line-height: 1.35;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+    html[data-theme="futuro"] .v75-bubble-out { background: #005c4b; color: #e9edef; }
+
+    .v75-wa-time {
+      font-size: 0.6rem;
+      opacity: 0.65;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 3px;
+      margin-top: 2px;
+    }
+
+    .v75-summary-box {
+      padding: 0.8vh 1vw;
+      border-top: 1px solid var(--line);
+      background: var(--surface);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .v75-summary-prod {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(0.88rem, 1vw, 1.05rem);
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .v75-summary-sub { font-size: 0.7rem; color: var(--muted); }
+
+    .v75-summary-price {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(1.2rem, 1.4vw, 1.45rem);
+      font-weight: 800;
+      color: var(--cl-orange);
+    }
+
+    .v75-actions-row {
+      padding: 0.8vh 1vw;
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 6px;
+    }
+
+    .v75-btn-call {
+      width: clamp(38px, 4.8vh, 44px);
+      height: clamp(38px, 4.8vh, 44px);
+      border-radius: 8px;
+      background: rgba(2, 132, 199, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      display: grid;
+      place-items: center;
+      font-size: 0.95rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .v75-btn-wa-order {
+      flex: 1;
+      background: var(--cl-wa);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(0.88rem, 1vw, 1.05rem);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+    }
+
+    /* ============================================================
+       5. NATIVE MOBILE BOTTOM NAVIGATION BAR (SOLO SMARTPHONES)
+       ============================================================ */
+    .v75-mobile-bottom-nav {
+      display: none;
+    }
+
+    @media (max-width: 960px) {
+      .v75-mobile-bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        background: var(--surface);
+        border-top: 1px solid var(--line);
+        z-index: 100;
+        justify-content: space-around;
+        align-items: center;
+        padding-bottom: env(safe-area-inset-bottom, 0);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .v75-m-tab {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 6px 12px;
+        border-radius: 12px;
+        transition: all 0.16s;
+      }
+      .v75-m-tab i { font-size: 1.15rem; }
+      .v75-m-tab.active {
+        color: var(--cl-orange);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. HEADER (60PX) -->
+  <header class="v75-topbar">
+    <a href="/view75" class="v75-brand">
+      <img src="/imgwii/logo.webp" alt="Solgas" class="v75-logo" />
+      <div class="v75-brand-text">
+        <span class="v75-brand-title">SOLGAS <span>SURQUILLO</span></span>
+        <span class="v75-brand-sede">
+          <span class="v75-live-dot"></span> Sede Jr. Dante 260 · En línea
+        </span>
+      </div>
+    </a>
+
+    <div class="v75-topbar-right">
+      <button class="v75-btn-icon" id="btnTheme75" title="Tema claro / oscuro">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+
+      <div class="v75-user-chip">
+        <div class="v75-avatar-sm">{avatar(cliente.nombre)}</div>
+        <span style="font-size:0.8rem; font-weight:700;">{cliente.nombre} · VIP</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. SIDEBAR (DESKTOP) -->
+  <aside class="v75-sidebar">
+    <nav class="v75-nav">
+      <button class="v75-nav-item active" data-target="pedir-gas">
+        <i class="fa-solid fa-bolt"></i>
+        <span class="v75-nav-text">Pedir gas</span>
+      </button>
+      <button class="v75-nav-item" data-target="direcciones">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span class="v75-nav-text">Direcciones</span>
+        <span class="v75-nav-badge">{cliente.direcciones.length}</span>
+      </button>
+      <button class="v75-nav-item" data-target="soporte">
+        <i class="fa-solid fa-headset"></i>
+        <span class="v75-nav-text">Soporte</span>
+      </button>
+      <button class="v75-nav-item" data-target="mi-cuenta">
+        <i class="fa-solid fa-user-gear"></i>
+        <span class="v75-nav-text">Mi cuenta</span>
+      </button>
+    </nav>
+
+    <div class="v75-sidebar-foot">
+      <button class="v75-btn-collapse" id="btnCollapse75">
+        <i class="fa-solid fa-arrow-left-long"></i>
+        <span id="lblCollapse75">Colapsar</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- 3. CONTENEDOR PRINCIPAL (100VH EXACTO) -->
+  <main class="v75-main">
+    <section class="v75-panel active" id="panel-pedir-gas">
+      <div class="v75-grid-pedir">
+        
+        <!-- COLUMNA IZQUIERDA: PRODUCTOS PROTAGONISTAS -->
+        <div class="v75-col-prods">
+          <div class="v75-hero-banner">
+            <h1>¡Buenas noches {cliente.nombre}! 🔥 <span>Realiza tu Pedido Hoy</span></h1>
+            <button type="button" class="v75-btn-manage-ficha" onclick="document.querySelector('.v75-nav-item[data-target=mi-cuenta]').click()">
+              <i class="fa-solid fa-address-card"></i> Gestionar Ficha
+            </button>
+          </div>
+
+          <div class="v75-sec-title">
+            <span>Selecciona tu Cilindro Oficial</span>
+            <span style="color:var(--cl-emerald); font-size:0.75rem;"><i class="fa-solid fa-truck-fast"></i> Delivery y Pesaje Incluido</span>
+          </div>
+
+          <!-- 4 CARDS PRODUCTOS CON IMÁGENES FLUIDAS GRANDES Y TÍTULOS CENTRADOS -->
+          <div class="v75-cards-prods">
+            {productos.map((prod, idx) => (
+              <div 
+                class={`v75-card-p ${idx === 0 ? 'active' : ''}`}
+                data-id={prod.id}
+                data-nombre={prod.nombre}
+                data-nombrecorto={prod.nombreCorto}
+                data-precio={prod.precioPEN}
+              >
+                <div class="v75-card-top-row">
+                  <span class={`v75-p-badge ${prod.tagClase}`}>{prod.badge}</span>
+                  <span class="v75-p-uso">{prod.tipoUso}</span>
+                </div>
+
+                <div class="v75-p-img-box">
+                  <img src={prod.imagen} alt={prod.nombre} class="v75-p-img" />
+                  <span class="v75-p-pill-weight">{prod.capacidad}</span>
+                </div>
+
+                <div class="v75-p-name">{prod.nombre}</div>
+
+                <div class="v75-p-checks">
+                  {prod.checks.map(c => (
+                    <div class="v75-p-check-item">
+                      <i class="fa-solid fa-check"></i>
+                      <span><strong>{c.label}:</strong> {c.valor}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div class="v75-p-foot-row">
+                  <span class="v75-p-price">S/ {prod.precioPEN.toFixed(2)}</span>
+                  <span class="v75-p-free-delivery">Entrega Gratis</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: FORMA DE PAGO + PREVIEW SIN SCROLL -->
+        <aside class="v75-col-preview">
+          <!-- CARD DE PAGO & ENTREGA -->
+          <div class="v75-order-card">
+            <div class="v75-config-header">
+              <span class="v75-config-title"><i class="fa-solid fa-wallet"></i> Pago & Entrega</span>
+              <span style="font-size:0.7rem; color:var(--cl-emerald); font-weight:700;"><i class="fa-solid fa-shield-check"></i> Balanza Inacal</span>
+            </div>
+
+            <div class="v75-dest-row">
+              <label><i class="fa-solid fa-location-dot" style="color:var(--cl-orange);"></i> Destino:</label>
+              <select class="v75-select-dir" id="selectDir75">
+                {cliente.direcciones.map(d => (
+                  <option value={d.id} data-calle={d.calle} data-distrito={d.distrito} data-ref={d.referencia} data-eta={d.eta} data-alias={d.alias} selected={d.esPrincipal}>
+                    {d.alias} ({d.eta})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div class="v75-tabs-pago">
+              <button type="button" class="v75-btn-tab active" data-metodo="efectivo"><i class="fa-solid fa-money-bill-wave"></i> Efectivo</button>
+              <button type="button" class="v75-btn-tab" data-metodo="yape"><i class="fa-solid fa-mobile-screen-button"></i> Yape/Plin</button>
+            </div>
+
+            <div id="boxVuelto75">
+              <div class="v75-chips-vuelto" id="chipsVuelto75">
+                <button type="button" class="v75-chip-btn" data-v="exacto">Exacto</button>
+                <button type="button" class="v75-chip-btn" data-v="20">S/ 20</button>
+                <button type="button" class="v75-chip-btn" data-v="50">S/ 50</button>
+                <button type="button" class="v75-chip-btn active" data-v="100">S/ 100</button>
+                <button type="button" class="v75-chip-btn" data-v="otro">Otro</button>
+              </div>
+
+              <div class="v75-vuelto-calc-box" id="calcVueltoRow75">
+                <span>Vuelto:</span>
+                <span id="valVuelto75">S/ 35.00</span>
+              </div>
+            </div>
+
+            <div class="v75-quick-tags" id="quickTags75">
+              <button type="button" class="v75-quick-tag" data-t="🔔 Timbre">🔔 Timbre</button>
+              <button type="button" class="v75-quick-tag" data-t="📞 Llamar">📞 Llamar</button>
+              <button type="button" class="v75-quick-tag" data-t="🏢 Recepción">🏢 Recepción</button>
+              <button type="button" class="v75-quick-tag" data-t="🚪 Piso 3">🚪 Piso 3</button>
+            </div>
+
+            <input type="text" class="v75-notes-input" id="txtNotas75" value={cliente.notas} placeholder="Nota al repartidor..." />
+          </div>
+
+          <!-- MOCKUP WHATSAPP ULTRA-COMPACTO -->
+          <div class="v75-wa-card">
+            <div class="v75-wa-header">
+              <div class="v75-wa-header-left">
+                <img src="/imgwii/logo.webp" alt="Solgas" class="v75-wa-avatar" />
+                <div class="v75-wa-header-info">
+                  <strong>Solgas Surquillo Oficial</strong>
+                  <small>en línea · Respuesta inmediata</small>
+                </div>
+              </div>
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </div>
+
+            <div class="v75-wa-body">
+              <div class="v75-bubble-out" id="bubbleWa75">
+¡Hola Solgas Surquillo! Deseo pedir mi recarga:
+👤 Valeria
+📦 Balón SOLGAS Premium 10 kg (S/ 65.00)
+📍 Jr. Dante 260, Dpto 301, Surquillo
+💳 Efectivo (Llevar vuelto de S/ 100.00)
+⏱️ Llegada: 12–15 min
+                <div class="v75-wa-time"><span>10:32 a. m.</span> <i class="fa-solid fa-check-double" style="color:#53bdeb;"></i></div>
+              </div>
+            </div>
+
+            <div class="v75-summary-box">
+              <div>
+                <div class="v75-summary-prod" id="sumProd75">Solgas 10 kg</div>
+                <div class="v75-summary-sub" id="sumEta75">Surquillo · 12–15 min</div>
+              </div>
+              <div class="v75-summary-price" id="sumPrice75">S/ 65.00</div>
+            </div>
+
+            <div class="v75-actions-row">
+              <a href="tel:936369384" class="v75-btn-call" title="Llamar"><i class="fa-solid fa-phone"></i></a>
+              <a href="https://wa.me/51936369384" target="_blank" rel="noopener noreferrer" class="v75-btn-wa-order" id="btnWa75">
+                <i class="fa-brands fa-whatsapp"></i> <span id="lblWa75">Pedir por WhatsApp (S/ 65.00)</span>
+              </a>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- 4. BOTTOM NAVIGATION BAR NATIVA (MÓVIL) -->
+  <nav class="v75-mobile-bottom-nav">
+    <button type="button" class="v75-m-tab active" data-target="pedir-gas">
+      <i class="fa-solid fa-bolt"></i>
+      <span>Pedir</span>
+    </button>
+    <button type="button" class="v75-m-tab" data-target="direcciones">
+      <i class="fa-solid fa-map-location-dot"></i>
+      <span>Sedes</span>
+    </button>
+    <button type="button" class="v75-m-tab" data-target="soporte">
+      <i class="fa-solid fa-headset"></i>
+      <span>Soporte</span>
+    </button>
+    <button type="button" class="v75-m-tab" data-target="mi-cuenta">
+      <i class="fa-solid fa-user"></i>
+      <span>Cuenta</span>
+    </button>
+  </nav>
+
+  <script is:inline>
+    (function() {
+      const state = {
+        nombre: 'Valeria',
+        producto: 'Balón SOLGAS Premium 10 kg',
+        productoCorto: 'Solgas 10 kg',
+        precio: 65.00,
+        alias: 'Casa Principal',
+        calle: 'Jr. Dante 260, Dpto 301',
+        distrito: 'Surquillo',
+        ref: 'Frente al parque, portón marrón',
+        eta: '12–15 min',
+        metodoPago: 'efectivo',
+        vuelto: '100',
+        nota: 'Piso 3, timbre no suena fuerte.'
+      };
+
+      const bubble = document.getElementById('bubbleWa75');
+      const sumProd = document.getElementById('sumProd75');
+      const sumEta = document.getElementById('sumEta75');
+      const sumPrice = document.getElementById('sumPrice75');
+      const btnWa = document.getElementById('btnWa75');
+      const lblWa = document.getElementById('lblWa75');
+      const valVuelto = document.getElementById('valVuelto75');
+
+      function update() {
+        let diff = 0;
+        if (state.metodoPago === 'efectivo' && state.vuelto !== 'exacto' && state.vuelto !== 'otro') {
+          diff = (parseFloat(state.vuelto) || 100) - state.precio;
+          if (valVuelto) valVuelto.textContent = diff > 0 ? `S/ ${diff.toFixed(2)}` : 'S/ 0.00';
+        }
+
+        const msg = 
+`¡Hola Solgas Surquillo! Deseo pedir mi recarga:
+👤 ${state.nombre}
+📦 ${state.producto} (S/ ${state.precio.toFixed(2)})
+📍 ${state.calle}, ${state.distrito}
+💳 ${state.metodoPago === 'efectivo' ? `Efectivo (Llevar vuelto de S/ ${state.vuelto})` : 'Yape / Plin'}
+📝 ${state.nota}
+⏱️ Llegada: ${state.eta}`;
+
+        if (bubble) {
+          bubble.innerHTML = msg.replace(/\n/g, '<br>') + `<div class="v75-wa-time"><span>10:32 a. m.</span> <i class="fa-solid fa-check-double" style="color:#53bdeb;"></i></div>`;
+        }
+        if (sumProd) sumProd.textContent = state.productoCorto;
+        if (sumEta) sumEta.textContent = `${state.distrito} · ${state.eta}`;
+        if (sumPrice) sumPrice.textContent = `S/ ${state.precio.toFixed(2)}`;
+        if (lblWa) lblWa.textContent = `Pedir por WhatsApp (S/ ${state.precio.toFixed(2)})`;
+        if (btnWa) btnWa.href = `https://wa.me/51936369384?text=${encodeURIComponent(msg)}`;
+      }
+
+      // PRODUCTOS
+      document.querySelectorAll('.v75-card-p').forEach(c => {
+        c.addEventListener('click', () => {
+          document.querySelectorAll('.v75-card-p').forEach(x => x.classList.remove('active'));
+          c.classList.add('active');
+          state.producto = c.dataset.nombre;
+          state.productoCorto = c.dataset.nombrecorto;
+          state.precio = parseFloat(c.dataset.precio);
+          update();
+        });
+      });
+
+      // VUELTO
+      document.querySelectorAll('#chipsVuelto75 .v75-chip-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#chipsVuelto75 .v75-chip-btn').forEach(x => x.classList.remove('active'));
+          btn.classList.add('active');
+          state.vuelto = btn.dataset.v;
+          update();
+        });
+      });
+
+      // TEMA
+      document.getElementById('btnTheme75')?.addEventListener('click', () => {
+        const cur = document.documentElement.dataset.theme;
+        const next = cur === 'luz' ? 'futuro' : 'luz';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('gaswii_theme_cliente', next);
+      });
+
+      // SIDEBAR COLLAPSE
+      document.getElementById('btnCollapse75')?.addEventListener('click', () => {
+        const isCollapsed = document.documentElement.classList.toggle('is-collapsed');
+        localStorage.setItem('gaswii_sidebar_v75', isCollapsed ? 'true' : 'false');
+      });
+
+      update();
+    })();
+  </script>
+</body>
+</html>

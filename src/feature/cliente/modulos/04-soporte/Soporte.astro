@@ -1,0 +1,31 @@
+---
+// src/feature/cliente/modulos/04-soporte/Soporte.astro
+// Módulo de Soporte Oficial y Boletas Electrónicas (Fase 4)
+import { datosNegocio } from '@/negocio.js';
+
+interface Props {
+  cliente?: any;
+}
+const { cliente = {} } = Astro.props;
+const whatsappSede = datosNegocio.whatsapp || '51936369384';
+---
+
+<div class="cl-panel-placeholder" id="moduloSoporte" style="padding: 2.5vh 2vw;">
+  <div style="background:var(--cl-card-bg); border:1px solid var(--cl-card-border); border-radius:1.4vh; padding:3vh 2.5vw; max-width:760px; margin:0 auto; text-align:center;">
+    <div style="width:64px; height:64px; border-radius:50%; background:rgba(37,211,102,0.12); color:var(--cl-wa); display:grid; place-items:center; margin:0 auto 1.5vh; font-size:1.8rem;">
+      <i class="fa-solid fa-headset"></i>
+    </div>
+    <h2 style="font-family:var(--ff_O); font-size:1.4rem; color:var(--ink); margin-bottom:8px;">Centro de Ayuda y Boletas</h2>
+    <p style="font-size:0.85rem; color:var(--muted); max-width:480px; margin:0 auto 2vh;">
+      ¿Tienes consultas sobre tu pedido, pesaje con balanza digital o solicitud de factura? Nuestro canal directo está siempre a tu disposición.
+    </p>
+    <a 
+      href={`https://wa.me/${whatsappSede}?text=${encodeURIComponent('Hola Solgas Surquillo, necesito soporte con mi pedido o boleta.')}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      style="display:inline-flex; align-items:center; gap:8px; background:var(--cl-wa); color:#fff; padding:8px 18px; border-radius:8px; font-size:0.85rem; font-weight:700; text-decoration:none;"
+    >
+      <i class="fa-brands fa-whatsapp"></i> Contactar por WhatsApp
+    </a>
+  </div>
+</div>

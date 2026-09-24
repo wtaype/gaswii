@@ -1,0 +1,23 @@
+---
+// src/feature/cliente/modulos/03-cuenta/Cuenta.astro
+// Módulo de Ficha de Cliente y Cuenta (Fase 3)
+interface Props {
+  cliente?: any;
+}
+const { cliente = {} } = Astro.props;
+---
+
+<div class="cl-panel-placeholder" id="moduloCuenta" style="padding: 2.5vh 2vw;">
+  <div style="background:var(--cl-card-bg); border:1px solid var(--cl-card-border); border-radius:1.4vh; padding:3vh 2.5vw; max-width:760px; margin:0 auto; text-align:center;">
+    <div style="width:64px; height:64px; border-radius:50%; background:rgba(2,132,199,0.12); color:#38bdf8; display:grid; place-items:center; margin:0 auto 1.5vh; font-size:1.8rem;">
+      <i class="fa-solid fa-user-gear"></i>
+    </div>
+    <h2 style="font-family:var(--ff_O); font-size:1.4rem; color:var(--ink); margin-bottom:8px;">Mi Ficha de Cliente</h2>
+    <p style="font-size:0.85rem; color:var(--muted); max-width:480px; margin:0 auto 2vh;">
+      Administra tus datos personales, DNI para boletas electrónicas, historial de pedidos y preferencias de entrega.
+    </p>
+    <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(2,132,199,0.12); color:#38bdf8; padding:6px 14px; border-radius:999px; font-size:0.78rem; font-weight:700;">
+      <i class="fa-solid fa-id-card"></i> Próxima Fase: Módulo 03-Cuenta
+    </div>
+  </div>
+</div>

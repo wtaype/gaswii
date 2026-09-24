@@ -1,0 +1,1996 @@
+---
+// src/pages/view73.astro
+// VIEW 73: Portal Maestro de Cliente Optimizado
+// Header ampliado (62px) · Cards limpias sin párrafo largo (2 checks de confianza)
+// Datos de confirmación unificados en la columna de Preview (cero redundancia)
+// Sidebar: "Soporte" (nombre corto) · 100% Español · 0ms overhead
+import { avatar } from '../core/widev/nombre.js';
+import witemaCss from '../core/wicss/witema.css?inline';
+
+const cliente = {
+  nombre: 'Valeria',
+  apellido: 'Mendoza Rios',
+  nombreCompleto: 'Valeria Mendoza',
+  usuario: 'valeria.m',
+  telefono: '+51 987 654 321',
+  telefonoLimpio: '987654321',
+  email: 'valeria.mendoza@gmail.com',
+  dni: '74829103',
+  tipoComprobante: 'boleta',
+  ruc: '',
+  razonSocial: '',
+  direccionFiscal: 'Jr. Dante 260, Dpto 301, Surquillo',
+  cilindroHabitual: 'bal-n-solgas-premium-10-kg',
+  valvulaHabitual: 'Click-On (Acople Rápido)',
+  metodoPago: 'efectivo',
+  vueltoDe: '100',
+  notas: 'Piso 3, timbre no suena fuerte. Dejar con vigilancia si no contesto.',
+  direcciones: [
+    {
+      id: 'dir-1',
+      alias: 'Casa Principal',
+      icono: 'fa-house',
+      calle: 'Jr. Dante 260, Dpto 301',
+      distrito: 'Surquillo',
+      referencia: 'Frente al parque, portón marrón',
+      eta: '12–15 min',
+      esPrincipal: true
+    },
+    {
+      id: 'dir-2',
+      alias: 'Oficina / Estudio',
+      icono: 'fa-briefcase',
+      calle: 'Av. República de Panamá 3565, Piso 4',
+      distrito: 'San Isidro',
+      referencia: 'Edificio Platino, frente a BBVA',
+      eta: '18–25 min',
+      esPrincipal: false
+    }
+  ]
+};
+
+// 4 Productos con checks técnicos de confianza y sin textos largos redundantes
+const productos = [
+  {
+    id: 'bal-n-solgas-premium-10-kg',
+    nombre: 'Balón SOLGAS Premium 10 kg',
+    nombreCorto: 'Solgas 10 kg',
+    badge: 'MÁS PEDIDO',
+    tagClase: 'badge-fire',
+    tipoUso: 'Hogar',
+    capacidad: '10 kg Neto',
+    pesoFull: '22.5 kg (Tara 12.5 + Gas 10)',
+    valvula: 'Click-On o Rosca estándar',
+    precioPEN: 65.00,
+    imagen: '/imgwii/productos/BALON-10KG.webp',
+    checks: [
+      { label: 'Válvula', valor: 'Click-On o Rosca estándar' },
+      { label: 'Pesaje', valor: 'Balanza digital Inacal en puerta' }
+    ]
+  },
+  {
+    id: 'balon-solgas-45-kg',
+    nombre: 'Balón SOLGAS 45 kg',
+    nombreCorto: 'Solgas 45 kg',
+    badge: 'COMERCIAL',
+    tagClase: 'badge-blue',
+    tipoUso: 'Negocio',
+    capacidad: '45 kg Neto',
+    pesoFull: '95.0 kg aprox.',
+    valvula: 'Rosca industrial alta presión',
+    precioPEN: 230.00,
+    imagen: '/imgwii/productos/BALON-45KG.webp',
+    checks: [
+      { label: 'Conexión', valor: 'Rosca industrial alta presión' },
+      { label: 'Capacidad', valor: 'Caudal continuo para negocios' }
+    ]
+  },
+  {
+    id: 'balon-masgas-de-10-kg',
+    nombre: 'Balón MASGAS de 10 kg',
+    nombreCorto: 'Masgas 10 kg',
+    badge: 'ECONÓMICO',
+    tagClase: 'badge-emerald',
+    tipoUso: 'Ahorro',
+    capacidad: '10 kg Neto',
+    pesoFull: '22.4 kg garantizado',
+    valvula: 'Universal estándar para hogar',
+    precioPEN: 55.00,
+    imagen: '/imgwii/productos/MASGAS-10KG.webp',
+    checks: [
+      { label: 'Conexión', valor: 'Universal estándar para hogar' },
+      { label: 'Rendimiento', valor: 'Larga duración garantizada' }
+    ]
+  },
+  {
+    id: 'kit-regulador-solgas',
+    nombre: 'Kit Regulador SOLGAS',
+    nombreCorto: 'Regulador Solgas',
+    badge: 'SEGURIDAD',
+    tagClase: 'badge-gold',
+    tipoUso: 'Antifugas',
+    capacidad: 'Click-On',
+    pesoFull: 'Kit completo',
+    valvula: 'Sistema de traba antifugas',
+    precioPEN: 70.00,
+    imagen: '/imgwii/productos/REGULADOR.webp',
+    checks: [
+      { label: 'Seguridad', valor: 'Traba automática antifugas' },
+      { label: 'Certificación', valor: 'Homologado por Osinergmin' }
+    ]
+  }
+];
+---
+
+<!doctype html>
+<html lang="es" data-theme="futuro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Portal de Cliente · Solgas Surquillo | View 73</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <!-- Script Anti-FOUC síncrono en 0ms -->
+  <script is:inline>
+    try {
+      const savedTheme = localStorage.getItem('gaswii_theme_cliente') || localStorage.getItem('wiTema') || 'futuro';
+      document.documentElement.dataset.theme = savedTheme;
+      if (localStorage.getItem('gaswii_sidebar_v73') === 'true') {
+        document.documentElement.classList.add('is-collapsed');
+      }
+    } catch (e) {}
+  </script>
+
+  <link rel="stylesheet" href="/google/fonts.css" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <style is:global set:html={witemaCss}></style>
+
+  <style>
+    /* ============================================================
+       VARIABLES DE DISEÑO
+       ============================================================ */
+    :root {
+      --side-w: 240px;
+      --side-collapsed-w: 68px;
+      --topbar-h: 62px; /* HEADER AMPLIADO A TAMAÑO EJECUTIVO */
+      --cl-orange: #ff6600;
+      --cl-orange-hover: #ff771a;
+      --cl-wa: #25d366;
+      --cl-wa-hover: #1ebd5b;
+      --cl-blue: #0284c7;
+      --cl-emerald: #10b981;
+      --cl-card-bg: #0d1424;
+      --cl-card-border: rgba(255, 255, 255, 0.08);
+      --cl-input-bg: #070c18;
+    }
+
+    html[data-theme="luz"] {
+      --cl-card-bg: #ffffff;
+      --cl-card-border: #e2e8f0;
+      --cl-input-bg: #f8fafc;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--ff_P, 'Poppins', sans-serif);
+      font-size: var(--fz_m);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       1. HEADER CONFORTABLE Y ELEGANTE (62PX)
+       ============================================================ */
+    .v73-topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(14px);
+    }
+
+    .v73-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .v73-logo {
+      height: 34px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .v73-brand-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .v73-brand-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .v73-brand-title span { color: var(--cl-orange); }
+
+    .v73-brand-sede {
+      font-size: 0.74rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .v73-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cl-emerald);
+      box-shadow: 0 0 8px var(--cl-emerald);
+    }
+
+    .v73-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .v73-btn-icon {
+      background: var(--surface2, rgba(255,255,255,0.05));
+      border: 1px solid var(--line);
+      color: var(--ink);
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.18s;
+    }
+    .v73-btn-icon:hover { border-color: var(--cl-orange); color: var(--cl-orange); }
+
+    .v73-user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 14px 5px 6px;
+      background: var(--surface2, rgba(255,255,255,0.04));
+      border: 1px solid var(--line);
+      border-radius: 25px;
+    }
+
+    .v73-avatar-sm {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--cl-orange);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .v73-user-name {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* ============================================================
+       2. SIDEBAR DEL CLIENTE ("SOPORTE" NOMBRE CORTO)
+       ============================================================ */
+    .v73-sidebar {
+      position: fixed;
+      top: var(--topbar-h);
+      left: 0;
+      bottom: 0;
+      width: var(--side-w);
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 12px;
+      z-index: 50;
+      transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html.is-collapsed .v73-sidebar { width: var(--side-collapsed-w); }
+
+    .v73-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .v73-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-align: left;
+      transition: all 0.16s;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .v73-nav-item i {
+      font-size: 1.1rem;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .v73-nav-item:hover {
+      background: var(--surface2, rgba(255,255,255,0.05));
+      color: var(--ink);
+    }
+
+    .v73-nav-item.active {
+      background: rgba(255, 102, 0, 0.12);
+      color: var(--cl-orange);
+      font-weight: 700;
+    }
+
+    .v73-nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3.5px;
+      background: var(--cl-orange);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .v73-nav-badge {
+      margin-left: auto;
+      background: rgba(255, 102, 0, 0.18);
+      color: var(--cl-orange);
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-family: var(--ff_O, sans-serif);
+    }
+
+    html.is-collapsed .v73-nav-text,
+    html.is-collapsed .v73-nav-badge,
+    html.is-collapsed #lblCollapse73 { display: none; }
+
+    .v73-sidebar-foot {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .v73-btn-collapse {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 12px;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       3. CONTENEDOR PRINCIPAL
+       ============================================================ */
+    .v73-main {
+      margin-top: var(--topbar-h);
+      margin-left: var(--side-w);
+      padding: 22px 28px;
+      min-height: calc(100vh - var(--topbar-h));
+      transition: margin-left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html.is-collapsed .v73-main { margin-left: var(--side-collapsed-w); }
+
+    .v73-panel { display: none; }
+    .v73-panel.active { display: block; animation: v73Fade 0.2s ease-out; }
+
+    @keyframes v73Fade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       MÓDULO 1: PEDIR GAS (SIN PARRAFO LARGO REDUNDANTE)
+       ============================================================ */
+    .v73-hero-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .v73-hero-banner h1 {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    .v73-hero-banner h1 span { color: var(--cl-orange); }
+
+    .v73-btn-manage-ficha {
+      background: transparent;
+      border: 1px solid rgba(255, 102, 0, 0.4);
+      color: var(--cl-orange);
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.18s;
+    }
+    .v73-btn-manage-ficha:hover {
+      background: rgba(255, 102, 0, 0.1);
+    }
+
+    /* GRID 1.15fr / 0.85fr */
+    .v73-grid-pedir {
+      display: grid;
+      grid-template-columns: 1.18fr 0.82fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1120px) {
+      .v73-grid-pedir { grid-template-columns: 1fr; }
+    }
+
+    .v73-sec-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .v73-sec-tag-green {
+      color: var(--cl-emerald);
+      font-size: 0.76rem;
+      text-transform: none;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 4 CARDS PRODUCTOS - LIMPIAS CON 2 CHECKS (SIN PÁRRAFO LARGO) */
+    .v73-cards-prods {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    @media (max-width: 620px) {
+      .v73-cards-prods { grid-template-columns: 1fr; }
+    }
+
+    .v73-card-p {
+      background: var(--cl-card-bg);
+      border: 1.5px solid var(--cl-card-border);
+      border-radius: 14px;
+      padding: 16px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.18s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .v73-card-p:hover {
+      border-color: rgba(255, 102, 0, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .v73-card-p.active {
+      border-color: var(--cl-orange);
+      background: rgba(255, 102, 0, 0.04);
+      box-shadow: 0 4px 20px rgba(255, 102, 0, 0.14);
+    }
+
+    .v73-card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .v73-p-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      font-family: var(--ff_O, sans-serif);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .badge-fire { background: rgba(255, 102, 0, 0.2); color: #ff771a; }
+    .badge-blue { background: rgba(2, 132, 199, 0.2); color: #38bdf8; }
+    .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .badge-gold { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+
+    .v73-p-uso {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .v73-p-img-box {
+      text-align: center;
+      position: relative;
+      margin: 8px 0 12px;
+    }
+
+    .v73-p-img {
+      height: 76px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .v73-p-pill-weight {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      background: rgba(0,0,0,0.68);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 8px;
+    }
+
+    .v73-p-name {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    /* 2 CHECKS EXACTOS PARA GENERAR MÁXIMA CONFIANZA */
+    .v73-p-checks {
+      border-top: 1px dashed var(--line);
+      padding-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .v73-p-check-item {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .v73-p-check-item i { color: var(--cl-emerald); font-size: 0.68rem; }
+
+    .v73-p-foot-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      margin-top: auto;
+    }
+
+    .v73-p-price {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--cl-orange);
+    }
+
+    .v73-p-free-delivery {
+      color: var(--cl-emerald);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    /* FORMAS DE PAGO & INDICACIONES DE ENTREGA */
+    .v73-card-box {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .v73-pago-indicaciones-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 720px) {
+      .v73-pago-indicaciones-grid { grid-template-columns: 1fr; }
+    }
+
+    .v73-tabs-pago {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .v73-btn-tab-pago {
+      flex: 1;
+      padding: 8px 12px;
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.16s;
+    }
+
+    .v73-btn-tab-pago.active {
+      border-color: var(--cl-orange);
+      color: var(--cl-orange);
+      background: rgba(255, 102, 0, 0.1);
+    }
+
+    .v73-chips-vuelto {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+
+    .v73-chip-btn {
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.14s;
+    }
+
+    .v73-chip-btn:hover { border-color: var(--cl-orange); }
+    .v73-chip-btn.active {
+      background: var(--cl-orange);
+      color: #fff;
+      border-color: var(--cl-orange);
+    }
+
+    .v73-vuelto-calc-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--cl-emerald);
+      margin-top: 8px;
+    }
+
+    .v73-quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .v73-quick-tag {
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .v73-quick-tag:hover { color: var(--cl-orange); border-color: var(--cl-orange); }
+
+    .v73-notes-textarea {
+      width: 100%;
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      padding: 9px 12px;
+      font-size: 0.8rem;
+      resize: vertical;
+      min-height: 56px;
+      outline: none;
+    }
+    .v73-notes-textarea:focus { border-color: var(--cl-orange); }
+
+    /* ============================================================
+       COLUMNA DE PREVIEW & CONFIRMACIÓN (INTEGRACIÓN NO REDUNDANTE)
+       ============================================================ */
+    .v73-preview-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: calc(var(--topbar-h) + 16px);
+    }
+
+    /* TARJETA DE CONFIRMACIÓN DE RECEPTOR Y DIRECCIÓN (CERO REDUNDANCIA) */
+    .v73-confirm-card {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    .v73-confirm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .v73-confirm-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.86rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--cl-orange);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .v73-confirm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .v73-confirm-row:last-child { border-bottom: none; }
+
+    .v73-confirm-label {
+      color: var(--muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .v73-confirm-val {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .v73-select-dir-confirm {
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      outline: none;
+      cursor: pointer;
+      max-width: 190px;
+    }
+
+    /* MOCKUP WHATSAPP */
+    .v73-wa-card {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .v73-wa-header {
+      background: #008069;
+      color: #fff;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .v73-wa-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .v73-wa-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #fff;
+      object-fit: contain;
+      padding: 3px;
+    }
+
+    .v73-wa-header-info strong {
+      font-size: 0.85rem;
+      display: block;
+      line-height: 1.15;
+    }
+    .v73-wa-header-info small {
+      font-size: 0.68rem;
+      opacity: 0.9;
+    }
+
+    .v73-wa-body {
+      background: #efeae2;
+      padding: 14px 12px;
+      min-height: 230px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    html[data-theme="futuro"] .v73-wa-body {
+      background: #0b141a;
+    }
+
+    .v73-bubble-in {
+      background: #fff;
+      color: #111b21;
+      border-radius: 8px 8px 8px 2px;
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      max-width: 88%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+    html[data-theme="futuro"] .v73-bubble-in {
+      background: #202c33;
+      color: #e9edef;
+    }
+
+    .v73-bubble-out {
+      background: #d9fdd3;
+      color: #111b21;
+      border-radius: 8px 8px 2px 8px;
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      max-width: 92%;
+      margin-left: auto;
+      white-space: pre-line;
+      line-height: 1.4;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+    html[data-theme="futuro"] .v73-bubble-out {
+      background: #005c4b;
+      color: #e9edef;
+    }
+
+    .v73-wa-time {
+      font-size: 0.62rem;
+      opacity: 0.65;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 3px;
+      margin-top: 3px;
+    }
+
+    /* RESUMEN PRECIO Y PRODUCTO */
+    .v73-summary-box {
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      background: var(--surface);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .v73-summary-prod {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .v73-summary-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .v73-summary-price {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--cl-orange);
+    }
+
+    .v73-actions-row {
+      padding: 12px 14px;
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 8px;
+    }
+
+    .v73-btn-call {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(2, 132, 199, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+    .v73-btn-call:hover { background: #0284c7; color: #fff; }
+
+    .v73-btn-wa-order {
+      flex: 1;
+      background: var(--cl-wa);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.18s;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+    }
+    .v73-btn-wa-order:hover {
+      background: var(--cl-wa-hover);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       MÓDULO 4: MI CUENTA (ESTILO IMAGEN 2 CON SUB-PESTAÑAS)
+       ============================================================ */
+    .v73-cuenta-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .v73-cuenta-header h2 {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin: 0;
+    }
+    .v73-cuenta-header p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 2px 0 0;
+    }
+
+    .v73-btn-save-primary {
+      background: var(--cl-orange);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+    }
+    .v73-btn-save-primary:hover {
+      background: var(--cl-orange-hover);
+      transform: translateY(-1px);
+    }
+
+    .v73-subtabs-bar {
+      display: flex;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .v73-subtab-btn {
+      padding: 7px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 7px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.16s;
+      white-space: nowrap;
+    }
+
+    .v73-subtab-btn:hover { color: var(--ink); }
+    .v73-subtab-btn.active {
+      background: var(--cl-orange);
+      color: #fff;
+    }
+
+    .v73-subpanel { display: none; }
+    .v73-subpanel.active { display: block; animation: v73Fade 0.2s ease-out; }
+
+    .v73-form-card {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .v73-form-card-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--cl-orange);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .v73-form-card-sub {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .v73-form-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .v73-form-grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .v73-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .v73-form-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .v73-form-input {
+      width: 100%;
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      padding: 9px 12px;
+      font-size: 0.82rem;
+      outline: none;
+    }
+    .v73-form-input:focus { border-color: var(--cl-orange); }
+
+    /* TOAST */
+    #v73Toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: none;
+      z-index: 100;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       1. HEADER CONFORTABLE Y ELEGANTE (62PX)
+       ============================================================ -->
+  <header class="v73-topbar">
+    <a href="/view73" class="v73-brand">
+      <img src="/imgwii/logo.webp" alt="Solgas" class="v73-logo" />
+      <div class="v73-brand-text">
+        <span class="v73-brand-title">SOLGAS <span>SURQUILLO</span></span>
+        <span class="v73-brand-sede">
+          <span class="v73-live-dot"></span> Sede Jr. Dante 260 · Despacho Activo
+        </span>
+      </div>
+    </a>
+
+    <div class="v73-topbar-right">
+      <button class="v73-btn-icon" id="btnTheme73" title="Alternar modo claro / oscuro">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+
+      <div class="v73-user-chip">
+        <div class="v73-avatar-sm">{avatar(cliente.nombre)}</div>
+        <span class="v73-user-name">{cliente.nombre} · VIP</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       2. SIDEBAR DEL CLIENTE (CON "SOPORTE" EXACTO)
+       ============================================================ -->
+  <aside class="v73-sidebar">
+    <nav class="v73-nav">
+      <button class="v73-nav-item active" data-target="pedir-gas">
+        <i class="fa-solid fa-bolt"></i>
+        <span class="v73-nav-text">Pedir gas</span>
+      </button>
+
+      <button class="v73-nav-item" data-target="direcciones">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span class="v73-nav-text">Direcciones</span>
+        <span class="v73-nav-badge">{cliente.direcciones.length}</span>
+      </button>
+
+      <!-- NOMBRE CORTO SOLICITADO: "Soporte" -->
+      <button class="v73-nav-item" data-target="soporte">
+        <i class="fa-solid fa-headset"></i>
+        <span class="v73-nav-text">Soporte</span>
+      </button>
+
+      <button class="v73-nav-item" data-target="mi-cuenta">
+        <i class="fa-solid fa-user-gear"></i>
+        <span class="v73-nav-text">Mi cuenta</span>
+      </button>
+    </nav>
+
+    <div class="v73-sidebar-foot">
+      <button class="v73-btn-collapse" id="btnCollapse73">
+        <i class="fa-solid fa-arrow-left-long"></i>
+        <span id="lblCollapse73">Colapsar</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       3. SHELL PRINCIPAL CON PANELES
+       ============================================================ -->
+  <main class="v73-main">
+
+    <!-- ========================================================
+         PANEL 1: PEDIR GAS (SIN PARRAFO LARGO REDUNDANTE)
+         ======================================================== -->
+    <section class="v73-panel active" id="panel-pedir-gas">
+      <!-- HEADER SALUDO LIMPIO -->
+      <div class="v73-hero-banner">
+        <h1>¡Buenas noches {cliente.nombre}! 🔥 <span>Realiza tu Pedido Hoy</span></h1>
+        <button type="button" class="v73-btn-manage-ficha" id="btnGoFicha73">
+          <i class="fa-solid fa-address-card"></i> Gestionar Ficha & Direcciones
+        </button>
+      </div>
+
+      <!-- GRID PRINCIPAL (CATÁLOGO LIMPIO + COLUMNA DE CONFIRMACIÓN) -->
+      <div class="v73-grid-pedir">
+        <!-- COLUMNA IZQUIERDA: PRODUCTOS Y FORMA DE PAGO -->
+        <div>
+          <div class="v73-sec-title">
+            <span>Selecciona tu Producto de Hoy</span>
+            <span class="v73-sec-tag-green">
+              <i class="fa-solid fa-truck-fast"></i> Delivery y Pesaje Incluido
+            </span>
+          </div>
+
+          <!-- 4 CARDS DE PRODUCTO LIMPIAS CON SUS 2 CHECKS (CERO PÁRRAFO LARGO) -->
+          <div class="v73-cards-prods">
+            {productos.map((prod, idx) => (
+              <div 
+                class={`v73-card-p ${idx === 0 ? 'active' : ''}`}
+                data-id={prod.id}
+                data-nombre={prod.nombre}
+                data-nombrecorto={prod.nombreCorto}
+                data-precio={prod.precioPEN}
+              >
+                <div class="v73-card-top-row">
+                  <span class={`v73-p-badge ${prod.tagClase}`}>{prod.badge}</span>
+                  <span class="v73-p-uso">{prod.tipoUso}</span>
+                </div>
+
+                <div class="v73-p-img-box">
+                  <img src={prod.imagen} alt={prod.nombre} class="v73-p-img" />
+                  <span class="v73-p-pill-weight">{prod.capacidad}</span>
+                </div>
+
+                <div class="v73-p-name">{prod.nombre}</div>
+
+                <!-- 2 CHECKS TÉCNICOS PARA CONFIANZA INMEDIATA -->
+                <div class="v73-p-checks">
+                  {prod.checks.map(c => (
+                    <div class="v73-p-check-item">
+                      <i class="fa-solid fa-check"></i>
+                      <span><strong>{c.label}:</strong> {c.valor}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div class="v73-p-foot-row">
+                  <span class="v73-p-price">S/ {prod.precioPEN.toFixed(2)}</span>
+                  <span class="v73-p-free-delivery">Entrega Gratis</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- FORMA DE PAGO & INDICACIONES DE ENTREGA -->
+          <div class="v73-sec-title">
+            <span>Forma de Pago & Indicaciones de Entrega</span>
+            <span style="font-size:0.72rem; color:var(--muted); text-transform:none;">Sin comisiones adicionales</span>
+          </div>
+
+          <div class="v73-card-box">
+            <div class="v73-pago-indicaciones-grid">
+              <!-- MÉTODO DE PAGO -->
+              <div>
+                <div style="font-size:0.78rem; font-weight:700; color:var(--muted); margin-bottom:6px;">
+                  <i class="fa-solid fa-wallet" style="color:var(--cl-orange);"></i> Método de Pago
+                </div>
+
+                <div class="v73-tabs-pago">
+                  <button type="button" class="v73-btn-tab-pago active" data-metodo="efectivo">
+                    <i class="fa-solid fa-money-bill-wave"></i> Efectivo
+                  </button>
+                  <button type="button" class="v73-btn-tab-pago" data-metodo="yape-plin">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Yape / Plin
+                  </button>
+                </div>
+
+                <!-- SELECTOR DE VUELTO SI ES EFECTIVO -->
+                <div id="boxVuelto73">
+                  <div style="font-size:0.72rem; color:var(--muted); font-weight:600;">¿Con cuánto pagarás? (Vuelto)</div>
+                  <div class="v73-chips-vuelto" id="chipsVuelto73">
+                    <button type="button" class="v73-chip-btn" data-vuelto="exacto">Exacto</button>
+                    <button type="button" class="v73-chip-btn" data-vuelto="20">S/ 20</button>
+                    <button type="button" class="v73-chip-btn" data-vuelto="50">S/ 50</button>
+                    <button type="button" class="v73-chip-btn active" data-vuelto="100">S/ 100</button>
+                    <button type="button" class="v73-chip-btn" data-vuelto="otro">Otro</button>
+                  </div>
+
+                  <div class="v73-vuelto-calc-box" id="calcVueltoRow73">
+                    <span>Vuelto estimado:</span>
+                    <span id="valVueltoCalculado73">S/ 35.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- INDICACIONES PARA EL REPARTIDOR -->
+              <div>
+                <div style="font-size:0.78rem; font-weight:700; color:var(--muted); margin-bottom:6px;">
+                  <i class="fa-solid fa-comment-dots" style="color:var(--cl-orange);"></i> Indicaciones para el Repartidor
+                </div>
+
+                <div class="v73-quick-tags" id="tagsNotas73">
+                  <button type="button" class="v73-quick-tag" data-tag="Tocar timbre">🔔 Timbre</button>
+                  <button type="button" class="v73-quick-tag" data-tag="Llamar al llegar">📞 Llamar</button>
+                  <button type="button" class="v73-quick-tag" data-tag="Dejar en recepción">🏢 Recepción</button>
+                  <button type="button" class="v73-quick-tag" data-tag="Piso 3 sin ascensor">🚪 Piso 3</button>
+                </div>
+
+                <textarea class="v73-notes-textarea" id="txtNotas73">{cliente.notas}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: CONFIRMACIÓN Y PREVIEW (TODO EN UN SOLO LUGAR NO REDUNDANTE) -->
+        <aside class="v73-preview-column">
+          <!-- FICHA DE CONFIRMACIÓN DEL RECEPTOR Y DIRECCIÓN -->
+          <div class="v73-confirm-card">
+            <div class="v73-confirm-header">
+              <span class="v73-confirm-title">
+                <i class="fa-solid fa-user-check"></i> Datos de Confirmación
+              </span>
+              <span style="font-size:0.7rem; color:var(--cl-emerald); font-weight:700;">
+                <i class="fa-solid fa-shield-check"></i> Balanza Inacal
+              </span>
+            </div>
+
+            <div class="v73-confirm-row">
+              <span class="v73-confirm-label"><i class="fa-solid fa-user"></i> Receptor:</span>
+              <span class="v73-confirm-val">{cliente.nombre}</span>
+            </div>
+
+            <div class="v73-confirm-row">
+              <span class="v73-confirm-label"><i class="fa-brands fa-whatsapp" style="color:var(--cl-wa);"></i> WhatsApp:</span>
+              <span class="v73-confirm-val">{cliente.telefono}</span>
+            </div>
+
+            <div class="v73-confirm-row">
+              <span class="v73-confirm-label"><i class="fa-solid fa-location-dot" style="color:var(--cl-orange);"></i> Destino:</span>
+              <select class="v73-select-dir-confirm" id="selectDirConfirm">
+                {cliente.direcciones.map(d => (
+                  <option 
+                    value={d.id} 
+                    data-calle={d.calle} 
+                    data-distrito={d.distrito} 
+                    data-ref={d.referencia}
+                    data-eta={d.eta}
+                    data-alias={d.alias}
+                    selected={d.esPrincipal}
+                  >
+                    {d.alias} ({d.eta})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <!-- MOCKUP REALISTA WHATSAPP -->
+          <div class="v73-wa-card">
+            <div class="v73-wa-header">
+              <div class="v73-wa-header-left">
+                <i class="fa-solid fa-arrow-left" style="font-size:0.8rem; cursor:pointer;"></i>
+                <img src="/imgwii/logo.webp" alt="Solgas" class="v73-wa-avatar" />
+                <div class="v73-wa-header-info">
+                  <strong>Solgas Surquillo Oficial</strong>
+                  <small>en línea · Respuesta inmediata</small>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; font-size:0.88rem;">
+                <i class="fa-solid fa-phone"></i>
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </div>
+            </div>
+
+            <div class="v73-wa-body">
+              <div class="v73-bubble-in">
+                ¡Hola Valeria! 👋 En Solgas Surquillo tenemos unidades en Jr. Dante 260 listas con balanza digital Inacal.
+                <div class="v73-wa-time">10:30 a. m.</div>
+              </div>
+
+              <div class="v73-bubble-out" id="bubbleWaText73">
+¡Hola Solgas Surquillo! Deseo pedir mi recarga con mis datos guardados:
+
+👤 Nombre: Valeria
+📦 Producto: Balón SOLGAS Premium 10 kg (S/ 65.00)
+📍 Entrega: Jr. Dante 260, Dpto 301, Surquillo
+🧭 Ref: Frente al parque, portón marrón
+💳 Pago: Efectivo (Llevar vuelto de S/ 100.00)
+📝 Nota: Piso 3, timbre no suena fuerte.
+⏱️ Llegada estimada: 12–15 min
+                <div class="v73-wa-time">
+                  <span>10:32 a. m.</span>
+                  <i class="fa-solid fa-check-double" style="color:#53bdeb;"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- RESUMEN PRECIO Y PRODUCTO -->
+            <div class="v73-summary-box">
+              <div>
+                <div class="v73-summary-prod" id="sumNombreProd73">Solgas 10 kg</div>
+                <div class="v73-summary-sub" id="sumDistritoEta73">Surquillo · 12–15 min</div>
+              </div>
+              <div class="v73-summary-price" id="sumPrecioTotal73">S/ 65.00</div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN (LLAMAR + WHATSAPP) -->
+            <div class="v73-actions-row">
+              <a href="tel:936369384" class="v73-btn-call" title="Llamar a Solgas Surquillo">
+                <i class="fa-solid fa-phone"></i>
+              </a>
+              <a href="https://wa.me/51936369384" target="_blank" rel="noopener noreferrer" class="v73-btn-wa-order" id="btnWaAction73">
+                <i class="fa-brands fa-whatsapp" style="font-size:1.15rem;"></i>
+                <span id="lblBtnWa73">Pedir por WhatsApp (S/ 65.00)</span>
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PANEL 2: DIRECCIONES (LIBRETA DE SEDES)
+         ======================================================== -->
+    <section class="v73-panel" id="panel-direcciones">
+      <div class="v73-cuenta-header">
+        <div>
+          <h2>Libreta de Direcciones ({cliente.direcciones.length})</h2>
+          <p>Gestiona tus domicilios y sedes de entrega express desde Jr. Dante 260.</p>
+        </div>
+        <button type="button" class="v73-btn-save-primary" onclick="alert('Formulario de nueva dirección disponible')">
+          <i class="fa-solid fa-plus"></i> Nueva Dirección
+        </button>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:14px;">
+        {cliente.direcciones.map(d => (
+          <div class="v73-form-card" style="margin-bottom:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:38px; height:38px; border-radius:10px; background:rgba(255,102,0,0.12); color:var(--cl-orange); display:grid; place-items:center; font-size:1.1rem;">
+                  <i class={`fa-solid ${d.icono}`}></i>
+                </div>
+                <div>
+                  <strong style="font-size:0.95rem; color:var(--ink);">{d.alias}</strong>
+                  <div style="font-size:0.72rem; color:var(--muted);">{d.distrito}</div>
+                </div>
+              </div>
+              {d.esPrincipal && (
+                <span style="font-size:0.68rem; font-weight:800; background:rgba(16,185,129,0.15); color:#10b981; padding:3px 9px; border-radius:12px;">
+                  PRINCIPAL
+                </span>
+              )}
+            </div>
+
+            <div style="margin:14px 0; font-size:0.84rem;">
+              <div style="font-weight:700; color:var(--ink);">{d.calle}</div>
+              <div style="color:var(--muted); font-size:0.76rem; margin-top:2px;">Ref: {d.referencia}</div>
+              <div style="color:var(--cl-emerald); font-weight:700; margin-top:6px;">⏱️ Llegada estimada: {d.eta}</div>
+            </div>
+
+            <div style="display:flex; gap:8px; border-top:1px solid var(--line); padding-top:12px;">
+              <button type="button" class="v73-chip-btn" style="flex:1;" onclick="alert('Dirección seleccionada para tu siguiente pedido')">
+                Seleccionar para Pedir
+              </button>
+              {!d.esPrincipal && (
+                <button type="button" class="v73-chip-btn" onclick="alert('Establecida como predeterminada')">
+                  Hacer Principal
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PANEL 3: SOPORTE (NOMBRE CORTO EXACTO)
+         ======================================================== -->
+    <section class="v73-panel" id="panel-soporte">
+      <div class="v73-cuenta-header">
+        <div>
+          <h2>Soporte al Cliente & Comprobantes</h2>
+          <p>Solicita tus Boletas o Facturas electrónicas y comunícate directamente con la central.</p>
+        </div>
+      </div>
+
+      <div class="v73-form-card">
+        <div class="v73-form-card-title">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Solicitud de Factura o Boleta Electrónica
+        </div>
+        <div class="v73-form-card-sub">
+          Emisión rápida de comprobante fiscal SUNAT para tus recargas en Solgas Surquillo.
+        </div>
+
+        <div class="v73-form-grid-2">
+          <div class="v73-form-group">
+            <label>Tipo de Comprobante</label>
+            <select class="v73-form-input">
+              <option value="boleta">Boleta Electrónica (DNI)</option>
+              <option value="factura">Factura Electrónica (RUC 20)</option>
+            </select>
+          </div>
+
+          <div class="v73-form-group">
+            <label>DNI o RUC</label>
+            <input type="text" class="v73-form-input" placeholder="Ej: 20601234567" value={cliente.dni} />
+          </div>
+
+          <div class="v73-form-group">
+            <label>Razón Social o Nombre Completo</label>
+            <input type="text" class="v73-form-input" placeholder="Nombre que figurará en el comprobante" value={cliente.nombreCompleto} />
+          </div>
+
+          <div class="v73-form-group">
+            <label>Correo para Envío de PDF / XML</label>
+            <input type="email" class="v73-form-input" value={cliente.email} />
+          </div>
+        </div>
+
+        <div style="margin-top:16px; text-align:right;">
+          <button type="button" class="v73-btn-save-primary" onclick="alert('Solicitud enviada a facturación Solgas Surquillo.')">
+            <i class="fa-solid fa-paper-plane"></i> Enviar Solicitud
+          </button>
+        </div>
+      </div>
+
+      <div class="v73-form-card">
+        <div class="v73-form-card-title">
+          <i class="fa-solid fa-headset"></i> Canales de Atención Directa
+        </div>
+        <div class="v73-form-card-sub">
+          ¿Tienes alguna duda sobre tu pedido en ruta o la verificación de balanza Inacal?
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:12px;">
+          <a href="https://wa.me/51936369384?text=Hola%20Solgas%20Surquillo,%20necesito%20ayuda%20con%20mi%20pedido" target="_blank" class="v73-btn-save-primary" style="background:#25d366; text-decoration:none;">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp de Soporte
+          </a>
+          <a href="tel:936369384" class="v73-btn-save-primary" style="background:#0284c7; text-decoration:none;">
+            <i class="fa-solid fa-phone"></i> Central Telefónica (936 369 384)
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PANEL 4: MI CUENTA (SUB-PESTAÑAS SEGMENTADAS IMAGEN 2)
+         ======================================================== -->
+    <section class="v73-panel" id="panel-mi-cuenta">
+      <div class="v73-cuenta-header">
+        <div>
+          <h2>Ficha de Mi Cuenta · Cliente VIP</h2>
+          <p>Configuración de datos personales, facturación SUNAT, preferencias de recarga y seguridad.</p>
+        </div>
+        <button type="button" class="v73-btn-save-primary" id="btnSaveMiCuenta73">
+          <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+        </button>
+      </div>
+
+      <!-- SUB-PESTAÑAS SEGMENTADAS (ESTILO IMAGEN 2) -->
+      <div class="v73-subtabs-bar">
+        <button type="button" class="v73-subtab-btn active" data-sub="identidad">
+          <i class="fa-solid fa-id-card"></i> Identidad & Perfil
+        </button>
+        <button type="button" class="v73-subtab-btn" data-sub="facturacion">
+          <i class="fa-solid fa-building"></i> Facturación & SUNAT
+        </button>
+        <button type="button" class="v73-subtab-btn" data-sub="preferencias">
+          <i class="fa-solid fa-sliders"></i> Preferencias de Gas
+        </button>
+        <button type="button" class="v73-subtab-btn" data-sub="seguridad">
+          <i class="fa-solid fa-shield-halved"></i> Seguridad & Notificaciones
+        </button>
+      </div>
+
+      <!-- SUBPANEL 1: IDENTIDAD -->
+      <div class="v73-subpanel active" id="subpanel-identidad">
+        <div class="v73-form-card">
+          <div class="v73-form-card-title">
+            <i class="fa-solid fa-user-check"></i> Datos Personales del Titular
+          </div>
+          <div class="v73-form-card-sub">
+            Información de contacto para confirmación de pedidos y despachos en puerta.
+          </div>
+
+          <div class="v73-form-grid-2">
+            <div class="v73-form-group">
+              <label>Primer Nombre (Nombre de Pila)</label>
+              <input type="text" class="v73-form-input" id="inNombrePila73" value={cliente.nombre} />
+            </div>
+
+            <div class="v73-form-group">
+              <label>Apellidos Completos</label>
+              <input type="text" class="v73-form-input" value={cliente.apellido} />
+            </div>
+
+            <div class="v73-form-group">
+              <label>DNI / Documento de Identidad</label>
+              <input type="text" class="v73-form-input" value={cliente.dni} />
+            </div>
+
+            <div class="v73-form-group">
+              <label>WhatsApp de Confirmación</label>
+              <input type="tel" class="v73-form-input" id="inTelefono73" value={cliente.telefono} />
+            </div>
+
+            <div class="v73-form-group">
+              <label>Correo Electrónico</label>
+              <input type="email" class="v73-form-input" value={cliente.email} />
+            </div>
+
+            <div class="v73-form-group">
+              <label>Usuario</label>
+              <input type="text" class="v73-form-input" value={cliente.usuario} readonly style="opacity:0.7;" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBPANEL 2: FACTURACIÓN -->
+      <div class="v73-subpanel" id="subpanel-facturacion">
+        <div class="v73-form-card">
+          <div class="v73-form-card-title">
+            <i class="fa-solid fa-building-columns"></i> Información Tributaria & Facturación SUNAT
+          </div>
+          <div class="v73-form-card-sub">
+            Datos fiscales para emisión de Facturas con RUC 20 para empresas o restaurantes.
+          </div>
+
+          <div class="v73-form-grid-2">
+            <div class="v73-form-group">
+              <label>Comprobante Predeterminado</label>
+              <select class="v73-form-input">
+                <option value="boleta" selected>Boleta de Venta</option>
+                <option value="factura">Factura RUC</option>
+              </select>
+            </div>
+
+            <div class="v73-form-group">
+              <label>RUC (11 dígitos)</label>
+              <input type="text" class="v73-form-input" placeholder="Ej: 20601234567" />
+            </div>
+
+            <div class="v73-form-group">
+              <label>Razón Social</label>
+              <input type="text" class="v73-form-input" placeholder="Ej: Dante Gastronomía SAC" />
+            </div>
+
+            <div class="v73-form-group">
+              <label>Domicilio Fiscal</label>
+              <input type="text" class="v73-form-input" value={cliente.direccionFiscal} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBPANEL 3: PREFERENCIAS -->
+      <div class="v73-subpanel" id="subpanel-preferencias">
+        <div class="v73-form-card">
+          <div class="v73-form-card-title">
+            <i class="fa-solid fa-fire"></i> Preferencias de Cilindro y Válvula
+          </div>
+          <div class="v73-form-card-sub">
+            Tus opciones predeterminadas al cargar la vista de pedido express.
+          </div>
+
+          <div class="v73-form-grid-2">
+            <div class="v73-form-group">
+              <label>Cilindro Habitual</label>
+              <select class="v73-form-input">
+                <option value="solgas-10kg" selected>Balón SOLGAS Premium 10 kg</option>
+                <option value="masgas-10kg">Balón MASGAS 10 kg</option>
+                <option value="solgas-45kg">Balón SOLGAS 45 kg</option>
+              </select>
+            </div>
+
+            <div class="v73-form-group">
+              <label>Tipo de Válvula</label>
+              <select class="v73-form-input">
+                <option value="click-on" selected>Click-On (Acople Rápido)</option>
+                <option value="rosca">Rosca Estándar</option>
+              </select>
+            </div>
+
+            <div class="v73-form-group">
+              <label>Método de Pago Habitual</label>
+              <select class="v73-form-input">
+                <option value="efectivo" selected>Efectivo con vuelto</option>
+                <option value="yape">Yape / Plin</option>
+              </select>
+            </div>
+
+            <div class="v73-form-group">
+              <label>Pesaje Obligatorio</label>
+              <select class="v73-form-input">
+                <option value="si" selected>Sí, verificar siempre en balanza digital Inacal</option>
+                <option value="opcional">Solo si tengo dudas</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBPANEL 4: SEGURIDAD -->
+      <div class="v73-subpanel" id="subpanel-seguridad">
+        <div class="v73-form-card">
+          <div class="v73-form-card-title">
+            <i class="fa-solid fa-shield"></i> Preferencias de Visualización y Alertas
+          </div>
+          <div class="v73-form-card-sub">
+            Personaliza el tema visual y avisos de recarga preventiva.
+          </div>
+
+          <div class="v73-form-grid-2">
+            <div class="v73-form-group">
+              <label>Tema Predeterminado</label>
+              <select class="v73-form-input">
+                <option value="futuro" selected>Modo Oscuro (Futuro)</option>
+                <option value="luz">Modo Claro (Luz)</option>
+              </select>
+            </div>
+
+            <div class="v73-form-group">
+              <label>Aviso Preventivo de Recarga</label>
+              <select class="v73-form-input">
+                <option value="si" selected>Avisarme a los 26 días (~2 días antes de acabarse)</option>
+                <option value="no">No avisar</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="v73Toast">Datos actualizados</div>
+
+  <!-- ============================================================
+       4. CONTROLADOR JAVASCRIPT REACTIVO (0MS OVERHEAD)
+       ============================================================ */ -->
+  <script is:inline>
+    (function() {
+      // ESTADO REACTIVO DEL PEDIDO
+      const state = {
+        nombre: 'Valeria',
+        telefono: '+51 987 654 321',
+        producto: 'Balón SOLGAS Premium 10 kg',
+        productoCorto: 'Solgas 10 kg',
+        precio: 65.00,
+        alias: 'Casa Principal',
+        calle: 'Jr. Dante 260, Dpto 301',
+        distrito: 'Surquillo',
+        ref: 'Frente al parque, portón marrón',
+        eta: '12–15 min',
+        metodoPago: 'efectivo',
+        vueltoSeleccionado: '100',
+        pagoTexto: 'Efectivo (Llevar vuelto de S/ 100.00)',
+        nota: 'Piso 3, timbre no suena fuerte. Dejar con vigilancia si no contesto.'
+      };
+
+      const bubbleWa = document.getElementById('bubbleWaText73');
+      const sumProd = document.getElementById('sumNombreProd73');
+      const sumEta = document.getElementById('sumDistritoEta73');
+      const sumPrecio = document.getElementById('sumPrecioTotal73');
+      const btnWa = document.getElementById('btnWaAction73');
+      const lblBtnWa = document.getElementById('lblBtnWa73');
+      const toast = document.getElementById('v73Toast');
+      const calcVueltoRow = document.getElementById('calcVueltoRow73');
+      const valVuelto = document.getElementById('valVueltoCalculado73');
+
+      function showToast(msg) {
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        clearTimeout(window._t73Id);
+        window._t73Id = setTimeout(() => { toast.style.display = 'none'; }, 1600);
+      }
+
+      function updateWA() {
+        // Cálculo de vuelto dinámico
+        if (state.metodoPago === 'efectivo') {
+          if (state.vueltoSeleccionado === 'exacto') {
+            state.pagoTexto = `Efectivo (Monto Exacto: S/ ${state.precio.toFixed(2)})`;
+            if (calcVueltoRow) calcVueltoRow.style.display = 'none';
+          } else if (state.vueltoSeleccionado === 'otro') {
+            state.pagoTexto = 'Efectivo (Coordinar vuelto)';
+            if (calcVueltoRow) calcVueltoRow.style.display = 'none';
+          } else {
+            const billete = parseFloat(state.vueltoSeleccionado) || 100;
+            const diff = billete - state.precio;
+            state.pagoTexto = `Efectivo (Paga con S/ ${billete.toFixed(2)}, Llevar vuelto de S/ ${diff > 0 ? diff.toFixed(2) : '0.00'})`;
+            if (calcVueltoRow && valVuelto) {
+              calcVueltoRow.style.display = 'flex';
+              valVuelto.textContent = diff > 0 ? `S/ ${diff.toFixed(2)}` : 'S/ 0.00';
+            }
+          }
+        } else {
+          state.pagoTexto = 'Yape / Plin (Contraentrega con QR)';
+          if (calcVueltoRow) calcVueltoRow.style.display = 'none';
+        }
+
+        const msg = 
+`¡Hola Solgas Surquillo! Deseo pedir mi recarga con mis datos guardados:
+
+👤 Nombre: ${state.nombre}
+📦 Producto: ${state.producto} (S/ ${state.precio.toFixed(2)})
+📍 Entrega: ${state.calle}, ${state.distrito}
+🧭 Ref: ${state.ref}
+💳 Pago: ${state.pagoTexto}
+📝 Nota: ${state.nota}
+⏱️ Llegada estimada: ${state.eta}`;
+
+        if (bubbleWa) {
+          bubbleWa.innerHTML = msg.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') +
+            `<div class="v73-wa-time"><span>10:32 a. m.</span> <i class="fa-solid fa-check-double" style="color:#53bdeb;"></i></div>`;
+        }
+
+        if (sumProd) sumProd.textContent = state.productoCorto;
+        if (sumEta) sumEta.textContent = `${state.distrito} · ${state.eta}`;
+        if (sumPrecio) sumPrecio.textContent = `S/ ${state.precio.toFixed(2)}`;
+
+        if (lblBtnWa) lblBtnWa.textContent = `Pedir por WhatsApp (S/ ${state.precio.toFixed(2)})`;
+        if (btnWa) btnWa.href = `https://wa.me/51936369384?text=${encodeURIComponent(msg)}`;
+      }
+
+      // CAMBIO DE MÓDULOS DEL SIDEBAR
+      document.querySelectorAll('.v73-nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.dataset.target;
+          document.querySelectorAll('.v73-nav-item').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          document.querySelectorAll('.v73-panel').forEach(p => p.classList.remove('active'));
+          const targetPanel = document.getElementById(`panel-${targetId}`);
+          if (targetPanel) targetPanel.classList.add('active');
+        });
+      });
+
+      // BOTÓN "GESTIONAR FICHA & DIRECCIONES"
+      document.getElementById('btnGoFicha73')?.addEventListener('click', () => {
+        const cuentaNavBtn = document.querySelector('.v73-nav-item[data-target="mi-cuenta"]');
+        cuentaNavBtn?.click();
+      });
+
+      // SUB-PESTAÑAS EN MI CUENTA
+      document.querySelectorAll('.v73-subtab-btn').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const subId = tab.dataset.sub;
+          document.querySelectorAll('.v73-subtab-btn').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          document.querySelectorAll('.v73-subpanel').forEach(sp => sp.classList.remove('active'));
+          const targetSub = document.getElementById(`subpanel-${subId}`);
+          if (targetSub) targetSub.classList.add('active');
+        });
+      });
+
+      // SELECCIÓN DE PRODUCTOS (4 CARDS LIMPIAS)
+      document.querySelectorAll('.v73-card-p').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.v73-card-p').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          state.producto = card.dataset.nombre;
+          state.productoCorto = card.dataset.nombrecorto;
+          state.precio = parseFloat(card.dataset.precio);
+          updateWA();
+          showToast(`Balón: ${state.productoCorto}`);
+        });
+      });
+
+      // SELECTOR DE DIRECCIÓN UNIFICADO EN CONFIRMACIÓN
+      const selDirConfirm = document.getElementById('selectDirConfirm');
+      selDirConfirm?.addEventListener('change', () => {
+        const opt = selDirConfirm.options[selDirConfirm.selectedIndex];
+        state.alias = opt.dataset.alias;
+        state.calle = opt.dataset.calle;
+        state.distrito = opt.dataset.distrito;
+        state.ref = opt.dataset.ref;
+        state.eta = opt.dataset.eta;
+        updateWA();
+        showToast(`Destino: ${state.alias} (${state.eta})`);
+      });
+
+      // MÉTODOS DE PAGO (EFECTIVO VS YAPE/PLIN)
+      document.querySelectorAll('.v73-btn-tab-pago').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.v73-btn-tab-pago').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          state.metodoPago = tab.dataset.metodo;
+          const boxVuelto = document.getElementById('boxVuelto73');
+          if (boxVuelto) {
+            boxVuelto.style.display = state.metodoPago === 'efectivo' ? 'block' : 'none';
+          }
+          updateWA();
+        });
+      });
+
+      // CHIPS DE VUELTO
+      document.querySelectorAll('#chipsVuelto73 .v73-chip-btn').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('#chipsVuelto73 .v73-chip-btn').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          state.vueltoSeleccionado = chip.dataset.vuelto;
+          updateWA();
+        });
+      });
+
+      // NOTAS RÁPIDAS
+      const txtNotas = document.getElementById('txtNotas73');
+      document.querySelectorAll('#tagsNotas73 .v73-quick-tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+          const tVal = tag.dataset.tag;
+          if (txtNotas) {
+            txtNotas.value = txtNotas.value ? `${txtNotas.value}, ${tVal}` : tVal;
+            state.nota = txtNotas.value;
+            updateWA();
+          }
+        });
+      });
+
+      txtNotas?.addEventListener('input', () => {
+        state.nota = txtNotas.value.trim();
+        updateWA();
+      });
+
+      // GUARDAR CAMBIOS DE MI CUENTA
+      document.getElementById('btnSaveMiCuenta73')?.addEventListener('click', () => {
+        const nuevoNombre = document.getElementById('inNombrePila73')?.value.trim();
+        const nuevoTel = document.getElementById('inTelefono73')?.value.trim();
+        if (nuevoNombre) state.nombre = nuevoNombre;
+        if (nuevoTel) state.telefono = nuevoTel;
+        updateWA();
+        showToast('¡Ficha de cliente guardada con éxito!');
+      });
+
+      // COLAPSAR SIDEBAR
+      document.getElementById('btnCollapse73')?.addEventListener('click', () => {
+        const isCollapsed = document.documentElement.classList.toggle('is-collapsed');
+        localStorage.setItem('gaswii_sidebar_v73', isCollapsed ? 'true' : 'false');
+      });
+
+      // CAMBIAR TEMA
+      document.getElementById('btnTheme73')?.addEventListener('click', () => {
+        const cur = document.documentElement.dataset.theme;
+        const next = cur === 'luz' ? 'futuro' : 'luz';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('gaswii_theme_cliente', next);
+      });
+
+      // INICIALIZACIÓN
+      updateWA();
+    })();
+  </script>
+</body>
+</html>

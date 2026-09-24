@@ -11,11 +11,9 @@ import inicioEn from '../../feature/inicio/idioma/en.json';
 import authEs from '../../feature/auth/idioma/es.json';
 import authEn from '../../feature/auth/idioma/en.json';
 
-import clienteEs from '../../feature/cliente/idioma/es.json';
-import clienteEn from '../../feature/cliente/idioma/en.json';
-
-// Feature Personal es 100% español operativo nativo (no requiere diccionarios JSON)
+// Feature Personal y Feature Cliente son 100% español operativo nativo (no requieren diccionarios JSON)
 const localesPersonal: Record<string, any> = { es: {}, en: {} };
+const localesCliente: Record<string, any> = { es: {}, en: {} };
 
 export type Idioma = 'es' | 'en' | string;
 
@@ -59,10 +57,6 @@ const localesAuth: Record<string, typeof authEs> = {
   en: authEn
 };
 
-const localesCliente: Record<string, typeof clienteEs> = {
-  es: clienteEs,
-  en: clienteEn
-};
 
 /**
  * Retorna las traducciones completas unificadas para el idioma solicitado.

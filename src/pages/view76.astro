@@ -1,0 +1,602 @@
+---
+// src/pages/view76.astro
+// VIEW 76: Modern Horizontal Split & Stepper (100vh Desktop + App Nativa Móvil)
+// Cards horizontales ergonómicas · Selector de cantidad · Cero build pesado
+import { avatar } from '../core/widev/nombre.js';
+import witemaCss from '../core/wicss/witema.css?inline';
+
+const cliente = {
+  nombre: 'Valeria',
+  nombreCompleto: 'Valeria Mendoza',
+  telefono: '+51 987 654 321',
+  direcciones: [
+    { id: 'dir-1', alias: 'Casa Principal', calle: 'Jr. Dante 260, Dpto 301', distrito: 'Surquillo', eta: '12–15 min', esPrincipal: true },
+    { id: 'dir-2', alias: 'Oficina / Estudio', calle: 'Av. República de Panamá 3565', distrito: 'San Isidro', eta: '18–25 min', esPrincipal: false }
+  ]
+};
+
+const productos = [
+  {
+    id: 'bal-n-solgas-premium-10-kg',
+    nombre: 'Balón SOLGAS Premium 10 kg',
+    badge: 'MÁS PEDIDO',
+    tagClase: 'badge-fire',
+    precioPEN: 65.00,
+    imagen: '/imgwii/productos/BALON-10KG.webp',
+    valvula: 'Click-On o Rosca estándar',
+    balanza: 'Balanza digital Inacal en puerta'
+  },
+  {
+    id: 'balon-solgas-45-kg',
+    nombre: 'Balón SOLGAS 45 kg',
+    badge: 'COMERCIAL',
+    tagClase: 'badge-blue',
+    precioPEN: 230.00,
+    imagen: '/imgwii/productos/BALON-45KG.webp',
+    valvula: 'Rosca industrial alta presión',
+    balanza: 'Caudal continuo para negocios'
+  },
+  {
+    id: 'balon-masgas-de-10-kg',
+    nombre: 'Balón MASGAS de 10 kg',
+    badge: 'ECONÓMICO',
+    tagClase: 'badge-emerald',
+    precioPEN: 55.00,
+    imagen: '/imgwii/productos/MASGAS-10KG.webp',
+    valvula: 'Universal estándar para hogar',
+    balanza: 'Rendimiento diario garantizado'
+  },
+  {
+    id: 'kit-regulador-solgas',
+    nombre: 'Kit Regulador SOLGAS',
+    badge: 'SEGURIDAD',
+    tagClase: 'badge-gold',
+    precioPEN: 70.00,
+    imagen: '/imgwii/productos/REGULADOR.webp',
+    valvula: 'Click-On traba antifugas',
+    balanza: 'Homologado por Osinergmin'
+  }
+];
+---
+
+<!doctype html>
+<html lang="es" data-theme="futuro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Portal Cliente Split · Solgas Surquillo | View 76</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <script is:inline>
+    try {
+      const savedTheme = localStorage.getItem('gaswii_theme_cliente') || localStorage.getItem('wiTema') || 'futuro';
+      document.documentElement.dataset.theme = savedTheme;
+      if (localStorage.getItem('gaswii_sidebar_v76') === 'true') {
+        document.documentElement.classList.add('is-collapsed');
+      }
+    } catch (e) {}
+  </script>
+
+  <link rel="stylesheet" href="/google/fonts.css" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <style is:global set:html={witemaCss}></style>
+
+  <style>
+    :root {
+      --side-w: 230px;
+      --side-collapsed-w: 68px;
+      --topbar-h: clamp(52px, 6.5vh, 60px);
+      --cl-orange: #ff6600;
+      --cl-orange-hover: #ff771a;
+      --cl-wa: #25d366;
+      --cl-emerald: #10b981;
+      --cl-card-bg: #0d1424;
+      --cl-card-border: rgba(255, 255, 255, 0.08);
+      --cl-input-bg: #070c18;
+    }
+
+    html[data-theme="luz"] {
+      --cl-card-bg: #ffffff;
+      --cl-card-border: #e2e8f0;
+      --cl-input-bg: #f8fafc;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--ff_P, 'Poppins', sans-serif);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @media (max-width: 960px) {
+      html, body {
+        height: auto;
+        overflow-y: auto;
+        padding-bottom: 75px;
+      }
+    }
+
+    /* TOPBAR */
+    .v76-topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2vw;
+      backdrop-filter: blur(14px);
+    }
+
+    .v76-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .v76-logo { height: clamp(28px, 3.8vh, 34px); width: auto; }
+
+    .v76-brand-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .v76-brand-title span { color: var(--cl-orange); }
+
+    /* SIDEBAR */
+    .v76-sidebar {
+      position: fixed;
+      top: var(--topbar-h);
+      left: 0;
+      bottom: 0;
+      width: var(--side-w);
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.4vh 0.8vw;
+      z-index: 50;
+      transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html.is-collapsed .v76-sidebar { width: var(--side-collapsed-w); }
+
+    @media (max-width: 960px) {
+      .v76-sidebar { display: none; }
+    }
+
+    .v76-nav { display: flex; flex-direction: column; gap: 0.6vh; }
+
+    .v76-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: clamp(7px, 1.1vh, 10px) 12px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: clamp(0.78rem, 0.85vw, 0.86rem);
+      text-align: left;
+      transition: all 0.16s;
+      width: 100%;
+      position: relative;
+    }
+
+    .v76-nav-item i { font-size: 1rem; width: 20px; text-align: center; }
+    .v76-nav-item.active { background: rgba(255, 102, 0, 0.12); color: var(--cl-orange); font-weight: 700; }
+
+    html.is-collapsed .v76-nav-text,
+    html.is-collapsed #lblCollapse76 { display: none; }
+
+    /* MAIN CONTAINER 100VH */
+    .v76-main {
+      margin-top: var(--topbar-h);
+      margin-left: var(--side-w);
+      height: calc(100vh - var(--topbar-h));
+      padding: 1.6vh 1.8vw;
+      box-sizing: border-box;
+      overflow: hidden;
+      transition: margin-left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html.is-collapsed .v76-main { margin-left: var(--side-collapsed-w); }
+
+    @media (max-width: 960px) {
+      .v76-main {
+        margin-left: 0 !important;
+        height: auto;
+        overflow: visible;
+        padding: 14px;
+      }
+    }
+
+    .v76-grid-split {
+      display: grid;
+      grid-template-columns: 1.22fr 0.78fr;
+      gap: 1.6vw;
+      height: 100%;
+    }
+
+    @media (max-width: 1100px) {
+      .v76-grid-split { grid-template-columns: 1fr; height: auto; }
+    }
+
+    /* CARDS HORIZONTALES ERGONÓMICAS */
+    .v76-prods-list {
+      display: grid;
+      grid-template-rows: repeat(4, 1fr);
+      gap: 1vh;
+      height: 100%;
+    }
+
+    .v76-h-card {
+      background: var(--cl-card-bg);
+      border: 1.5px solid var(--cl-card-border);
+      border-radius: 1.2vh;
+      padding: 0.8vh 1vw;
+      display: grid;
+      grid-template-columns: 85px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .v76-h-card:hover { border-color: rgba(255, 102, 0, 0.5); transform: translateX(3px); }
+    .v76-h-card.active {
+      border-color: var(--cl-orange);
+      background: rgba(255, 102, 0, 0.05);
+      box-shadow: 0 4px 16px rgba(255, 102, 0, 0.15);
+    }
+
+    .v76-h-img-box {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .v76-h-img { max-height: clamp(55px, 8.5vh, 75px); width: auto; object-fit: contain; }
+
+    .v76-h-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+
+    .v76-h-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(0.85rem, 0.95vw, 1rem);
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .v76-h-checks {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .v76-h-checks span i { color: var(--cl-emerald); font-size: 0.65rem; margin-right: 4px; }
+
+    .v76-h-price-col {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .v76-h-price {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(1.15rem, 1.35vw, 1.4rem);
+      font-weight: 800;
+      color: var(--cl-orange);
+    }
+
+    /* RIGHT COLUMN (CHECKOUT & WHATSAPP) */
+    .v76-col-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      gap: 1vh;
+    }
+
+    .v76-box-checkout {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 1.4vh;
+      padding: 1.2vh 1vw;
+    }
+
+    .v76-box-wa {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 1.4vh;
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .v76-wa-header {
+      background: #008069;
+      color: #fff;
+      padding: 0.8vh 0.9vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .v76-wa-body {
+      background: #efeae2;
+      padding: 1vh 0.9vw;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    html[data-theme="futuro"] .v76-wa-body { background: #0b141a; }
+
+    .v76-bubble {
+      background: #d9fdd3;
+      color: #111b21;
+      border-radius: 8px 8px 2px 8px;
+      padding: 0.8vh 0.9vw;
+      font-size: clamp(0.72rem, 0.78vw, 0.82rem);
+      max-width: 95%;
+      margin-left: auto;
+      white-space: pre-line;
+      line-height: 1.35;
+    }
+    html[data-theme="futuro"] .v76-bubble { background: #005c4b; color: #e9edef; }
+
+    .v76-actions-bar {
+      padding: 0.8vh 1vw;
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 8px;
+    }
+
+    .v76-btn-wa {
+      flex: 1;
+      background: var(--cl-wa);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 1vh;
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: clamp(0.88rem, 1vw, 1.05rem);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* MOBILE DOCK BOTTOM */
+    .v76-mobile-dock { display: none; }
+
+    @media (max-width: 960px) {
+      .v76-mobile-dock {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        background: var(--surface);
+        border-top: 1px solid var(--line);
+        z-index: 100;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .v76-m-item {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+      .v76-m-item.active { color: var(--cl-orange); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="v76-topbar">
+    <a href="/view76" class="v76-brand">
+      <img src="/imgwii/logo.webp" alt="Solgas" class="v76-logo" />
+      <div class="v76-brand-title">SOLGAS <span>SURQUILLO</span> · Express Split</div>
+    </a>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="v76-btn-icon" id="btnTheme76" title="Tema" style="width:34px; height:34px; background:transparent; border:1px solid var(--line); border-radius:8px; color:var(--ink); cursor:pointer;"><i class="fa-solid fa-moon"></i></button>
+      <div style="font-size:0.82rem; font-weight:700;">{cliente.nombre} · VIP</div>
+    </div>
+  </header>
+
+  <aside class="v76-sidebar">
+    <nav class="v76-nav">
+      <button class="v76-nav-item active"><i class="fa-solid fa-bolt"></i><span class="v76-nav-text">Pedir gas</span></button>
+      <button class="v76-nav-item"><i class="fa-solid fa-map-location-dot"></i><span class="v76-nav-text">Direcciones</span></button>
+      <button class="v76-nav-item"><i class="fa-solid fa-headset"></i><span class="v76-nav-text">Soporte</span></button>
+      <button class="v76-nav-item"><i class="fa-solid fa-user-gear"></i><span class="v76-nav-text">Mi cuenta</span></button>
+    </nav>
+    <div class="v76-sidebar-foot">
+      <button class="v76-nav-item" id="btnCollapse76"><i class="fa-solid fa-arrow-left-long"></i><span id="lblCollapse76">Colapsar</span></button>
+    </div>
+  </aside>
+
+  <main class="v76-main">
+    <div class="v76-grid-split">
+      
+      <!-- CARDS HORIZONTALES -->
+      <div class="v76-prods-list">
+        {productos.map((prod, idx) => (
+          <div class={`v76-h-card ${idx === 0 ? 'active' : ''}`} data-id={prod.id} data-nombre={prod.nombre} data-precio={prod.precioPEN}>
+            <div class="v76-h-img-box">
+              <img src={prod.imagen} alt={prod.nombre} class="v76-h-img" />
+            </div>
+            <div class="v76-h-info">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:0.65rem; font-weight:800; color:var(--cl-orange);">{prod.badge}</span>
+                <span class="v76-h-title">{prod.nombre}</span>
+              </div>
+              <div class="v76-h-checks">
+                <span><i class="fa-solid fa-check"></i> {prod.valvula}</span>
+                <span><i class="fa-solid fa-check"></i> {prod.balanza}</span>
+              </div>
+            </div>
+            <div class="v76-h-price-col">
+              <div class="v76-h-price">S/ {prod.precioPEN.toFixed(2)}</div>
+              <span style="font-size:0.68rem; color:var(--cl-emerald); font-weight:700;">Entrega Gratis</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- CHECKOUT Y WHATSAPP -->
+      <div class="v76-col-right">
+        <div class="v76-box-checkout">
+          <div style="font-family:var(--ff_O); font-weight:800; font-size:0.85rem; color:var(--cl-orange); margin-bottom:8px;">
+            <i class="fa-solid fa-wallet"></i> FORMA DE PAGO & ENTREGA
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:6px; font-size:0.75rem;">
+            <label style="color:var(--muted); font-weight:700;">Destino:</label>
+            <select id="selDir76" style="background:var(--cl-input-bg); border:1px solid var(--line); border-radius:6px; color:var(--ink); padding:3px 6px; font-size:0.76rem; font-weight:700;">
+              {cliente.direcciones.map(d => (
+                <option value={d.id} data-calle={d.calle} data-distrito={d.distrito} data-eta={d.eta}>{d.alias} ({d.eta})</option>
+              ))}
+            </select>
+          </div>
+
+          <div style="display:flex; gap:6px; margin-bottom:6px;">
+            <button type="button" class="btn-pago-76 active" data-p="Efectivo" style="flex:1; padding:4px; border-radius:6px; background:rgba(255,102,0,0.12); border:1px solid var(--cl-orange); color:var(--cl-orange); font-size:0.74rem; font-weight:700; cursor:pointer;">Efectivo</button>
+            <button type="button" class="btn-pago-76" data-p="Yape" style="flex:1; padding:4px; border-radius:6px; background:var(--cl-input-bg); border:1px solid var(--line); color:var(--muted); font-size:0.74rem; font-weight:700; cursor:pointer;">Yape / Plin</button>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.08); border-radius:5px; padding:3px 8px; font-size:0.72rem; font-weight:700; color:var(--cl-emerald);">
+            <span>Vuelto estimado:</span>
+            <span id="vuelto76">S/ 35.00</span>
+          </div>
+        </div>
+
+        <div class="v76-box-wa">
+          <div class="v76-wa-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <img src="/imgwii/logo.webp" alt="Solgas" style="height:26px;" />
+              <strong style="font-size:0.8rem;">Solgas Surquillo</strong>
+            </div>
+            <small style="font-size:0.65rem;">en línea</small>
+          </div>
+
+          <div class="v76-wa-body">
+            <div class="v76-bubble" id="bubble76">
+¡Hola Solgas Surquillo! Deseo pedir mi recarga:
+👤 Valeria
+📦 Balón SOLGAS Premium 10 kg (S/ 65.00)
+📍 Jr. Dante 260, Dpto 301, Surquillo
+💳 Efectivo (Vuelto de S/ 100.00)
+⏱️ Llegada: 12–15 min
+            </div>
+          </div>
+
+          <div style="padding:0.8vh 1vw; border-top:1px solid var(--line); background:var(--surface); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong id="nomProd76" style="font-size:0.95rem;">Solgas 10 kg</strong>
+              <div style="font-size:0.7rem; color:var(--muted);">Surquillo · 12–15 min</div>
+            </div>
+            <div id="price76" style="font-family:var(--ff_O); font-size:1.35rem; font-weight:800; color:var(--cl-orange);">S/ 65.00</div>
+          </div>
+
+          <div class="v76-actions-bar">
+            <a href="https://wa.me/51936369384" target="_blank" class="v76-btn-wa" id="btnWa76">
+              <i class="fa-brands fa-whatsapp"></i> <span id="lblWa76">Pedir por WhatsApp (S/ 65.00)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <nav class="v76-mobile-dock">
+    <button class="v76-m-item active"><i class="fa-solid fa-bolt"></i><span>Pedir</span></button>
+    <button class="v76-m-item"><i class="fa-solid fa-map-location-dot"></i><span>Sedes</span></button>
+    <button class="v76-m-item"><i class="fa-solid fa-headset"></i><span>Soporte</span></button>
+    <button class="v76-m-item"><i class="fa-solid fa-user"></i><span>Cuenta</span></button>
+  </nav>
+
+  <script is:inline>
+    (function() {
+      let state = { nombre: 'Valeria', prod: 'Balón SOLGAS Premium 10 kg', precio: 65, dir: 'Jr. Dante 260, Dpto 301, Surquillo', eta: '12–15 min' };
+      const bubble = document.getElementById('bubble76');
+      const nomP = document.getElementById('nomProd76');
+      const prP = document.getElementById('price76');
+      const lbl = document.getElementById('lblWa76');
+      const btn = document.getElementById('btnWa76');
+
+      function update() {
+        const msg = `¡Hola Solgas Surquillo! Deseo pedir mi recarga:\n👤 ${state.nombre}\n📦 ${state.prod} (S/ ${state.precio.toFixed(2)})\n📍 ${state.dir}\n💳 Efectivo (Vuelto de S/ 100.00)\n⏱️ Llegada: ${state.eta}`;
+        if (bubble) bubble.innerHTML = msg.replace(/\n/g, '<br>');
+        if (nomP) nomP.textContent = state.prod;
+        if (prP) prP.textContent = `S/ ${state.precio.toFixed(2)}`;
+        if (lbl) lbl.textContent = `Pedir por WhatsApp (S/ ${state.precio.toFixed(2)})`;
+        if (btn) btn.href = `https://wa.me/51936369384?text=${encodeURIComponent(msg)}`;
+      }
+
+      document.querySelectorAll('.v76-h-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.v76-h-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          state.prod = card.dataset.nombre;
+          state.precio = parseFloat(card.dataset.precio);
+          update();
+        });
+      });
+
+      document.getElementById('btnTheme76')?.addEventListener('click', () => {
+        const cur = document.documentElement.dataset.theme;
+        const next = cur === 'luz' ? 'futuro' : 'luz';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('gaswii_theme_cliente', next);
+      });
+
+      document.getElementById('btnCollapse76')?.addEventListener('click', () => {
+        const isCollapsed = document.documentElement.classList.toggle('is-collapsed');
+        localStorage.setItem('gaswii_sidebar_v76', isCollapsed ? 'true' : 'false');
+      });
+
+      update();
+    })();
+  </script>
+</body>
+</html>

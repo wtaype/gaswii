@@ -1,0 +1,2029 @@
+---
+// src/pages/view72.astro
+// VIEW 72: Portal Maestro de Cliente - Fusión Imagen 1 (Pedido 1-Clic Express) + Imagen 2 (Panel con Sidebar y Sub-pestañas)
+// 100% en Español · Header Compacto (~50px) · Descripciones oficiales de producto.md
+import { avatar } from '../core/widev/nombre.js';
+import witemaCss from '../core/wicss/witema.css?inline';
+
+const cliente = {
+  nombre: 'Valeria',
+  apellido: 'Mendoza Rios',
+  nombreCompleto: 'Valeria Mendoza',
+  usuario: 'valeria.m',
+  telefono: '+51 987 654 321',
+  telefonoLimpio: '987654321',
+  email: 'valeria.mendoza@gmail.com',
+  dni: '74829103',
+  tipoComprobante: 'boleta',
+  ruc: '',
+  razonSocial: '',
+  direccionFiscal: 'Jr. Dante 260, Dpto 301, Surquillo',
+  cilindroHabitual: 'bal-n-solgas-premium-10-kg',
+  valvulaHabitual: 'Click-On (Acople Rápido)',
+  metodoPago: 'efectivo',
+  vueltoDe: '100',
+  notas: 'Piso 3, timbre no suena fuerte. Dejar con vigilancia si no contesto.',
+  direcciones: [
+    {
+      id: 'dir-1',
+      alias: 'Casa Principal',
+      icono: 'fa-house',
+      calle: 'Jr. Dante 260, Dpto 301',
+      distrito: 'Surquillo',
+      referencia: 'Frente al parque, portón marrón',
+      eta: '12–15 min',
+      esPrincipal: true
+    },
+    {
+      id: 'dir-2',
+      alias: 'Oficina / Estudio',
+      icono: 'fa-briefcase',
+      calle: 'Av. República de Panamá 3565, Piso 4',
+      distrito: 'San Isidro',
+      referencia: 'Edificio Platino, frente a BBVA',
+      eta: '18–25 min',
+      esPrincipal: false
+    }
+  ]
+};
+
+// 4 Productos con descripciones oficiales extraídas directamente de producto.md
+const productos = [
+  {
+    id: 'bal-n-solgas-premium-10-kg',
+    nombre: 'Balón SOLGAS Premium 10 kg',
+    nombreCorto: 'Solgas 10 kg',
+    badge: 'MÁS PEDIDO',
+    tagClase: 'badge-fire',
+    tipoUso: 'Hogar',
+    capacidad: '10 kg Neto',
+    pesoFull: '22.5 kg (Tara 12.5 + Gas 10)',
+    valvula: 'Click-On (Acople Rápido)',
+    precioPEN: 65.00,
+    imagen: '/imgwii/productos/BALON-10KG.webp',
+    descripcion: 'Disfruta de un producto confiable y seguro, con peso exacto garantizado desde su origen, llama azul constante y duradera, y cilindro inspeccionado para asegurar que esté libre de corrosión. Además, recibe tu pedido de forma inmediata y sin costo de flete.',
+    checks: [
+      { label: 'Válvula', valor: 'Click-On o Rosca estándar' },
+      { label: 'Pesaje', valor: 'Balanza digital Inacal en puerta' }
+    ]
+  },
+  {
+    id: 'balon-solgas-45-kg',
+    nombre: 'Balón SOLGAS 45 kg',
+    nombreCorto: 'Solgas 45 kg',
+    badge: 'COMERCIAL',
+    tagClase: 'badge-blue',
+    tipoUso: 'Negocio',
+    capacidad: '45 kg Neto',
+    pesoFull: '95.0 kg aprox.',
+    valvula: 'Válvula industrial de conexión segura',
+    precioPEN: 230.00,
+    imagen: '/imgwii/productos/BALON-45KG.webp',
+    descripcion: 'Balón SOLGAS con 45 kg de GLP, ideal para restaurantes, panaderías, comercios y negocios de alto consumo. Producto original de planta, con peso garantizado, sello de seguridad y despacho coordinado hasta tu establecimiento.',
+    checks: [
+      { label: 'Conexión', valor: 'Rosca industrial de alta presión' },
+      { label: 'Capacidad', valor: 'Caudal continuo para alto consumo' }
+    ]
+  },
+  {
+    id: 'balon-masgas-de-10-kg',
+    nombre: 'Balón MASGAS de 10 kg',
+    nombreCorto: 'Masgas 10 kg',
+    badge: 'ECONÓMICO',
+    tagClase: 'badge-emerald',
+    tipoUso: 'Ahorro',
+    capacidad: '10 kg de GLP',
+    pesoFull: '22.4 kg garantizado',
+    valvula: 'Estándar de conexión roscada',
+    precioPEN: 55.00,
+    imagen: '/imgwii/productos/MASGAS-10KG.webp',
+    descripcion: 'Balón MASGAS con 10 kg de GLP, ideal para cocinar diariamente en hogares y pequeños negocios. Cuenta con válvula de conexión roscada, sello de seguridad verificado y un cilindro inspeccionado antes de su entrega. Incluye delivery según cobertura y disponibilidad.',
+    checks: [
+      { label: 'Conexión', valor: 'Válvula roscada estándar universal' },
+      { label: 'Rendimiento', valor: 'Larga duración garantizada' }
+    ]
+  },
+  {
+    id: 'kit-regulador-solgas',
+    nombre: 'Kit Regulador SOLGAS',
+    nombreCorto: 'Regulador Solgas',
+    badge: 'SEGURIDAD',
+    tagClase: 'badge-gold',
+    tipoUso: 'Antifugas',
+    capacidad: 'Click-On',
+    pesoFull: 'Kit completo',
+    valvula: 'Sistema de traba antifugas',
+    precioPEN: 70.00,
+    imagen: '/imgwii/productos/REGULADOR.webp',
+    descripcion: 'Kit regulador premium original Solgas con sistema traba automática antifugas y manguera de alta resistencia, certificado y homologado por Osinergmin para máxima seguridad doméstica.',
+    checks: [
+      { label: 'Seguridad', valor: 'Traba automática antifugas' },
+      { label: 'Certificación', valor: 'Homologado por Osinergmin' }
+    ]
+  }
+];
+---
+
+<!doctype html>
+<html lang="es" data-theme="futuro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Portal de Cliente · Solgas Surquillo | View 72</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <!-- Script Anti-FOUC síncrono en 0ms -->
+  <script is:inline>
+    try {
+      const savedTheme = localStorage.getItem('gaswii_theme_cliente') || localStorage.getItem('wiTema') || 'futuro';
+      document.documentElement.dataset.theme = savedTheme;
+      if (localStorage.getItem('gaswii_sidebar_v72') === 'true') {
+        document.documentElement.classList.add('is-collapsed');
+      }
+    } catch (e) {}
+  </script>
+
+  <link rel="stylesheet" href="/google/fonts.css" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <style is:global set:html={witemaCss}></style>
+
+  <style>
+    /* ============================================================
+       VARIABLES Y RESET (ESTILO IMAGEN 2 CON COMPACIDAD)
+       ============================================================ */
+    :root {
+      --side-w: 240px;
+      --side-collapsed-w: 68px;
+      --topbar-h: 50px; /* HEADER COMPACTO SOLICITADO */
+      --cl-orange: #ff6600;
+      --cl-orange-hover: #ff771a;
+      --cl-wa: #25d366;
+      --cl-wa-hover: #1ebd5b;
+      --cl-blue: #0284c7;
+      --cl-emerald: #10b981;
+      --cl-card-bg: #0d1424;
+      --cl-card-border: rgba(255, 255, 255, 0.08);
+      --cl-input-bg: #070c18;
+    }
+
+    html[data-theme="luz"] {
+      --cl-card-bg: #ffffff;
+      --cl-card-border: #e2e8f0;
+      --cl-input-bg: #f8fafc;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--ff_P, 'Poppins', sans-serif);
+      font-size: var(--fz_m);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       1. HEADER COMPACTO (~50PX)
+       ============================================================ */
+    .v72-topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      backdrop-filter: blur(14px);
+    }
+
+    .v72-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .v72-logo {
+      height: 28px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .v72-brand-text {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .v72-brand-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.2px;
+    }
+
+    .v72-brand-title span { color: var(--cl-orange); }
+
+    .v72-brand-sede {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .v72-live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cl-emerald);
+      box-shadow: 0 0 8px var(--cl-emerald);
+    }
+
+    .v72-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .v72-btn-icon {
+      background: var(--surface2, rgba(255,255,255,0.05));
+      border: 1px solid var(--line);
+      color: var(--ink);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+    .v72-btn-icon:hover { border-color: var(--cl-orange); color: var(--cl-orange); }
+
+    .v72-user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 10px 3px 4px;
+      background: var(--surface2, rgba(255,255,255,0.04));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+    }
+
+    .v72-avatar-sm {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--cl-orange);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    .v72-user-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* ============================================================
+       2. SIDEBAR DEL CLIENTE (ESTILO IMAGEN 2)
+       ============================================================ */
+    .v72-sidebar {
+      position: fixed;
+      top: var(--topbar-h);
+      left: 0;
+      bottom: 0;
+      width: var(--side-w);
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 10px;
+      z-index: 50;
+      transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html.is-collapsed .v72-sidebar { width: var(--side-collapsed-w); }
+
+    .v72-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .v72-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-align: left;
+      transition: all 0.16s;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .v72-nav-item i {
+      font-size: 1.05rem;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .v72-nav-item:hover {
+      background: var(--surface2, rgba(255,255,255,0.05));
+      color: var(--ink);
+    }
+
+    .v72-nav-item.active {
+      background: rgba(255, 102, 0, 0.12);
+      color: var(--cl-orange);
+      font-weight: 700;
+    }
+
+    .v72-nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      background: var(--cl-orange);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .v72-nav-badge {
+      margin-left: auto;
+      background: rgba(255, 102, 0, 0.18);
+      color: var(--cl-orange);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-family: var(--ff_O, sans-serif);
+    }
+
+    html.is-collapsed .v72-nav-text,
+    html.is-collapsed .v72-nav-badge,
+    html.is-collapsed #lblCollapse72 { display: none; }
+
+    .v72-sidebar-foot {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .v72-btn-collapse {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 8px 10px;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       3. CONTENEDOR PRINCIPAL Y PANELES
+       ============================================================ */
+    .v72-main {
+      margin-top: var(--topbar-h);
+      margin-left: var(--side-w);
+      padding: 18px 22px;
+      min-height: calc(100vh - var(--topbar-h));
+      transition: margin-left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html.is-collapsed .v72-main { margin-left: var(--side-collapsed-w); }
+
+    .v72-panel { display: none; }
+    .v72-panel.active { display: block; animation: v72Fade 0.2s ease-out; }
+
+    @keyframes v72Fade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       MÓDULO 1: PEDIR GAS (FUSIÓN EXACTA CON IMAGEN 1)
+       ============================================================ */
+    .v72-hero-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .v72-hero-banner h1 {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .v72-hero-banner h1 span { color: var(--cl-orange); }
+
+    .v72-btn-manage-ficha {
+      background: transparent;
+      border: 1px solid rgba(255, 102, 0, 0.4);
+      color: var(--cl-orange);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+    }
+    .v72-btn-manage-ficha:hover {
+      background: rgba(255, 102, 0, 0.1);
+    }
+
+    /* BANDA DE 3 METADATOS (IMAGEN 1) */
+    .v72-meta-band {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.6fr;
+      gap: 12px;
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      align-items: center;
+    }
+
+    @media (max-width: 860px) {
+      .v72-meta-band { grid-template-columns: 1fr; }
+    }
+
+    .v72-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .v72-meta-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .v72-meta-label i { color: var(--cl-orange); }
+    .v72-meta-val {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .v72-meta-select {
+      width: 100%;
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* LAYOUT 60% / 40% (GRID IMAGEN 1) */
+    .v72-grid-pedir {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .v72-grid-pedir { grid-template-columns: 1fr; }
+    }
+
+    .v72-sec-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .v72-sec-tag-green {
+      color: var(--cl-emerald);
+      font-size: 0.74rem;
+      text-transform: none;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* 4 CARDS PRODUCTOS (IMAGEN 1) */
+    .v72-cards-prods {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 600px) {
+      .v72-cards-prods { grid-template-columns: 1fr; }
+    }
+
+    .v72-card-p {
+      background: var(--cl-card-bg);
+      border: 1.5px solid var(--cl-card-border);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.18s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .v72-card-p:hover {
+      border-color: rgba(255, 102, 0, 0.5);
+    }
+
+    .v72-card-p.active {
+      border-color: var(--cl-orange);
+      background: rgba(255, 102, 0, 0.04);
+      box-shadow: 0 4px 18px rgba(255, 102, 0, 0.12);
+    }
+
+    .v72-card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .v72-p-badge {
+      font-size: 0.64rem;
+      font-weight: 800;
+      font-family: var(--ff_O, sans-serif);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+    .badge-fire { background: rgba(255, 102, 0, 0.2); color: #ff771a; }
+    .badge-blue { background: rgba(2, 132, 199, 0.2); color: #38bdf8; }
+    .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .badge-gold { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+
+    .v72-p-uso {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .v72-p-img-box {
+      text-align: center;
+      position: relative;
+      margin: 6px 0;
+    }
+
+    .v72-p-img {
+      height: 64px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .v72-p-pill-weight {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      background: rgba(0,0,0,0.65);
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 8px;
+    }
+
+    .v72-p-name {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    /* DESCRIPCIÓN OFICIAL PRODUCTO.MD */
+    .v72-p-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.35;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .v72-p-checks {
+      border-top: 1px dashed var(--line);
+      padding-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+
+    .v72-p-check-item {
+      font-size: 0.68rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .v72-p-check-item i { color: var(--cl-emerald); font-size: 0.62rem; }
+
+    .v72-p-foot-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-top: 1px solid var(--line);
+      padding-top: 6px;
+      margin-top: auto;
+    }
+
+    .v72-p-price {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--cl-orange);
+    }
+
+    .v72-p-free-delivery {
+      color: var(--cl-emerald);
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    /* FORMAS DE PAGO & INDICACIONES (IMAGEN 1) */
+    .v72-card-box {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .v72-pago-indicaciones-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 700px) {
+      .v72-pago-indicaciones-grid { grid-template-columns: 1fr; }
+    }
+
+    .v72-tabs-pago {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .v72-btn-tab-pago {
+      flex: 1;
+      padding: 7px 10px;
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.16s;
+    }
+
+    .v72-btn-tab-pago.active {
+      border-color: var(--cl-orange);
+      color: var(--cl-orange);
+      background: rgba(255, 102, 0, 0.1);
+    }
+
+    .v72-chips-vuelto {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+
+    .v72-chip-btn {
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.14s;
+    }
+
+    .v72-chip-btn:hover { border-color: var(--cl-orange); }
+    .v72-chip-btn.active {
+      background: var(--cl-orange);
+      color: #fff;
+      border-color: var(--cl-orange);
+    }
+
+    .v72-vuelto-calc-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--cl-emerald);
+      margin-top: 6px;
+    }
+
+    .v72-quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .v72-quick-tag {
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .v72-quick-tag:hover { color: var(--cl-orange); border-color: var(--cl-orange); }
+
+    .v72-notes-textarea {
+      width: 100%;
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      resize: vertical;
+      min-height: 52px;
+      outline: none;
+    }
+    .v72-notes-textarea:focus { border-color: var(--cl-orange); }
+
+    /* ============================================================
+       COLUMNA STICKY DE WHATSAPP MOCKUP (IMAGEN 1)
+       ============================================================ */
+    .v72-wa-card {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      position: sticky;
+      top: calc(var(--topbar-h) + 14px);
+    }
+
+    .v72-wa-header {
+      background: #008069;
+      color: #fff;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .v72-wa-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .v72-wa-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #fff;
+      object-fit: contain;
+      padding: 3px;
+    }
+
+    .v72-wa-header-info strong {
+      font-size: 0.84rem;
+      display: block;
+      line-height: 1.15;
+    }
+    .v72-wa-header-info small {
+      font-size: 0.68rem;
+      opacity: 0.9;
+    }
+
+    .v72-wa-body {
+      background: #efeae2;
+      padding: 14px 12px;
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    html[data-theme="futuro"] .v72-wa-body {
+      background: #0b141a;
+    }
+
+    .v72-bubble-in {
+      background: #fff;
+      color: #111b21;
+      border-radius: 8px 8px 8px 2px;
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      max-width: 88%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+    html[data-theme="futuro"] .v72-bubble-in {
+      background: #202c33;
+      color: #e9edef;
+    }
+
+    .v72-bubble-out {
+      background: #d9fdd3;
+      color: #111b21;
+      border-radius: 8px 8px 2px 8px;
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      max-width: 92%;
+      margin-left: auto;
+      white-space: pre-line;
+      line-height: 1.4;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+    html[data-theme="futuro"] .v72-bubble-out {
+      background: #005c4b;
+      color: #e9edef;
+    }
+
+    .v72-wa-time {
+      font-size: 0.62rem;
+      opacity: 0.65;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 3px;
+      margin-top: 3px;
+    }
+
+    /* RESUMEN TOTAL DE COMPRA */
+    .v72-summary-box {
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      background: var(--surface);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .v72-summary-prod {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .v72-summary-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .v72-summary-price {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--cl-orange);
+    }
+
+    .v72-dest-pill-card {
+      padding: 10px 14px;
+      background: var(--surface2, rgba(255,255,255,0.02));
+      border-top: 1px solid var(--line);
+    }
+    .v72-dest-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .v72-dest-head span { color: var(--cl-emerald); }
+    .v72-dest-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .v72-dest-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .v72-actions-row {
+      padding: 12px 14px;
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 8px;
+    }
+
+    .v72-btn-call {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(2, 132, 199, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+    .v72-btn-call:hover { background: #0284c7; color: #fff; }
+
+    .v72-btn-wa-order {
+      flex: 1;
+      background: var(--cl-wa);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.18s;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+    }
+    .v72-btn-wa-order:hover {
+      background: var(--cl-wa-hover);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       MÓDULO 4: MI CUENTA (ESTILO IMAGEN 2 CON SUB-PESTAÑAS)
+       ============================================================ */
+    .v72-cuenta-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .v72-cuenta-header h2 {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin: 0;
+    }
+    .v72-cuenta-header p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 2px 0 0;
+    }
+
+    .v72-btn-save-primary {
+      background: var(--cl-orange);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+    }
+    .v72-btn-save-primary:hover {
+      background: var(--cl-orange-hover);
+      transform: translateY(-1px);
+    }
+
+    /* BARRA DE SUB-PESTAÑAS SEGMENTADAS (IMAGEN 2) */
+    .v72-subtabs-bar {
+      display: flex;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .v72-subtab-btn {
+      padding: 7px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 7px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.16s;
+      white-space: nowrap;
+    }
+
+    .v72-subtab-btn:hover { color: var(--ink); }
+    .v72-subtab-btn.active {
+      background: var(--cl-orange);
+      color: #fff;
+    }
+
+    .v72-subpanel { display: none; }
+    .v72-subpanel.active { display: block; animation: v72Fade 0.2s ease-out; }
+
+    .v72-form-card {
+      background: var(--cl-card-bg);
+      border: 1px solid var(--cl-card-border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .v72-form-card-title {
+      font-family: var(--ff_O, 'Outfit', sans-serif);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--cl-orange);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .v72-form-card-sub {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .v72-form-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .v72-form-grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .v72-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .v72-form-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .v72-form-input {
+      width: 100%;
+      background: var(--cl-input-bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      outline: none;
+    }
+    .v72-form-input:focus { border-color: var(--cl-orange); }
+
+    /* TOAST DE CONFIRMACIÓN */
+    #v72Toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: none;
+      z-index: 100;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       1. HEADER COMPACTO (~50PX)
+       ============================================================ -->
+  <header class="v72-topbar">
+    <a href="/view72" class="v72-brand">
+      <img src="/imgwii/logo.webp" alt="Solgas" class="v72-logo" />
+      <div class="v72-brand-text">
+        <span class="v72-brand-title">SOLGAS <span>SURQUILLO</span></span>
+        <span class="v72-brand-sede">
+          <span class="v72-live-dot"></span> Jr. Dante 260 · Despacho Activo
+        </span>
+      </div>
+    </a>
+
+    <div class="v72-topbar-right">
+      <button class="v72-btn-icon" id="btnTheme72" title="Alternar modo claro / oscuro">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+
+      <div class="v72-user-chip">
+        <div class="v72-avatar-sm">{avatar(cliente.nombre)}</div>
+        <span class="v72-user-name">{cliente.nombre} · VIP</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       2. SIDEBAR MODULAR (ESTILO IMAGEN 2)
+       ============================================================ -->
+  <aside class="v72-sidebar">
+    <nav class="v72-nav">
+      <button class="v72-nav-item active" data-target="pedir-gas">
+        <i class="fa-solid fa-bolt"></i>
+        <span class="v72-nav-text">Pedir gas</span>
+      </button>
+
+      <button class="v72-nav-item" data-target="direcciones">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span class="v72-nav-text">Direcciones</span>
+        <span class="v72-nav-badge">{cliente.direcciones.length}</span>
+      </button>
+
+      <button class="v72-nav-item" data-target="soporte">
+        <i class="fa-solid fa-headset"></i>
+        <span class="v72-nav-text">Soporte & Boletas</span>
+      </button>
+
+      <button class="v72-nav-item" data-target="mi-cuenta">
+        <i class="fa-solid fa-user-gear"></i>
+        <span class="v72-nav-text">Mi cuenta</span>
+      </button>
+    </nav>
+
+    <div class="v72-sidebar-foot">
+      <button class="v72-btn-collapse" id="btnCollapse72">
+        <i class="fa-solid fa-arrow-left-long"></i>
+        <span id="lblCollapse72">Colapsar</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       3. SHELL PRINCIPAL CON PANELES
+       ============================================================ -->
+  <main class="v72-main">
+
+    <!-- ========================================================
+         PANEL 1: PEDIR GAS (FUSIÓN EXACTA CON IMAGEN 1)
+         ======================================================== -->
+    <section class="v72-panel active" id="panel-pedir-gas">
+      <!-- HEADER SALUDO (IMAGEN 1) -->
+      <div class="v72-hero-banner">
+        <h1>¡Buenas noches {cliente.nombre}! 🔥 <span>Realiza tu Pedido Hoy</span></h1>
+        <button type="button" class="v72-btn-manage-ficha" id="btnGoFicha">
+          <i class="fa-solid fa-address-card"></i> Gestionar Ficha & Direcciones
+        </button>
+      </div>
+
+      <!-- BANDA DE 3 METADATOS (IMAGEN 1) -->
+      <div class="v72-meta-band">
+        <div class="v72-meta-item">
+          <span class="v72-meta-label"><i class="fa-solid fa-user"></i> Nombre Receptor</span>
+          <span class="v72-meta-val" id="metaNombre">{cliente.nombre}</span>
+        </div>
+
+        <div class="v72-meta-item">
+          <span class="v72-meta-label"><i class="fa-brands fa-whatsapp"></i> WhatsApp Confirmación</span>
+          <span class="v72-meta-val" id="metaTelefono">{cliente.telefono}</span>
+        </div>
+
+        <div class="v72-meta-item">
+          <span class="v72-meta-label"><i class="fa-solid fa-location-dot"></i> Dirección de Envío</span>
+          <select class="v72-meta-select" id="metaSelectDir">
+            {cliente.direcciones.map(d => (
+              <option 
+                value={d.id} 
+                data-calle={d.calle} 
+                data-distrito={d.distrito} 
+                data-ref={d.referencia}
+                data-eta={d.eta}
+                data-alias={d.alias}
+                selected={d.esPrincipal}
+              >
+                {d.alias} - {d.distrito} ({d.eta})
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <!-- GRID PRINCIPAL (CATÁLOGO + WHATSAPP LIVE) -->
+      <div class="v72-grid-pedir">
+        <!-- COLUMNA IZQUIERDA: PRODUCTOS Y PAGOS -->
+        <div>
+          <div class="v72-sec-title">
+            <span>Selecciona tu Producto de Hoy</span>
+            <span class="v72-sec-tag-green">
+              <i class="fa-solid fa-truck-fast"></i> Delivery y Pesaje Incluido
+            </span>
+          </div>
+
+          <!-- 4 CARDS DE PRODUCTO CON DESCRIPCIONES DE PRODUCTO.MD -->
+          <div class="v72-cards-prods">
+            {productos.map((prod, idx) => (
+              <div 
+                class={`v72-card-p ${idx === 0 ? 'active' : ''}`}
+                data-id={prod.id}
+                data-nombre={prod.nombre}
+                data-nombrecorto={prod.nombreCorto}
+                data-precio={prod.precioPEN}
+              >
+                <div class="v72-card-top-row">
+                  <span class={`v72-p-badge ${prod.tagClase}`}>{prod.badge}</span>
+                  <span class="v72-p-uso">{prod.tipoUso}</span>
+                </div>
+
+                <div class="v72-p-img-box">
+                  <img src={prod.imagen} alt={prod.nombre} class="v72-p-img" />
+                  <span class="v72-p-pill-weight">{prod.capacidad}</span>
+                </div>
+
+                <div class="v72-p-name">{prod.nombre}</div>
+
+                <!-- DESCRIPCIÓN OFICIAL PRODUCTO.MD -->
+                <p class="v72-p-desc" title={prod.descripcion}>
+                  {prod.descripcion}
+                </p>
+
+                <div class="v72-p-checks">
+                  {prod.checks.map(c => (
+                    <div class="v72-p-check-item">
+                      <i class="fa-solid fa-check"></i>
+                      <span><strong>{c.label}:</strong> {c.valor}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div class="v72-p-foot-row">
+                  <span class="v72-p-price">S/ {prod.precioPEN.toFixed(2)}</span>
+                  <span class="v72-p-free-delivery">Entrega Gratis</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- FORMA DE PAGO & INDICACIONES DE ENTREGA (IMAGEN 1) -->
+          <div class="v72-sec-title">
+            <span>Forma de Pago & Indicaciones de Entrega</span>
+            <span style="font-size:0.72rem; color:var(--muted); text-transform:none;">Sin comisiones adicionales</span>
+          </div>
+
+          <div class="v72-card-box">
+            <div class="v72-pago-indicaciones-grid">
+              <!-- MÉTODO DE PAGO -->
+              <div>
+                <div style="font-size:0.76rem; font-weight:700; color:var(--muted); margin-bottom:6px;">
+                  <i class="fa-solid fa-wallet" style="color:var(--cl-orange);"></i> Método de Pago
+                </div>
+
+                <div class="v72-tabs-pago">
+                  <button type="button" class="v72-btn-tab-pago active" data-metodo="efectivo">
+                    <i class="fa-solid fa-money-bill-wave"></i> Efectivo
+                  </button>
+                  <button type="button" class="v72-btn-tab-pago" data-metodo="yape-plin">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Yape / Plin
+                  </button>
+                </div>
+
+                <!-- SELECTOR DE VUELTO SI ES EFECTIVO -->
+                <div id="boxVuelto">
+                  <div style="font-size:0.72rem; color:var(--muted); font-weight:600;">¿Con cuánto pagarás? (Vuelto)</div>
+                  <div class="v72-chips-vuelto" id="chipsVuelto">
+                    <button type="button" class="v72-chip-btn" data-vuelto="exacto">Exacto</button>
+                    <button type="button" class="v72-chip-btn" data-vuelto="20">S/ 20</button>
+                    <button type="button" class="v72-chip-btn" data-vuelto="50">S/ 50</button>
+                    <button type="button" class="v72-chip-btn active" data-vuelto="100">S/ 100</button>
+                    <button type="button" class="v72-chip-btn" data-vuelto="otro">Otro</button>
+                  </div>
+
+                  <div class="v72-vuelto-calc-box" id="calcVueltoRow">
+                    <span>Vuelto estimado:</span>
+                    <span id="valVueltoCalculado">S/ 35.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- INDICACIONES PARA EL REPARTIDOR -->
+              <div>
+                <div style="font-size:0.76rem; font-weight:700; color:var(--muted); margin-bottom:6px;">
+                  <i class="fa-solid fa-comment-dots" style="color:var(--cl-orange);"></i> Indicaciones para el Repartidor
+                </div>
+
+                <div class="v72-quick-tags" id="tagsNotas">
+                  <button type="button" class="v72-quick-tag" data-tag="Tocar timbre">🔔 Timbre</button>
+                  <button type="button" class="v72-quick-tag" data-tag="Llamar al llegar">📞 Llamar</button>
+                  <button type="button" class="v72-quick-tag" data-tag="Dejar en recepción">🏢 Recepción</button>
+                  <button type="button" class="v72-quick-tag" data-tag="Piso 3 sin ascensor">🚪 Piso 3</button>
+                </div>
+
+                <textarea class="v72-notes-textarea" id="txtNotas">{cliente.notas}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: MOCKUP REALISTA WHATSAPP (IMAGEN 1) -->
+        <aside>
+          <div class="v72-wa-card">
+            <!-- HEADER CHAT WHATSAPP -->
+            <div class="v72-wa-header">
+              <div class="v72-wa-header-left">
+                <i class="fa-solid fa-arrow-left" style="font-size:0.8rem; cursor:pointer;"></i>
+                <img src="/imgwii/logo.webp" alt="Solgas" class="v72-wa-avatar" />
+                <div class="v72-wa-header-info">
+                  <strong>Solgas Surquillo Oficial</strong>
+                  <small>en línea · Respuesta inmediata</small>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; font-size:0.88rem;">
+                <i class="fa-solid fa-phone"></i>
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </div>
+            </div>
+
+            <!-- CHAT AREA -->
+            <div class="v72-wa-body">
+              <div class="v72-bubble-in">
+                ¡Hola Valeria! 👋 En Solgas Surquillo tenemos unidades en Jr. Dante 260 listas con balanza digital Inacal.
+                <div class="v72-wa-time">10:30 a. m.</div>
+              </div>
+
+              <div class="v72-bubble-out" id="bubbleWaText">
+¡Hola Solgas Surquillo! Deseo pedir mi recarga con mis datos guardados:
+
+👤 Nombre: Valeria
+📦 Producto: Balón SOLGAS Premium 10 kg (S/ 65.00)
+📍 Entrega: Jr. Dante 260, Dpto 301, Surquillo
+🧭 Ref: Frente al parque, portón marrón
+💳 Pago: Efectivo (Llevar vuelto de S/ 100.00)
+📝 Nota: Piso 3, timbre no suena fuerte.
+⏱️ Llegada estimada: 12–15 min
+                <div class="v72-wa-time">
+                  <span>10:32 a. m.</span>
+                  <i class="fa-solid fa-check-double" style="color:#53bdeb;"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- RESUMEN PRECIO Y PRODUCTO -->
+            <div class="v72-summary-box">
+              <div>
+                <div class="v72-summary-prod" id="sumNombreProd">Solgas 10 kg</div>
+                <div class="v72-summary-sub" id="sumDistritoEta">Surquillo · 12–15 min</div>
+              </div>
+              <div class="v72-summary-price" id="sumPrecioTotal">S/ 65.00</div>
+            </div>
+
+            <!-- DESTINO DE ENTREGA SELECCIONADO -->
+            <div class="v72-dest-pill-card">
+              <div class="v72-dest-head">
+                <span><i class="fa-solid fa-location-dot"></i> Destino de Entrega</span>
+                <span id="destEtaPill">12–15 min</span>
+              </div>
+              <div class="v72-dest-title" id="destAliasTxt">Casa Principal</div>
+              <div class="v72-dest-sub" id="destCalleRefTxt">Jr. Dante 260, Dpto 301, Surquillo · Frente al parque, portón marrón</div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN (LLAMAR + WHATSAPP) -->
+            <div class="v72-actions-row">
+              <a href="tel:936369384" class="v72-btn-call" title="Llamar a Solgas Surquillo">
+                <i class="fa-solid fa-phone"></i>
+              </a>
+              <a href="https://wa.me/51936369384" target="_blank" rel="noopener noreferrer" class="v72-btn-wa-order" id="btnWaAction">
+                <i class="fa-brands fa-whatsapp" style="font-size:1.15rem;"></i>
+                <span id="lblBtnWa">Pedir por WhatsApp (S/ 65.00)</span>
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PANEL 2: DIRECCIONES (LIBRETA DE SEDES)
+         ======================================================== -->
+    <section class="v72-panel" id="panel-direcciones">
+      <div class="v72-cuenta-header">
+        <div>
+          <h2>Libreta de Direcciones ({cliente.direcciones.length})</h2>
+          <p>Gestiona tus domicilios y negocios para que tu pedido llegue en minutos desde Jr. Dante 260.</p>
+        </div>
+        <button type="button" class="v72-btn-save-primary" id="btnNuevaDir">
+          <i class="fa-solid fa-plus"></i> Nueva Dirección
+        </button>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:14px; margin-bottom:20px;">
+        {cliente.direcciones.map(d => (
+          <div class="v72-form-card" style="margin-bottom:0;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:rgba(255,102,0,0.12); color:var(--cl-orange); display:grid; place-items:center; font-size:1rem;">
+                  <i class={`fa-solid ${d.icono}`}></i>
+                </div>
+                <div>
+                  <strong style="font-size:0.92rem; color:var(--ink);">{d.alias}</strong>
+                  <div style="font-size:0.72rem; color:var(--muted);">{d.distrito}</div>
+                </div>
+              </div>
+              {d.esPrincipal && (
+                <span style="font-size:0.65rem; font-weight:800; background:rgba(16,185,129,0.15); color:#10b981; padding:2px 8px; border-radius:10px;">
+                  PRINCIPAL
+                </span>
+              )}
+            </div>
+
+            <div style="margin:12px 0; font-size:0.8rem;">
+              <div style="font-weight:700; color:var(--ink);">{d.calle}</div>
+              <div style="color:var(--muted); font-size:0.74rem;">Ref: {d.referencia}</div>
+              <div style="color:var(--cl-emerald); font-weight:700; margin-top:4px;">⏱️ Llegada: {d.eta}</div>
+            </div>
+
+            <div style="display:flex; gap:8px; border-top:1px solid var(--line); padding-top:10px;">
+              <button type="button" class="v72-chip-btn" style="flex:1;" onclick="alert('Dirección seleccionada para tu siguiente pedido')">
+                Seleccionar para Pedir
+              </button>
+              {!d.esPrincipal && (
+                <button type="button" class="v72-chip-btn" onclick="alert('Establecida como predeterminada')">
+                  Hacer Principal
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PANEL 3: SOPORTE & COMPROBANTES
+         ======================================================== -->
+    <section class="v72-panel" id="panel-soporte">
+      <div class="v72-cuenta-header">
+        <div>
+          <h2>Soporte al Cliente & Solicitud de Comprobantes</h2>
+          <p>Solicita tus Boletas o Facturas electrónicas y comunícate con la central de operaciones.</p>
+        </div>
+      </div>
+
+      <div class="v72-form-card">
+        <div class="v72-form-card-title">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Solicitud de Factura o Boleta Electrónica
+        </div>
+        <div class="v72-form-card-sub">
+          Emisión de comprobante SUNAT para tus compras en Solgas Surquillo.
+        </div>
+
+        <div class="v72-form-grid-2">
+          <div class="v72-form-group">
+            <label>Tipo de Comprobante Requerido</label>
+            <select class="v72-form-input">
+              <option value="boleta">Boleta Electrónica (DNI)</option>
+              <option value="factura">Factura Electrónica (RUC 20)</option>
+            </select>
+          </div>
+
+          <div class="v72-form-group">
+            <label>Número de DNI o RUC</label>
+            <input type="text" class="v72-form-input" placeholder="Ej: 20601234567" value={cliente.dni} />
+          </div>
+
+          <div class="v72-form-group">
+            <label>Razón Social o Nombre Completo</label>
+            <input type="text" class="v72-form-input" placeholder="Nombre que figurará en el comprobante" value={cliente.nombreCompleto} />
+          </div>
+
+          <div class="v72-form-group">
+            <label>Correo Electrónico para Envío de PDF / XML</label>
+            <input type="email" class="v72-form-input" value={cliente.email} />
+          </div>
+        </div>
+
+        <div style="margin-top:14px; text-align:right;">
+          <button type="button" class="v72-btn-save-primary" onclick="alert('Solicitud enviada a facturación Solgas Surquillo.')">
+            <i class="fa-solid fa-paper-plane"></i> Enviar Solicitud de Comprobante
+          </button>
+        </div>
+      </div>
+
+      <div class="v72-form-card">
+        <div class="v72-form-card-title">
+          <i class="fa-solid fa-headset"></i> Canales de Atención Directa
+        </div>
+        <div class="v72-form-card-sub">
+          ¿Tienes dudas sobre el pesaje con balanza Inacal o el estado de tu motorizado?
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:12px;">
+          <a href="https://wa.me/51936369384?text=Hola%20Solgas%20Surquillo,%20necesito%20ayuda%20con%20mi%20pedido" target="_blank" class="v72-btn-save-primary" style="background:#25d366; text-decoration:none;">
+            <i class="fa-brands fa-whatsapp"></i> Chat de Soporte WhatsApp
+          </a>
+          <a href="tel:936369384" class="v72-btn-save-primary" style="background:#0284c7; text-decoration:none;">
+            <i class="fa-solid fa-phone"></i> Central Telefónica (936 369 384)
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PANEL 4: MI CUENTA (ESTILO IMAGEN 2 CON SUB-PESTAÑAS)
+         ======================================================== -->
+    <section class="v72-panel" id="panel-mi-cuenta">
+      <!-- CABECERA ESTILO MI NEGOCIO -->
+      <div class="v72-cuenta-header">
+        <div>
+          <h2>Ficha de Mi Cuenta · Cliente VIP</h2>
+          <p>Configuración de datos personales, facturación SUNAT, preferencias de recarga y seguridad.</p>
+        </div>
+        <button type="button" class="v72-btn-save-primary" id="btnSaveMiCuenta">
+          <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+        </button>
+      </div>
+
+      <!-- BARRA DE SUB-PESTAÑAS SEGMENTADAS (ESTILO IMAGEN 2) -->
+      <div class="v72-subtabs-bar">
+        <button type="button" class="v72-subtab-btn active" data-sub="identidad">
+          <i class="fa-solid fa-id-card"></i> Identidad & Perfil
+        </button>
+        <button type="button" class="v72-subtab-btn" data-sub="facturacion">
+          <i class="fa-solid fa-building"></i> Facturación & SUNAT
+        </button>
+        <button type="button" class="v72-subtab-btn" data-sub="preferencias">
+          <i class="fa-solid fa-sliders"></i> Preferencias de Gas
+        </button>
+        <button type="button" class="v72-subtab-btn" data-sub="seguridad">
+          <i class="fa-solid fa-shield-halved"></i> Seguridad & Notificaciones
+        </button>
+      </div>
+
+      <!-- SUBPANEL 1: IDENTIDAD & PERFIL -->
+      <div class="v72-subpanel active" id="subpanel-identidad">
+        <div class="v72-form-card">
+          <div class="v72-form-card-title">
+            <i class="fa-solid fa-user-check"></i> Datos Personales del Titular
+          </div>
+          <div class="v72-form-card-sub">
+            Información usada para el saludo y la confirmación de despachos en puerta.
+          </div>
+
+          <div class="v72-form-grid-2">
+            <div class="v72-form-group">
+              <label>Primer Nombre (Nombre de Pila)</label>
+              <input type="text" class="v72-form-input" id="inNombrePila" value={cliente.nombre} />
+            </div>
+
+            <div class="v72-form-group">
+              <label>Apellidos Completos</label>
+              <input type="text" class="v72-form-input" value={cliente.apellido} />
+            </div>
+
+            <div class="v72-form-group">
+              <label>DNI / Documento de Identidad</label>
+              <input type="text" class="v72-form-input" value={cliente.dni} />
+            </div>
+
+            <div class="v72-form-group">
+              <label>WhatsApp de Confirmación</label>
+              <input type="tel" class="v72-form-input" id="inTelefono" value={cliente.telefono} />
+            </div>
+
+            <div class="v72-form-group">
+              <label>Correo Electrónico</label>
+              <input type="email" class="v72-form-input" value={cliente.email} />
+            </div>
+
+            <div class="v72-form-group">
+              <label>Usuario Identificador</label>
+              <input type="text" class="v72-form-input" value={cliente.usuario} readonly style="opacity:0.7;" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBPANEL 2: FACTURACIÓN & SUNAT -->
+      <div class="v72-subpanel" id="subpanel-facturacion">
+        <div class="v72-form-card">
+          <div class="v72-form-card-title">
+            <i class="fa-solid fa-building-columns"></i> Información Tributaria & Facturación Electrónica
+          </div>
+          <div class="v72-form-card-sub">
+            Si solicitas Factura con RUC para tu empresa o negocio gastronómico.
+          </div>
+
+          <div class="v72-form-grid-2">
+            <div class="v72-form-group">
+              <label>Comprobante Predeterminado</label>
+              <select class="v72-form-input">
+                <option value="boleta" selected>Boleta de Venta</option>
+                <option value="factura">Factura RUC</option>
+              </select>
+            </div>
+
+            <div class="v72-form-group">
+              <label>RUC (11 dígitos)</label>
+              <input type="text" class="v72-form-input" placeholder="Ej: 20601234567" />
+            </div>
+
+            <div class="v72-form-group">
+              <label>Razón Social</label>
+              <input type="text" class="v72-form-input" placeholder="Ej: Dante Gastronomía SAC" />
+            </div>
+
+            <div class="v72-form-group">
+              <label>Domicilio Fiscal</label>
+              <input type="text" class="v72-form-input" value={cliente.direccionFiscal} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBPANEL 3: PREFERENCIAS DE GAS -->
+      <div class="v72-subpanel" id="subpanel-preferencias">
+        <div class="v72-form-card">
+          <div class="v72-form-card-title">
+            <i class="fa-solid fa-fire"></i> Preferencias de Cilindro y Válvula
+          </div>
+          <div class="v72-form-card-sub">
+            Tus opciones favoritas predeterminadas al cargar la pantalla de pedido express.
+          </div>
+
+          <div class="v72-form-grid-2">
+            <div class="v72-form-group">
+              <label>Cilindro Habitual</label>
+              <select class="v72-form-input">
+                <option value="solgas-10kg" selected>Balón SOLGAS Premium 10 kg</option>
+                <option value="masgas-10kg">Balón MASGAS 10 kg</option>
+                <option value="solgas-45kg">Balón SOLGAS 45 kg</option>
+              </select>
+            </div>
+
+            <div class="v72-form-group">
+              <label>Tipo de Válvula Instalada en Casa</label>
+              <select class="v72-form-input">
+                <option value="click-on" selected>Click-On (Acople Rápido)</option>
+                <option value="rosca">Rosca Estándar</option>
+              </select>
+            </div>
+
+            <div class="v72-form-group">
+              <label>Método de Pago Habitual</label>
+              <select class="v72-form-input">
+                <option value="efectivo" selected>Efectivo con vuelto</option>
+                <option value="yape">Yape / Plin</option>
+              </select>
+            </div>
+
+            <div class="v72-form-group">
+              <label>Pesaje Obligatorio en Puerta</label>
+              <select class="v72-form-input">
+                <option value="si" selected>Sí, verificar siempre en balanza digital Inacal</option>
+                <option value="opcional">Solo si tengo dudas</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBPANEL 4: SEGURIDAD -->
+      <div class="v72-subpanel" id="subpanel-seguridad">
+        <div class="v72-form-card">
+          <div class="v72-form-card-title">
+            <i class="fa-solid fa-shield"></i> Preferencias de Visualización y Alertas
+          </div>
+          <div class="v72-form-card-sub">
+            Personaliza la interfaz y notificaciones preventivas de recarga.
+          </div>
+
+          <div class="v72-form-grid-2">
+            <div class="v72-form-group">
+              <label>Tema Predeterminado</label>
+              <select class="v72-form-input" id="selTemaCuenta">
+                <option value="futuro" selected>Modo Oscuro (Futuro)</option>
+                <option value="luz">Modo Claro (Luz)</option>
+              </select>
+            </div>
+
+            <div class="v72-form-group">
+              <label>Recordatorio Preventivo de Recarga</label>
+              <select class="v72-form-input">
+                <option value="si" selected>Avisarme a los 26 días de uso (~2 días antes de acabarse)</option>
+                <option value="no">No recordarme</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="v72Toast">Datos actualizados</div>
+
+  <!-- ============================================================
+       4. CONTROLADOR JAVASCRIPT REACTIVO (0MS OVERHEAD)
+       ============================================================ */ -->
+  <script is:inline>
+    (function() {
+      // ESTADO REACTIVO DEL PEDIDO
+      const state = {
+        nombre: 'Valeria',
+        telefono: '+51 987 654 321',
+        producto: 'Balón SOLGAS Premium 10 kg',
+        productoCorto: 'Solgas 10 kg',
+        precio: 65.00,
+        alias: 'Casa Principal',
+        calle: 'Jr. Dante 260, Dpto 301',
+        distrito: 'Surquillo',
+        ref: 'Frente al parque, portón marrón',
+        eta: '12–15 min',
+        metodoPago: 'efectivo',
+        vueltoSeleccionado: '100',
+        pagoTexto: 'Efectivo (Llevar vuelto de S/ 100.00)',
+        nota: 'Piso 3, timbre no suena fuerte. Dejar con vigilancia si no contesto.'
+      };
+
+      const bubbleWa = document.getElementById('bubbleWaText');
+      const sumProd = document.getElementById('sumNombreProd');
+      const sumEta = document.getElementById('sumDistritoEta');
+      const sumPrecio = document.getElementById('sumPrecioTotal');
+      const destAlias = document.getElementById('destAliasTxt');
+      const destCalleRef = document.getElementById('destCalleRefTxt');
+      const destEtaPill = document.getElementById('destEtaPill');
+      const btnWa = document.getElementById('btnWaAction');
+      const lblBtnWa = document.getElementById('lblBtnWa');
+      const toast = document.getElementById('v72Toast');
+      const calcVueltoRow = document.getElementById('calcVueltoRow');
+      const valVuelto = document.getElementById('valVueltoCalculado');
+
+      function showToast(msg) {
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        clearTimeout(window._t72Id);
+        window._t72Id = setTimeout(() => { toast.style.display = 'none'; }, 1600);
+      }
+
+      function updateWA() {
+        // Cálculo de vuelto
+        if (state.metodoPago === 'efectivo') {
+          if (state.vueltoSeleccionado === 'exacto') {
+            state.pagoTexto = `Efectivo (Monto Exacto: S/ ${state.precio.toFixed(2)})`;
+            if (calcVueltoRow) calcVueltoRow.style.display = 'none';
+          } else if (state.vueltoSeleccionado === 'otro') {
+            state.pagoTexto = 'Efectivo (Coordinar vuelto)';
+            if (calcVueltoRow) calcVueltoRow.style.display = 'none';
+          } else {
+            const billete = parseFloat(state.vueltoSeleccionado) || 100;
+            const diff = billete - state.precio;
+            state.pagoTexto = `Efectivo (Paga con S/ ${billete.toFixed(2)}, Llevar vuelto de S/ ${diff > 0 ? diff.toFixed(2) : '0.00'})`;
+            if (calcVueltoRow && valVuelto) {
+              calcVueltoRow.style.display = 'flex';
+              valVuelto.textContent = diff > 0 ? `S/ ${diff.toFixed(2)}` : 'S/ 0.00';
+            }
+          }
+        } else {
+          state.pagoTexto = 'Yape / Plin (Contraentrega con QR)';
+          if (calcVueltoRow) calcVueltoRow.style.display = 'none';
+        }
+
+        const msg = 
+`¡Hola Solgas Surquillo! Deseo pedir mi recarga con mis datos guardados:
+
+👤 Nombre: ${state.nombre}
+📦 Producto: ${state.producto} (S/ ${state.precio.toFixed(2)})
+📍 Entrega: ${state.calle}, ${state.distrito}
+🧭 Ref: ${state.ref}
+💳 Pago: ${state.pagoTexto}
+📝 Nota: ${state.nota}
+⏱️ Llegada estimada: ${state.eta}`;
+
+        if (bubbleWa) {
+          bubbleWa.innerHTML = msg.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') +
+            `<div class="v72-wa-time"><span>10:32 a. m.</span> <i class="fa-solid fa-check-double" style="color:#53bdeb;"></i></div>`;
+        }
+
+        if (sumProd) sumProd.textContent = state.productoCorto;
+        if (sumEta) sumEta.textContent = `${state.distrito} · ${state.eta}`;
+        if (sumPrecio) sumPrecio.textContent = `S/ ${state.precio.toFixed(2)}`;
+        if (destAlias) destAlias.textContent = state.alias;
+        if (destCalleRef) destCalleRef.textContent = `${state.calle}, ${state.distrito} · ${state.ref}`;
+        if (destEtaPill) destEtaPill.textContent = state.eta;
+
+        if (lblBtnWa) lblBtnWa.textContent = `Pedir por WhatsApp (S/ ${state.precio.toFixed(2)})`;
+        if (btnWa) btnWa.href = `https://wa.me/51936369384?text=${encodeURIComponent(msg)}`;
+      }
+
+      // CAMBIO DE MÓDULOS DEL SIDEBAR EN 0MS
+      document.querySelectorAll('.v72-nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.dataset.target;
+          document.querySelectorAll('.v72-nav-item').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          document.querySelectorAll('.v72-panel').forEach(p => p.classList.remove('active'));
+          const targetPanel = document.getElementById(`panel-${targetId}`);
+          if (targetPanel) targetPanel.classList.add('active');
+        });
+      });
+
+      // BOTÓN "GESTIONAR FICHA & DIRECCIONES"
+      document.getElementById('btnGoFicha')?.addEventListener('click', () => {
+        const cuentaNavBtn = document.querySelector('.v72-nav-item[data-target="mi-cuenta"]');
+        cuentaNavBtn?.click();
+      });
+
+      // CAMBIO DE SUB-PESTAÑAS EN MI CUENTA (ESTILO IMAGEN 2)
+      document.querySelectorAll('.v72-subtab-btn').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const subId = tab.dataset.sub;
+          document.querySelectorAll('.v72-subtab-btn').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          document.querySelectorAll('.v72-subpanel').forEach(sp => sp.classList.remove('active'));
+          const targetSub = document.getElementById(`subpanel-${subId}`);
+          if (targetSub) targetSub.classList.add('active');
+        });
+      });
+
+      // SELECCIÓN DE PRODUCTOS
+      document.querySelectorAll('.v72-card-p').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.v72-card-p').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          state.producto = card.dataset.nombre;
+          state.productoCorto = card.dataset.nombrecorto;
+          state.precio = parseFloat(card.dataset.precio);
+          updateWA();
+          showToast(`Balón: ${state.productoCorto}`);
+        });
+      });
+
+      // SELECCIÓN DE DIRECCIÓN DESDE EL DROPDOWN
+      const selDir = document.getElementById('metaSelectDir');
+      selDir?.addEventListener('change', () => {
+        const opt = selDir.options[selDir.selectedIndex];
+        state.alias = opt.dataset.alias;
+        state.calle = opt.dataset.calle;
+        state.distrito = opt.dataset.distrito;
+        state.ref = opt.dataset.ref;
+        state.eta = opt.dataset.eta;
+        updateWA();
+        showToast(`Entrega: ${state.alias} (${state.eta})`);
+      });
+
+      // FORMAS DE PAGO (EFECTIVO VS YAPE/PLIN)
+      document.querySelectorAll('.v72-btn-tab-pago').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.v72-btn-tab-pago').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          state.metodoPago = tab.dataset.metodo;
+          const boxVuelto = document.getElementById('boxVuelto');
+          if (boxVuelto) {
+            boxVuelto.style.display = state.metodoPago === 'efectivo' ? 'block' : 'none';
+          }
+          updateWA();
+        });
+      });
+
+      // CHIPS DE VUELTO
+      document.querySelectorAll('#chipsVuelto .v72-chip-btn').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('#chipsVuelto .v72-chip-btn').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          state.vueltoSeleccionado = chip.dataset.vuelto;
+          updateWA();
+        });
+      });
+
+      // NOTAS RÁPIDAS
+      const txtNotas = document.getElementById('txtNotas');
+      document.querySelectorAll('#tagsNotas .v72-quick-tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+          const tVal = tag.dataset.tag;
+          if (txtNotas) {
+            txtNotas.value = txtNotas.value ? `${txtNotas.value}, ${tVal}` : tVal;
+            state.nota = txtNotas.value;
+            updateWA();
+          }
+        });
+      });
+
+      txtNotas?.addEventListener('input', () => {
+        state.nota = txtNotas.value.trim();
+        updateWA();
+      });
+
+      // GUARDAR CAMBIOS DE MI CUENTA
+      document.getElementById('btnSaveMiCuenta')?.addEventListener('click', () => {
+        const nuevoNombre = document.getElementById('inNombrePila')?.value.trim();
+        const nuevoTel = document.getElementById('inTelefono')?.value.trim();
+        if (nuevoNombre) {
+          state.nombre = nuevoNombre;
+          const metaNom = document.getElementById('metaNombre');
+          if (metaNom) metaNom.textContent = nuevoNombre;
+        }
+        if (nuevoTel) {
+          state.telefono = nuevoTel;
+          const metaTel = document.getElementById('metaTelefono');
+          if (metaTel) metaTel.textContent = nuevoTel;
+        }
+        updateWA();
+        showToast('¡Ficha de cliente guardada con éxito!');
+      });
+
+      // COLAPSAR SIDEBAR
+      document.getElementById('btnCollapse72')?.addEventListener('click', () => {
+        const isCollapsed = document.documentElement.classList.toggle('is-collapsed');
+        localStorage.setItem('gaswii_sidebar_v72', isCollapsed ? 'true' : 'false');
+      });
+
+      // CAMBIAR TEMA
+      document.getElementById('btnTheme72')?.addEventListener('click', () => {
+        const cur = document.documentElement.dataset.theme;
+        const next = cur === 'luz' ? 'futuro' : 'luz';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('gaswii_theme_cliente', next);
+      });
+
+      // INICIALIZACIÓN
+      updateWA();
+    })();
+  </script>
+</body>
+</html>
