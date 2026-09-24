@@ -28,23 +28,23 @@ const {
   <!-- Inyección inlined de CSS específico de módulos -->
   <style is:global slot="modulo-css" set:html={`${pedidosCss}\n${direccionCss}`}></style>
 
-  <!-- MÓDULO 01: REALIZAR PEDIDOS (ACTIVO POR DEFECTO) -->
-  <section class="cl-panel active" id="panel-pedidos" aria-label="Módulo Pedidos">
+  <!-- MÓDULO 01: REALIZAR PEDIDOS -->
+  <section class={`cl-panel ${moduloActivo === 'pedidos' ? 'active' : ''}`} id="panel-pedidos" aria-label="Módulo Pedidos">
     <Pedidos cliente={cliente} />
   </section>
 
   <!-- MÓDULO 02: MIS DIRECCIONES (FASE 2) -->
-  <section class="cl-panel" id="panel-direccion" aria-label="Módulo Direcciones">
+  <section class={`cl-panel ${moduloActivo === 'direccion' ? 'active' : ''}`} id="panel-direccion" aria-label="Módulo Direcciones">
     <Direccion cliente={cliente} />
   </section>
 
   <!-- MÓDULO 03: MI CUENTA / FICHA (FASE 3) -->
-  <section class="cl-panel" id="panel-cuenta" aria-label="Módulo Cuenta">
+  <section class={`cl-panel ${moduloActivo === 'cuenta' ? 'active' : ''}`} id="panel-cuenta" aria-label="Módulo Cuenta">
     <Cuenta cliente={cliente} />
   </section>
 
   <!-- MÓDULO 04: SOPORTE Y BOLETAS (FASE 4) -->
-  <section class="cl-panel" id="panel-soporte" aria-label="Módulo Soporte">
+  <section class={`cl-panel ${moduloActivo === 'soporte' ? 'active' : ''}`} id="panel-soporte" aria-label="Módulo Soporte">
     <Soporte cliente={cliente} />
   </section>
 </Sonrisas>

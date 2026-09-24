@@ -7,9 +7,16 @@ import { inicializarPedidos } from './modulos/01-pedidos/pedidos.js';
 import { inicializarDirecciones } from './modulos/02-direccion/direccion.js';
 import { esModuloValido, moduloDefecto } from './modulos.js';
 
+function resolverModuloDesdeURL() {
+  const parts = location.pathname.split('/').filter(Boolean);
+  const cIdx = parts.indexOf('cliente');
+  const param = cIdx >= 0 && parts[cIdx + 1];
+  return (param && esModuloValido(param)) ? param : moduloDefecto;
+}
+
 let moduloActivo = moduloDefecto;
 
-export function cambiarModulo(nuevoModulo) {
+export function cambiarModulo(nuevoModulo, updateUrl = true) {
   if (!esModuloValido(nuevoModulo)) return;
   moduloActivo = nuevoModulo;
 
@@ -28,14 +35,22 @@ export function cambiarModulo(nuevoModulo) {
     btn.classList.toggle('active', btn.dataset.panelTarget === nuevoModulo);
   });
 
-  // 4. Inicializar módulo específico
+  // 4. Sincronizar URL de forma profesional con pushState
+  if (updateUrl && history.pushState) {
+    const newPath = nuevoModulo === moduloDefecto ? '/cliente' : `/cliente/${nuevoModulo}`;
+    if (location.pathname !== newPath) {
+      history.pushState({ modulo: nuevoModulo }, '', newPath);
+    }
+  }
+
+  // 5. Inicializar módulo específico
   if (nuevoModulo === 'pedidos') {
     inicializarPedidos();
   } else if (nuevoModulo === 'direccion') {
     inicializarDirecciones();
   }
 
-  // 5. Scroll al inicio si está en móvil
+  // 6. Scroll al inicio si está en móvil
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -133,6 +148,12 @@ function inicializarNavegacion() {
       cambiarModulo(e.detail.modulo);
     }
   });
+
+  // Soporte para navegación con botón Atrás / Adelante del navegador
+  window.addEventListener('popstate', (e) => {
+    const mod = e.state?.modulo || resolverModuloDesdeURL();
+    cambiarModulo(mod, false);
+  });
 }
 
 function inicializarBuscador() {
@@ -184,5 +205,5 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarNavegacion();
   inicializarBuscador();
   inicializarDirecciones();
-  cambiarModulo(moduloActivo);
+  cambiarModulo(resolverModuloDesdeURL(), false);
 });
