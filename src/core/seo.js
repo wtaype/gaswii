@@ -6,32 +6,34 @@ import { datosNegocio } from '../negocio.js';
 export const seo = {
   inicio: {
     es: {
-      title: "Solgas Surquillo | Balón con Peso Exacto en 15-20 min",
-      description: "¿Cansado de balones que duran poco? En Solgas Surquillo garantizamos balones con peso exacto desde planta Solgas y base Jr. Dante 260. Despacho en 15-20 min.",
+      title: "Gas Surquillo y Lima | Gas de Cocina Solgas en 15 Minutos",
+      description: "Pide tu gas de cocina en Surquillo y Lima con delivery express en 15 min. Balones Solgas 10kg y 45kg con peso exacto garantizado por balanza digital.",
       path: '/',
       keywords: [
-        'gas a domicilio surquillo',
-        'solgas surquillo telefono',
-        'balon de gas peso exacto',
-        'solgas miraflores delivery',
-        'gas urgente san borja'
+        'gas surquillo',
+        'gas lima',
+        'gas cocina lima',
+        'solgas surquillo delivery',
+        'balon de gas a domicilio surquillo',
+        'gas para cocina lima'
       ],
       audience: ['hogares', 'familias', 'restaurantes', 'negocios', 'vecinos'],
-      intent: 'pedir balon de gas a domicilio con peso exacto en surquillo y miraflores'
+      intent: 'pedir gas de cocina a domicilio con peso exacto en surquillo y lima'
     },
     en: {
-      title: "Solgas Surquillo | 100% Full Gas Cylinder Delivery",
-      description: "Tired of underfilled gas? At Solgas Surquillo we guarantee exact weight cylinders from Solgas plant and central base. Fast delivery in 15-20 min.",
+      title: "Gas Delivery Lima & Surquillo | Solgas Cooking Gas in 15 Mins",
+      description: "Order cooking gas in Surquillo, Miraflores & Lima with express delivery in 15 mins. Official Solgas cylinders with exact weight certified by digital scale.",
       path: '/en',
       keywords: [
-        'gas delivery surquillo',
-        'lpg cylinder miraflores',
-        'solgas english delivery lima',
-        'cooking gas san isidro',
-        'gas cylinder exact weight'
+        'gas lima',
+        'gas surquillo',
+        'cooking gas lima',
+        'solgas lima delivery',
+        'gas cylinder miraflores',
+        'lpg gas delivery lima'
       ],
       audience: ['residents', 'expats', 'families', 'restaurants'],
-      intent: 'order home delivery lpg gas cylinder in lima'
+      intent: 'order home delivery lpg cooking gas cylinder in lima'
     }
   },
   cliente: {
