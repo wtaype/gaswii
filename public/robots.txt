@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: 
+Sitemap: https://solgassurquillo.com/sitemap.xml
+Sitemap: https://solgassurquillo.com/sitemap-index.xml

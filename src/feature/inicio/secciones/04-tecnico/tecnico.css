@@ -103,6 +103,7 @@
   color: #34d399;
 }
 
+.seguridad-step-content h3,
 .seguridad-step-content h4 {
   font-family: var(--ff_O, 'Outfit', sans-serif);
   font-size: 1.05rem;
