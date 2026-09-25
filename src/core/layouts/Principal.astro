@@ -96,13 +96,12 @@ const jsonLd = getJsonLd(ruta, idioma);
   <!-- 6. Barra Sticky Móvil -->
   <StickyBar idioma={idioma} />
 
-  <!-- Despachador Global On-Demand (Compilado y Minificado por Vite) -->
+  <!-- Despachador Global On-Demand Unificado con wiSmart() -->
   <script>
-    import { wiTema, imgwii } from '@widev';
+    import { wiTema, wiSmart } from '@widev';
 
-    // Reactividad Smart en tiempo real para cambios de modo claro/oscuro del sistema
+    // Reactividad Smart para modo claro/oscuro del sistema
     wiTema.listen();
-    imgwii.ver();
 
     // Puente de compatibilidad global ultra-ligero para interacción
     (window as any).toggleTema = () => wiTema.toggle();
@@ -140,6 +139,16 @@ const jsonLd = getJsonLd(ruta, idioma);
       document.getElementById('mobileDrawer')?.classList.remove('open');
       document.getElementById('drawerBackdrop')?.classList.remove('active');
     };
+
+    // Carga Inteligente de Interactividad (wiSmart: touchstart, scroll, click, mousemove)
+    wiSmart({
+      js: [
+        async () => {
+          const { initInicioInteractivo } = await import('../../feature/inicio/lib/inicioInteractivo.js');
+          initInicioInteractivo();
+        }
+      ]
+    });
   </script>
 </body>
 </html>

@@ -4,8 +4,6 @@
 // Integrado con @widev y Firebase SDK
 
 import { savels, getls, formatearFechaParaInput } from '@widev';
-import { db } from '@core/servicios/firebase.js';
-import { doc, setDoc, getDoc, Timestamp, serverTimestamp } from 'firebase/firestore';
 
 export const STORAGE_KEY = 'minegocio';
 export const OLD_STORAGE_KEY = 'gaswii_negocio_config';
@@ -203,8 +201,11 @@ export function guardarDatosNegocio(input = {}) {
 
 // Transforma la fecha a Timestamp nativo y persiste en Firestore
 async function sincronizarNegocioFirestore(config, fechaStr) {
-  if (!db) return;
   try {
+    const { db } = await import('@core/servicios/firebase.js');
+    if (!db) return;
+    const { doc, setDoc, Timestamp, serverTimestamp } = await import('firebase/firestore');
+
     let timestampLanzamiento = null;
     if (fechaStr) {
       try {
@@ -241,8 +242,11 @@ async function sincronizarNegocioFirestore(config, fechaStr) {
  * Carga datos frescos desde Firestore en cliente y actualiza la caché local
  */
 export async function sincronizarDesdeFirestore() {
-  if (!db) return null;
   try {
+    const { db } = await import('@core/servicios/firebase.js');
+    if (!db) return null;
+    const { doc, getDoc } = await import('firebase/firestore');
+
     const snap = await getDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID));
     if (snap.exists()) {
       const data = snap.data();
