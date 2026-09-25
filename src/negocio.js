@@ -167,13 +167,22 @@ export const datosNegocio = {
    */
   get distritos() {
     const zonas = obtenerDatosNegocio().zonas || [];
-    return zonas.filter(z => z.activo !== false).map(z => ({
-      id: z.id || (z.distrito || '').toLowerCase().replace(/\s+/g, '-'),
-      nombre: z.distrito || '',
-      tiempo: `${z.tiempoMin || 0} - ${z.tiempoMax || 0} ${z.unidad || 'min'}`,
-      tag: z.tag || '',
-      tagEn: z.tag || ''
-    }));
+    const activas = zonas.filter(z => z.activo !== false);
+    if (activas.length > 0) {
+      return activas.map(z => ({
+        id: z.id || (z.distrito || '').toLowerCase().replace(/\s+/g, '-'),
+        nombre: z.distrito || '',
+        tiempo: `${z.tiempoMin || 8} - ${z.tiempoMax || 18} ${z.unidad || 'min'}`,
+        tag: z.tag || '',
+        tagEn: z.tag || ''
+      }));
+    }
+    return [
+      { id: 'surquillo', nombre: 'Surquillo', tiempo: '8 - 18 min', tag: 'Sede Central Express', tagEn: 'Central Express' },
+      { id: 'miraflores', nombre: 'Miraflores', tiempo: '12 - 22 min', tag: 'Cobertura Directa', tagEn: 'Direct Coverage' },
+      { id: 'san-borja', nombre: 'San Borja', tiempo: '15 - 25 min', tag: 'Cobertura Directa', tagEn: 'Direct Coverage' },
+      { id: 'san-isidro', nombre: 'San Isidro', tiempo: '15 - 25 min', tag: 'Cobertura Directa', tagEn: 'Direct Coverage' }
+    ];
   },
 
   // Catálogo Oficial Puro: Lee ÚNICA y EXCLUSIVAMENTE de Firestore (Cero Productos Ficticios)

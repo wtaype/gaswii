@@ -3,6 +3,7 @@
 // Cero Bloqueo de Primer Render (TBT = 0ms) · Se activa al interactuar (touch, scroll, click, mousemove)
 import { imgwii } from '@widev';
 import { ROL_PATH } from '@core/rutas.js';
+import { obtenerSaludoHora } from './whatsapp.js';
 
 /**
  * Resuelve el destino del panel administrativo o de cliente
@@ -202,7 +203,8 @@ function initCalculadora() {
     const btnWa = document.querySelector('.btn-calc-pedir');
     if (btnWa) {
       const numWa = btnWa.getAttribute('data-ws-num') || '51936369384';
-      const msg = `¡Hola Solgas Surquillo! 👋\nHe visto en su página web y calculé mi consumo:\n\n🏷️ Origen: [Web Inicio - Calculadora de Consumo]\n👥 Familia: ${p} personas\n⏱️ Cocción: ${h} horas/día\n📦 Balón estimado: ${kg} kg (Rendimiento: ~${diasEstimados} días)\n\n¿Me confirman la atención y pedido a domicilio, por favor? ¡Muchas gracias!`;
+      const saludo = obtenerSaludoHora();
+      const msg = `${saludo}. He visto en su página web y calculé mi consumo: balón de ${kg} kg para ${p} personas (~${diasEstimados} días de rendimiento). Quisiera pedir a domicilio, ¿podrían confirmarme por favor? ¡Muchas gracias!`;
       btnWa.href = `https://wa.me/${numWa}?text=${encodeURIComponent(msg)}`;
     }
   }

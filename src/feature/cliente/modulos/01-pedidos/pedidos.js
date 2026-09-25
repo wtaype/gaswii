@@ -96,10 +96,9 @@ export function inicializarPedidos() {
 
     const celTexto = state.celular ? `\n📱 Contacto: ${state.celular}` : '';
 
-    let msg = `¡Hola ${nombreNegocio}! He visto su página web y quiero realizar un pedido:
+    let msg = `¡Hola ${nombreNegocio}! Quiero realizar un pedido:
 
-🏷️ Origen: [Portal Cliente - Pedido VIP]
-👤 Nombre: ${state.nombre}${celTexto}
+👤 Soy: ${state.nombre}${celTexto}
 📦 Pedido:
 ${itemsList.join('\n')}
 💰 Total a pagar: S/ ${total.toFixed(2)}

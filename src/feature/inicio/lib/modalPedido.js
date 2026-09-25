@@ -26,18 +26,25 @@ function obtenerDistritosDisponibles() {
     if (raw) {
       const cfg = JSON.parse(raw);
       if (Array.isArray(cfg.zonas) && cfg.zonas.length > 0) {
-        return cfg.zonas.filter(z => z.activo !== false).map(z => ({
+        const activas = cfg.zonas.filter(z => z.activo !== false).map(z => ({
           nombre: z.distrito || '',
-          tiempo: `${z.tiempoMin || 15} - ${z.tiempoMax || 25} ${z.unidad || 'min'}`
+          tiempo: `${z.tiempoMin || 8} - ${z.tiempoMax || 18} ${z.unidad || 'min'}`
         }));
+        if (activas.length > 0) return activas;
       }
     }
   } catch (e) {}
-  return datosNegocio.distritos || [
-    { nombre: 'Surquillo', tiempo: '15 - 25 min' },
-    { nombre: 'Miraflores', tiempo: '18 - 25 min' },
-    { nombre: 'San Borja', tiempo: '18 - 25 min' },
-    { nombre: 'San Isidro', tiempo: '20 - 30 min' }
+
+  const dists = datosNegocio.distritos;
+  if (Array.isArray(dists) && dists.length > 0) {
+    return dists;
+  }
+
+  return [
+    { nombre: 'Surquillo', tiempo: '8 - 18 min' },
+    { nombre: 'Miraflores', tiempo: '12 - 22 min' },
+    { nombre: 'San Borja', tiempo: '15 - 25 min' },
+    { nombre: 'San Isidro', tiempo: '15 - 25 min' }
   ];
 }
 
@@ -110,8 +117,8 @@ function asegurarModalEnDOM() {
             <label for="pedSelectDistrito" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4vh;">
               <i class="fa-solid fa-location-dot" style="color: #10b981;"></i> Distrito de Cobertura
             </label>
-            <select id="pedSelectDistrito" style="width: 100%; padding: 1vh 0.8vw; border-radius: 0.8vh; border: 1px solid var(--brd, #ccc); background: var(--bg1); color: var(--tx1); font-size: 0.9rem; margin-bottom: 0.8vh;">
-              ${dists.map(d => `<option value="${d.nombre}">${d.nombre} (${d.tiempo})</option>`).join('')}
+            <select id="pedSelectDistrito" style="width: 100%; padding: 10px 12px; border-radius: 0.8vh; border: 1px solid var(--brd, #ccc); background: var(--bg1); color: var(--tx1); font-size: 0.95rem; margin-bottom: 0.8vh;">
+              ${dists.map(d => `<option value="${d.nombre}" ${d.nombre.toLowerCase().includes('surquillo') ? 'selected' : ''}>${d.nombre} (${d.tiempo})</option>`).join('')}
             </select>
 
             <input 
@@ -120,7 +127,7 @@ function asegurarModalEnDOM() {
               placeholder="Dirección exacta (Calle, N° y Dpto/Int)" 
               value="${user.direccionFiscal || (user.direcciones?.[0]?.calle || '')}" 
               required
-              style="width: 100%; padding: 1vh 0.8vw; border-radius: 0.8vh; border: 1px solid var(--brd, #ccc); background: var(--bg1); color: var(--tx1); font-size: 0.9rem; box-sizing: border-box;"
+              style="width: 100%; padding: 10px 12px; border-radius: 0.8vh; border: 1px solid var(--brd, #ccc); background: var(--bg1); color: var(--tx1); font-size: 0.95rem; box-sizing: border-box;"
             />
           </div>
 
@@ -134,7 +141,7 @@ function asegurarModalEnDOM() {
                 placeholder="Nombre o Familia" 
                 value="${user.nombre || user.usuario || ''}"
                 required
-                style="width: 100%; padding: 1vh 0.8vw; border-radius: 0.8vh; border: 1px solid var(--brd, #ccc); background: var(--bg1); color: var(--tx1); font-size: 0.9rem; box-sizing: border-box;"
+                style="width: 100%; padding: 10px 12px; border-radius: 0.8vh; border: 1px solid var(--brd, #ccc); background: var(--bg1); color: var(--tx1); font-size: 0.95rem; box-sizing: border-box;"
               />
             </div>
             <div>
@@ -144,7 +151,7 @@ function asegurarModalEnDOM() {
                 id="pedInputCelular" 
                 placeholder="9 dígitos" 
                 value="${user.celular || ''}"
-                style="width: 100%; padding: 1vh 0.8vw; border-radius: 0.8vh; border: 1px solid var(--brd, #ccc); background: var(--bg1); color: var(--tx1); font-size: 0.9rem; box-sizing: border-box;"
+                style="width: 100%; padding: 10px 12px; border-radius: 0.8vh; border: 1px solid var(--brd, #ccc); background: var(--bg1); color: var(--tx1); font-size: 0.95rem; box-sizing: border-box;"
               />
             </div>
           </div>
@@ -242,7 +249,7 @@ function asegurarModalEnDOM() {
     });
   });
 
-  // Despacho a WhatsApp con atribución inteligente
+  // Despacho a WhatsApp simple, natural y directo
   window.__enviarPedidoModal = () => {
     const selOpt = selProd?.selectedOptions[0];
     const nomProd = selOpt?.getAttribute('data-nombre') || 'Balón de Gas';
@@ -250,11 +257,11 @@ function asegurarModalEnDOM() {
     const total = precio * qty;
     const distrito = document.getElementById('pedSelectDistrito')?.value || 'Surquillo';
     const direccion = document.getElementById('pedInputDireccion')?.value?.trim() || '';
-    const nombreCliente = document.getElementById('pedInputNombre')?.value?.trim() || 'Cliente';
+    const rawNombre = document.getElementById('pedInputNombre')?.value?.trim() || '';
+    const nombreCliente = rawNombre === 'Cliente' ? '' : rawNombre;
     const celularCliente = document.getElementById('pedInputCelular')?.value?.trim() || '';
 
     const url = crearEnlaceWhatsApp({
-      origen: 'Web Inicio - Modal Express',
       cliente: nombreCliente,
       celular: celularCliente,
       producto: nomProd,
