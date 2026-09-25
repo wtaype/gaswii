@@ -13,8 +13,9 @@ import type { Idioma } from '../idioma/idioma';
 import witemaCss from '../wicss/witema.css?inline';
 import appCss from '../wicss/app.css?inline';
 import googleCss from '../../../public/google/fonts.min.css?raw';
+import awesomeCss from '../../../public/fontawesome/css/all.min.css?raw';
 
-const globalCss = googleCss + '\n' + witemaCss + '\n' + appCss;
+const globalCss = googleCss + '\n' + awesomeCss + '\n' + witemaCss + '\n' + appCss;
 
 interface Props {
   idioma?: Idioma;
@@ -67,12 +68,8 @@ const jsonLd = getJsonLd(ruta, idioma);
   <!-- Anti-FOUC Inmediato y Smart (0ms bloqueo, 78 bytes) -->
   <script is:inline>try{document.documentElement.dataset.theme=localStorage.getItem('wiTema')||(matchMedia('(prefers-color-scheme:light)').matches?'luz':'futuro')}catch(e){}</script>
 
-  <!-- Estilos Globales Inlined (app.css + fonts.css + witema.css): 0 CSS bloqueante innecesario -->
+  <!-- Estilos Globales Inlined (app.css + fonts.css + fontawesome): 0 CSS compilado, 0 peticiones bloqueantes -->
   <style is:global data-astro-transition-persist="global-css" set:html={globalCss}></style>
-
-  <!-- Font Awesome 6 Completo: Carga no bloqueante con precarga y caché inmutable (1 solo archivo .css) -->
-  <link rel="preload" href="/fontawesome/css/all.min.css" as="style" />
-  <link rel="stylesheet" href="/fontawesome/css/all.min.css" media="print" onload="this.media='all'" />
 
   <!-- Slot Head para que cada feature (inicio, cliente, personal) inyecte su CSS con set:html -->
   <slot name="head" />
