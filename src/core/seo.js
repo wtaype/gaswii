@@ -6,31 +6,38 @@ import { datosNegocio } from '../negocio.js';
 export const seo = {
   inicio: {
     es: {
-      title: "Gas Surquillo y Lima | Gas de Cocina Solgas en 15 Minutos",
-      description: "Pide tu gas de cocina en Surquillo y Lima con delivery express en 15 min. Balones Solgas 10kg y 45kg con peso exacto garantizado por balanza digital.",
+      title: "Solgas Surquillo | Pedir Gas en Surquillo, Miraflores y Lima",
+      description: "Solgas Surquillo: pide tu gas en Surquillo, Miraflores, San Borja y San Isidro. Delivery express en 15 min con balanza digital y garantía oficial Solgas.",
       path: '/',
       keywords: [
+        'solgas surquillo',
         'gas surquillo',
-        'gas lima',
-        'gas cocina lima',
-        'solgas surquillo delivery',
-        'balon de gas a domicilio surquillo',
-        'gas para cocina lima'
+        'pedir gas surquillo',
+        'solgas surquillo telefono',
+        'solgas miraflores',
+        'delivery de gas san borja',
+        'pedir gas san isidro',
+        'balon de gas a domicilio',
+        'balon solgas 10 kg precio',
+        'balon solgas 45 kg',
+        'gas con balanza digital lima',
+        'solgas dante surquillo'
       ],
       audience: ['hogares', 'familias', 'restaurantes', 'negocios', 'vecinos'],
-      intent: 'pedir gas de cocina a domicilio con peso exacto en surquillo y lima'
+      intent: 'pedir gas de cocina a domicilio con peso exacto en surquillo, miraflores, san borja, san isidro y lima'
     },
     en: {
-      title: "Gas Delivery Lima & Surquillo | Solgas Cooking Gas in 15 Mins",
-      description: "Order cooking gas in Surquillo, Miraflores & Lima with express delivery in 15 mins. Official Solgas cylinders with exact weight certified by digital scale.",
+      title: "Solgas Surquillo | LPG Gas Delivery Lima & Miraflores",
+      description: "Solgas Surquillo: order LPG cooking gas in Surquillo, Miraflores & San Borja. Express 15-min delivery with certified digital scale and official guarantee.",
       path: '/en',
       keywords: [
-        'gas lima',
-        'gas surquillo',
-        'cooking gas lima',
-        'solgas lima delivery',
-        'gas cylinder miraflores',
-        'lpg gas delivery lima'
+        'solgas surquillo',
+        'gas delivery lima',
+        'cooking gas surquillo',
+        'solgas miraflores delivery',
+        'lpg gas san isidro',
+        'order gas cylinder lima',
+        'express gas delivery lima'
       ],
       audience: ['residents', 'expats', 'families', 'restaurants'],
       intent: 'order home delivery lpg cooking gas cylinder in lima'
@@ -76,6 +83,7 @@ export const seo = {
 
 /**
  * Genera metadatos completos para el <head> (OpenGraph, Twitter, Hreflang, Canonical)
+ * Prioriza dinámicamente datos de Firestore (colección 'negocio' -> 'seo')
  */
 export function getMeta(ruta = '/', idioma = 'es') {
   const clave = ruta === '/' || ruta === '/en' ? 'inicio' : ruta.replace(/^\/(en\/)?/, '');
@@ -83,13 +91,23 @@ export function getMeta(ruta = '/', idioma = 'es') {
   const urlBase = (app.linkweb || 'https://gaswii.amorwii.workers.dev').replace(/\/$/, '');
   const canonical = `${urlBase}${ruta}`;
 
+  // Priorizar SEO dinámico desde la colección 'negocio' en Firestore para la página principal
+  const seoDinamico = clave === 'inicio' ? datosNegocio.seo : null;
+  const title = (seoDinamico?.titulo?.[idioma]?.trim()) || data.title;
+  const description = (seoDinamico?.descripcion?.[idioma]?.trim()) || data.description;
+  const dynamicKeywords = seoDinamico?.keywords?.[idioma];
+  const keywordsList = Array.isArray(dynamicKeywords) && dynamicKeywords.length > 0 
+    ? dynamicKeywords 
+    : data.keywords;
+  const keywords = keywordsList.join(', ');
+
   return {
-    title: data.title,
-    description: data.description,
-    keywords: data.keywords.join(', '),
+    title,
+    description,
+    keywords,
     canonical,
-    ogTitle: data.title,
-    ogDescription: data.description,
+    ogTitle: title,
+    ogDescription: description,
     ogImage: `${urlBase}/imgwii/01-solgas-surquillo.webp`,
     ogUrl: canonical,
     ogType: 'website',

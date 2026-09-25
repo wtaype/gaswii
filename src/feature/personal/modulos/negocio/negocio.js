@@ -72,6 +72,14 @@ export function inicializarNegocio() {
   const inputRedInstagram = document.getElementById('ngInputRedInstagram');
   const inputRedTiktok = document.getElementById('ngInputRedTiktok');
 
+  // Inputs de SEO Dinámico
+  const inputSeoTituloEs = document.getElementById('ngInputSeoTituloEs');
+  const inputSeoDescEs = document.getElementById('ngInputSeoDescEs');
+  const inputSeoKeywordsEs = document.getElementById('ngInputSeoKeywordsEs');
+  const inputSeoTituloEn = document.getElementById('ngInputSeoTituloEn');
+  const inputSeoDescEn = document.getElementById('ngInputSeoDescEn');
+  const inputSeoKeywordsEn = document.getElementById('ngInputSeoKeywordsEn');
+
   let currentZonas = [];
 
   // 1. Conmutación de Pestañas con adrm() de widev
@@ -427,6 +435,20 @@ export function inicializarNegocio() {
     if (inputRedInstagram) inputRedInstagram.value = cfg.redes?.instagram || '';
     if (inputRedTiktok) inputRedTiktok.value = cfg.redes?.tiktok || '';
 
+    // SEO Dinámico
+    if (inputSeoTituloEs) inputSeoTituloEs.value = cfg.seo?.titulo?.es || '';
+    if (inputSeoDescEs) inputSeoDescEs.value = cfg.seo?.descripcion?.es || '';
+    if (inputSeoKeywordsEs) {
+      const kw = cfg.seo?.keywords?.es;
+      inputSeoKeywordsEs.value = Array.isArray(kw) ? kw.join(', ') : (kw || '');
+    }
+    if (inputSeoTituloEn) inputSeoTituloEn.value = cfg.seo?.titulo?.en || '';
+    if (inputSeoDescEn) inputSeoDescEn.value = cfg.seo?.descripcion?.en || '';
+    if (inputSeoKeywordsEn) {
+      const kw = cfg.seo?.keywords?.en;
+      inputSeoKeywordsEn.value = Array.isArray(kw) ? kw.join(', ') : (kw || '');
+    }
+
     currentZonas = Array.isArray(cfg.zonas) ? JSON.parse(JSON.stringify(cfg.zonas)) : [];
     renderZonas();
   }
@@ -491,6 +513,20 @@ export function inicializarNegocio() {
         facebook: inputRedFacebook?.value?.trim() || "",
         instagram: inputRedInstagram?.value?.trim() || "",
         tiktok: inputRedTiktok?.value?.trim() || ""
+      },
+      seo: {
+        titulo: {
+          es: inputSeoTituloEs?.value?.trim() || "",
+          en: inputSeoTituloEn?.value?.trim() || ""
+        },
+        descripcion: {
+          es: inputSeoDescEs?.value?.trim() || "",
+          en: inputSeoDescEn?.value?.trim() || ""
+        },
+        keywords: {
+          es: (inputSeoKeywordsEs?.value || "").split(',').map(s => s.trim()).filter(Boolean),
+          en: (inputSeoKeywordsEn?.value || "").split(',').map(s => s.trim()).filter(Boolean)
+        }
       }
     };
   }

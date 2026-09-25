@@ -47,6 +47,20 @@ export function normalizarConfig(c = {}) {
     zonas: Array.isArray(cfg.zonas) ? cfg.zonas : [],
     metricas: cfg.metricas ? { ...cfg.metricas } : {},
     redes: cfg.redes ? { ...cfg.redes } : {},
+    seo: {
+      titulo: {
+        es: cfg.seo?.titulo?.es || '',
+        en: cfg.seo?.titulo?.en || ''
+      },
+      descripcion: {
+        es: cfg.seo?.descripcion?.es || '',
+        en: cfg.seo?.descripcion?.en || ''
+      },
+      keywords: {
+        es: Array.isArray(cfg.seo?.keywords?.es) ? cfg.seo.keywords.es : (typeof cfg.seo?.keywords?.es === 'string' ? cfg.seo.keywords.es.split(',').map(s => s.trim()).filter(Boolean) : []),
+        en: Array.isArray(cfg.seo?.keywords?.en) ? cfg.seo.keywords.en : (typeof cfg.seo?.keywords?.en === 'string' ? cfg.seo.keywords.en.split(',').map(s => s.trim()).filter(Boolean) : [])
+      }
+    },
     userId: cfg.userId || '',
     email: cfg.email || '',
     autor: cfg.autor || '',
@@ -186,6 +200,10 @@ export function guardarDatosNegocio(input = {}) {
       ...actual.redes,
       ...(input.redes || {})
     },
+    seo: {
+      ...actual.seo,
+      ...(input.seo || {})
+    },
     userId: usuario.userId || actual.userId || '',
     email: usuario.email || actual.email || '',
     autor: usuario.autor || actual.autor || ''
@@ -225,6 +243,7 @@ async function sincronizarNegocioFirestore(config, fechaStr) {
       zonas: config.zonas,
       metricas: config.metricas,
       redes: config.redes,
+      seo: config.seo,
       userId: config.userId,
       email: config.email,
       autor: config.autor,

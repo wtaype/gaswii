@@ -181,6 +181,11 @@ export const datosNegocio = {
     return obtenerProductosActivos();
   },
 
+  // Metadatos SEO dinámicos configurables desde la colección 'negocio' en Firestore
+  get seo() {
+    return obtenerDatosNegocio().seo || null;
+  },
+
   // Medios de pago aceptados
   get mediosPago() {
     return MEDIOS_PAGO_BASE;

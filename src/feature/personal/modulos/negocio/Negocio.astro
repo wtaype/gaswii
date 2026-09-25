@@ -46,6 +46,9 @@ const { esActivo = false } = Astro.props;
       <button type="button" class="ng-tab-btn" data-tab="metricas">
         <i class="fa-solid fa-chart-line"></i> Métricas & Redes
       </button>
+      <button type="button" class="ng-tab-btn" data-tab="seo">
+        <i class="fa-solid fa-magnifying-glass"></i> SEO & Palabras Clave
+      </button>
     </nav>
 
     <!-- PESTAÑA 1: IDENTIDAD & SEDE -->
@@ -318,6 +321,82 @@ const { esActivo = false } = Astro.props;
           <div class="ng-field">
             <label class="ng-label" for="ngInputRedTiktok"><i class="fa-brands fa-tiktok"></i> TikTok</label>
             <input type="url" id="ngInputRedTiktok" class="ng-input" placeholder="https://tiktok.com/@solgassurquillo" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 6: SEO & PALABRAS CLAVE (ES / EN) -->
+    <div class="ng-tab-content" id="ngTab-seo">
+      <div class="ng-card">
+        <div class="ng-card-header">
+          <div>
+            <h2 class="ng-card-title"><i class="fa-solid fa-magnifying-glass"></i> Posicionamiento en Google (SEO Local)</h2>
+            <p class="ng-card-desc">Control dinámico de títulos, meta descripciones y palabras clave en español e inglés guardadas en Firestore.</p>
+          </div>
+        </div>
+
+        <div class="ng-grid-2">
+          <!-- Configuración Español -->
+          <div class="ng-field span-2">
+            <h3 class="ng-subheading" style="color: var(--primary, #f60); font-weight: 700; margin-bottom: 8px;">
+              <i class="fa-solid fa-flag"></i> Configuración SEO - Español
+            </h3>
+          </div>
+
+          <div class="ng-field span-2">
+            <label class="ng-label" for="ngInputSeoTituloEs">
+              <span>Título en Google (ES)</span>
+              <span class="ng-label-hint">Recomendado: 50 a 60 caracteres</span>
+            </label>
+            <input type="text" id="ngInputSeoTituloEs" class="ng-input" placeholder="Gas Surquillo y Lima | Gas de Cocina Solgas en 15 Minutos" />
+          </div>
+
+          <div class="ng-field span-2">
+            <label class="ng-label" for="ngInputSeoDescEs">
+              <span>Meta Descripción en Google (ES)</span>
+              <span class="ng-label-hint">Recomendado: 140 a 160 caracteres</span>
+            </label>
+            <textarea id="ngInputSeoDescEs" class="ng-input" rows="3" placeholder="Pide tu gas de cocina en Surquillo, San Borja y San Isidro en 15 min. Balones Solgas 10kg y 45kg con peso exacto garantizado por balanza digital."></textarea>
+          </div>
+
+          <div class="ng-field span-2">
+            <label class="ng-label" for="ngInputSeoKeywordsEs">
+              <span>Palabras Clave en Español (Separadas por comas)</span>
+              <span class="ng-label-hint">Ej: gas surquillo, solgas surquillo telefono, balon de gas san isidro</span>
+            </label>
+            <textarea id="ngInputSeoKeywordsEs" class="ng-input" rows="3" placeholder="gas surquillo, gas delivery san borja, delivery de gas san isidro, solgas surquillo telefono, pedir balon de gas san isidro, balon solgas 10 kg precio, balon solgas 45 kg, gas con balanza digital lima, solgas domicilio express, balon de gas cerca de mi, gas de cocina surquillo 15 minutos"></textarea>
+          </div>
+
+          <!-- Configuración Inglés -->
+          <div class="ng-field span-2" style="margin-top: 16px; border-top: 1px solid var(--border-subtle, rgba(255,255,255,0.1)); padding-top: 16px;">
+            <h3 class="ng-subheading" style="color: #38bdf8; font-weight: 700; margin-bottom: 8px;">
+              <i class="fa-solid fa-globe"></i> Configuración SEO - English
+            </h3>
+          </div>
+
+          <div class="ng-field span-2">
+            <label class="ng-label" for="ngInputSeoTituloEn">
+              <span>Google Title (EN)</span>
+              <span class="ng-label-hint">Recommended: 50 to 60 characters</span>
+            </label>
+            <input type="text" id="ngInputSeoTituloEn" class="ng-input" placeholder="Gas Delivery Lima & Surquillo | Solgas Cooking Gas in 15 Mins" />
+          </div>
+
+          <div class="ng-field span-2">
+            <label class="ng-label" for="ngInputSeoDescEn">
+              <span>Google Meta Description (EN)</span>
+              <span class="ng-label-hint">Recommended: 140 to 160 characters</span>
+            </label>
+            <textarea id="ngInputSeoDescEn" class="ng-input" rows="3" placeholder="Order cooking gas in Surquillo, San Borja, San Isidro & Lima with express delivery in 15 mins. Official Solgas cylinders with exact weight certified by digital scale."></textarea>
+          </div>
+
+          <div class="ng-field span-2">
+            <label class="ng-label" for="ngInputSeoKeywordsEn">
+              <span>Keywords in English (Comma-separated)</span>
+              <span class="ng-label-hint">Ex: gas delivery lima, cooking gas san isidro, solgas san borja delivery</span>
+            </label>
+            <textarea id="ngInputSeoKeywordsEn" class="ng-input" rows="3" placeholder="gas delivery lima, gas cylinder surquillo, cooking gas san isidro, solgas san borja delivery, order gas cylinder lima, lpg gas delivery lima, express gas delivery miraflores"></textarea>
           </div>
         </div>
       </div>
