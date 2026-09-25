@@ -3,82 +3,67 @@
 import app from '../app.js';
 import { datosNegocio } from '../negocio.js';
 
-export const seo = {
-  inicio: {
-    es: {
-      title: "Solgas Surquillo | Pedir Gas en Surquillo, Miraflores y Lima",
-      description: "Solgas Surquillo: pide tu gas en Surquillo, Miraflores, San Borja y San Isidro. Delivery express en 15 min con balanza digital y garantía oficial Solgas.",
-      path: '/',
-      keywords: [
-        'solgas surquillo',
-        'gas surquillo',
-        'pedir gas surquillo',
-        'solgas surquillo telefono',
-        'solgas miraflores',
-        'delivery de gas san borja',
-        'pedir gas san isidro',
-        'balon de gas a domicilio',
-        'balon solgas 10 kg precio',
-        'balon solgas 45 kg',
-        'gas con balanza digital lima',
-        'solgas dante surquillo'
-      ],
-      audience: ['hogares', 'familias', 'restaurantes', 'negocios', 'vecinos'],
-      intent: 'pedir gas de cocina a domicilio con peso exacto en surquillo, miraflores, san borja, san isidro y lima'
-    },
-    en: {
-      title: "Solgas Surquillo | LPG Gas Delivery Lima & Miraflores",
-      description: "Solgas Surquillo: order LPG cooking gas in Surquillo, Miraflores & San Borja. Express 15-min delivery with certified digital scale and official guarantee.",
-      path: '/en',
-      keywords: [
-        'solgas surquillo',
-        'gas delivery lima',
-        'cooking gas surquillo',
-        'solgas miraflores delivery',
-        'lpg gas san isidro',
-        'order gas cylinder lima',
-        'express gas delivery lima'
-      ],
-      audience: ['residents', 'expats', 'families', 'restaurants'],
-      intent: 'order home delivery lpg cooking gas cylinder in lima'
-    }
+// ==========================================
+// 1. ASSET CANÓNICO DE IMAGEN PARA GOOGLE SERP Y REDES SOCIALES
+// ==========================================
+export const SEO_IMAGEN = {
+  url: 'https://solgassurquillo.com/imgwii/productos/BALON-10KG.webp',
+  width: 1200,
+  height: 630,
+  type: 'image/webp',
+  alt: 'Balón de Gas Solgas 10 kg con Válvula Premium y Balanza Digital - Solgas Surquillo',
+  caption: 'Distribuidor Autorizado Solgas Surquillo - Delivery en 15 Minutos'
+};
+
+// ==========================================
+// 2. METADATOS CANÓNICOS DE INICIO (PÁGINA PRINCIPAL)
+// ==========================================
+export const SEO_INICIO = {
+  es: {
+    title: "Solgas Surquillo | Balón de Gas a Domicilio en 15 Min - Pedir Aquí",
+    description: "Pide tu balón de gas Solgas en Surquillo al 936 369 384. Entrega express en 15 min con balanza digital a tu puerta y garantía oficial de fábrica.",
+    path: '/',
+    keywords: [
+      'solgas surquillo',
+      'gas surquillo',
+      'pedir gas surquillo',
+      'solgas surquillo telefono',
+      'solgas miraflores',
+      'delivery de gas san borja',
+      'pedir gas san isidro',
+      'balon de gas a domicilio',
+      'balon solgas 10 kg precio',
+      'balon solgas 45 kg',
+      'gas con balanza digital lima',
+      'solgas dante surquillo',
+      'gas de cocina surquillo 15 minutos'
+    ],
+    audience: ['hogares', 'familias', 'restaurantes', 'negocios', 'vecinos'],
+    intent: 'pedir gas de cocina a domicilio con peso exacto en surquillo, miraflores, san borja, san isidro y lima'
   },
-  cliente: {
-    es: {
-      title: "Mi Cuenta | Solgas Surquillo Gaswii",
-      description: "Gestiona tus pedidos de gas, consulta tu historial de balones y repite tu pedido en un solo clic con entrega express.",
-      path: '/cliente',
-      keywords: ['pedidos solgas', 'cuenta gaswii', 'repetir pedido gas', 'historial balones'],
-      audience: ['clientes', 'vecinos'],
-      intent: 'gestionar pedidos de gas'
-    },
-    en: {
-      title: "My Account | Solgas Surquillo Gaswii",
-      description: "Manage your LPG gas orders, check order history, and reorder your cylinder in one single click with express delivery.",
-      path: '/en/cliente',
-      keywords: ['solgas account', 'gaswii orders', 'reorder gas lima'],
-      audience: ['customers', 'residents'],
-      intent: 'manage gas orders'
-    }
-  },
-  personal: {
-    es: {
-      title: "Panel Repartidor | Solgas Surquillo",
-      description: "Control de despachos de gas, registro de pesaje con balanza digital y atención de pedidos express en Surquillo.",
-      path: '/personal',
-      keywords: ['repartidor solgas', 'despacho gaswii', 'balanza digital'],
-      audience: ['repartidores', 'tecnicos'],
-      intent: 'gestionar entregas de balones de gas'
-    },
-    en: {
-      title: "Delivery Driver Hub | Solgas Surquillo",
-      description: "LPG cylinder dispatch management, digital scale weight verification, and express delivery tracking.",
-      path: '/en/personal',
-      keywords: ['gas driver', 'gas delivery tracking'],
-      audience: ['drivers', 'technicians'],
-      intent: 'manage cylinder dispatches'
-    }
+  en: {
+    title: "Solgas Surquillo | Express LPG Cooking Gas Delivery Lima 15 Min",
+    description: "Order official Solgas LPG cylinders in Surquillo & Miraflores. 15-minute express delivery with certified digital weight scale and factory warranty.",
+    path: '/en',
+    keywords: [
+      'solgas surquillo',
+      'gas delivery lima',
+      'cooking gas surquillo',
+      'solgas miraflores delivery',
+      'lpg gas san isidro',
+      'order gas cylinder lima',
+      'express gas delivery lima'
+    ],
+    audience: ['residents', 'expats', 'families', 'restaurants'],
+    intent: 'order home delivery lpg cooking gas cylinder in lima'
   }
+};
+
+// ==========================================
+// 3. MAPA DE RUTAS PÚBLICAS (EXCLUYE AUTH: CLIENTE Y PERSONAL)
+// ==========================================
+export const seo = {
+  inicio: SEO_INICIO
 };
 
 /**
@@ -101,6 +86,10 @@ export function getMeta(ruta = '/', idioma = 'es') {
     : data.keywords;
   const keywords = keywordsList.join(', ');
 
+  const imgCanonical = SEO_IMAGEN.url.startsWith('http') 
+    ? SEO_IMAGEN.url 
+    : `${urlBase}${SEO_IMAGEN.url}`;
+
   return {
     title,
     description,
@@ -108,7 +97,11 @@ export function getMeta(ruta = '/', idioma = 'es') {
     canonical,
     ogTitle: title,
     ogDescription: description,
-    ogImage: `${urlBase}/imgwii/01-solgas-surquillo.webp`,
+    ogImage: imgCanonical,
+    ogImageWidth: SEO_IMAGEN.width,
+    ogImageHeight: SEO_IMAGEN.height,
+    ogImageType: SEO_IMAGEN.type,
+    ogImageAlt: SEO_IMAGEN.alt,
     ogUrl: canonical,
     ogType: 'website',
     siteName: datosNegocio.nombre,
@@ -125,14 +118,44 @@ export function getMeta(ruta = '/', idioma = 'es') {
 
 /**
  * Genera el marcado de datos estructurados Schema.org JSON-LD para Google Rich Snippets
+ * Preserva al 100% el catálogo de productos con precios, stock, ratings y FAQs
  */
 export function getJsonLd(ruta = '/', idioma = 'es') {
   const urlBase = (app.linkweb || 'https://gaswii.amorwii.workers.dev').replace(/\/$/, '');
   const isEn = idioma === 'en';
+  const canonical = `${urlBase}${ruta}`;
+  const data = seo.inicio[idioma] || SEO_INICIO.es;
+  const seoDinamico = ruta === '/' || ruta === '/en' ? datosNegocio.seo : null;
+  const title = (seoDinamico?.titulo?.[idioma]?.trim()) || data.title;
+  const description = (seoDinamico?.descripcion?.[idioma]?.trim()) || data.description;
 
   return {
     '@context': 'https://schema.org',
     '@graph': [
+      // 0. Entidad WebPage con PrimaryImageOfPage (Requisito Google SERP Image Thumbnail)
+      {
+        '@type': 'WebPage',
+        '@id': `${urlBase}/#webpage`,
+        url: canonical,
+        name: title,
+        description: description,
+        inLanguage: isEn ? 'en-US' : 'es-PE',
+        isPartOf: {
+          '@type': 'WebSite',
+          '@id': `${urlBase}/#website`,
+          url: urlBase,
+          name: datosNegocio.nombre
+        },
+        primaryImageOfPage: {
+          '@type': 'ImageObject',
+          '@id': `${urlBase}/#primaryimage`,
+          url: SEO_IMAGEN.url,
+          contentUrl: SEO_IMAGEN.url,
+          width: SEO_IMAGEN.width,
+          height: SEO_IMAGEN.height,
+          caption: SEO_IMAGEN.caption
+        }
+      },
       // 1. Negocio Local y Servicio de Emergencia
       {
         '@type': ['LocalBusiness', 'HomeGoodsStore', 'EmergencyService'],
@@ -143,7 +166,7 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
           : "Distribuidor autorizado OSINERGMIN de balones de gas GLP con pesaje digital obligatorio frente a tu puerta.",
         url: urlBase,
         telephone: datosNegocio.telefonoMostrado,
-        image: `${urlBase}/imgwii/01-solgas-surquillo.webp`,
+        image: SEO_IMAGEN.url,
         priceRange: "S/ 55 - S/ 230",
         paymentAccepted: ["Cash", "Credit Card", "Debit Card", "Yape", "Plin"],
         currenciesAccepted: "PEN",
@@ -276,4 +299,4 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
   };
 }
 
-export default { seo, getMeta, getJsonLd };
+export default { seo, SEO_IMAGEN, SEO_INICIO, getMeta, getJsonLd };
