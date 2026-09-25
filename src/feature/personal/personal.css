@@ -483,14 +483,24 @@ html.is-collapsed .ps-main-shell {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Encabezados de Sección */
+/* Encabezados de Sección con Header Sticky de Acciones Rápidas */
 .ps-section-header {
+  position: sticky;
+  top: var(--topbar-h);
+  z-index: 25;
+  background: var(--bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 12px 0 14px 0;
+  margin-top: -12px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 20px;
   flex-wrap: wrap;
+  transition: all 0.2s ease;
 }
 
 .ps-section-title-wrap {
@@ -504,17 +514,20 @@ html.is-collapsed .ps-main-shell {
   font-weight: 700;
   color: var(--ink);
   letter-spacing: -0.3px;
+  margin: 0;
 }
 
 .ps-section-sub {
   font-size: var(--fz_s4);
   color: var(--muted);
+  margin: 0;
 }
 
 .ps-header-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 /* ============================================================
@@ -698,5 +711,13 @@ html.is-collapsed .ps-main-shell {
   background: rgba(255, 102, 0, 0.08);
   font-weight: 600;
 }
+
+/* Clases de espaciado e iconos comunes (0 CSS inline) */
+.sn-mt-10 { margin-top: 10px; }
+.sn-mt-14 { margin-top: 14px; }
+.sn-mb-14 { margin-bottom: 14px; }
+.sn-header-icon { color: var(--brand-orange); margin-right: 8px; }
+.sn-title-icon { color: var(--brand-orange); }
+
 
 
