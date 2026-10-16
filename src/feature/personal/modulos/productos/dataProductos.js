@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import productosSemilla from '../../../../semillas/productos.json';
 import { solicitarActualizacionWeb } from '../../lib/actualizar.js';
+import { actualizarCentral, eliminarCentral } from '@core/servicios/actualizar.js';
 
 export const STORAGE_KEY = 'wi_productos';
 export const OLD_STORAGE_KEY = 'wi_servicios';
@@ -279,6 +280,7 @@ export const resembrarServiciosDesdeSemilla = resembrarProductosDesdeSemilla;
 
 /**
  * Guarda o actualiza un producto en Firestore y en local (100% limpio sin email ni userId)
+ * Motor Central Zero-Waste: Local-First (0 ms) + Dirty Checking + Cloudflare Deploy en Segundo Plano
  */
 export async function guardarProductoFirestore(productoRaw = {}) {
   const normalizado = normalizarProducto(productoRaw);
@@ -291,7 +293,7 @@ export async function guardarProductoFirestore(productoRaw = {}) {
   delete prodFinal.email;
   delete prodFinal.creado;
 
-  // 1. Guardar de inmediato en Local (Local-First instantáneo)
+  // 1. Preparar lista para Local-First
   const actuales = obtenerProductosLocal();
   const idx = actuales.findIndex(p => p.id === prodFinal.id);
   if (idx >= 0) {
@@ -299,23 +301,19 @@ export async function guardarProductoFirestore(productoRaw = {}) {
   } else {
     actuales.push(prodFinal);
   }
-  guardarProductosLocal(actuales);
 
-  // 2. Disparar re-deploy con debounce
-  solicitarActualizacionWeb({ motivo: `producto-${prodFinal.id}` });
-
-  // 3. Persistir en Firestore en segundo plano
-  try {
-    if (db) {
-      const docRef = doc(db, COLECCION_PRODUCTOS, prodFinal.id);
-      await setDoc(docRef, {
-        ...prodFinal,
-        actualizado: serverTimestamp()
-      }, { merge: true });
-    }
-  } catch (err) {
-    console.warn('[dataProductos] Error al guardar en Firestore:', err?.message || err);
-  }
+  // 2. Ejecutar mediante el Motor Central Zero-Waste
+  await actualizarCentral({
+    modulo: 'productos',
+    coleccion: COLECCION_PRODUCTOS,
+    docId: prodFinal.id,
+    storageKey: STORAGE_KEY,
+    evento: 'wi:productos-actualizado',
+    datos: prodFinal,
+    listaStorage: actuales,
+    redeploy: true,
+    mensajeExito: `Producto ${prodFinal.nombre.es || prodFinal.id} actualizado al instante`
+  });
 
   return prodFinal;
 }
@@ -334,21 +332,21 @@ export async function cambiarEstadoProducto(id, nuevoEstado) {
 }
 
 /**
- * Elimina un producto de local y Firestore
+ * Elimina un producto de local y Firestore mediante el motor central
  */
 export async function eliminarProductoFirestore(id) {
   const lista = obtenerProductosLocal().filter(p => p.id !== id);
-  guardarProductosLocal(lista);
 
-  solicitarActualizacionWeb({ motivo: `producto-eliminado-${id}` });
-
-  try {
-    if (db) {
-      await deleteDoc(doc(db, COLECCION_PRODUCTOS, id));
-    }
-  } catch (err) {
-    console.warn('[dataProductos] Error al eliminar de Firestore:', err?.message || err);
-  }
+  await eliminarCentral({
+    modulo: 'productos',
+    coleccion: COLECCION_PRODUCTOS,
+    docId: id,
+    storageKey: STORAGE_KEY,
+    evento: 'wi:productos-actualizado',
+    listaActualizada: lista,
+    redeploy: true,
+    mensajeExito: 'Producto eliminado del catálogo'
+  });
 
   return true;
 }

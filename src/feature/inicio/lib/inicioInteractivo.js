@@ -139,6 +139,48 @@ function hidratarHeroDesdeNegocio(datos) {
   if (horario) {
     document.querySelectorAll('[data-negocio-horario]').forEach(el => el.textContent = horario);
   }
+
+  // Hidratar selector interactivo de distritos en vivo (0ms)
+  if (Array.isArray(datos.zonas) && datos.zonas.length > 0) {
+    const grid = document.getElementById('districtSelector');
+    if (grid) {
+      const activas = datos.zonas.filter(z => z.activo !== false);
+      if (activas.length > 0) {
+        grid.innerHTML = activas.map((z, idx) => `
+          <button 
+            type="button"
+            class="hero-district-btn ${idx === 0 ? 'active' : ''}"
+            data-district="${z.distrito || ''}"
+            data-time="${z.tiempoMin || 8} - ${z.tiempoMax || 18} ${z.unidad || 'min'}"
+          >
+            <div class="hero-district-name">${z.distrito || ''}</div>
+            <div class="hero-district-time"><i class="fa-solid fa-bolt"></i> ${z.tiempoMin || 8} - ${z.tiempoMax || 18} ${z.unidad || 'min'}</div>
+          </button>
+        `).join('');
+
+        const botones = grid.querySelectorAll('.hero-district-btn');
+        const info = document.getElementById('distritoActualInfo');
+        botones.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            botones.forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            const time = btn.getAttribute('data-time') || '';
+            if (info) {
+              const timeEl = info.querySelector('.eta-time');
+              if (timeEl) timeEl.textContent = time;
+            }
+          });
+        });
+
+        if (info && activas[0]) {
+          const timeEl = info.querySelector('.eta-time');
+          if (timeEl) {
+            timeEl.textContent = `${activas[0].tiempoMin || 8} - ${activas[0].tiempoMax || 18} ${activas[0].unidad || 'min'}`;
+          }
+        }
+      }
+    }
+  }
 }
 
 /**

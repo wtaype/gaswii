@@ -234,8 +234,6 @@ export function inicializarProductos() {
           item.precioPEN = nuevoPrecio;
           item.precio = nuevoPrecio;
           await guardarProductoFirestore(item);
-          Notificacion(`Honorario actualizado a S/ ${nuevoPrecio}.`, 'success', 2500);
-          solicitarActualizacionWeb({ motivo: `precio-${id}` });
         }
       }
     });

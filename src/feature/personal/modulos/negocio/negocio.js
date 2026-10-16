@@ -9,7 +9,6 @@ import {
   calcularAnosTrayectoria,
   sincronizarDesdeFirestore
 } from './dataNegocio.js';
-import { solicitarActualizacionWeb } from '../../lib/actualizar.js';
 import { getCanalesRedes, configSemilla } from '@/negocio.js';
 
 export function inicializarNegocio() {
@@ -454,6 +453,202 @@ export function inicializarNegocio() {
   inputSedeVirtualTagEn?.addEventListener('input', sincronizarSedesEn);
   inputSedeVirtualAtencionEn?.addEventListener('input', sincronizarSedesEn);
 
+  // ── GESTIÓN DE ZONAS & COBERTURA DE REPARTO (LIVE PREVIEW 0MS) ──
+  const btnAgregarZona = document.getElementById('btnAgregarZona');
+  const contenedorZonas = document.getElementById('ngListaZonas');
+  const mockChipsGrid = document.getElementById('ngMockZonasChips');
+  const mockEtaInfo = document.getElementById('ngMockEtaInfo');
+
+  function renderizarMockZonasChips() {
+    if (!mockChipsGrid) return;
+    const zonas = recolectarZonasDOM();
+    if (zonas.length === 0) {
+      mockChipsGrid.innerHTML = '<p class="ng-mock-empty" style="grid-column: span 2; font-size: 12px; color: var(--muted); padding: 8px 0;">No hay distritos configurados.</p>';
+      if (mockEtaInfo) mockEtaInfo.innerHTML = 'Despachando desde sede: <strong>--</strong>';
+      return;
+    }
+
+    mockChipsGrid.innerHTML = zonas.map((z, idx) => `
+      <div class="ng-mock-chip ${idx === 0 ? 'active' : ''} ${z.activo ? '' : 'inactive'}" data-dist="${z.distrito}" data-eta="${z.tiempoMin || 8} - ${z.tiempoMax || 18} ${z.unidad || 'min'}">
+        <span class="ng-mock-chip-name">${z.distrito || 'Distrito'}</span>
+        <span class="ng-mock-chip-time"><i class="fa-solid fa-bolt"></i> ${z.tiempoMin || 8} - ${z.tiempoMax || 18} ${z.unidad || 'min'}</span>
+      </div>
+    `).join('');
+
+    const primeraActiva = zonas.find(z => z.activo);
+    if (mockEtaInfo) {
+      if (primeraActiva) {
+        mockEtaInfo.innerHTML = `Despachando hacia <strong>${primeraActiva.distrito}</strong>: <strong>${primeraActiva.tiempoMin} - ${primeraActiva.tiempoMax} ${primeraActiva.unidad}</strong>`;
+      } else {
+        mockEtaInfo.innerHTML = 'Todos los distritos están pausados';
+      }
+    }
+
+    mockChipsGrid.querySelectorAll('.ng-mock-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        mockChipsGrid.querySelectorAll('.ng-mock-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        const dist = chip.getAttribute('data-dist');
+        const eta = chip.getAttribute('data-eta');
+        if (mockEtaInfo) {
+          mockEtaInfo.innerHTML = `Despachando hacia <strong>${dist}</strong>: <strong>${eta}</strong>`;
+        }
+      });
+    });
+  }
+
+  function enlazarEventosZonaCard(card) {
+    if (!card) return;
+    const inpDist = card.querySelector('.ng-zona-distrito');
+    const inpMin = card.querySelector('.ng-zona-min');
+    const inpMax = card.querySelector('.ng-zona-max');
+    const selUni = card.querySelector('.ng-zona-unidad');
+    const chkActivo = card.querySelector('.ng-zona-activo');
+    const btnDel = card.querySelector('.ng-btn-eliminar-zona');
+    const namePreview = card.querySelector('.ng-zona-name-preview');
+
+    const actualizarCardHeader = () => {
+      if (namePreview) namePreview.textContent = inpDist?.value?.trim() || 'Nuevo Distrito';
+      renderizarMockZonasChips();
+    };
+
+    inpDist?.addEventListener('input', actualizarCardHeader);
+    inpMin?.addEventListener('input', renderizarMockZonasChips);
+    inpMax?.addEventListener('input', renderizarMockZonasChips);
+    chkActivo?.addEventListener('change', renderizarMockZonasChips);
+
+    // Inicializar wiSelect en el selector de unidad de tiempo
+    if (selUni) {
+      selUni.addEventListener('change', renderizarMockZonasChips);
+      if (typeof wiSelect === 'function') {
+        wiSelect(selUni, {
+          placeholder: 'Unidad...',
+          onChange: () => {
+            renderizarMockZonasChips();
+          }
+        });
+      }
+    }
+
+    btnDel?.addEventListener('click', () => {
+      const nom = inpDist?.value || 'este distrito';
+      wiConfirmar('¿Eliminar distrito?', `Se eliminará "${nom}" de la cobertura.`, () => {
+        card.remove();
+        renderizarMockZonasChips();
+        Notificacion('Distrito removido', 'info', 1800);
+      });
+    });
+  }
+
+  function crearZonaCardHTML(z, idx) {
+    const id = z.id || (z.distrito ? z.distrito.toLowerCase().replace(/[^a-z0-9]+/g, '-') : `zona-${Date.now()}`);
+    const uni = z.unidad || 'min';
+    return `
+      <div class="ng-zona-card" data-zona-idx="${idx}" data-zona-id="${id}">
+        <div class="ng-zona-card-header">
+          <div class="ng-zona-title-wrap">
+            <span class="ng-zona-bullet"><i class="fa-solid fa-motorcycle"></i></span>
+            <strong class="ng-zona-name-preview">${z.distrito || 'Nuevo Distrito'}</strong>
+          </div>
+          <div class="ng-zona-header-actions">
+            <label class="ng-switch-wrap" title="Activar/Desactivar cobertura en este distrito">
+              <input type="checkbox" class="ng-zona-activo" ${z.activo !== false ? 'checked' : ''} />
+              <span class="ng-switch-slider"></span>
+            </label>
+            <button type="button" class="ng-btn-eliminar-zona" title="Eliminar este distrito">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="ng-grid-zona-inputs">
+          <div class="ng-field">
+            <label class="ng-label">Nombre del Distrito</label>
+            <input type="text" class="ng-input ng-zona-distrito" value="${z.distrito || ''}" placeholder="Ej: Surquillo" />
+          </div>
+
+          <div class="ng-field">
+            <label class="ng-label">Unidad de Tiempo</label>
+            <select class="ng-input ng-select ng-zona-unidad">
+              <option value="min" ${uni === 'min' ? 'selected' : ''}>min (Minutos)</option>
+              <option value="hrs" ${uni === 'hrs' || uni === 'horas' ? 'selected' : ''}>hrs (Horas)</option>
+              <option value="dias" ${uni === 'dias' || uni === 'días' ? 'selected' : ''}>días (Días)</option>
+            </select>
+          </div>
+
+          <div class="ng-field">
+            <label class="ng-label">Tiempo Mínimo</label>
+            <input type="number" min="1" max="180" class="ng-input ng-zona-min" value="${z.tiempoMin ?? 8}" placeholder="8" />
+          </div>
+
+          <div class="ng-field">
+            <label class="ng-label">Tiempo Máximo</label>
+            <input type="number" min="1" max="180" class="ng-input ng-zona-max" value="${z.tiempoMax ?? 18}" placeholder="18" />
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function cargarZonas(zonasArray) {
+    if (!contenedorZonas) return;
+    if (Array.isArray(zonasArray) && zonasArray.length > 0) {
+      contenedorZonas.innerHTML = zonasArray.map((z, idx) => crearZonaCardHTML(z, idx)).join('');
+    }
+    contenedorZonas.querySelectorAll('.ng-zona-card').forEach(card => {
+      enlazarEventosZonaCard(card);
+    });
+    renderizarMockZonasChips();
+  }
+
+  function recolectarZonasDOM() {
+    if (!contenedorZonas) return [];
+    return Array.from(contenedorZonas.querySelectorAll('.ng-zona-card')).map((card, idx) => {
+      const distrito = card.querySelector('.ng-zona-distrito')?.value?.trim() || '';
+      const id = card.dataset.zonaId || (distrito ? distrito.toLowerCase().replace(/[^a-z0-9]+/g, '-') : `zona-${idx}`);
+      const unidad = card.querySelector('.ng-zona-unidad')?.value?.trim() || 'min';
+      return {
+        id,
+        distrito,
+        tiempoMin: parseInt(card.querySelector('.ng-zona-min')?.value || '8', 10),
+        tiempoMax: parseInt(card.querySelector('.ng-zona-max')?.value || '18', 10),
+        unidad,
+        tag: '',
+        activo: Boolean(card.querySelector('.ng-zona-activo')?.checked)
+      };
+    }).filter(z => z.distrito);
+  }
+
+  btnAgregarZona?.addEventListener('click', () => {
+    if (!contenedorZonas) return;
+    const idx = contenedorZonas.querySelectorAll('.ng-zona-card').length;
+    const nuevaZona = {
+      id: `zona-${Date.now()}`,
+      distrito: '',
+      tiempoMin: 8,
+      tiempoMax: 18,
+      unidad: 'min',
+      tag: '',
+      activo: true
+    };
+    const div = document.createElement('div');
+    div.innerHTML = crearZonaCardHTML(nuevaZona, idx);
+    const card = div.firstElementChild;
+    contenedorZonas.appendChild(card);
+    enlazarEventosZonaCard(card);
+    card.querySelector('.ng-zona-distrito')?.focus();
+    renderizarMockZonasChips();
+    Notificacion('Distrito añadido al borrador', 'info', 1800);
+  });
+
+  // Inicializar listeners en los cards que ya vinieron renderizados por SSR
+  if (contenedorZonas) {
+    contenedorZonas.querySelectorAll('.ng-zona-card').forEach(card => {
+      enlazarEventosZonaCard(card);
+    });
+    renderizarMockZonasChips();
+  }
+
   function refrescarTodosLosPreviews() {
     sincronizarSeoEs();
     sincronizarSeoEn();
@@ -461,6 +656,7 @@ export function inicializarNegocio() {
     sincronizarBioEn();
     sincronizarSedesEs();
     sincronizarSedesEn();
+    renderizarMockZonasChips();
   }
 
   // ── ASISTENTE DE GOOGLE MAPS ──
@@ -1153,6 +1349,13 @@ export function inicializarNegocio() {
       if (ngSerpImgEn && seoImgVal) ngSerpImgEn.src = seoImgVal;
     }
 
+    // Zonas & Cobertura
+    if (cfg.zonas && Array.isArray(cfg.zonas)) {
+      cargarZonas(cfg.zonas);
+    } else if (actual.zonas && Array.isArray(actual.zonas)) {
+      cargarZonas(actual.zonas);
+    }
+
     // Inicializar todos los previews interactivos
     refrescarTodosLosPreviews();
   }
@@ -1286,6 +1489,8 @@ export function inicializarNegocio() {
         }
       ],
 
+      zonas: recolectarZonasDOM(),
+
       metricas: {
         clientes: inputMetricaClientes?.value?.trim() || actual.metricas?.clientes || '',
         satisfaccion: inputMetricaSatisfaccion?.value?.trim() || actual.metricas?.satisfaccion || '',
@@ -1382,19 +1587,6 @@ export function inicializarNegocio() {
     try {
       const payload = recolectarDatos();
       guardarDatosNegocio(payload);
-
-      Notificacion('Ficha de negocio guardada con éxito en Firestore', 'success', 3000);
-
-      // Ofrecer compilación/despliegue en la nube
-      if (typeof solicitarActualizacionWeb === 'function') {
-        setTimeout(() => {
-          solicitarActualizacionWeb({
-            modulo: 'negocio',
-            titulo: 'Actualizar Web Pública',
-            mensaje: '¿Deseas desplegar los cambios en el sitio web público ahora?'
-          });
-        }, 600);
-      }
     } catch (err) {
       console.error(err);
       Notificacion('Error al guardar datos: ' + (err?.message || err), 'danger', 4000);

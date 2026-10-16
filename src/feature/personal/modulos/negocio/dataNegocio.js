@@ -5,6 +5,7 @@
 
 import { savels, getls, formatearFechaParaInput } from '@widev';
 import negocioSemilla from '../../../../semillas/negocio.json';
+import { actualizarCentral } from '@core/servicios/actualizar.js';
 
 export const STORAGE_KEY = 'wi_negocio';
 export const OLD_STORAGE_KEY = 'minegocio';
@@ -116,6 +117,7 @@ export function guardarDatosNegocio(input = {}) {
       ...actual.ubicacion,
       ...(input.ubicacion || {})
     },
+    zonas: Array.isArray(input.zonas) ? input.zonas : (actual.zonas || []),
     sedes: Array.isArray(input.sedes) ? input.sedes : (actual.sedes || []),
     metricas: {
       ...actual.metricas,
@@ -143,10 +145,17 @@ export function guardarDatosNegocio(input = {}) {
     delete configActualizada.identidad.subtitulo;
   }
 
-  guardarDatosNegocioLocal(configActualizada);
-
-  // Sincronización en segundo plano con Firestore
-  sincronizarNegocioFirestore(configActualizada, fechaStr);
+  // Delegar actualización universal al motor central Zero-Waste (Local-First + Firestore + Debounced Deploy)
+  actualizarCentral({
+    modulo: 'negocio',
+    coleccion: COLECCION_NEGOCIO,
+    docId: DOC_NEGOCIO_ID,
+    storageKey: STORAGE_KEY,
+    evento: 'wi:negocio-actualizado',
+    datos: configActualizada,
+    redeploy: true,
+    mensajeExito: 'Ficha de negocio actualizada con éxito'
+  });
 
   return configActualizada;
 }
@@ -181,6 +190,7 @@ async function sincronizarNegocioFirestore(config, fechaStr) {
       contacto: config.contacto || {},
       horarios: config.horarios || {},
       ubicacion: config.ubicacion || {},
+      zonas: Array.isArray(config.zonas) ? config.zonas : [],
       sedes: config.sedes || [],
       metricas: metricasLimpias,
       redes: config.redes || {},
@@ -191,7 +201,7 @@ async function sincronizarNegocioFirestore(config, fechaStr) {
     };
 
     // Reemplaza el documento completo en la colección 'negocio' -> 'principal'
-    await setDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID), payload);
+    await setDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID), payload, { merge: true });
   } catch (err) {
     console.warn('[dataNegocio] Sincronización diferida Firestore:', err?.message || err);
   }

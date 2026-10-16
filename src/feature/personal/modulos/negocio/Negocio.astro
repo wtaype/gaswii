@@ -24,10 +24,11 @@ const sedeVirtual = sedes[1] || {};
 const met = raw.metricas || {};
 const hor = raw.horarios || {};
 const seoImg = seo.imagen || '/imgwii/productos/BALON-10KG.webp';
-const canonicalEs = (n.linkweb || 'https://solgassurquillo.com/').replace(/\/$/, '');
+const canonicalEs = (n.linkweb || 'https://gaswii.com/').replace(/\/$/, '');
 const canonicalEn = `${canonicalEs}/en`;
 const fullSeoImg = (seoImg.startsWith('http://') || seoImg.startsWith('https://')) ? seoImg : `${canonicalEs}${seoImg.startsWith('/') ? '' : '/'}${seoImg}`;
 const distritosList = n.distritos || [];
+const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Array.isArray(n.zonas) && n.zonas.length > 0 ? n.zonas : []);
 ---
 
 <section class={`ps-panel ${esActivo ? 'active' : ''}`} id="panel-negocio">
@@ -66,6 +67,11 @@ const distritosList = n.distritos || [];
       <button type="button" class="ng-tab-btn" data-tab-target="ng-tab-sede">
         <i class="fa-solid fa-location-dot"></i>
         <span>Sede & Horarios</span>
+      </button>
+
+      <button type="button" class="ng-tab-btn" data-tab-target="ng-tab-zonas">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span>Zonas & Cobertura</span>
       </button>
 
       <button type="button" class="ng-tab-btn" data-tab-target="ng-tab-metricas">
@@ -653,6 +659,109 @@ const distritosList = n.distritos || [];
                 <span>a</span>
                 <input type="time" id="ngHorarioSabadoCierra" value={hor.sabado?.cierra || ""} />
               </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PESTAÑA: 🛵 ZONAS & COBERTURA DE REPARTO                   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="ng-tab-pane" id="ng-tab-zonas">
+      <div class="ng-grid-zonas-layout">
+        
+        <!-- Columna Izquierda (60%): Lista Dinámica de Distritos -->
+        <div class="ng-card">
+          <div class="ng-card-header ng-card-header-flex">
+            <div>
+              <h2 class="ng-card-title"><i class="fa-solid fa-map-location-dot"></i> Distritos & Tiempos de Cobertura</h2>
+              <p class="ng-card-desc">Personaliza los distritos atendidos y sus tiempos estimados de despacho desde la sede central.</p>
+            </div>
+            <button type="button" class="ng-btn-add-zona" id="btnAgregarZona">
+              <i class="fa-solid fa-plus"></i> Añadir Distrito
+            </button>
+          </div>
+
+          <!-- Contenedor Dinámico de Distritos -->
+          <div class="ng-zonas-lista" id="ngListaZonas">
+            {zonas.map((z: any, idx: number) => {
+              const uni = z.unidad || 'min';
+              return (
+                <div class="ng-zona-card" data-zona-idx={idx} data-zona-id={z.id || `zona-${idx}`}>
+                  <div class="ng-zona-card-header">
+                    <div class="ng-zona-title-wrap">
+                      <span class="ng-zona-bullet"><i class="fa-solid fa-motorcycle"></i></span>
+                      <strong class="ng-zona-name-preview">{z.distrito || 'Nuevo Distrito'}</strong>
+                    </div>
+                    <div class="ng-zona-header-actions">
+                      <label class="ng-switch-wrap" title="Activar/Desactivar cobertura en este distrito">
+                        <input type="checkbox" class="ng-zona-activo" checked={z.activo !== false} />
+                        <span class="ng-switch-slider"></span>
+                      </label>
+                      <button type="button" class="ng-btn-eliminar-zona" title="Eliminar este distrito">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="ng-grid-zona-inputs">
+                    <div class="ng-field">
+                      <label class="ng-label">Nombre del Distrito</label>
+                      <input type="text" class="ng-input ng-zona-distrito" value={z.distrito || ''} placeholder="Ej: Surquillo" />
+                    </div>
+
+                    <div class="ng-field">
+                      <label class="ng-label">Unidad de Tiempo</label>
+                      <select class="ng-input ng-select ng-zona-unidad">
+                        <option value="min" selected={uni === 'min'}>min (Minutos)</option>
+                        <option value="hrs" selected={uni === 'hrs' || uni === 'horas'}>hrs (Horas)</option>
+                        <option value="dias" selected={uni === 'dias' || uni === 'días'}>días (Días)</option>
+                      </select>
+                    </div>
+
+                    <div class="ng-field">
+                      <label class="ng-label">Tiempo Mínimo</label>
+                      <input type="number" min="1" max="180" class="ng-input ng-zona-min" value={z.tiempoMin ?? 8} placeholder="8" />
+                    </div>
+
+                    <div class="ng-field">
+                      <label class="ng-label">Tiempo Máximo</label>
+                      <input type="number" min="1" max="180" class="ng-input ng-zona-max" value={z.tiempoMax ?? 18} placeholder="18" />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Columna Derecha (40%): Live Preview Sticky de la Web Pública -->
+        <div class="ng-card ng-card-sticky-preview">
+          <div class="ng-card-header">
+            <div>
+              <h3 class="ng-card-title"><i class="fa-solid fa-eye"></i> Vista Previa en Vivo</h3>
+              <p class="ng-card-desc">Así lo verán tus clientes en el Hero y en el modal de pedidos.</p>
+            </div>
+            <div class="ng-preview-pill"><i class="fa-solid fa-bolt"></i> 0 ms Live</div>
+          </div>
+
+          <div class="ng-zona-preview-box">
+            <div class="ng-zona-preview-hero-mock">
+              <div class="ng-mock-title"><i class="fa-solid fa-location-dot"></i> Selecciona tu distrito de entrega:</div>
+              <div class="ng-mock-chips-grid" id="ngMockZonasChips">
+                <!-- Se sincroniza en tiempo real con los inputs -->
+              </div>
+              <div class="ng-mock-footer">
+                <i class="fa-solid fa-motorcycle color-primary"></i>
+                <span id="ngMockEtaInfo">Despachando desde sede: <strong>--</strong></span>
+              </div>
+            </div>
+
+            <div class="ng-zona-preview-tip">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Al presionar <strong>Guardar Cambios</strong>, la cobertura se actualiza en <strong>0 ms</strong> en la web y se sincroniza en Firestore.</span>
             </div>
           </div>
         </div>

@@ -148,7 +148,7 @@ export function normalizarConfig(c = {}) {
     },
     sedes: (Array.isArray(cfg.sedes) && cfg.sedes.length > 0) ? cfg.sedes : (Array.isArray(base.sedes) && base.sedes.length > 0 ? base.sedes : []),
     horarios: cfg.horarios || cfg.contacto?.horario || base.contacto?.horario || {},
-    zonas: Array.isArray(cfg.zonas) && cfg.zonas.length > 0 ? cfg.zonas : (base.zonas || []),
+    zonas: Array.isArray(cfg.zonas) ? cfg.zonas : (base.zonas || []),
     metricas: cfg.metricas || base.metricas || { years: '26+', clientes: '26K+', balanza: '100%', dias: '365' },
     redes: cfg.redes || base.redes || {},
     seo: {
@@ -433,6 +433,11 @@ export const datosNegocio = {
 
   get sedes() {
     if (Array.isArray(this.raw.sedes) && this.raw.sedes.length > 0) return this.raw.sedes;
+    return [];
+  },
+
+  get zonas() {
+    if (Array.isArray(this.raw.zonas) && this.raw.zonas.length > 0) return this.raw.zonas;
     return [];
   },
 
