@@ -3,7 +3,7 @@
 // Cero Bloqueo de Primer Render (TBT = 0ms) · Se activa al interactuar (touch, scroll, click, mousemove)
 import { imgwii } from '@widev';
 import { ROL_PATH } from '@core/rutas.js';
-import { obtenerSaludoHora } from './whatsapp.js';
+import { obtenerSaludoHora, crearEnlaceWhatsApp } from './whatsapp.js';
 
 /**
  * Resuelve el destino del panel administrativo o de cliente
@@ -75,6 +75,19 @@ export function actualizarAuthUi(smile) {
 function initLanguageSwitcher() {
   document.querySelectorAll('.header-pill-group a[data-lang]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
+      const explicitHref = btn.getAttribute('href');
+      // Si el enlace ya tiene un destino específico definido por SSR o por el módulo (ej. artículos de blog)
+      if (explicitHref && explicitHref !== '#' && !explicitHref.startsWith('#')) {
+        const hash = window.location.hash || '';
+        // Si hay un hash activo en la URL actual y el href no lo tiene, anexamos el hash
+        if (hash && !explicitHref.includes('#')) {
+          e.preventDefault();
+          window.location.href = explicitHref + hash;
+        }
+        // Permitimos la navegación nativa limpia directa al href del botón
+        return;
+      }
+
       const targetLang = btn.getAttribute('data-lang');
       if (!targetLang) return;
       e.preventDefault();
@@ -158,16 +171,19 @@ function initSelectorDistritos() {
 
   // Hidratar con datos guardados de negocio en localStorage
   try {
-    const raw = localStorage.getItem('minegocio') || localStorage.getItem('gaswii_negocio_config');
+    const raw = localStorage.getItem('wi_negocio') || localStorage.getItem('gaswii_negocio') || localStorage.getItem('minegocio') || localStorage.getItem('gaswii_negocio_config');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed) hidratarHeroDesdeNegocio(parsed);
+      const data = parsed?.value || parsed;
+      if (data) hidratarHeroDesdeNegocio(data);
     }
   } catch (e) {}
 
-  window.addEventListener('gaswii:negocio-actualizado', (e) => {
+  const onNegocioActualizado = (e) => {
     if (e.detail) hidratarHeroDesdeNegocio(e.detail);
-  });
+  };
+  window.addEventListener('wi:negocio-actualizado', onNegocioActualizado);
+  window.addEventListener('gaswii:negocio-actualizado', onNegocioActualizado);
 }
 
 /**
@@ -202,10 +218,12 @@ function initCalculadora() {
 
     const btnWa = document.querySelector('.btn-calc-pedir');
     if (btnWa) {
-      const numWa = btnWa.getAttribute('data-ws-num') || '51936369384';
-      const saludo = obtenerSaludoHora();
-      const msg = `${saludo}. He visto en su página web y calculé mi consumo: balón de ${kg} kg para ${p} personas (~${diasEstimados} días de rendimiento). Quisiera pedir a domicilio, ¿podrían confirmarme por favor? ¡Muchas gracias!`;
-      btnWa.href = `https://wa.me/${numWa}?text=${encodeURIComponent(msg)}`;
+      btnWa.href = crearEnlaceWhatsApp({
+        canalId: 'canal_calculadora',
+        kg,
+        personas: p,
+        dias: diasEstimados
+      });
     }
   }
 
@@ -215,26 +233,73 @@ function initCalculadora() {
 }
 
 /**
- * Reconciliación Local-First de productos con localStorage
+ * Reconciliación Local-First de productos con localStorage y eventos en caliente
  */
 function initReconciliacionProductos() {
-  try {
-    const local = localStorage.getItem('gaswii_productos');
-    if (!local) return;
-    const prods = JSON.parse(local);
+  function aplicarReconciliacion(prods) {
     if (!Array.isArray(prods) || prods.length === 0) return;
-
     prods.forEach((p) => {
       const id = p.id || p.slug;
       if (!id) return;
       const card = document.querySelector(`[data-prod-id="${id}"]`);
       if (!card) return;
+
+      const precioNum = p.precioPEN ?? p.precio;
       const precioEl = card.querySelector('.producto-card-precio');
-      if (precioEl && p.precioPEN !== undefined) {
-        precioEl.textContent = `S/ ${Number(p.precioPEN).toFixed(2)}`;
+      if (precioEl && precioNum !== undefined) {
+        precioEl.textContent = `S/ ${Number(precioNum).toFixed(2)}`;
+      }
+
+      // Nombre si cambió
+      const nombreTxt = typeof p.nombre === 'object' ? p.nombre?.es : p.nombre;
+      const tituloEl = card.querySelector('.producto-card-titulo, h3');
+      if (tituloEl && nombreTxt) {
+        tituloEl.textContent = nombreTxt;
       }
     });
+  }
+
+  try {
+    const local = localStorage.getItem('wi_productos') || localStorage.getItem('gaswii_productos');
+    if (local) {
+      const prods = JSON.parse(local);
+      const lista = Array.isArray(prods) ? prods : (prods?.value || null);
+      if (Array.isArray(lista)) aplicarReconciliacion(lista);
+    }
   } catch (e) {}
+
+  window.addEventListener('wi:productos-actualizado', (e) => {
+    if (e.detail) aplicarReconciliacion(e.detail);
+  });
+  window.addEventListener('gaswii:productos-actualizado', (e) => {
+    if (e.detail) aplicarReconciliacion(e.detail);
+  });
+  window.addEventListener('storage', (e) => {
+    if ((e.key === 'wi_productos' || e.key === 'gaswii_productos') && e.newValue) {
+      try {
+        const parsed = JSON.parse(e.newValue);
+        const lista = Array.isArray(parsed) ? parsed : (parsed?.value || null);
+        if (Array.isArray(lista)) aplicarReconciliacion(lista);
+      } catch (err) {}
+    }
+  });
+
+  window.addEventListener('wi:whatsapp-actualizado', () => {
+    document.querySelectorAll('.card-balon').forEach(card => {
+      const tituloEl = card.querySelector('.card-title');
+      const precioEl = card.querySelector('[data-price-id]');
+      const btnWs = card.querySelector('.btn-card-ws');
+      if (btnWs && tituloEl) {
+        const nom = tituloEl.textContent?.trim() || '';
+        const pr = precioEl ? parseFloat(precioEl.textContent || '0') : null;
+        btnWs.href = crearEnlaceWhatsApp({
+          canalId: 'canal_catalogo_producto',
+          producto: nom,
+          precio: pr
+        });
+      }
+    });
+  });
 }
 
 /**

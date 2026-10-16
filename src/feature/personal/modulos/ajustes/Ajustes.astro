@@ -1,7 +1,8 @@
 ---
 // src/feature/personal/modulos/ajustes/Ajustes.astro
-// Módulo de Ajustes: Configuración Global & Centro de Backup JSON (Solgas Surquillo)
+// Módulo de Ajustes: Configuración Global & Centro de Backup JSON
 // 100% JS Nativo · Integrado con @widev · 0 CSS Inline
+import { datosNegocio } from '@/negocio.js';
 
 interface Props {
   esActivo?: boolean;
@@ -17,10 +18,10 @@ const { esActivo = false } = Astro.props;
     <div class="ps-section-title-wrap">
       <h1 class="ps-section-title">
         <i class="fa-solid fa-gear sn-header-icon"></i>
-        Ajustes · Configuración Global del Negocio
+        Ajustes · Configuración Global
       </h1>
       <p class="ps-section-sub">
-        Control maestro del estado de la sede, tiempos promedio de despacho, sonido de alertas y centro de respaldo JSON.
+        Control maestro del estado de atención, tiempos de respuesta, notificaciones de vencimiento y centro de respaldo JSON.
       </p>
     </div>
     <div class="ps-header-actions">
@@ -30,11 +31,11 @@ const { esActivo = false } = Astro.props;
     </div>
   </div>
 
-  <!-- SWITCH MAESTRO DE ESTADO DE LA SEDE -->
+  <!-- SWITCH MAESTRO DE ESTADO DE ATENCIÓN -->
   <div class="aj-master-switch-box sn-mb-14">
     <div class="aj-switch-meta">
-      <span class="aj-switch-label" id="ajLabelTienda">🟢 Sede Abierta (Recibiendo pedidos web y delivery)</span>
-      <span class="aj-switch-sub">Si desactivas este switch, se mostrará un banner informativo indicando que la atención está fuera de horario.</span>
+      <span class="aj-switch-label" id="ajLabelTienda">🟢 Sede Abierta (Recibiendo consultas y citas)</span>
+      <span class="aj-switch-sub">Si desactivas este switch, se mostrará un mensaje indicando que la atención está fuera del horario de oficina.</span>
     </div>
     <label class="aj-toggle-switch">
       <input type="checkbox" id="ajSwitchTienda" checked />
@@ -45,30 +46,30 @@ const { esActivo = false } = Astro.props;
   <!-- GRID DE TARJETAS DE CONFIGURACIÓN -->
   <div class="aj-grid">
     
-    <!-- TARJETA 1: PARÁMETROS OPERATIVOS DE DELIVERY -->
+    <!-- TARJETA 1: PARÁMETROS OPERATIVOS DE ATENCIÓN -->
     <div class="aj-card">
       <h2 class="aj-card-title">
-        <i class="fa-solid fa-motorcycle sn-title-icon"></i> Parámetros de Entrega y Sede
+        <i class="fa-solid fa-briefcase sn-title-icon"></i> Parámetros de Atención y Sede
       </h2>
 
       <div class="sn-form-group">
-        <label class="sn-label" for="ajInpEta">Tiempo Estimado de Entrega Promedio (ETA en min)</label>
-        <input type="text" id="ajInpEta" class="sn-input" value="12–15" />
+        <label class="sn-label" for="ajInpEta">Tiempo de Respuesta Promedio (WhatsApp)</label>
+        <input type="text" id="ajInpEta" class="sn-input" value="15–30 min" />
       </div>
 
       <div class="sn-form-group">
-        <label class="sn-label" for="ajInpCostoDelivery">Costo de Envío / Delivery (S/)</label>
-        <input type="number" step="0.5" id="ajInpCostoDelivery" class="sn-input" value="0.00" />
+        <label class="sn-label" for="ajInpCostoDelivery">Honorario Base de Orientación (S/)</label>
+        <input type="number" step="1" id="ajInpCostoDelivery" class="sn-input" value="80.00" />
       </div>
 
       <div class="sn-form-group">
-        <label class="sn-label" for="ajInpTelefono">Teléfono Central de Emergencias</label>
-        <input type="tel" id="ajInpTelefono" class="sn-input" value="936 369 384" />
+        <label class="sn-label" for="ajInpTelefono">Teléfono Central de Atención</label>
+        <input type="tel" id="ajInpTelefono" class="sn-input" value={datosNegocio.telefono || ""} placeholder="+51 900 000 000" />
       </div>
 
       <div class="sn-form-group">
         <label class="sn-label" for="ajInpDireccion">Dirección Física de la Sede</label>
-        <input type="text" id="ajInpDireccion" class="sn-input" value="Jr. Dante 260, Surquillo, Lima 15047" />
+        <input type="text" id="ajInpDireccion" class="sn-input" value={datosNegocio.direccionSede || ""} placeholder="Dirección de la sede" />
       </div>
     </div>
 
@@ -105,10 +106,13 @@ const { esActivo = false } = Astro.props;
         <i class="fa-solid fa-database aj-backup-icon"></i>
         <h3 class="aj-backup-title">Copia de Seguridad del Sistema (JSON)</h3>
         <p class="aj-backup-sub">
-          Descarga un archivo con todos los comprobantes emitidos, cartera de clientes, conductores y ajustes de la tienda en 1 clic.
+          Descarga un archivo con todos los comprobantes emitidos, cartera de clientes contribuyentes, equipo contable y ajustes del estudio en 1 clic.
         </p>
         <button type="button" class="aj-btn-download-json" id="btnAjBackupJson">
           <i class="fa-solid fa-cloud-arrow-down"></i> Descargar Respaldo JSON
+        </button>
+        <button type="button" class="aj-btn-download-json sn-mt-10" id="btnAjSembrarFirestore" style="background: var(--mco, var(--brand-primary, #ff6600)); color: #ffffff;">
+          <i class="fa-solid fa-seedling"></i> Restaurar / Sembrar desde Semillas
         </button>
       </div>
     </div>

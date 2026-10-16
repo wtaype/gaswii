@@ -1,0 +1,30 @@
+---
+// src/pages/en/blog.astro
+// Public Blog Catalog in English
+import Principal from '../../core/layouts/Principal.astro';
+import BlogCatalog from '../../feature/blog/components/BlogCatalog.astro';
+import blogsData from '../../semillas/blogs.json';
+import { datosNegocio } from '../../negocio.js';
+
+const idioma = 'en';
+const ruta = '/en/blog';
+const rutasIdioma = {
+  es: '/blog',
+  en: '/en/blog'
+};
+
+const posts = (blogsData || []).filter((p: any) => p.lang === 'en' && p.activo !== false);
+
+const pageTitle = `Blog & Official Guides | ${datosNegocio.nombre}`;
+const pageDesc = 'Official articles, guides, and tips on LPG safety, digital scale exact weight verification, and energy efficiency.';
+---
+
+<Principal
+  idioma={idioma}
+  ruta={ruta}
+  rutasIdioma={rutasIdioma}
+  title={pageTitle}
+  description={pageDesc}
+>
+  <BlogCatalog posts={posts} idioma={idioma} />
+</Principal>

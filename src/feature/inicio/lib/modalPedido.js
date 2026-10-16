@@ -262,10 +262,12 @@ function asegurarModalEnDOM() {
     const celularCliente = document.getElementById('pedInputCelular')?.value?.trim() || '';
 
     const url = crearEnlaceWhatsApp({
+      canalId: 'canal_modal_express',
       cliente: nombreCliente,
       celular: celularCliente,
       producto: nomProd,
       precio: total,
+      total: total,
       cantidad: qty,
       distrito: distrito,
       direccion: direccion,

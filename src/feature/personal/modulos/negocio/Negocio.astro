@@ -1,11 +1,33 @@
 ---
 // src/feature/personal/modulos/negocio/Negocio.astro
-// Módulo 3: Ficha de Mi Negocio (Sede, Contacto, Horarios, Zonas y Métricas)
+// Módulo: Ficha de Mi Negocio & Especialista
+// Rediseño Pro: Tabs Horizontales Compactos + Redes Dinámicas + SEO Prioritario + Métricas Reordenadas
+// 100% JS Nativo · Local-First · Sincronizado con Firestore · Cero Bloatware
+
+import { datosNegocio, configSemilla } from '@/negocio.js';
+
 interface Props {
   esActivo?: boolean;
 }
 
 const { esActivo = false } = Astro.props;
+const esServicios = configSemilla?.modeloNegocio === 'servicios_y_asesorias';
+const n = datosNegocio;
+const raw = n.raw || {};
+const iden = raw.identidad || {};
+const cont = raw.contacto || {};
+const ubi = raw.ubicacion || {};
+const seo = raw.seo || {};
+const sedes = Array.isArray(raw.sedes) ? raw.sedes : [];
+const sedePresencial = sedes[0] || {};
+const sedeVirtual = sedes[1] || {};
+const met = raw.metricas || {};
+const hor = raw.horarios || {};
+const seoImg = seo.imagen || '/imgwii/productos/BALON-10KG.webp';
+const canonicalEs = (n.linkweb || 'https://solgassurquillo.com/').replace(/\/$/, '');
+const canonicalEn = `${canonicalEs}/en`;
+const fullSeoImg = (seoImg.startsWith('http://') || seoImg.startsWith('https://')) ? seoImg : `${canonicalEs}${seoImg.startsWith('/') ? '' : '/'}${seoImg}`;
+const distritosList = n.distritos || [];
 ---
 
 <section class={`ps-panel ${esActivo ? 'active' : ''}`} id="panel-negocio">
@@ -14,12 +36,12 @@ const { esActivo = false } = Astro.props;
     <div class="ps-section-title-wrap">
       <h1 class="ps-section-title">Ficha de Mi Negocio</h1>
       <p class="ps-section-sub">
-        Configuración central de sede, teléfonos de despacho, horarios de atención, cobertura de delivery y métricas en tiempo real.
+        Configuración central de identidad oficial, canales de contacto directo, sede y presencia web bilingüe.
       </p>
     </div>
     <div class="ps-header-actions">
-      <a href="/" target="_blank" class="ps-btn ps-btn-secondary" title="Ver Tienda Pública">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Tienda
+      <a href="/" target="_blank" class="ps-btn ps-btn-secondary" title="Ver Web Pública">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Web
       </a>
       <button type="button" class="ps-btn ps-btn-primary" id="btnGuardarNegocio">
         <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
@@ -29,383 +51,1259 @@ const { esActivo = false } = Astro.props;
 
   <div class="ng-container">
     
-    <!-- 1. Barra de Pestañas Horizontales -->
-    <nav class="ng-tabs-bar" id="ngTabsBar">
-      <button type="button" class="ng-tab-btn active" data-tab="identidad">
-        <i class="fa-solid fa-store"></i> Identidad & Sede
+    <!-- ── BARRA DE PESTAÑAS HORIZONTALES COMPACTAS (BORDER-RADIUS 8px) ── -->
+    <div class="ng-tabs-bar" id="ngMainTabs">
+      <button type="button" class="ng-tab-btn active" data-tab-target="ng-tab-identidad">
+        <i class="fa-solid fa-camera-retro"></i>
+        <span>Fotos & Identidad</span>
       </button>
-      <button type="button" class="ng-tab-btn" data-tab="contacto">
-        <i class="fa-solid fa-phone"></i> Contacto & WhatsApp
-      </button>
-      <button type="button" class="ng-tab-btn" data-tab="ubicacion">
-        <i class="fa-solid fa-location-dot"></i> Sede & Google Maps
-      </button>
-      <button type="button" class="ng-tab-btn" data-tab="zonas">
-        <i class="fa-solid fa-motorcycle"></i> Zonas de Cobertura
-      </button>
-      <button type="button" class="ng-tab-btn" data-tab="metricas">
-        <i class="fa-solid fa-chart-line"></i> Métricas & Redes
-      </button>
-      <button type="button" class="ng-tab-btn" data-tab="seo">
-        <i class="fa-solid fa-magnifying-glass"></i> SEO & Palabras Clave
-      </button>
-    </nav>
 
-    <!-- PESTAÑA 1: IDENTIDAD & SEDE -->
-    <div class="ng-tab-content active" id="ngTab-identidad">
-      <div class="ng-card">
-        <div class="ng-card-header">
-          <div>
-            <h2 class="ng-card-title"><i class="fa-solid fa-id-card"></i> Identidad Comercial y Legal</h2>
-            <p class="ng-card-desc">Información oficial de la empresa, autorizaciones gubernamentales y respaldo.</p>
+      <button type="button" class="ng-tab-btn" data-tab-target="ng-tab-contacto">
+        <i class="fa-solid fa-share-nodes"></i>
+        <span>Redes & Contacto</span>
+      </button>
+
+      <button type="button" class="ng-tab-btn" data-tab-target="ng-tab-sede">
+        <i class="fa-solid fa-location-dot"></i>
+        <span>Sede & Horarios</span>
+      </button>
+
+      <button type="button" class="ng-tab-btn" data-tab-target="ng-tab-metricas">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Métricas & Trayectoria</span>
+      </button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PESTAÑA 1: 📸 FOTOS & IDENTIDAD (LAYOUT PRO 60% / 40%)     -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="ng-tab-pane active" id="ng-tab-identidad">
+      <div class="ng-grid-media-identidad">
+        
+        <!-- Columna Izquierda (Width 60%): Fotografías & Logotipos Oficiales (Inspirado en Imagen 2) -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h2 class="ng-card-title"><i class="fa-solid fa-images"></i> Fotografías & Logotipos Oficiales</h2>
+              <p class="ng-card-desc">Imágenes institucionales en alta resolución con previsualización en vivo.</p>
+            </div>
+          </div>
+
+          <!-- Cuadrícula interna: Foto Especialista (Izquierda) + Logos Oficial y Full (Derecha) -->
+          <div class="ng-media-2col-grid">
+            
+            <!-- 1. Foto Especialista Grande -->
+            <div class="ng-photo-box ng-photo-box-hero">
+              <div class="ng-photo-avatar-wrap">
+                <img id="ngImgHeroPreview" src={iden.imagenSede || n.fotoEspecialista || ""} alt="Foto Especialista" class="ng-thumb-specialist-lg" />
+              </div>
+              <div class="ng-photo-box-title">
+                <i class="fa-solid fa-camera"></i>
+                <span>Foto Especialista</span>
+              </div>
+              <div class="ng-input-url-group">
+                <input type="text" id="ngInputImagenSede" class="ng-input ng-input-url" placeholder={iden.imagenSede || n.fotoEspecialista || ""} />
+                <a id="btnLinkHero" href={iden.imagenSede || n.fotoEspecialista || "#"} target="_blank" class="ng-btn-icon-link" title="Abrir imagen en nueva pestaña">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- 2. Columna Derecha: Stack de Logo Oficial y Logo Full -->
+            <div class="ng-media-right-stack">
+              
+              <!-- Mini-tarjeta: Logo Oficial Circular -->
+              <div class="ng-photo-box">
+                <div class="ng-photo-avatar-wrap">
+                  <img id="ngImgLogoPreview" src={iden.logo || n.logo || ""} alt="Logo Oficial" class="ng-thumb-circle-lg" />
+                </div>
+                <div class="ng-photo-box-title">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  <span>Logo Oficial</span>
+                </div>
+                <div class="ng-input-url-group">
+                  <input type="text" id="ngInputLogo" class="ng-input ng-input-url" placeholder={iden.logo || n.logo || ""} />
+                  <a id="btnLinkLogo" href={iden.logo || n.logo || "#"} target="_blank" class="ng-btn-icon-link" title="Abrir imagen en nueva pestaña">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Mini-tarjeta: Logo Full Horizontal -->
+              <div class="ng-photo-box">
+                <div class="ng-photo-avatar-wrap">
+                  <img id="ngImgLogoFullPreview" src={iden.logoFull || n.logoFull || ""} alt="Logo Full" class="ng-thumb-full-lg" />
+                </div>
+                <div class="ng-photo-box-title">
+                  <i class="fa-solid fa-gem"></i>
+                  <span>Logo Full</span>
+                </div>
+                <div class="ng-input-url-group">
+                  <input type="text" id="ngInputLogoFull" class="ng-input ng-input-url" placeholder={iden.logoFull || n.logoFull || ""} />
+                  <a id="btnLinkLogoFull" href={iden.logoFull || n.logoFull || "#"} target="_blank" class="ng-btn-icon-link" title="Abrir imagen en nueva pestaña">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+
           </div>
         </div>
 
-        <div class="ng-grid-2">
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputNombre">Nombre Comercial</label>
-            <input type="text" id="ngInputNombre" class="ng-input" placeholder="Ej: Solgas Surquillo" />
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputNombreCorto">Nombre Corto / Marca</label>
-            <input type="text" id="ngInputNombreCorto" class="ng-input" placeholder="Ej: Solgas Surquillo" />
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputRazonSocial">Razón Social</label>
-            <input type="text" id="ngInputRazonSocial" class="ng-input" placeholder="Ej: Distribuidor Autorizado OSINERGMIN Reg. 208492" />
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputRuc">RUC</label>
-            <input type="text" id="ngInputRuc" class="ng-input" placeholder="20601234567" maxlength="11" />
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputOsinergmin">Registro OSINERGMIN</label>
-            <input type="text" id="ngInputOsinergmin" class="ng-input" placeholder="Ej: Reg. 208492" />
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputMarcaRespaldo">Marca de Respaldo</label>
-            <input type="text" id="ngInputMarcaRespaldo" class="ng-input" placeholder="Ej: Solgas S.A." />
-          </div>
-
-          <div class="ng-field">
-            <div class="ng-label">
-              <label for="ngInputLanzamiento">Fecha de Lanzamiento / Fundación</label>
-              <span class="ng-years-badge" id="ngBadgeTrayectoria">
-                <i class="fa-solid fa-calendar-check"></i> <span id="ngYearsText">25+ años</span>
-              </span>
-            </div>
-            <input type="date" id="ngInputLanzamiento" class="ng-input" />
-            <span class="ng-label-hint">Se guarda como Timestamp nativo de Firebase y calcula los años de experiencia automáticamente.</span>
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputLogo">URL del Logo</label>
-            <input type="text" id="ngInputLogo" class="ng-input" placeholder="/imgwii/logo.webp" />
-            <div class="ng-media-preview-box">
-              <img id="ngImgLogoPreview" src="/imgwii/logo.webp" alt="Logo preview" class="ng-logo-preview" />
-              <span class="ng-label-hint">Vista previa en vivo del logotipo de sede</span>
+        <!-- Columna Derecha (Width 40%): Identidad Comercial & Legal con espaciado amigable -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h2 class="ng-card-title"><i class="fa-solid fa-id-card"></i> Identidad Comercial & Legal</h2>
+              <p class="ng-card-desc">Datos oficiales de registro y titularidad profesional.</p>
             </div>
           </div>
 
-          <div class="ng-field span-2">
-            <label class="ng-label" for="ngInputImagenSede">URL de Portada / Imagen de Sede</label>
-            <input type="text" id="ngInputImagenSede" class="ng-input" placeholder="/imgwii/hero.webp" />
-            <div class="ng-media-preview-box">
-              <img id="ngImgHeroPreview" src="/imgwii/hero.webp" alt="Sede preview" class="ng-hero-preview" />
-              <span class="ng-label-hint">Fotografía principal que se muestra en el Hero y la sección Nosotros</span>
+          <div class="ng-grid-1 ng-gap-comfortable">
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputNombre">Nombre Oficial / Razón Social *</label>
+              <input type="text" id="ngInputNombre" class="ng-input" placeholder={n.nombre || ""} required />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputNombreCorto">Nombre Corto / Marca Comercial</label>
+              <input type="text" id="ngInputNombreCorto" class="ng-input" placeholder={n.nombreCorto || ""} />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputEspecialista">Nombre del Especialista / Titular *</label>
+              <input type="text" id="ngInputEspecialista" class="ng-input" placeholder={n.especialista || ""} required />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputColegiatura">Colegiatura / Registro SUNAT</label>
+              <input type="text" id="ngInputColegiatura" class="ng-input" placeholder={iden.colegiatura || ""} />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputTitulo">Título Profesional</label>
+              <input type="text" id="ngInputTitulo" class="ng-input" placeholder={iden.titulo || iden.cargo || ""} />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputGrado">Grado / Acreditación</label>
+              <input type="text" id="ngInputGrado" class="ng-input" placeholder={iden.grado || ""} />
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
-    <!-- PESTAÑA 2: CONTACTO & WHATSAPP -->
-    <div class="ng-tab-content" id="ngTab-contacto">
-      <div class="ng-card">
-        <div class="ng-card-header">
-          <div>
-            <h2 class="ng-card-title"><i class="fa-solid fa-headset"></i> Canales de Atención y Pedidos Directos</h2>
-            <p class="ng-card-desc">Números que reciben las llamadas de emergencia SOS, pedidos por WhatsApp y correos.</p>
-          </div>
-        </div>
-
-        <div class="ng-grid-2">
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputTelefono">
-              <span>Teléfono Celular de Llamadas</span>
-              <span class="ng-label-hint">Puedes poner 9 dígitos</span>
-            </label>
-            <input type="text" id="ngInputTelefono" class="ng-input" placeholder="+51 936 369 384" />
-            <span class="ng-label-hint" id="hintTelefonoFormato" style="color: #10b981;">✓ Formato oficial: +51 936 369 384</span>
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputTelefonoFijo">
-              <span>Teléfono Fijo de la Sede</span>
-              <span class="ng-label-hint">Central / Local</span>
-            </label>
-            <input type="text" id="ngInputTelefonoFijo" class="ng-input" placeholder="(01) 241-1234" />
-            <span class="ng-label-hint">Central telefónica física del almacén o tienda</span>
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputWhatsapp">
-              <span>Número WhatsApp de Pedidos</span>
-              <span class="ng-label-hint">Puedes poner 9 dígitos</span>
-            </label>
-            <input type="text" id="ngInputWhatsapp" class="ng-input" placeholder="936369384" />
-            <span class="ng-label-hint" id="hintWhatsappFormato" style="color: #10b981;">✓ Enlace directo: wa.me/51936369384</span>
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputEmail">Correo Electrónico de Contacto</label>
-            <input type="email" id="ngInputEmail" class="ng-input" placeholder="pedidos@solgassurquillo.com" />
-            <span class="ng-label-hint">Para recibir cotizaciones y comprobantes</span>
-          </div>
-
-          <div class="ng-field span-2">
-            <div class="ng-label">
-              <span>Mensaje Inicial Predeterminado de WhatsApp</span>
-              <button type="button" class="ng-link-btn" id="btnRestaurarMensajeWs" title="Generar mensaje con el saludo dinámico según la hora actual">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Saludo dinámico actual
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PESTAÑA 2: 📞 REDES & CONTACTO (LAYOUT PRO 60% / 40%)       -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="ng-tab-pane" id="ng-tab-contacto">
+      <div class="ng-grid-redes-contacto">
+        
+        <!-- Columna Izquierda (Width 60%): Redes Sociales Oficiales con Agregar Red y Acciones Pro -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h2 class="ng-card-title"><i class="fa-solid fa-share-nodes"></i> Enlaces y Redes Oficiales</h2>
+              <p class="ng-card-desc">Arrastra o usa las flechas para ordenar. Solo los canales activos saldrán en la web.</p>
+            </div>
+            
+            <!-- Barra de Agregar Red Social Dinámica -->
+            <div class="ng-add-red-toolbar">
+              <select id="ngSelectAgregarRed" class="ng-select-add-red">
+                <option value="" disabled selected>+ Agregar red social...</option>
+              </select>
+              <button type="button" class="ps-btn ps-btn-secondary ng-btn-sm" id="btnAgregarRed" title="Agregar red seleccionada">
+                <i class="fa-solid fa-plus"></i> Agregar
               </button>
             </div>
-            <textarea id="ngInputWhatsappMensaje" class="ng-input ng-textarea" placeholder="¡Buenas tardes Solgas Surquillo! He visto en su página que tienen el *producto* y deseo consultar precio y pedir un balón de gas para entrega a domicilio."></textarea>
-            <span class="ng-label-hint">Texto inicial que se abre en WhatsApp cuando el cliente hace clic en Pedir por WhatsApp</span>
           </div>
 
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputHorario">Horario de Atención (Español)</label>
-            <input type="text" id="ngInputHorario" class="ng-input" placeholder="Lunes a Domingo: 6:00 a.m. a 11:00 p.m. (365 días)" />
-          </div>
+          <div class="ng-redes-list-wrap" id="ngListaRedesOrdenables">
+            
+            <!-- 1. LinkedIn -->
+            <div class="ng-red-row" data-red-id="linkedin" draggable="true">
+              <div class="ng-red-row-header">
+                <div class="ng-red-row-title-wrap">
+                  <span class="ng-red-drag-handle" title="Arrastrar para reordenar"><i class="fa-solid fa-grip-vertical"></i></span>
+                  <span class="ng-red-name">
+                    <i class="fa-brands fa-linkedin" style="color: #0a66c2;"></i> LinkedIn
+                  </span>
+                  <span class="ng-red-badge" data-badge-red="linkedin">Comprobando...</span>
+                  <span class="ng-red-formato-hint">https://linkedin.com/in/usuario</span>
+                </div>
+                <div class="ng-red-move-actions">
+                  <button type="button" class="ng-btn-move" data-dir="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
+                  <button type="button" class="ng-btn-move" data-dir="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div class="ng-input-url-test-wrap">
+                <input type="text" id="ngInputRedLinkedin" class="ng-input ng-input-red-url" placeholder="https://linkedin.com/in/usuario" />
+                <div class="ng-red-actions-group">
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" data-red-id="linkedin" title="Probar enlace actual">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-portal-red" data-red-id="linkedin" title="Abrir portal oficial para copiar usuario">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-quitar-red" data-red-id="linkedin" title="Quitar de la lista activa">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
 
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputHorarioEn">Horario de Atención (Inglés)</label>
-            <input type="text" id="ngInputHorarioEn" class="ng-input" placeholder="Monday to Sunday: 6:00 a.m. to 11:00 p.m. (365 days)" />
+            <!-- 2. Web Oficial -->
+            <div class="ng-red-row" data-red-id="web" draggable="true">
+              <div class="ng-red-row-header">
+                <div class="ng-red-row-title-wrap">
+                  <span class="ng-red-drag-handle" title="Arrastrar para reordenar"><i class="fa-solid fa-grip-vertical"></i></span>
+                  <span class="ng-red-name">
+                    <i class="fa-solid fa-globe" style="color: #00a2ed;"></i> Web Oficial
+                  </span>
+                  <span class="ng-red-badge" data-badge-red="web">Comprobando...</span>
+                  <span class="ng-red-formato-hint">https://tudominio.com</span>
+                </div>
+                <div class="ng-red-move-actions">
+                  <button type="button" class="ng-btn-move" data-dir="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
+                  <button type="button" class="ng-btn-move" data-dir="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div class="ng-input-url-test-wrap">
+                <input type="text" id="ngInputRedWeb" class="ng-input ng-input-red-url" placeholder="https://tuweb.com" />
+                <div class="ng-red-actions-group">
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" data-red-id="web" title="Probar enlace actual">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-portal-red" data-red-id="web" title="Abrir portal oficial para verificar dominio">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-quitar-red" data-red-id="web" title="Quitar de la lista activa">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. WhatsApp -->
+            <div class="ng-red-row" data-red-id="whatsapp" draggable="true">
+              <div class="ng-red-row-header">
+                <div class="ng-red-row-title-wrap">
+                  <span class="ng-red-drag-handle" title="Arrastrar para reordenar"><i class="fa-solid fa-grip-vertical"></i></span>
+                  <span class="ng-red-name">
+                    <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp
+                  </span>
+                  <span class="ng-red-badge" data-badge-red="whatsapp">Comprobando...</span>
+                  <span class="ng-red-formato-hint">https://wa.me/... o canal</span>
+                </div>
+                <div class="ng-red-move-actions">
+                  <button type="button" class="ng-btn-move" data-dir="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
+                  <button type="button" class="ng-btn-move" data-dir="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div class="ng-input-url-test-wrap">
+                <input type="text" id="ngInputRedCanalWhatsapp" class="ng-input ng-input-red-url" placeholder="https://whatsapp.com/channel/... o https://wa.me/..." />
+                <div class="ng-red-actions-group">
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" data-red-id="whatsapp" title="Probar enlace actual">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-portal-red" data-red-id="whatsapp" title="Abrir WhatsApp Web">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-quitar-red" data-red-id="whatsapp" title="Quitar de la lista activa">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Instagram -->
+            <div class="ng-red-row" data-red-id="instagram" draggable="true">
+              <div class="ng-red-row-header">
+                <div class="ng-red-row-title-wrap">
+                  <span class="ng-red-drag-handle" title="Arrastrar para reordenar"><i class="fa-solid fa-grip-vertical"></i></span>
+                  <span class="ng-red-name">
+                    <i class="fa-brands fa-instagram" style="color: #e1306c;"></i> Instagram
+                  </span>
+                  <span class="ng-red-badge" data-badge-red="instagram">Comprobando...</span>
+                  <span class="ng-red-formato-hint">https://instagram.com/usuario</span>
+                </div>
+                <div class="ng-red-move-actions">
+                  <button type="button" class="ng-btn-move" data-dir="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
+                  <button type="button" class="ng-btn-move" data-dir="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div class="ng-input-url-test-wrap">
+                <input type="text" id="ngInputRedInstagram" class="ng-input ng-input-red-url" placeholder="https://instagram.com/usuario" />
+                <div class="ng-red-actions-group">
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" data-red-id="instagram" title="Probar enlace actual">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-portal-red" data-red-id="instagram" title="Abrir Instagram">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-quitar-red" data-red-id="instagram" title="Quitar de la lista activa">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. Facebook -->
+            <div class="ng-red-row" data-red-id="facebook" draggable="true">
+              <div class="ng-red-row-header">
+                <div class="ng-red-row-title-wrap">
+                  <span class="ng-red-drag-handle" title="Arrastrar para reordenar"><i class="fa-solid fa-grip-vertical"></i></span>
+                  <span class="ng-red-name">
+                    <i class="fa-brands fa-facebook-f" style="color: #1877f2;"></i> Facebook
+                  </span>
+                  <span class="ng-red-badge" data-badge-red="facebook">Comprobando...</span>
+                  <span class="ng-red-formato-hint">https://facebook.com/pagina</span>
+                </div>
+                <div class="ng-red-move-actions">
+                  <button type="button" class="ng-btn-move" data-dir="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
+                  <button type="button" class="ng-btn-move" data-dir="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div class="ng-input-url-test-wrap">
+                <input type="text" id="ngInputRedFacebook" class="ng-input ng-input-red-url" placeholder="https://facebook.com/pagina" />
+                <div class="ng-red-actions-group">
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" data-red-id="facebook" title="Probar enlace actual">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-portal-red" data-red-id="facebook" title="Abrir Facebook">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-quitar-red" data-red-id="facebook" title="Quitar de la lista activa">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. TikTok -->
+            <div class="ng-red-row" data-red-id="tiktok" draggable="true">
+              <div class="ng-red-row-header">
+                <div class="ng-red-row-title-wrap">
+                  <span class="ng-red-drag-handle" title="Arrastrar para reordenar"><i class="fa-solid fa-grip-vertical"></i></span>
+                  <span class="ng-red-name">
+                    <i class="fa-brands fa-tiktok" style="color: #ffffff;"></i> TikTok
+                  </span>
+                  <span class="ng-red-badge" data-badge-red="tiktok">Comprobando...</span>
+                  <span class="ng-red-formato-hint">https://tiktok.com/@usuario</span>
+                </div>
+                <div class="ng-red-move-actions">
+                  <button type="button" class="ng-btn-move" data-dir="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
+                  <button type="button" class="ng-btn-move" data-dir="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div class="ng-input-url-test-wrap">
+                <input type="text" id="ngInputRedTiktok" class="ng-input ng-input-red-url" placeholder="https://tiktok.com/@usuario" />
+                <div class="ng-red-actions-group">
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" data-red-id="tiktok" title="Probar enlace actual">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-portal-red" data-red-id="tiktok" title="Abrir TikTok">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-quitar-red" data-red-id="tiktok" title="Quitar de la lista activa">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. YouTube -->
+            <div class="ng-red-row" data-red-id="youtube" draggable="true">
+              <div class="ng-red-row-header">
+                <div class="ng-red-row-title-wrap">
+                  <span class="ng-red-drag-handle" title="Arrastrar para reordenar"><i class="fa-solid fa-grip-vertical"></i></span>
+                  <span class="ng-red-name">
+                    <i class="fa-brands fa-youtube" style="color: #ff0000;"></i> YouTube
+                  </span>
+                  <span class="ng-red-badge" data-badge-red="youtube">Comprobando...</span>
+                  <span class="ng-red-formato-hint">https://youtube.com/@canal</span>
+                </div>
+                <div class="ng-red-move-actions">
+                  <button type="button" class="ng-btn-move" data-dir="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
+                  <button type="button" class="ng-btn-move" data-dir="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div class="ng-input-url-test-wrap">
+                <input type="text" id="ngInputRedYoutube" class="ng-input ng-input-red-url" placeholder="https://youtube.com/@usuario" />
+                <div class="ng-red-actions-group">
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" data-red-id="youtube" title="Probar enlace actual">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-portal-red" data-red-id="youtube" title="Abrir YouTube">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-quitar-red" data-red-id="youtube" title="Quitar de la lista activa">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 8. X / Twitter -->
+            <div class="ng-red-row" data-red-id="twitter" draggable="true">
+              <div class="ng-red-row-header">
+                <div class="ng-red-row-title-wrap">
+                  <span class="ng-red-drag-handle" title="Arrastrar para reordenar"><i class="fa-solid fa-grip-vertical"></i></span>
+                  <span class="ng-red-name">
+                    <i class="fa-brands fa-x-twitter" style="color: #e2e8f0;"></i> X (Twitter)
+                  </span>
+                  <span class="ng-red-badge" data-badge-red="twitter">Comprobando...</span>
+                  <span class="ng-red-formato-hint">https://x.com/usuario</span>
+                </div>
+                <div class="ng-red-move-actions">
+                  <button type="button" class="ng-btn-move" data-dir="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
+                  <button type="button" class="ng-btn-move" data-dir="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div class="ng-input-url-test-wrap">
+                <input type="text" id="ngInputRedTwitter" class="ng-input ng-input-red-url" placeholder="https://x.com/usuario" />
+                <div class="ng-red-actions-group">
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" data-red-id="twitter" title="Probar enlace actual">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-portal-red" data-red-id="twitter" title="Abrir X (Twitter)">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                  <button type="button" class="ng-btn-red-action ng-btn-quitar-red" data-red-id="twitter" title="Quitar de la lista activa">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
+
+        <!-- Columna Derecha (Width 40%): Canales de Atención Directa en 1 sola columna -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h2 class="ng-card-title"><i class="fa-solid fa-headset"></i> Canales de Atención Directa</h2>
+              <p class="ng-card-desc">Líneas telefónicas, WhatsApp de atención y correo corporativo.</p>
+            </div>
+          </div>
+
+          <div class="ng-grid-1 ng-gap-comfortable">
+            <!-- 1. País de Operación -->
+            <div class="ng-field">
+              <label class="ng-label" for="ngSelectPais">
+                <span>País de Operación</span>
+                <span class="ng-label-hint" id="hintPaisCodigo">{cont.paisCode ? `+${cont.paisCode}` : ''}</span>
+              </label>
+              <select id="ngSelectPais" class="ng-input ng-select">
+                <option value="PE" data-code="51" selected>🇵🇪 Perú (+51)</option>
+                <option value="US" data-code="1">🇺🇸 Estados Unidos (+1)</option>
+                <option value="CL" data-code="56">🇨🇱 Chile (+56)</option>
+                <option value="CO" data-code="57">🇨🇴 Colombia (+57)</option>
+                <option value="MX" data-code="52">🇲🇽 México (+52)</option>
+                <option value="ES" data-code="34">🇪🇸 España (+34)</option>
+                <option value="AR" data-code="54">🇦🇷 Argentina (+54)</option>
+                <option value="EC" data-code="593">🇪🇨 Ecuador (+593)</option>
+                <option value="BO" data-code="591">🇧🇴 Bolivia (+591)</option>
+              </select>
+            </div>
+
+            <!-- 2. Correo Electrónico Oficial -->
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputEmail">Correo Electrónico Oficial</label>
+              <input type="email" id="ngInputEmail" class="ng-input" placeholder={cont.email || n.email || ""} />
+            </div>
+
+            <!-- 3. Teléfono Visible / Principal -->
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputTelefono">
+                <span>Teléfono Visible / Principal</span>
+                <span class="ng-label-hint" id="hintTelefonoFormato">{cont.telefono || n.telefono || ''}</span>
+              </label>
+              <input type="tel" id="ngInputTelefono" class="ng-input" placeholder={cont.telefono || n.telefono || ""} />
+            </div>
+
+            <!-- 4. Teléfono Fijo -->
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputTelefonoFijo">
+                <span>Teléfono Fijo</span>
+                <span class="ng-label-hint">Línea de oficina / sede</span>
+              </label>
+              <input type="tel" id="ngInputTelefonoFijo" class="ng-input" placeholder={cont.telefonoFijo || ""} />
+            </div>
+
+            <!-- 5. Celular Secundario / Emergencias -->
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputTelefonoSecundario">
+                <span>Celular Secundario</span>
+                <span class="ng-label-hint">Línea de guardia o soporte</span>
+              </label>
+              <input type="tel" id="ngInputTelefonoSecundario" class="ng-input" placeholder={cont.telefonoSecundario || ""} />
+            </div>
+
+            <!-- 6. WhatsApp API (Para Enlaces) -->
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputWhatsapp">
+                <span>WhatsApp API (Para Enlaces)</span>
+                <span class="ng-label-hint" id="hintWhatsappFormato">{cont.whatsapp || n.whatsapp || ''}</span>
+              </label>
+              <input type="tel" id="ngInputWhatsapp" class="ng-input" placeholder={cont.whatsapp || n.whatsapp || ""} />
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- PESTAÑA 3: SEDE CENTRAL & GOOGLE MAPS -->
-    <div class="ng-tab-content" id="ngTab-ubicacion">
-      <div class="ng-card">
-        <div class="ng-card-header">
-          <div>
-            <h2 class="ng-card-title"><i class="fa-solid fa-map-pin"></i> Sede Central y Geolocalización</h2>
-            <p class="ng-card-desc">Ubicación de la planta y almacén principal donde el cliente puede recoger o ubicar por GPS.</p>
-          </div>
-        </div>
-
-        <div class="ng-grid-2">
-          <div class="ng-field span-2">
-            <label class="ng-label" for="ngInputDireccion">Dirección Física Completa</label>
-            <input type="text" id="ngInputDireccion" class="ng-input" placeholder="Jr. Dante 260, Surquillo, Lima 15047" />
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputDistrito">Distrito de la Sede</label>
-            <input type="text" id="ngInputDistrito" class="ng-input" placeholder="Surquillo" />
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputCiudad">Ciudad y País</label>
-            <input type="text" id="ngInputCiudad" class="ng-input" placeholder="Lima, PE" />
-          </div>
-
-          <div class="ng-field span-2">
-            <label class="ng-label" for="ngInputMapsUrl">
-              <span><i class="fa-solid fa-map-location-dot"></i> Enlace Compartido de Google Maps</span>
-              <span class="ng-label-hint">Pega el link de Maps o consíguelo con los botones</span>
-            </label>
-            <div class="ng-input-group-maps">
-              <input type="url" id="ngInputMapsUrl" class="ng-input" placeholder="https://maps.app.goo.gl/s86EmxowFcKetJWL8" />
-              <button type="button" class="ng-btn-maps-action" id="btnBuscarGoogleMaps" title="Abrir Google Maps para ubicar el local y copiar el enlace">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> Buscar en Google Maps
-              </button>
-              <button type="button" class="ng-btn-maps-action ng-btn-maps-test" id="btnProbarMapsUrl" title="Probar enlace actual de Google Maps">
-                <i class="fa-solid fa-circle-play"></i> Probar Enlace
-              </button>
-            </div>
-            <div class="ng-maps-helper-bar">
-              <span class="ng-label-hint">
-                <i class="fa-solid fa-circle-info"></i> Pulsa <strong>Buscar en Google Maps</strong>, luego en Google Maps haz clic en <strong>Compartir</strong> &gt; <strong>Copiar vínculo</strong> y pégalo aquí.
-              </span>
-              <button type="button" class="ng-link-btn" id="btnAutogenerarMapsUrl" title="Genera el link de Google Maps a partir de la dirección o coordenadas de la sede">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Generar link automático
-              </button>
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PESTAÑA 3: 📍 SEDE, MODALIDAD & HORARIOS                   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="ng-tab-pane" id="ng-tab-sede">
+      <div class="ng-grid-2-equal">
+        
+        <!-- Ubicación Física & Google Maps -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h2 class="ng-card-title"><i class="fa-solid fa-map-location-dot"></i> Ubicación Principal & Google Maps</h2>
+              <p class="ng-card-desc">Sede física de atención, puntos de encuentro y coordenadas.</p>
             </div>
           </div>
 
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputLat">Coordenada Latitud</label>
-            <input type="number" step="any" id="ngInputLat" class="ng-input" placeholder="-12.1177408" />
-          </div>
+          <div class="ng-grid-2">
+            <div class="ng-field span-2">
+              <label class="ng-label" for="ngInputDireccion">Dirección Física Completa</label>
+              <input type="text" id="ngInputDireccion" class="ng-input" placeholder={ubi.direccion || ""} />
+            </div>
 
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputLng">Coordenada Longitud</label>
-            <input type="number" step="any" id="ngInputLng" class="ng-input" placeholder="-77.0226796" />
+            <div class="ng-field span-2">
+              <label class="ng-label" for="ngInputReferencia">Referencia / Punto de Encuentro</label>
+              <input type="text" id="ngInputReferencia" class="ng-input" placeholder={ubi.referencia || ""} />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputDistrito">Distrito</label>
+              <input type="text" id="ngInputDistrito" class="ng-input" placeholder={ubi.distrito || ""} />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputCiudad">Ciudad y País</label>
+              <input type="text" id="ngInputCiudad" class="ng-input" placeholder={ubi.ciudad ? `${ubi.ciudad}${ubi.pais ? ', ' + ubi.pais : ''}` : ""} />
+            </div>
+
+            <div class="ng-field span-2">
+              <label class="ng-label" for="ngInputMapsUrl">
+                <span>Enlace Compartido Google Maps</span>
+              </label>
+              <div class="ng-input-group-maps">
+                <input type="url" id="ngInputMapsUrl" class="ng-input" placeholder={ubi.mapsUrl || ""} />
+                <button type="button" class="ng-btn-maps-action ng-btn-maps-test" id="btnProbarMapsUrl" title="Probar enlace actual">
+                  <i class="fa-solid fa-circle-play"></i> Probar
+                </button>
+                <button type="button" class="ng-btn-maps-action" id="btnBuscarGoogleMaps" title="Buscar ubicación en Maps">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Buscar
+                </button>
+              </div>
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputLat">Latitud</label>
+              <input type="number" step="any" id="ngInputLat" class="ng-input" placeholder={ubi.coordenadas?.lat != null ? String(ubi.coordenadas.lat) : ""} />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputLng">Longitud</label>
+              <input type="number" step="any" id="ngInputLng" class="ng-input" placeholder={ubi.coordenadas?.lng != null ? String(ubi.coordenadas.lng) : ""} />
+            </div>
           </div>
         </div>
+
+        <!-- Horarios de Operación y Modalidades -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h2 class="ng-card-title"><i class="fa-solid fa-clock"></i> Horarios de Atención</h2>
+              <p class="ng-card-desc">Rangos de disponibilidad semanal y fin de semana.</p>
+            </div>
+          </div>
+
+          <div class="ng-grid-1">
+            <div class="ng-field">
+              <label class="ng-label">
+                <span>Lunes a Viernes</span>
+                <span class="ng-label-hint">Días laborales</span>
+              </label>
+              <div class="ng-input-group-horario">
+                <input type="time" id="ngHorarioSemanaAbre" value={hor.semana?.abre || ""} />
+                <span>a</span>
+                <input type="time" id="ngHorarioSemanaCierra" value={hor.semana?.cierra || ""} />
+              </div>
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label">
+                <span>Sábados</span>
+                <span class="ng-label-hint">Medio día</span>
+              </label>
+              <div class="ng-input-group-horario">
+                <input type="time" id="ngHorarioSabadoAbre" value={hor.sabado?.abre || ""} />
+                <span>a</span>
+                <input type="time" id="ngHorarioSabadoCierra" value={hor.sabado?.cierra || ""} />
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- PESTAÑA 4: ZONAS DE COBERTURA & TIEMPOS -->
-    <div class="ng-tab-content" id="ngTab-zonas">
-      <div class="ng-card">
-        <div class="ng-card-header ng-zonas-header">
-          <div>
-            <h2 class="ng-card-title"><i class="fa-solid fa-motorcycle"></i> Zonas de Cobertura y Tiempos de Entrega</h2>
-            <p class="ng-card-desc">Gestiona los distritos a los que llega tu flota de motos y furgones con tiempos estimados de llegada.</p>
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PESTAÑA 4: 📈 MÉTRICAS & TRAYECTORIA                        -->
+    <!-- REORDENADO: MÉTRICAS EN LEFT Y TRAYECTORIA EN RIGHT        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="ng-tab-pane" id="ng-tab-metricas">
+      <div class="ng-grid-2-equal">
+        
+        <!-- Columna Izquierda (LEFT): Cifras de Impacto y Confianza -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h2 class="ng-card-title"><i class="fa-solid fa-chart-pie"></i> Métricas de Confianza</h2>
+              <p class="ng-card-desc">Indicadores destacados visibles en la página web.</p>
+            </div>
           </div>
-          <button type="button" class="ps-btn ps-btn-secondary" id="btnAgregarZona">
-            <i class="fa-solid fa-plus"></i> Agregar Zona
+
+          <div class="ng-grid-1">
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputMetricaClientes">Clientes Atendidos</label>
+              <input type="text" id="ngInputMetricaClientes" class="ng-input" placeholder={met.clientes || ""} />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputMetricaResenas">Reseñas 5 Estrellas</label>
+              <input type="text" id="ngInputMetricaResenas" class="ng-input" placeholder={met.satisfaccion || ""} />
+            </div>
+
+            <div class="ng-field">
+              <label class="ng-label" for="ngInputMetricaSatisfaccion">Satisfacción de Clientes</label>
+              <input type="text" id="ngInputMetricaSatisfaccion" class="ng-input" placeholder={met.confidencialidad || ""} />
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha (RIGHT): Fecha de Fundación & Trayectoria Calculada -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h2 class="ng-card-title"><i class="fa-solid fa-calendar-days"></i> Trayectoria & Fundación</h2>
+              <p class="ng-card-desc">Cálculo dinámico de experiencia profesional en vivo.</p>
+            </div>
+            <span class="ng-badge-trayectoria" id="ngBadgeTrayectoria">
+              <i class="fa-solid fa-award"></i> <span id="ngYearsText">{met.years ? `${met.years} años` : (n.experienciaAnos ? `${n.experienciaAnos} años` : "")}</span>
+            </span>
+          </div>
+
+          <div class="ng-field">
+            <label class="ng-label" for="ngInputLanzamiento">Fecha de Fundación / Inicio de Operaciones</label>
+            <input type="date" id="ngInputLanzamiento" class="ng-input" value={iden.lanzamientoFecha || ""} />
+            <p class="ng-field-hint sn-mt-10">Calcula y actualiza automáticamente los años de experiencia para la web.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 🌐 SECCIÓN LIBRE INFERIOR: TEXTOS BILINGÜES & SEO           -->
+    <!-- ORDEN: 1. SEO  2. PRESENTACIÓN  3. SEDES & MODALIDADES      -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="ng-section-bilingue-wrap" id="ngSeccionBilingue">
+      
+      <!-- Cabecera de la Sección Bilingüe con Switcher Pro -->
+      <div class="ng-section-bilingue-header">
+        <div class="ng-section-bilingue-title-wrap">
+          <h2 class="ng-section-bilingue-title">
+            <i class="fa-solid fa-language"></i> Textos Bilingües & Optimización SEO
+          </h2>
+          <p class="ng-section-bilingue-sub">
+            Posicionamiento en Google, redacción comercial oficial y sedes por idioma.
+          </p>
+        </div>
+
+        <!-- Selector de Idioma Bilingüe Cápsula (Estilo Imagen 5) -->
+        <div class="ng-lang-tabs" id="ngLangTabs">
+          <button type="button" class="ng-lang-tab-btn active" data-target="ng-pane-es">
+            <i class="fa-solid fa-language"></i> Español [ES]
+          </button>
+          <button type="button" class="ng-lang-tab-btn" data-target="ng-pane-en">
+            <i class="fa-solid fa-globe"></i> English [EN]
           </button>
         </div>
-
-        <div class="ng-zonas-list" id="ngZonasContainer">
-          <!-- Las filas de zonas se renderizan dinámicamente desde negocio.js -->
-        </div>
       </div>
-    </div>
 
-    <!-- PESTAÑA 5: MÉTRICAS & REDES SOCIALES -->
-    <div class="ng-tab-content" id="ngTab-metricas">
-      <div class="ng-card">
-        <div class="ng-card-header">
-          <div>
-            <h2 class="ng-card-title"><i class="fa-solid fa-chart-pie"></i> Estadísticas del Hero y Enlaces Sociales</h2>
-            <p class="ng-card-desc">Cifras de trayectoria que inspiran confianza en la tienda pública y redes oficiales.</p>
+      <!-- ────── PANEL ESPAÑOL [ES] ────── -->
+      <div class="ng-lang-pane active" id="ng-pane-es">
+        
+        <!-- 1. Posicionamiento SEO para Google (PRIMERO - 55% Editor / 45% Live Google SERP Mockup) -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h3 class="ng-card-title"><i class="fa-solid fa-magnifying-glass"></i> Posicionamiento SEO & Palabras Clave (ES)</h3>
+              <p class="ng-card-desc">Metadatos de indexación orgánica para Google con previsualización en vivo del resultado SERP.</p>
+            </div>
+            <div class="ng-preview-pill"><i class="fa-brands fa-google"></i> Vista Previa Google</div>
+          </div>
+
+          <div class="ng-card-split">
+            <!-- Columna Izquierda: Editor (55%) -->
+            <div class="ng-split-editor">
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputSeoTituloEs">
+                  <span>Meta Título para Google</span>
+                  <span class="ng-char-badge" id="ngSeoTituloCountEs">0 / 60</span>
+                </label>
+                <input type="text" id="ngInputSeoTituloEs" class="ng-input" placeholder={typeof seo.titulo === 'object' ? (seo.titulo?.es || "") : (seo.titulo || "")} />
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputSeoDescEs">
+                  <span>Meta Descripción para Google</span>
+                  <span class="ng-char-badge" id="ngSeoDescCountEs">0 / 160</span>
+                </label>
+                <textarea id="ngInputSeoDescEs" class="ng-textarea" rows="3" placeholder={typeof seo.descripcion === 'object' ? (seo.descripcion?.es || "") : (seo.descripcion || "")}></textarea>
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputSeoKeywordsEs">
+                  <span>Palabras Clave SEO (Separadas por comas)</span>
+                  <span class="ng-label-hint">Términos de búsqueda frecuentes</span>
+                </label>
+                <textarea id="ngInputSeoKeywordsEs" class="ng-textarea" rows="2" placeholder={Array.isArray(seo.keywords?.es) ? seo.keywords.es.join(', ') : (typeof seo.keywords === 'string' ? seo.keywords : "")}></textarea>
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputSeoImgEs">
+                  <span>Imagen de Miniatura SEO (Google SERP & Redes)</span>
+                  <span class="ng-label-hint">URL de la foto representativa</span>
+                </label>
+                <div class="ng-input-url-test-wrap">
+                  <input type="text" id="ngInputSeoImgEs" class="ng-input ng-input-red-url" placeholder={fullSeoImg} value={fullSeoImg} />
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" id="btnProbarFotoSeoEs" title="Ver foto">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Live Mockup Google SERP (45%) -->
+            <div class="ng-split-preview">
+              <div class="ng-preview-header">
+                <span>Resultado en Google (Desktop & Móvil)</span>
+                <span class="ng-preview-pill"><i class="fa-solid fa-circle-check"></i> SEO Activo</span>
+              </div>
+
+              <!-- Card Exacto Google SERP -->
+              <div class="google-serp-card" id="ngGoogleSerpCardEs">
+                <div class="google-serp-meta">
+                  <div class="google-serp-meta-left">
+                    <img src={iden.logo || "/imgwii/logo.webp"} alt="Favicon" class="google-serp-favicon" id="ngSerpFaviconEs" />
+                    <div class="google-serp-site-info">
+                      <span class="google-serp-sitename" id="ngSerpSiteNameEs">{iden.nombre || 'Solgas Surquillo'}</span>
+                      <div class="google-serp-url-row">
+                        <span id="ngSerpUrlTextEs">{canonicalEs}</span>
+                        <span class="google-serp-translate">· Translate this page</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="google-serp-dots">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                  </div>
+                </div>
+
+                <div class="google-serp-body">
+                  <div class="google-serp-text">
+                    <h3 class="google-serp-title" id="ngSerpTitleEs">
+                      {typeof seo.titulo === 'object' ? (seo.titulo?.es || n.titulo) : (seo.titulo || n.titulo || 'Solgas Surquillo | Pedir Gas en Surquillo, Miraflores y Lima')}
+                    </h3>
+                    <p class="google-serp-desc" id="ngSerpDescEs">
+                      {typeof seo.descripcion === 'object' ? (seo.descripcion?.es || n.hero?.descripcion) : (seo.descripcion || n.hero?.descripcion || 'Solgas Surquillo: pide tu gas en Surquillo, Miraflores, San Borja y San Isidro. Delivery express en 15 min con balanza digital y garantía oficial Solgas.')}
+                    </p>
+                  </div>
+
+                  <!-- Miniatura Google SERP limpia -->
+                  <div class="google-serp-thumb-box" id="ngSerpThumbBoxEs" title="Miniatura Google SERP">
+                    <img src={seoImg} alt="Miniatura SERP" class="google-serp-thumb-img" id="ngSerpImgEs" />
+                  </div>
+                </div>
+
+                <div class="google-serp-footer">
+                  <span><i class="fa-solid fa-shield-halved"></i> Rich Snippet Verificado</span>
+                  <span>Miniatura Canónica 1200×630</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="ng-grid-3">
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputMetricaClientes">Clientes Atendidos</label>
-            <input type="text" id="ngInputMetricaClientes" class="ng-input" placeholder="25K+" />
+        <!-- 2. Presentación & Biografía Ejecutiva (SEGUNDO - 55% Editor / 45% Live Ficha Mockup) -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h3 class="ng-card-title"><i class="fa-solid fa-signature"></i> Presentación & Biografía Ejecutiva (ES)</h3>
+              <p class="ng-card-desc">Narrativa del titular profesional visible en la cabecera y sección nosotros.</p>
+            </div>
+            <div class="ng-preview-pill"><i class="fa-solid fa-user-tie"></i> Ficha Web en Vivo</div>
           </div>
 
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputMetricaBalanza">% Balanza Digital</label>
-            <input type="text" id="ngInputMetricaBalanza" class="ng-input" placeholder="100%" />
-          </div>
+          <div class="ng-card-split">
+            <!-- Columna Izquierda: Editor (55%) -->
+            <div class="ng-split-editor">
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputBioEs">
+                  <span>Biografía Profesional / Resumen Ejecutivo</span>
+                  <span class="ng-label-hint">Párrafo principal de presentación</span>
+                </label>
+                <textarea id="ngInputBioEs" class="ng-textarea ng-textarea-lg" rows="4" placeholder={typeof iden.bio === 'object' ? (iden.bio?.es || "") : (iden.bio || "")}></textarea>
+              </div>
 
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputMetricaDias">Días de Atención al Año</label>
-            <input type="text" id="ngInputMetricaDias" class="ng-input" placeholder="365" />
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputEnfoques">
+                  <span>{esServicios ? 'Especialidades Tributarias / Enfoques Principales' : 'Diferenciadores Clave / Puntos Fuertes'}</span>
+                  <span class="ng-label-hint">Separados por viñetas (·) o comas</span>
+                </label>
+                <input type="text" id="ngInputEnfoques" class="ng-input" placeholder={iden.enfoques || ""} />
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputHorario">
+                  <span>Horario de Atención Descriptivo</span>
+                </label>
+                <input type="text" id="ngInputHorario" class="ng-input" placeholder={typeof cont.horario === 'object' ? (cont.horario?.es || "") : (cont.horario || "")} />
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputWhatsappMensaje">
+                  <span>Mensaje Predeterminado de WhatsApp</span>
+                  <button type="button" class="ng-link-btn" id="btnRestaurarMensajeWs" title="Restaurar saludo dinámico">
+                    <i class="fa-solid fa-rotate-left"></i> Restaurar
+                  </button>
+                </label>
+                <input type="text" id="ngInputWhatsappMensaje" class="ng-input" placeholder={typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.es || "") : (cont.whatsappMensaje || "")} />
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Live Mockup Ficha del Especialista (45%) -->
+            <div class="ng-split-preview">
+              <div class="ng-preview-header">
+                <span>Vista en Web (Sección Nosotros)</span>
+                <span class="ng-preview-pill"><i class="fa-solid fa-award"></i> Oficial</span>
+              </div>
+
+              <div class="mockup-bio-card">
+                <div class="mockup-bio-header">
+                  <img src={iden.imagenSede || iden.logo || "/imgwii/hero.webp"} alt="Foto Especialista" class="mockup-bio-avatar" id="ngBioPreviewAvatarEs" />
+                  <div class="mockup-bio-title-wrap">
+                    <h4 class="mockup-bio-name" id="ngBioPreviewNameEs">{iden.especialista || iden.nombre || 'Solgas Surquillo'}</h4>
+                    <span class="mockup-bio-cargo" id="ngBioPreviewCargoEs">{iden.cargo || iden.titulo || 'Distribuidor Autorizado OSINERGMIN'}</span>
+                    <span class="mockup-bio-registro">{iden.colegiatura || iden.registroOsinergmin || 'Reg. 208492'}</span>
+                  </div>
+                </div>
+
+                <div class="mockup-bio-body" id="ngBioPreviewTextEs">
+                  {typeof iden.bio === 'object' ? (iden.bio?.es || "") : (iden.bio || "Distribuidor oficial de GLP con certificación OSINERGMIN y balanza digital.")}
+                </div>
+
+                <div class="mockup-bio-chips" id="ngBioPreviewChipsEs">
+                  {(iden.enfoques || "Delivery Express · Balanza Digital · Peso Exacto").split(/[·,]/).filter(Boolean).map((t: string) => (
+                    <span class="mockup-bio-chip"><i class="fa-solid fa-check"></i> {t.trim()}</span>
+                  ))}
+                </div>
+
+                <div class="mockup-bio-footer">
+                  <div class="mockup-bio-horario">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="ngBioPreviewHorarioEs">{typeof cont.horario === 'object' ? (cont.horario?.es || "") : (cont.horario || "Lunes a Domingo: 6:00 a.m. a 11:00 p.m.")}</span>
+                  </div>
+                  <div class="mockup-bio-wa-btn">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span id="ngBioPreviewWaMsgEs">{typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.es || "") : (cont.whatsappMensaje || "¡Hola Solgas Surquillo! Deseo pedir un balón...")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="ng-card-header" style="margin-top: 24px;">
-          <div>
-            <h3 class="ng-card-title" style="font-size: var(--fz_s5);"><i class="fa-solid fa-share-nodes"></i> Redes Sociales Oficiales</h3>
+        <!-- 3. Sedes & Modalidades Oficiales (TERCERO - 55% Editor / 45% Live Cobertura Mockup) -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h3 class="ng-card-title"><i class="fa-solid fa-building"></i> Sedes y Modalidades Oficiales (ES)</h3>
+              <p class="ng-card-desc">Etiquetas públicas y disponibilidad por modalidad de atención con mapa de cobertura.</p>
+            </div>
+            <div class="ng-preview-pill"><i class="fa-solid fa-truck-fast"></i> Cobertura en Vivo</div>
+          </div>
+
+          <div class="ng-card-split">
+            <!-- Columna Izquierda: Editor (55%) -->
+            <div class="ng-split-editor">
+              <div class="ng-grid-2">
+                <div class="ng-sede-box">
+                  <div class="ng-sede-box-badge"><i class="fa-solid fa-location-dot"></i> Sede Presencial</div>
+                  <div class="ng-grid-1 sn-mt-10">
+                    <div class="ng-field">
+                      <label class="ng-label" for="ngSedeVesTagEs">Etiqueta / Badge</label>
+                      <input type="text" id="ngSedeVesTagEs" class="ng-input" placeholder={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.es || "") : (sedePresencial.tag || "")} value={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.es || "") : (sedePresencial.tag || "")} />
+                    </div>
+                    <div class="ng-field">
+                      <label class="ng-label" for="ngSedeVesAtencionEs">Horario de Atención</label>
+                      <input type="text" id="ngSedeVesAtencionEs" class="ng-input" placeholder={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.es || "") : (sedePresencial.atencion || "")} value={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.es || "") : (sedePresencial.atencion || "")} />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ng-sede-box">
+                  <div class="ng-sede-box-badge online"><i class="fa-solid fa-video"></i> Modalidad Virtual / Delivery</div>
+                  <div class="ng-grid-1 sn-mt-10">
+                    <div class="ng-field">
+                      <label class="ng-label" for="ngSedeVirtualTagEs">Etiqueta / Badge</label>
+                      <input type="text" id="ngSedeVirtualTagEs" class="ng-input" placeholder={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.es || "") : (sedeVirtual.tag || "")} value={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.es || "") : (sedeVirtual.tag || "")} />
+                    </div>
+                    <div class="ng-field">
+                      <label class="ng-label" for="ngSedeVirtualAtencionEs">Horario de Atención</label>
+                      <input type="text" id="ngSedeVirtualAtencionEs" class="ng-input" placeholder={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.es || "") : (sedeVirtual.atencion || "")} value={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.es || "") : (sedeVirtual.atencion || "")} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Live Mockup Cobertura & Sedes (45%) -->
+            <div class="ng-split-preview">
+              <div class="ng-preview-header">
+                <span>Mapa de Cobertura y Despacho</span>
+                <span class="ng-preview-pill"><i class="fa-solid fa-location-dot"></i> {ubi.distrito || 'Surquillo'}</span>
+              </div>
+
+              <div class="mockup-sedes-card">
+                <div class="mockup-sedes-loc">
+                  <i class="fa-solid fa-location-dot"></i>
+                  <span id="ngSedesPreviewDirEs">{ubi.direccion || 'Jr. Dante 260, Surquillo, Lima 15047'}</span>
+                </div>
+
+                <div class="mockup-sedes-grid">
+                  <div class="mockup-sedes-box">
+                    <span class="mockup-sedes-box-title"><i class="fa-solid fa-store"></i> <strong id="ngSedesPreviewTagPresencialEs">{typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.es || "") : (sedePresencial.tag || "Sede Central Express")}</strong></span>
+                    <span class="mockup-sedes-box-hor" id="ngSedesPreviewHorPresencialEs">{typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.es || "") : (sedePresencial.atencion || "Lun-Dom 6:00am - 11:00pm")}</span>
+                  </div>
+
+                  <div class="mockup-sedes-box">
+                    <span class="mockup-sedes-box-title online"><i class="fa-solid fa-truck-fast"></i> <strong id="ngSedesPreviewTagVirtualEs">{typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.es || "") : (sedeVirtual.tag || "Delivery Express")}</strong></span>
+                    <span class="mockup-sedes-box-hor" id="ngSedesPreviewHorVirtualEs">{typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.es || "") : (sedeVirtual.atencion || "15 a 20 minutos")}</span>
+                  </div>
+                </div>
+
+                <div class="mockup-zonas-chips">
+                  {distritosList.map((d: any) => (
+                    <span class="mockup-zona-chip"><i class="fa-solid fa-motorcycle"></i> {d.nombre} <strong>({d.tiempo})</strong></span>
+                  ))}
+                </div>
+
+                <div class="mockup-sedes-action">
+                  <i class="fa-solid fa-phone"></i> Despacho Directo: {cont.telefono || '+51 936 369 384'}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="ng-grid-3">
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputRedFacebook"><i class="fa-brands fa-facebook"></i> Facebook</label>
-            <input type="url" id="ngInputRedFacebook" class="ng-input" placeholder="https://facebook.com/solgassurquillo" />
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputRedInstagram"><i class="fa-brands fa-instagram"></i> Instagram</label>
-            <input type="url" id="ngInputRedInstagram" class="ng-input" placeholder="https://instagram.com/solgassurquillo" />
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputRedTiktok"><i class="fa-brands fa-tiktok"></i> TikTok</label>
-            <input type="url" id="ngInputRedTiktok" class="ng-input" placeholder="https://tiktok.com/@solgassurquillo" />
-          </div>
-        </div>
       </div>
-    </div>
 
-    <!-- PESTAÑA 6: SEO & PALABRAS CLAVE (ES / EN) -->
-    <div class="ng-tab-content" id="ngTab-seo">
-      <div class="ng-card">
-        <div class="ng-card-header">
-          <div>
-            <h2 class="ng-card-title"><i class="fa-solid fa-magnifying-glass"></i> Posicionamiento en Google (SEO Local)</h2>
-            <p class="ng-card-desc">Control dinámico de títulos, meta descripciones y palabras clave en español e inglés guardadas en Firestore.</p>
+      <!-- ────── PANEL INGLÉS [EN] ────── -->
+      <div class="ng-lang-pane" id="ng-pane-en">
+        
+        <!-- 1. SEO & Search Keywords (EN) (55% Editor / 45% Live Google SERP Mockup) -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h3 class="ng-card-title"><i class="fa-solid fa-magnifying-glass"></i> SEO & Search Keywords (EN)</h3>
+              <p class="ng-card-desc">Google metadata for english-speaking searches with live SERP preview.</p>
+            </div>
+            <div class="ng-preview-pill"><i class="fa-brands fa-google"></i> Google Preview</div>
+          </div>
+
+          <div class="ng-card-split">
+            <!-- Columna Izquierda: Editor (55%) -->
+            <div class="ng-split-editor">
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputSeoTituloEn">
+                  <span>Meta Title</span>
+                  <span class="ng-char-badge" id="ngSeoTituloCountEn">0 / 60</span>
+                </label>
+                <input type="text" id="ngInputSeoTituloEn" class="ng-input" placeholder={typeof seo.titulo === 'object' ? (seo.titulo?.en || "") : (seo.tituloEn || "")} />
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputSeoDescEn">
+                  <span>Meta Description</span>
+                  <span class="ng-char-badge" id="ngSeoDescCountEn">0 / 160</span>
+                </label>
+                <textarea id="ngInputSeoDescEn" class="ng-textarea" rows="3" placeholder={typeof seo.descripcion === 'object' ? (seo.descripcion?.en || "") : (seo.descripcionEn || "")}></textarea>
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputSeoKeywordsEn">
+                  <span>Keywords (Comma separated)</span>
+                  <span class="ng-label-hint">Frequent search terms</span>
+                </label>
+                <textarea id="ngInputSeoKeywordsEn" class="ng-textarea" rows="2" placeholder={Array.isArray(seo.keywords?.en) ? seo.keywords.en.join(', ') : (typeof seo.keywordsEn === 'string' ? seo.keywordsEn : "")}></textarea>
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputSeoImgEn">
+                  <span>SEO Thumbnail Image (Google SERP & Social)</span>
+                  <span class="ng-label-hint">Representative image URL</span>
+                </label>
+                <div class="ng-input-url-test-wrap">
+                  <input type="text" id="ngInputSeoImgEn" class="ng-input ng-input-red-url" placeholder={fullSeoImg} value={fullSeoImg} />
+                  <button type="button" class="ng-btn-red-action ng-btn-probar-red" id="btnProbarFotoSeoEn" title="View photo">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Live Mockup Google SERP (EN) -->
+            <div class="ng-split-preview">
+              <div class="ng-preview-header">
+                <span>Google Search Result (EN)</span>
+                <span class="ng-preview-pill"><i class="fa-solid fa-circle-check"></i> Live SEO</span>
+              </div>
+
+              <!-- Card Exacto Google SERP -->
+              <div class="google-serp-card" id="ngGoogleSerpCardEn">
+                <div class="google-serp-meta">
+                  <div class="google-serp-meta-left">
+                    <img src={iden.logo || "/imgwii/logo.webp"} alt="Favicon" class="google-serp-favicon" id="ngSerpFaviconEn" />
+                    <div class="google-serp-site-info">
+                      <span class="google-serp-sitename" id="ngSerpSiteNameEn">{iden.nombreEn || iden.nombre || 'Solgas Surquillo'}</span>
+                      <div class="google-serp-url-row">
+                        <span id="ngSerpUrlTextEn">{canonicalEn}</span>
+                        <span class="google-serp-translate">· Translate this page</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="google-serp-dots">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                  </div>
+                </div>
+
+                <div class="google-serp-body">
+                  <div class="google-serp-text">
+                    <h3 class="google-serp-title" id="ngSerpTitleEn">
+                      {typeof seo.titulo === 'object' ? (seo.titulo?.en || seo.titulo?.es) : (seo.tituloEn || seo.titulo || 'Solgas Surquillo | Express LPG Cooking Gas Delivery Lima 15 Min')}
+                    </h3>
+                    <p class="google-serp-desc" id="ngSerpDescEn">
+                      {typeof seo.descripcion === 'object' ? (seo.descripcion?.en || seo.descripcion?.es) : (seo.descripcionEn || seo.descripcion || 'Order official Solgas LPG cylinders in Surquillo & Miraflores. 15-minute express delivery with certified digital weight scale.')}
+                    </p>
+                  </div>
+
+                  <!-- Miniatura Google SERP limpia -->
+                  <div class="google-serp-thumb-box" id="ngSerpThumbBoxEn" title="SERP Thumbnail">
+                    <img src={seoImg} alt="Thumbnail SERP" class="google-serp-thumb-img" id="ngSerpImgEn" />
+                  </div>
+                </div>
+
+                <div class="google-serp-footer">
+                  <span><i class="fa-solid fa-shield-halved"></i> Verified Rich Snippet</span>
+                  <span>Canonical 1200×630</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="ng-grid-2">
-          <!-- Configuración Español -->
-          <div class="ng-field span-2">
-            <h3 class="ng-subheading" style="color: var(--primary, #f60); font-weight: 700; margin-bottom: 8px;">
-              <i class="fa-solid fa-flag"></i> Configuración SEO - Español
-            </h3>
+        <!-- 2. Official Content & Executive Summary (EN) (55% Editor / 45% Live Ficha Mockup) -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h3 class="ng-card-title"><i class="fa-solid fa-signature"></i> Official Content & Executive Summary (EN)</h3>
+              <p class="ng-card-desc">Professional narrative for international and english-speaking clients.</p>
+            </div>
+            <div class="ng-preview-pill"><i class="fa-solid fa-user-tie"></i> Live Web Profile</div>
           </div>
 
-          <div class="ng-field span-2">
-            <label class="ng-label" for="ngInputSeoTituloEs">
-              <span>Título en Google (ES)</span>
-              <span class="ng-label-hint">Recomendado: 50 a 60 caracteres</span>
-            </label>
-            <input type="text" id="ngInputSeoTituloEs" class="ng-input" placeholder="Gas Surquillo y Lima | Gas de Cocina Solgas en 15 Minutos" />
-          </div>
+          <div class="ng-card-split">
+            <!-- Columna Izquierda: Editor (55%) -->
+            <div class="ng-split-editor">
+              <div class="ng-grid-2">
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngInputNombreEn">Official Name</label>
+                  <input type="text" id="ngInputNombreEn" class="ng-input" placeholder={iden.nombreEn || iden.nombre || ""} />
+                </div>
 
-          <div class="ng-field span-2">
-            <label class="ng-label" for="ngInputSeoDescEs">
-              <span>Meta Descripción en Google (ES)</span>
-              <span class="ng-label-hint">Recomendado: 140 a 160 caracteres</span>
-            </label>
-            <textarea id="ngInputSeoDescEs" class="ng-input" rows="3" placeholder="Pide tu gas de cocina en Surquillo, San Borja y San Isidro en 15 min. Balones Solgas 10kg y 45kg con peso exacto garantizado por balanza digital."></textarea>
-          </div>
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngInputNombreCortoEn">Short Name / Brand</label>
+                  <input type="text" id="ngInputNombreCortoEn" class="ng-input" placeholder={iden.nombreCortoEn || iden.nombreCorto || ""} />
+                </div>
+              </div>
 
-          <div class="ng-field span-2">
-            <label class="ng-label" for="ngInputSeoKeywordsEs">
-              <span>Palabras Clave en Español (Separadas por comas)</span>
-              <span class="ng-label-hint">Ej: gas surquillo, solgas surquillo telefono, balon de gas san isidro</span>
-            </label>
-            <textarea id="ngInputSeoKeywordsEs" class="ng-input" rows="3" placeholder="gas surquillo, gas delivery san borja, delivery de gas san isidro, solgas surquillo telefono, pedir balon de gas san isidro, balon solgas 10 kg precio, balon solgas 45 kg, gas con balanza digital lima, solgas domicilio express, balon de gas cerca de mi, gas de cocina surquillo 15 minutos"></textarea>
-          </div>
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputBioEn">Professional Summary</label>
+                <textarea id="ngInputBioEn" class="ng-textarea ng-textarea-lg" rows="4" placeholder={typeof iden.bio === 'object' ? (iden.bio?.en || "") : (iden.bioEn || "")}></textarea>
+              </div>
 
-          <!-- Configuración Inglés -->
-          <div class="ng-field span-2" style="margin-top: 16px; border-top: 1px solid var(--border-subtle, rgba(255,255,255,0.1)); padding-top: 16px;">
-            <h3 class="ng-subheading" style="color: #38bdf8; font-weight: 700; margin-bottom: 8px;">
-              <i class="fa-solid fa-globe"></i> Configuración SEO - English
-            </h3>
-          </div>
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputEnfoquesEn">Differentiators / Key Points</label>
+                <input type="text" id="ngInputEnfoquesEn" class="ng-input" placeholder={iden.enfoquesEn || iden.enfoques || ""} />
+              </div>
 
-          <div class="ng-field span-2">
-            <label class="ng-label" for="ngInputSeoTituloEn">
-              <span>Google Title (EN)</span>
-              <span class="ng-label-hint">Recommended: 50 to 60 characters</span>
-            </label>
-            <input type="text" id="ngInputSeoTituloEn" class="ng-input" placeholder="Gas Delivery Lima & Surquillo | Solgas Cooking Gas in 15 Mins" />
-          </div>
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputHorarioEn">Operating Hours Description</label>
+                <input type="text" id="ngInputHorarioEn" class="ng-input" placeholder={typeof cont.horario === 'object' ? (cont.horario?.en || "") : (cont.horarioEn || "")} />
+              </div>
 
-          <div class="ng-field span-2">
-            <label class="ng-label" for="ngInputSeoDescEn">
-              <span>Google Meta Description (EN)</span>
-              <span class="ng-label-hint">Recommended: 140 to 160 characters</span>
-            </label>
-            <textarea id="ngInputSeoDescEn" class="ng-input" rows="3" placeholder="Order cooking gas in Surquillo, San Borja, San Isidro & Lima with express delivery in 15 mins. Official Solgas cylinders with exact weight certified by digital scale."></textarea>
-          </div>
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputWhatsappMensajeEn">Default WhatsApp Message</label>
+                <input type="text" id="ngInputWhatsappMensajeEn" class="ng-input" placeholder={typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.en || "") : (cont.whatsappMensajeEn || "")} />
+              </div>
+            </div>
 
-          <div class="ng-field span-2">
-            <label class="ng-label" for="ngInputSeoKeywordsEn">
-              <span>Keywords in English (Comma-separated)</span>
-              <span class="ng-label-hint">Ex: gas delivery lima, cooking gas san isidro, solgas san borja delivery</span>
-            </label>
-            <textarea id="ngInputSeoKeywordsEn" class="ng-input" rows="3" placeholder="gas delivery lima, gas cylinder surquillo, cooking gas san isidro, solgas san borja delivery, order gas cylinder lima, lpg gas delivery lima, express gas delivery miraflores"></textarea>
+            <!-- Columna Derecha: Live Mockup Ficha (EN) -->
+            <div class="ng-split-preview">
+              <div class="ng-preview-header">
+                <span>Web Profile Preview (About Us)</span>
+                <span class="ng-preview-pill"><i class="fa-solid fa-award"></i> Verified</span>
+              </div>
+
+              <div class="mockup-bio-card">
+                <div class="mockup-bio-header">
+                  <img src={iden.imagenSede || iden.logo || "/imgwii/hero.webp"} alt="Specialist Photo" class="mockup-bio-avatar" id="ngBioPreviewAvatarEn" />
+                  <div class="mockup-bio-title-wrap">
+                    <h4 class="mockup-bio-name" id="ngBioPreviewNameEn">{iden.nombreEn || iden.nombre || 'Solgas Surquillo'}</h4>
+                    <span class="mockup-bio-cargo" id="ngBioPreviewCargoEn">{iden.cargo || iden.titulo || 'Authorized OSINERGMIN Distributor'}</span>
+                    <span class="mockup-bio-registro">{iden.colegiatura || iden.registroOsinergmin || 'Reg. 208492'}</span>
+                  </div>
+                </div>
+
+                <div class="mockup-bio-body" id="ngBioPreviewTextEn">
+                  {typeof iden.bio === 'object' ? (iden.bio?.en || "") : (iden.bioEn || "Official LPG distributor certified by OSINERGMIN with digital scale verification.")}
+                </div>
+
+                <div class="mockup-bio-chips" id="ngBioPreviewChipsEn">
+                  {(iden.enfoquesEn || iden.enfoques || "Express Delivery · Digital Scale · Exact Weight").split(/[·,]/).filter(Boolean).map((t: string) => (
+                    <span class="mockup-bio-chip"><i class="fa-solid fa-check"></i> {t.trim()}</span>
+                  ))}
+                </div>
+
+                <div class="mockup-bio-footer">
+                  <div class="mockup-bio-horario">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="ngBioPreviewHorarioEn">{typeof cont.horario === 'object' ? (cont.horario?.en || "") : (cont.horarioEn || "Monday to Sunday: 6:00 a.m. to 11:00 p.m.")}</span>
+                  </div>
+                  <div class="mockup-bio-wa-btn">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span id="ngBioPreviewWaMsgEn">{typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.en || "") : (cont.whatsappMensajeEn || "Hello Solgas Surquillo! I would like to order...")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- 3. Offices & Modalities (EN) (55% Editor / 45% Live Cobertura Mockup) -->
+        <div class="ng-card">
+          <div class="ng-card-header">
+            <div>
+              <h3 class="ng-card-title"><i class="fa-solid fa-building"></i> Offices & Modalities (EN)</h3>
+              <p class="ng-card-desc">Public badges and operational availability in English with live coverage card.</p>
+            </div>
+            <div class="ng-preview-pill"><i class="fa-solid fa-truck-fast"></i> Live Coverage</div>
+          </div>
+
+          <div class="ng-card-split">
+            <!-- Columna Izquierda: Editor (55%) -->
+            <div class="ng-split-editor">
+              <div class="ng-grid-2">
+                <div class="ng-sede-box">
+                  <div class="ng-sede-box-badge"><i class="fa-solid fa-location-dot"></i> In-Person Office</div>
+                  <div class="ng-grid-1 sn-mt-10">
+                    <div class="ng-field">
+                      <label class="ng-label" for="ngSedeVesTagEn">Tag / Badge</label>
+                      <input type="text" id="ngSedeVesTagEn" class="ng-input" placeholder={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.en || "") : (sedePresencial.tagEn || "")} value={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.en || "") : (sedePresencial.tagEn || "")} />
+                    </div>
+                    <div class="ng-field">
+                      <label class="ng-label" for="ngSedeVesAtencionEn">Opening Hours</label>
+                      <input type="text" id="ngSedeVesAtencionEn" class="ng-input" placeholder={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.en || "") : (sedePresencial.atencionEn || "")} value={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.en || "") : (sedePresencial.atencionEn || "")} />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ng-sede-box">
+                  <div class="ng-sede-box-badge online"><i class="fa-solid fa-video"></i> Online / Delivery Modality</div>
+                  <div class="ng-grid-1 sn-mt-10">
+                    <div class="ng-field">
+                      <label class="ng-label" for="ngSedeVirtualTagEn">Tag / Badge</label>
+                      <input type="text" id="ngSedeVirtualTagEn" class="ng-input" placeholder={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.en || "") : (sedeVirtual.tag || "")} value={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.en || "") : (sedeVirtual.tag || "")} />
+                    </div>
+                    <div class="ng-field">
+                      <label class="ng-label" for="ngSedeVirtualAtencionEn">Opening Hours</label>
+                      <input type="text" id="ngSedeVirtualAtencionEn" class="ng-input" placeholder={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.en || "") : (sedeVirtual.atencionEn || "")} value={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.en || "") : (sedeVirtual.atencionEn || "")} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Live Mockup Cobertura & Sedes (EN) -->
+            <div class="ng-split-preview">
+              <div class="ng-preview-header">
+                <span>Coverage Map & Dispatch</span>
+                <span class="ng-preview-pill"><i class="fa-solid fa-location-dot"></i> {ubi.distrito || 'Surquillo'}</span>
+              </div>
+
+              <div class="mockup-sedes-card">
+                <div class="mockup-sedes-loc">
+                  <i class="fa-solid fa-location-dot"></i>
+                  <span id="ngSedesPreviewDirEn">{ubi.direccion || 'Jr. Dante 260, Surquillo, Lima 15047'}</span>
+                </div>
+
+                <div class="mockup-sedes-grid">
+                  <div class="mockup-sedes-box">
+                    <span class="mockup-sedes-box-title"><i class="fa-solid fa-store"></i> <strong id="ngSedesPreviewTagPresencialEn">{typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.en || "") : (sedePresencial.tagEn || "Main Hub Express")}</strong></span>
+                    <span class="mockup-sedes-box-hor" id="ngSedesPreviewHorPresencialEn">{typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.en || "") : (sedePresencial.atencionEn || "Mon-Sun 6:00am - 11:00pm")}</span>
+                  </div>
+
+                  <div class="mockup-sedes-box">
+                    <span class="mockup-sedes-box-title online"><i class="fa-solid fa-truck-fast"></i> <strong id="ngSedesPreviewTagVirtualEn">{typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.en || "") : (sedeVirtual.tagEn || "Express Delivery")}</strong></span>
+                    <span class="mockup-sedes-box-hor" id="ngSedesPreviewHorVirtualEn">{typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.en || "") : (sedeVirtual.atencionEn || "15 to 20 mins")}</span>
+                  </div>
+                </div>
+
+                <div class="mockup-zonas-chips">
+                  {distritosList.map((d: any) => (
+                    <span class="mockup-zona-chip"><i class="fa-solid fa-motorcycle"></i> {d.nombre} <strong>({d.tiempo})</strong></span>
+                  ))}
+                </div>
+
+                <div class="mockup-sedes-action">
+                  <i class="fa-solid fa-phone"></i> Express Dispatch: {cont.telefono || '+51 936 369 384'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+
     </div>
 
   </div>
 </section>
 
-<!-- Script Cliente Autónomo de Mi Negocio -->
 <script>
   import './negocio.js';
 </script>

@@ -1,12 +1,15 @@
 // src/feature/personal/personal.js
-// Controlador de cliente unificado para Feature Personal (Gaswii Solgas Surquillo)
+// Controlador de cliente unificado para Feature Personal
 // 100% JS Nativo · Integrado con @widev y @/feature/auth/sesion.js
 
 import { Notificacion, wiConfirmar, wiTema, getls, savels } from '@widev';
 import { salir } from '@/feature/auth/sesion.js';
 import { moduloDefecto, esModuloValido } from './modulos.js';
+import { inicializarProgresoDeploy } from './lib/progreso.js';
 
 export function inicializarPersonal() {
+  // Inicializar dock de progreso de despliegue Cloudflare
+  inicializarProgresoDeploy();
   // 1. Buscador limpio sin autocompletado nativo del navegador
   const searchInput = document.getElementById('globalSearchInput');
   if (searchInput) {
@@ -21,12 +24,14 @@ export function inicializarPersonal() {
     const topName = document.getElementById('topbarUserName');
     const dropName = document.getElementById('dropdownUserName');
     const dropEmail = document.getElementById('dropdownUserEmail');
+    const heroName = document.getElementById('dbHeroUserName');
     const nombre = user.nombre || user.usuario;
 
     if (avatar && (user.foto || user.avatar)) avatar.src = user.foto || user.avatar;
     if (topName && nombre) topName.textContent = nombre;
     if (dropName && nombre) dropName.textContent = nombre;
     if (dropEmail && user.email) dropEmail.textContent = user.email;
+    if (heroName && nombre) heroName.textContent = nombre;
   }
 
   // 3. Navegación y Rutas Dinámicas (/personal/[modulo])
@@ -59,27 +64,61 @@ export function inicializarPersonal() {
     switchPanel(e.state?.modulo || (paramMod && esModuloValido(paramMod) ? paramMod : moduloDefecto), false);
   });
 
+  // 3.1 Drawer Móvil Off-Canvas
+  const sidebarMenu = document.getElementById('sidebarMenu');
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+  const btnMobileToggle = document.getElementById('btnMobileSidebarToggle');
+  const btnMobileClose = document.getElementById('btnMobileSidebarClose');
+
+  function openMobileSidebar() {
+    sidebarMenu?.classList.add('mobile-open');
+    sidebarBackdrop?.classList.add('active');
+    document.body.classList.add('ps-locked-scroll');
+  }
+
+  function closeMobileSidebar() {
+    sidebarMenu?.classList.remove('mobile-open');
+    sidebarBackdrop?.classList.remove('active');
+    document.body.classList.remove('ps-locked-scroll');
+  }
+
+  btnMobileToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (sidebarMenu?.classList.contains('mobile-open')) {
+      closeMobileSidebar();
+    } else {
+      openMobileSidebar();
+    }
+  });
+
+  btnMobileClose?.addEventListener('click', closeMobileSidebar);
+  sidebarBackdrop?.addEventListener('click', closeMobileSidebar);
+
   navItems.forEach(btn => {
-    btn.addEventListener('click', () => switchPanel(btn.getAttribute('data-panel-target'), true));
+    btn.addEventListener('click', () => {
+      closeMobileSidebar();
+      switchPanel(btn.getAttribute('data-panel-target'), true);
+    });
   });
 
   document.querySelectorAll('[data-jump-to]').forEach(btn => {
     btn.addEventListener('click', () => {
       closeDropdown();
+      closeMobileSidebar();
       switchPanel(btn.getAttribute('data-jump-to'), true);
     });
   });
 
-  // 4. Sidebar Colapsable
+  // 4. Sidebar Colapsable (Desktop)
   const btnCollapse = document.getElementById('btnCollapseSidebar');
   const iconCollapse = document.getElementById('iconCollapse');
   const labelCollapse = document.getElementById('labelCollapse');
 
   btnCollapse?.addEventListener('click', () => {
     const isCollapsed = document.documentElement.classList.toggle('is-collapsed');
-    savels('gaswii_sidebar_collapsed', isCollapsed);
+    savels('wi_sidebar_collapsed', isCollapsed);
     if (iconCollapse && labelCollapse) {
-      iconCollapse.className = isCollapsed ? 'fa-solid fa-arrow-right-long' : 'fa-solid fa-arrow-left-long';
+      iconCollapse.className = isCollapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left';
       labelCollapse.textContent = isCollapsed ? 'Expandir' : 'Colapsar';
     }
   });
@@ -123,6 +162,79 @@ export function inicializarPersonal() {
       setTimeout(salir, 600);
     }
   });
+
+  // 9. Router Universal de Guardado con Atajo Ctrl+S / Cmd+S
+  function ejecutarGuardadoUniversal() {
+    // A. Prioridad 1: ¿Hay algún modal abierto con botón de guardar?
+    const modalAbierto = document.querySelector('.modal-overlay.open, .modal-overlay.active, .modal.open, .modal.active');
+    if (modalAbierto) {
+      const btnGuardarModal = modalAbierto.querySelector('#prBtnGuardarModal, [id*="GuardarModal"], [id*="guardarModal"], [type="submit"]');
+      if (btnGuardarModal && !btnGuardarModal.disabled) {
+        btnGuardarModal.click();
+        return;
+      }
+    }
+
+    // B. Prioridad 2: Detectar el panel activo en pantalla
+    const panelActivo = document.querySelector('.ps-panel.active') || document.querySelector('.ps-panel');
+    const panelId = panelActivo?.id || '';
+
+    if (panelId === 'panel-negocio') {
+      const btn = document.getElementById('btnGuardarNegocio');
+      if (btn && !btn.disabled) {
+        btn.click();
+        return;
+      }
+    }
+
+    if (panelId === 'panel-productos') {
+      const btnSync = document.getElementById('prBtnSincronizar');
+      if (btnSync && !btnSync.disabled) {
+        btnSync.click();
+        return;
+      }
+    }
+
+    if (panelId === 'panel-notepad') {
+      const btnNote = document.getElementById('btnSaveNotepadFull') || panelActivo.querySelector('button[type="submit"]');
+      if (btnNote && !btnNote.disabled) {
+        btnNote.click();
+        return;
+      }
+    }
+
+    // C. Fallback inteligente: buscar el botón de guardar o submit del panel activo
+    const btnFallback = panelActivo?.querySelector('button[id*="Guardar"], button[id*="guardar"], button[type="submit"], .ps-btn-primary');
+    if (btnFallback && !btnFallback.disabled) {
+      btnFallback.click();
+      return;
+    }
+
+    Notificacion('No hay cambios pendientes por guardar en este módulo.', 'info', 2000);
+  }
+
+  // Registrar el atajo universal para todo el panel (Ctrl+S / Cmd+S)
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+      e.preventDefault();
+      ejecutarGuardadoUniversal();
+    }
+  });
+}
+
+export function actualizarBadgesSidebar() {
+  const badgeClientes = document.getElementById('navBadge_clientes') || document.querySelector('[data-badge-target="clientes"]');
+  if (!badgeClientes) return;
+
+  try {
+    const clientes = getls('minegocio_crm_clientes');
+    if (Array.isArray(clientes)) {
+      badgeClientes.textContent = String(clientes.length);
+      return;
+    }
+  } catch (e) {}
+
+  badgeClientes.textContent = '3';
 }
 
 if (document.readyState === 'loading') {

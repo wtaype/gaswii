@@ -1,0 +1,123 @@
+{
+  "version": "2.0.0",
+  "negocioId": "gaswii_surquillo",
+  "telefonoOficial": "51936369384",
+  "titulo": "WhatsApp · Centro de Mensajería & Canales Web",
+  "subtitulo": "Configura los mensajes automáticos de los botones de la web y gestiona plantillas oficiales de despacho con simulador en vivo.",
+  "canalesWeb": [
+    {
+      "id": "canal_catalogo_producto",
+      "nombre": "Catálogo de Productos",
+      "origen": "tarjeta_inicio",
+      "descripcion": "Mensaje generado al hacer clic en 'Pedir por WhatsApp' en cualquier balón del catálogo.",
+      "formatoMensaje": "{saludo}. He visto en su página web el *{producto}* a *S/ {precio}*. Quisiera pedir a domicilio, ¿podrían confirmarme por favor?",
+      "variablesPermitidas": ["saludo", "producto", "precio", "cantidad"],
+      "apiMeta": {
+        "templateName": "catalogo_producto_inquiry",
+        "category": "UTILITY",
+        "lenguaje": "es"
+      }
+    },
+    {
+      "id": "canal_modal_express",
+      "nombre": "Modal de Pedido Express",
+      "origen": "modal_checkout",
+      "descripcion": "Mensaje enviado al confirmar un pedido desde el formulario emergente (Header, Hero o Barra Flotante).",
+      "formatoMensaje": "{saludo}, quiero realizar un pedido:\n👤 Soy: *{cliente}*\n📦 *{producto}* x{cantidad} (S/ {total})\n📍 Entrega: *{direccion}*, {distrito}\n💳 Pago: *{metodoPago}*\n¿Podrían confirmarme el pedido por favor?",
+      "variablesPermitidas": ["saludo", "cliente", "celular", "producto", "cantidad", "total", "direccion", "distrito", "metodoPago", "notas"],
+      "apiMeta": {
+        "templateName": "pedido_express_order",
+        "category": "TRANSACTIONAL",
+        "lenguaje": "es"
+      }
+    },
+    {
+      "id": "canal_general_header",
+      "nombre": "Consulta General (Header / Hero)",
+      "origen": "header_hero",
+      "descripcion": "Mensaje de saludo general para clientes que consultan desde el menú o redes.",
+      "formatoMensaje": "{saludo}, {nombreNegocio}. He visto su página web y deseo consultar sobre el pedido de gas a domicilio. ¿Podrían atenderme, por favor?",
+      "variablesPermitidas": ["saludo", "nombreNegocio"],
+      "apiMeta": {
+        "templateName": "general_customer_service",
+        "category": "SERVICE",
+        "lenguaje": "es"
+      }
+    },
+    {
+      "id": "canal_calculadora",
+      "nombre": "Calculadora de Rendimiento",
+      "origen": "calculadora_gas",
+      "descripcion": "Mensaje enviado al solicitar un pedido con el cálculo estimado de duración de gas.",
+      "formatoMensaje": "{saludo}. He visto en su página web y calculé mi consumo: balón de {kg} kg para {personas} personas (~{dias} días). Quisiera pedir a domicilio, ¿podrían confirmarme por favor?",
+      "variablesPermitidas": ["saludo", "kg", "personas", "dias"],
+      "apiMeta": {
+        "templateName": "calculadora_rendimiento_lead",
+        "category": "MARKETING",
+        "lenguaje": "es"
+      }
+    }
+  ],
+  "plantillas": [
+    {
+      "id": "tpl_pedido_confirmado",
+      "nombre": "Confirmación de Pedido GLP",
+      "icono": "fa-solid fa-box",
+      "categoria": "pedido",
+      "descripcion": "Notificación inmediata con detalle del balón y número de pedido.",
+      "mensaje": "¡Hola *{cliente}*! 👋 Le saluda *{nombreNegocio}*.\n\n📦 *Pedido Confirmado: #{pedidoId}*\n• Balón: *{producto}* ({cantidad} und)\n• Total: *S/ {monto}*\n• Entrega: *{direccion}*, {distrito}\n• Estado: En preparación y control de peso\n\n🛵 El motorizado asignado saldrá en breve. ¡Muchas gracias por su preferencia!",
+      "apiMeta": {
+        "templateName": "order_confirmed_notification",
+        "category": "TRANSACTIONAL"
+      }
+    },
+    {
+      "id": "tpl_repartidor_en_camino",
+      "nombre": "Repartidor en Camino (ETA)",
+      "icono": "fa-solid fa-motorcycle",
+      "categoria": "delivery",
+      "descripcion": "Aviso cuando la unidad de reparto sale hacia la dirección del cliente.",
+      "mensaje": "¡Hola *{cliente}*! 🛵 Su pedido *#{pedidoId}* ya está en camino a su dirección en *{distrito}*.\n\n⏱️ *Tiempo estimado de llegada:* {tiempoEstimado}.\n⚖️ Recuerde que nuestro repartidor cuenta con balanza digital para verificar el peso exacto en su presencia antes de pagar.\n\n¡Nos vemos en breve!",
+      "apiMeta": {
+        "templateName": "delivery_out_for_delivery",
+        "category": "TRANSACTIONAL"
+      }
+    },
+    {
+      "id": "tpl_balanza_puerta",
+      "nombre": "Garantía de Peso Exacto",
+      "icono": "fa-solid fa-scale-balanced",
+      "categoria": "seguridad",
+      "descripcion": "Protocolo de verificación de precinto y pesaje con balanza digital.",
+      "mensaje": "Estimado/a *{cliente}*, para su total tranquilidad:\n\n🛡️ *Protocolo de Seguridad Solgas Surquillo:*\n1. Verifique el precinto de seguridad intacto en la válvula.\n2. Exija el pesaje en puerta con nuestra balanza digital calibrada (peso neto garantizado).\n3. Instalación técnica y prueba de hermeticidad gratuita.\n\n¡Su seguridad es nuestra prioridad!",
+      "apiMeta": {
+        "templateName": "security_weight_protocol",
+        "category": "SERVICE"
+      }
+    },
+    {
+      "id": "tpl_cotizacion_45kg",
+      "nombre": "Cotización Comercial 45kg",
+      "icono": "fa-solid fa-building",
+      "categoria": "cotizacion",
+      "descripcion": "Tarifas especiales para restaurantes, panaderías y empresas.",
+      "mensaje": "¡Hola *{cliente}*! 👋 Compartimos la propuesta comercial para el suministro de gas de su negocio:\n\n🔥 *Suministro Solgas Comercial 45 kg*\n• Tarifa especial empresas: *S/ {precioMayorista}* por cilindro.\n• Reparto express prioritario en 30 minutos.\n• Balanza certificada en cada despacho y factura electrónica mensual.\n\n¿Desea coordinar el primer pedido para hoy?",
+      "apiMeta": {
+        "templateName": "commercial_quote_b2b",
+        "category": "MARKETING"
+      }
+    },
+    {
+      "id": "tpl_soporte_valvula",
+      "nombre": "Soporte e Instalación Click-On",
+      "icono": "fa-solid fa-wrench",
+      "categoria": "soporte",
+      "descripcion": "Coordinación de cambio de regulador o revisión preventiva.",
+      "mensaje": "¡Hola *{cliente}*! 🔧 Hemos recibido su requerimiento de soporte técnico.\n\nContamos con kits de regulador original SOLGAS Click-On con corte automático ante emergencias.\n\n¿En qué horario podemos coordinar la visita del instalador a su domicilio?",
+      "apiMeta": {
+        "templateName": "valve_support_request",
+        "category": "SERVICE"
+      }
+    }
+  ]
+}

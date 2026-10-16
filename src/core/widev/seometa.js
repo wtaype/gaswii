@@ -2,8 +2,8 @@
 // seometa v10.1: Gestor dinámico de metaetiquetas SEO y esquemas JSON-LD (Schema.org) en el cliente
 
 import { app, linkweb } from '../../wii.js';
-const descri = 'Solgas Surquillo Distribuidor';
-const keywii = 'gas glp surquillo';
+const descri = app || 'Portal Oficial';
+const keywii = 'web portal';
 
 const setTag = (id, val) => {
   if (typeof document === 'undefined') return;
@@ -65,7 +65,7 @@ export const setMeta = ({ title, desc, keywords, img, path, type = 'WebSite', da
       "headline": t,
       "image": i,
       "datePublished": datePublished ? new Date(datePublished).toISOString() : new Date().toISOString(),
-      "author": { "@type": "Person", "name": "Wilder Taype" }
+      "author": { "@type": "Person", "name": app || "Autor" }
     });
     document.head.appendChild(script);
   }

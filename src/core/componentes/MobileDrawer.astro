@@ -2,15 +2,16 @@
 // src/core/componentes/MobileDrawer.astro
 // DRAWER MÓVIL INTERACTIVO - Solgas Surquillo (100% Cero CSS Inline)
 import app from '../../app.js';
-import { datosNegocio } from '../../negocio.js';
+import { datosNegocio, configurarSistema } from '../../negocio.js';
 import { getI18n, IDIOMAS, buildRuta, type Idioma } from '../idioma/idioma';
 
 interface Props {
   idioma?: Idioma;
   ruta?: string;
+  rutasIdioma?: Record<string, string>;
 }
 
-const { idioma = 'es', ruta = '/' } = Astro.props;
+const { idioma = 'es', ruta = '/', rutasIdioma } = Astro.props;
 const t = getI18n(idioma).nav;
 
 // Extraer ruta base canónica sin prefijos de idioma existentes
@@ -28,6 +29,16 @@ for (const code of Object.keys(IDIOMAS)) {
 
 const baseHash = idioma === 'es' ? (ruta !== '/' ? '/' : '') : `/${idioma}`;
 const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.horario;
+
+// Navegación dinámica desacoplada (Marca Blanca en Cascada)
+const navItems = configurarSistema?.navegacion || [
+  { id: 'pesaje', label: { es: t.balanza || 'Pesaje', en: 'Weighing' }, href: '#pesaje', icono: 'fa-scale-balanced', color: 'color-brand-blue' },
+  { id: 'productos', label: { es: t.productos || 'Productos', en: 'Products' }, href: '#productos', icono: 'fa-fire', color: 'color-primary' },
+  { id: 'seguridad', label: { es: t.seguridad || 'Seguridad', en: 'Safety' }, href: '#seguridad', icono: 'fa-shield-halved', color: 'color-emerald' },
+  { id: 'calculadora', label: { es: t.calculadora || 'Calculadora', en: 'Calculator' }, href: '#calculadora', icono: 'fa-calculator', color: 'color-gold' },
+  { id: 'mapa-sede', label: { es: t.ubicacion || 'Ubicación', en: 'Location' }, href: '#mapa-sede', icono: 'fa-location-dot', color: 'color-brand-blue' },
+  { id: 'nosotros', label: { es: t.nosotros || 'Nosotros', en: 'About Us' }, href: '#nosotros', icono: 'fa-building', color: 'color-primary' }
+];
 ---
 
 <!-- BACKDROP PARA DRAWER MÓVIL -->
@@ -43,15 +54,20 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
     <div class="flex items-center gap-2">
       <!-- Selector Dinámico de Idiomas Móvil -->
       <div class="header-pill-group" title="Idioma / Language">
-        {Object.entries(IDIOMAS).map(([code, info]) => (
-          <a 
-            href={buildRuta(rutaBase, code)} 
-            data-lang={code}
-            class={`header-pill-btn ${idioma === code ? 'active' : ''}`}
-          >
-            {code.toUpperCase()}
-          </a>
-        ))}
+        {Object.entries(IDIOMAS).map(([code, info]) => {
+          const href = (rutasIdioma && rutasIdioma[code]) 
+            ? rutasIdioma[code] 
+            : buildRuta(rutaBase, code);
+          return (
+            <a 
+              href={href} 
+              data-lang={code}
+              class={`header-pill-btn ${idioma === code ? 'active' : ''}`}
+            >
+              {code.toUpperCase()}
+            </a>
+          );
+        })}
       </div>
 
       <button onclick="window.cerrarDrawer && window.cerrarDrawer()" aria-label="Cerrar Menú" class="drawer-close-btn">
@@ -62,12 +78,24 @@ const horarioTexto = idioma === 'en' ? datosNegocio.horarioEn : datosNegocio.hor
 
   <!-- Navegación Drawer -->
   <nav class="drawer-nav-list">
-    <a href={`${baseHash}#pesaje`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-scale-balanced drawer-nav-icon color-brand-blue"></i> <span>{t.balanza}</span></a>
-    <a href={`${baseHash}#productos`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-fire drawer-nav-icon color-primary"></i> <span>{t.productos}</span></a>
-    <a href={`${baseHash}#seguridad`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-shield-halved drawer-nav-icon color-emerald"></i> <span>{t.seguridad}</span></a>
-    <a href={`${baseHash}#calculadora`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-calculator drawer-nav-icon color-gold"></i> <span>{t.calculadora}</span></a>
-    <a href={`${baseHash}#mapa-sede`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-location-dot drawer-nav-icon color-brand-blue"></i> <span>{t.ubicacion}</span></a>
-    <a href={`${baseHash}#nosotros`} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link"><i class="fa-solid fa-building drawer-nav-icon color-primary"></i> <span>{t.nosotros}</span></a>
+    {navItems.map((item: any) => {
+      let itemHref = item.href;
+      if (itemHref.startsWith('#')) {
+        itemHref = ruta !== '/' && ruta !== '/en' ? `${baseHash || '/'}${itemHref}` : `${baseHash}${itemHref}`;
+      } else if (idioma === 'en' && itemHref.startsWith('/') && !itemHref.startsWith('/en')) {
+        itemHref = `/en${itemHref}`;
+      }
+      const itemLabel = typeof item.label === 'object' 
+        ? (item.label[idioma] || item.label.es || item.id) 
+        : ((t as any)[item.id] || item.label || item.id);
+      const iconClass = item.icono || 'fa-solid fa-circle';
+      return (
+        <a href={itemHref} onclick="window.cerrarDrawer && window.cerrarDrawer()" class="drawer-nav-link">
+          <i class={`fa-solid ${iconClass.replace('fa-solid ', '')} drawer-nav-icon ${item.color || 'color-primary'}`}></i>
+          <span>{itemLabel}</span>
+        </a>
+      );
+    })}
   </nav>
 
   <!-- Botones en Drawer Móvil -->

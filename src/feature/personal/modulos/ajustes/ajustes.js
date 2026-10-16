@@ -1,9 +1,9 @@
 // src/feature/personal/modulos/ajustes/ajustes.js
-// Controlador Frontend Autónomo del Módulo Ajustes (Solgas Surquillo)
+// Controlador Frontend Autónomo del Módulo Ajustes
 // 100% JS Nativo · Integrado con @widev
 
-import { Notificacion, wiSpin } from '@widev';
-import { obtenerAjustes, guardarAjustes, generarBackupCompletoJson } from './dataAjustes.js';
+import { Notificacion, wiSpin, wiConfirmar } from '@widev';
+import { obtenerAjustes, guardarAjustes, generarBackupCompletoJson, sembrarDesdeSemillasFrontend } from './dataAjustes.js';
 
 export function inicializarModuloAjustes() {
   const panel = document.getElementById('panel-ajustes');
@@ -21,6 +21,7 @@ export function inicializarModuloAjustes() {
   const switchPush = document.getElementById('ajSwitchPush');
   const btnGuardar = document.getElementById('btnAjGuardar');
   const btnBackupJson = document.getElementById('btnAjBackupJson');
+  const btnSembrarFirestore = document.getElementById('btnAjSembrarFirestore');
 
   // ════════════════════════════════════════════════════════════
   // 1. CARGA INICIAL DE AJUSTES
@@ -33,10 +34,10 @@ export function inicializarModuloAjustes() {
       actualizarLabelTienda(data.tiendaAbierta);
     }
 
-    if (inEta) inEta.value = data.etaMinutos || '12–15';
-    if (inCostoDelivery) inCostoDelivery.value = (parseFloat(data.costoDelivery) || 0).toFixed(2);
-    if (inTelefono) inTelefono.value = data.telefonoContacto || '936 369 384';
-    if (inDireccion) inDireccion.value = data.direccionSede || 'Jr. Dante 260, Surquillo';
+    if (inEta) inEta.value = data.etaMinutos || '15–30 min';
+    if (inCostoDelivery) inCostoDelivery.value = (parseFloat(data.costoDelivery) || 80.00).toFixed(2);
+    if (inTelefono) inTelefono.value = data.telefonoContacto || '';
+    if (inDireccion) inDireccion.value = data.direccionSede || '';
     if (switchSonido) switchSonido.checked = data.sonidoPedidos;
     if (switchPush) switchPush.checked = data.notificacionesWebPush;
   }
@@ -44,7 +45,7 @@ export function inicializarModuloAjustes() {
   function actualizarLabelTienda(abierta) {
     if (!labelTienda) return;
     labelTienda.textContent = abierta 
-      ? '🟢 Sede Abierta (Recibiendo pedidos web y delivery)' 
+      ? '🟢 Sede Abierta (Recibiendo consultas y citas)' 
       : '🔴 Sede Cerrada (Aviso de fuera de horario visible)';
   }
 
@@ -66,10 +67,10 @@ export function inicializarModuloAjustes() {
 
     setTimeout(() => {
       guardarAjustes({
-        etaMinutos: inEta?.value?.trim() || '12–15',
-        costoDelivery: parseFloat(inCostoDelivery?.value) || 0.00,
-        telefonoContacto: inTelefono?.value?.trim() || '936 369 384',
-        direccionSede: inDireccion?.value?.trim() || 'Jr. Dante 260, Surquillo',
+        etaMinutos: inEta?.value?.trim() || '15–30 min',
+        costoDelivery: parseFloat(inCostoDelivery?.value) || 80.00,
+        telefonoContacto: inTelefono?.value?.trim() || '',
+        direccionSede: inDireccion?.value?.trim() || '',
         sonidoPedidos: switchSonido?.checked ?? true,
         notificacionesWebPush: switchPush?.checked ?? true
       });
@@ -88,7 +89,7 @@ export function inicializarModuloAjustes() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `backup_gaswii_solgas_surquillo_${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `backup_${(window.Wii?.negocio?.nombreCorto || 'sistema').toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -98,7 +99,29 @@ export function inicializarModuloAjustes() {
   });
 
   // ════════════════════════════════════════════════════════════
-  // 4. INICIALIZACIÓN
+  // 4. RESTAURAR / SEMBRAR DESDE SEMILLAS (PRUEBAS / RESET)
+  // ════════════════════════════════════════════════════════════
+  btnSembrarFirestore?.addEventListener('click', async () => {
+    const seguro = await wiConfirmar(
+      '¿Deseas restaurar la base de datos Firestore y LocalStorage con las semillas oficiales? Esta acción sincronizará los datos iniciales para pruebas en vivo.',
+      { titulo: 'Restaurar / Sembrar Semillas', tipo: 'warning', siTexto: 'Sí, Sembrar' }
+    );
+    if (!seguro) return;
+
+    wiSpin(btnSembrarFirestore, true, 'Sembrando...');
+    try {
+      await sembrarDesdeSemillasFrontend();
+      Notificacion('¡Base de datos y caché sincronizadas exitosamente desde semillas!', 'success', 3000);
+      cargarAjustes();
+    } catch (e) {
+      Notificacion('Error al sincronizar con Firestore: ' + (e?.message || e), 'error');
+    } finally {
+      wiSpin(btnSembrarFirestore, false);
+    }
+  });
+
+  // ════════════════════════════════════════════════════════════
+  // 5. INICIALIZACIÓN
   // ════════════════════════════════════════════════════════════
   cargarAjustes();
 }

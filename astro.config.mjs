@@ -80,7 +80,7 @@ export default defineConfig({
 
         // 3. Prioridades graduadas por intención de búsqueda
         const [pri, freq] = (p === '/' || p === '/en') ? [1.0, 'daily']
-          : check(['/productos', '/acerca', '/contacto', '/redes']) ? [0.8, 'weekly']
+          : check(['/productos', '/acerca', '/contacto', '/redes', '/blog']) ? [0.8, 'weekly']
           : [0.6, 'monthly'];
 
         return Object.assign(item, { priority: pri, changefreq: freq });

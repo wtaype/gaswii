@@ -1,0 +1,263 @@
+{
+  "id": "principal",
+  "principal": true,
+  "moneda": "PEN",
+  "idiomaPrincipal": "es",
+  "idiomas": ["es", "en"],
+
+  "titulo": "Solgas Surquillo | Distribuidor Autorizado de Balones de Gas GLP",
+  "subtitulo": "Delivery Express en 15-20 min con Balanza Digital y Garantía de Peso Exacto",
+
+  "hero": {
+    "titulo": "Solgas Surquillo",
+    "subtitulo": "Energía Segura, Balanza Digital y Peso Exacto en tu Hogar",
+    "imagen": "/imgwii/hero.webp",
+    "alt": "Solgas Surquillo Balones de Gas",
+    "precioHero": "65 soles",
+    "servicio": "Balón Solgas Premium 10 kg",
+    "descripcion": "Llevamos tu balón de gas con balanza digital calibrada para comprobar el peso exacto en tu puerta. Despacho rápido en 15 a 20 minutos a Surquillo, Miraflores, San Borja y San Isidro."
+  },
+
+  "identidad": {
+    "nombre": "Solgas Surquillo",
+    "nombreCorto": "Solgas Surquillo",
+    "razonSocial": "Distribuidor Autorizado OSINERGMIN Reg. 208492",
+    "ruc": "20601234567",
+    "registroOsinergmin": "Reg. 208492",
+    "marcaRespaldo": "Solgas S.A.",
+    "lanzamientoFecha": "2000-01-13",
+    "logo": "/imgwii/logo.webp",
+    "logoFull": "/imgwii/logo_full.webp",
+    "imagenSede": "/imgwii/hero.webp",
+    "especialista": "Solgas Surquillo",
+    "titulo": "Distribuidor Autorizado OSINERGMIN",
+    "cargo": "Distribuidor Autorizado OSINERGMIN",
+    "grado": "Distribuidor Calificado GLP",
+    "colegiatura": "Reg. 208492",
+    "bio": "Distribuidor oficial de GLP con certificación OSINERGMIN y balanza digital.",
+    "bioEn": "Official LPG distributor certified by OSINERGMIN with digital scale verification.",
+    "enfoques": "Delivery Express · Balanza Digital · Peso Exacto",
+    "enfoquesEn": "Express Delivery · Digital Scale · Exact Weight",
+    "nombreEn": "Solgas Surquillo",
+    "nombreCortoEn": "Solgas Surquillo"
+  },
+
+  "contacto": {
+    "pais": "PE",
+    "paisCode": "51",
+    "telefono": "+51 936 369 384",
+    "telefonoFijo": "(01) 241-1234",
+    "telefonoLimpio": "51936369384",
+    "whatsapp": "51936369384",
+    "whatsappMensaje": {
+      "es": "¡Hola Solgas Surquillo! Deseo pedir un balón de gas para entrega a domicilio.",
+      "en": "Hello Solgas Surquillo! I would like to order an LPG gas cylinder for home delivery."
+    },
+    "email": "pedidos@solgassurquillo.com",
+    "horario": {
+      "es": "Lunes a Domingo: 6:00 a.m. a 11:00 p.m. (Ininterrumpido)",
+      "en": "Monday to Sunday: 6:00 a.m. to 11:00 p.m. (Non-stop)"
+    }
+  },
+
+  "ubicacion": {
+    "direccion": "Jr. Dante 260, Surquillo, Lima 15047",
+    "distrito": "Surquillo",
+    "ciudad": "Lima",
+    "pais": "PE",
+    "mapsUrl": "https://www.google.com/maps?q=-12.1177408,-77.0226796",
+    "coordenadas": {
+      "lat": -12.1177408,
+      "lng": -77.0226796
+    }
+  },
+
+  "zonas": [
+    {
+      "id": "surquillo",
+      "distrito": "Surquillo",
+      "tiempoMin": 8,
+      "tiempoMax": 18,
+      "unidad": "min",
+      "tag": "Sede Central Express",
+      "activo": true
+    },
+    {
+      "id": "miraflores",
+      "distrito": "Miraflores",
+      "tiempoMin": 15,
+      "tiempoMax": 20,
+      "unidad": "min",
+      "tag": "Ruta Directa",
+      "activo": true
+    },
+    {
+      "id": "san-borja",
+      "distrito": "San Borja",
+      "tiempoMin": 15,
+      "tiempoMax": 22,
+      "unidad": "min",
+      "tag": "Ruta Directa",
+      "activo": true
+    },
+    {
+      "id": "san-isidro",
+      "distrito": "San Isidro",
+      "tiempoMin": 18,
+      "tiempoMax": 25,
+      "unidad": "min",
+      "tag": "Ruta Directa",
+      "activo": true
+    }
+  ],
+
+  "sedes": [
+    {
+      "id": "sede-presencial",
+      "tipo": "presencial",
+      "nombre": "Sede Central Express Surquillo",
+      "tag": {
+        "es": "Sede Central Express",
+        "en": "Central Express Hub"
+      },
+      "direccion": "Jr. Dante 260, Surquillo, Lima 15047",
+      "distrito": "Surquillo",
+      "ciudad": "Lima",
+      "pais": "PE",
+      "atencion": {
+        "es": "Lunes a Domingo: 6:00 a.m. a 11:00 p.m.",
+        "en": "Monday to Sunday: 6:00 a.m. to 11:00 p.m."
+      },
+      "mapsUrl": "https://www.google.com/maps?q=-12.1177408,-77.0226796",
+      "coordenadas": {
+        "lat": -12.1177408,
+        "lng": -77.0226796
+      }
+    },
+    {
+      "id": "modalidad-delivery",
+      "tipo": "delivery",
+      "nombre": "Delivery Express a Domicilio",
+      "tag": {
+        "es": "Delivery Express en 15 - 20 min",
+        "en": "Express Delivery in 15 - 20 min"
+      },
+      "direccion": "Despacho con Balanza Digital a Domicilio",
+      "distrito": "Surquillo, Miraflores, San Borja, San Isidro",
+      "ciudad": "Lima",
+      "pais": "PE",
+      "atencion": {
+        "es": "Despacho Ininterrumpido con Balanza Digital",
+        "en": "Non-stop Dispatch with Certified Digital Scale"
+      },
+      "mapsUrl": "https://www.google.com/maps?q=-12.1177408,-77.0226796",
+      "coordenadas": {
+        "lat": -12.1177408,
+        "lng": -77.0226796
+      }
+    }
+  ],
+
+  "metricas": {
+    "years": "26+",
+    "clientes": "26K+",
+    "balanza": "100%",
+    "dias": "365"
+  },
+
+  "redes": {
+    "whatsapp": "https://wa.me/51936369384",
+    "telefono": "tel:+51936369384",
+    "web": "https://solgassurquillo.com/",
+    "facebook": "https://facebook.com/solgassurquillo",
+    "instagram": "https://instagram.com/solgassurquillo",
+    "tiktok": "https://tiktok.com/@solgassurquillo",
+    "maps": "https://www.google.com/maps?q=-12.1177408,-77.0226796"
+  },
+
+  "seo": {
+    "titulo": {
+      "es": "Solgas Surquillo | Balones de Gas a Domicilio con Balanza Digital",
+      "en": "Solgas Surquillo | LPG Cooking Gas Delivery with Digital Scale"
+    },
+    "descripcion": {
+      "es": "Solgas Surquillo: pide tu gas en Surquillo, Miraflores, San Borja y San Isidro. Delivery express en 15 min con balanza digital y garantía oficial Solgas.",
+      "en": "Solgas Surquillo: order LPG cooking gas in Surquillo, Miraflores & San Borja. Express 15-min delivery with certified digital scale and official guarantee."
+    },
+    "keywords": {
+      "es": [
+        "solgas surquillo",
+        "gas surquillo",
+        "pedir gas surquillo",
+        "solgas surquillo telefono",
+        "solgas miraflores",
+        "delivery de gas san borja",
+        "pedir gas san isidro",
+        "balon de gas a domicilio",
+        "balon solgas 10 kg precio",
+        "balon solgas 45 kg",
+        "gas con balanza digital lima",
+        "solgas dante surquillo",
+        "gas de cocina surquillo 15 minutos"
+      ],
+      "en": [
+        "solgas surquillo",
+        "gas delivery lima",
+        "cooking gas surquillo",
+        "solgas miraflores delivery",
+        "lpg gas san isidro",
+        "order gas cylinder lima",
+        "express gas delivery lima"
+      ]
+    },
+    "imagen": "/imgwii/productos/BALON-10KG.webp",
+    "imagenAlt": {
+      "es": "Balón de Gas Solgas 10 kg con Válvula Premium y Balanza Digital - Solgas Surquillo",
+      "en": "Solgas 10 kg LPG Cylinder with Premium Valve and Digital Scale - Solgas Surquillo"
+    },
+    "imagenCaption": {
+      "es": "Distribuidor Autorizado Solgas Surquillo - Delivery en 15 Minutos",
+      "en": "Authorized Distributor Solgas Surquillo - 15-Minute Express Delivery"
+    },
+    "descripcionNegocio": {
+      "es": "Distribuidor autorizado OSINERGMIN de balones de gas GLP con pesaje digital obligatorio frente a tu puerta.",
+      "en": "Authorized OSINERGMIN LPG gas cylinder distributor with mandatory digital scale weighing at your door."
+    },
+    "rangoPrecios": "S/ 55 - S/ 230",
+    "currenciesAccepted": "PEN",
+    "paymentAccepted": ["Cash", "Credit Card", "Debit Card", "Yape", "Plin"],
+    "schemaTypes": ["LocalBusiness", "HomeGoodsStore", "EmergencyService"],
+    "faqs": [
+      {
+        "pregunta": {
+          "es": "¿Cómo sé que el balón viene con el peso exacto?",
+          "en": "How do I know the cylinder is 100% full?"
+        },
+        "respuesta": {
+          "es": "Nuestros balones vienen con peso exacto calibrado directamente desde la planta envasadora oficial de Solgas y verificado en nuestra base central antes del despacho, con precinto de fábrica 100% intacto.",
+          "en": "Our gas cylinders come with calibrated exact weight directly from the official Solgas plant and verified at our central hub before dispatch, with factory tamper-evident seals intact."
+        }
+      },
+      {
+        "pregunta": {
+          "es": "¿Cobran costo adicional por el delivery?",
+          "en": "Is there any delivery charge?"
+        },
+        "respuesta": {
+          "es": "No, el despacho y la instalación técnica con prueba de hermeticidad cero fugas son totalmente gratuitos en Surquillo, Miraflores, San Borja y San Isidro.",
+          "en": "No, delivery and technical safety installation are completely free in Surquillo, Miraflores, San Borja, and San Isidro."
+        }
+      },
+      {
+        "pregunta": {
+          "es": "¿Cuánto tiempo tarda en llegar el pedido?",
+          "en": "How long does delivery take?"
+        },
+        "respuesta": {
+          "es": "El tiempo estimado de entrega es de 12 a 20 minutos despachando desde nuestra sede central en Jr. Dante 260, Surquillo.",
+          "en": "Estimated delivery time is between 12 and 20 minutes from our central hub at Jr. Dante 260, Surquillo."
+        }
+      }
+    ]
+  }
+}

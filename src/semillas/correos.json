@@ -1,0 +1,111 @@
+{
+  "titulo": "Centro de Correo & Notificaciones",
+  "subtitulo": "Gestor oficial institucional: Principal, enviados, borradores y redactor con Live Preview de confirmaciones de despacho, comprobantes y cotizaciones.",
+  "plantillas": [
+    {
+      "id": "pedido",
+      "nombre": "Confirmación de Pedido",
+      "icono": "fa-solid fa-box",
+      "categoria": "pedido",
+      "asuntoDefecto": "📦 ¡Tu pedido está confirmado! · Solgas Surquillo",
+      "descripcion": "Notificación inmediata al cliente con detalle del cilindro, dirección de entrega, método de pago y tiempo de llegada."
+    },
+    {
+      "id": "comprobante",
+      "nombre": "Comprobante de Venta",
+      "icono": "fa-solid fa-file-invoice-dollar",
+      "categoria": "comprobante",
+      "asuntoDefecto": "🧾 Tu Comprobante Electrónico oficial · Solgas Surquillo",
+      "descripcion": "Envío formal de Boleta o Factura electrónica con enlace de descarga y validez SUNAT."
+    },
+    {
+      "id": "cotizacion",
+      "nombre": "Cotización Comercial (45kg)",
+      "icono": "fa-solid fa-clipboard-list",
+      "categoria": "cotizacion",
+      "asuntoDefecto": "📋 Propuesta de Suministro GLP Comercial · Solgas Surquillo",
+      "descripcion": "Cotización para restaurantes, panaderías y empresas con tarifas corporativas por volumen."
+    },
+    {
+      "id": "seguridad",
+      "nombre": "Soporte e Instalación",
+      "icono": "fa-solid fa-shield-halved",
+      "categoria": "seguridad",
+      "asuntoDefecto": "🔧 Registro de Instalación y Seguridad GLP · Solgas Surquillo",
+      "descripcion": "Constancia de revisión técnica, prueba de hermeticidad y cambio de accesorios seguros."
+    },
+    {
+      "id": "libre",
+      "nombre": "Mensaje Libre",
+      "icono": "fa-solid fa-envelope-open-text",
+      "categoria": "libre",
+      "asuntoDefecto": "📢 Comunicado Oficial · Solgas Surquillo",
+      "descripcion": "Redacción libre en Markdown con diseño institucional y pie de página oficial."
+    }
+  ],
+  "recibidos": [
+    {
+      "id": "rec_101",
+      "carpeta": "recibidos",
+      "estado": "recibido",
+      "leido": false,
+      "destinatario": {
+        "para": "contacto@gaswii.pe",
+        "nombre": "Solgas Surquillo"
+      },
+      "remitente": {
+        "desde": "Restaurante El Fogón Marino <pedidos@elfogonmarino.pe>",
+        "responderA": "pedidos@elfogonmarino.pe"
+      },
+      "mensaje": {
+        "asunto": "📦 Solicitud de Pedido: 2 Balones 45kg para Cocina Central",
+        "tipo": "pedido",
+        "resumen": "Buenas tardes, solicitamos el despacho prioritario de 2 cilindros de 45kg para nuestro local en Surquillo...",
+        "html": "<div style=\"font-family: sans-serif; padding: 20px; line-height: 1.6; color: #1e293b;\"><h2 style=\"color: #ff6600; margin-top: 0;\">Solicitud de Pedido Comercial</h2><p>Estimados amigos de Solgas Surquillo,</p><p>Requerimos el despacho de <strong>2 balones de 45 kg</strong> para la cocina principal de nuestro restaurante.</p><ul><li><strong>Dirección:</strong> Av. Principal 450, Surquillo</li><li><strong>Horario preferente:</strong> Antes de las 11:30 a. m.</li><li><strong>Pago:</strong> Transferencia BCP inmediata</li></ul><p>Agradeceremos verificar el peso con su balanza digital al momento de la entrega. ¡Muchas gracias!</p><p>Atentamente,<br/><strong>Administración El Fogón Marino</strong></p></div>"
+      },
+      "fecha": "Hoy, 02:45 p. m."
+    },
+    {
+      "id": "rec_102",
+      "carpeta": "recibidos",
+      "estado": "recibido",
+      "leido": false,
+      "destinatario": {
+        "para": "contacto@gaswii.pe",
+        "nombre": "Solgas Surquillo"
+      },
+      "remitente": {
+        "desde": "Inmobiliaria & Constructora San Pedro <administracion@sanpedro.pe>",
+        "responderA": "administracion@sanpedro.pe"
+      },
+      "mensaje": {
+        "asunto": "🧾 Solicitud de Factura por Recarga de Balón 10kg",
+        "tipo": "comprobante",
+        "resumen": "Estimados, solicitamos la emisión de la Factura electrónica correspondiente a la compra del día de hoy...",
+        "html": "<div style=\"font-family: sans-serif; padding: 20px; line-height: 1.6; color: #1e293b;\"><h2 style=\"color: #002f6c; margin-top: 0;\">Solicitud de Factura Electrónica</h2><p>Buenas tardes,</p><p>Adjuntamos los datos fiscales para la emisión de la factura de nuestro pedido de balón SOLGAS 10kg:</p><ul><li><strong>Razón Social:</strong> Inmobiliaria San Pedro S.A.C.</li><li><strong>RUC:</strong> 20601234567</li><li><strong>Dirección:</strong> Calle Las Begonias 120, Surquillo</li></ul><p>Por favor remitir el comprobante a este correo. Saludos cordiales.</p></div>"
+      },
+      "fecha": "Ayer, 05:20 p. m."
+    },
+    {
+      "id": "rec_103",
+      "carpeta": "recibidos",
+      "estado": "recibido",
+      "leido": true,
+      "destinatario": {
+        "para": "contacto@gaswii.pe",
+        "nombre": "Solgas Surquillo"
+      },
+      "remitente": {
+        "desde": "Junta de Propietarios Condominio Los Sauces <junta@saucesurquillo.com>",
+        "responderA": "junta@saucesurquillo.com"
+      },
+      "mensaje": {
+        "asunto": "🔧 Consulta sobre Servicio Técnico y Válvula Click-On",
+        "tipo": "seguridad",
+        "resumen": "Estimado equipo, quisiéramos saber si cuentan con stock de reguladores premium Click-On y prueba de fuga...",
+        "html": "<div style=\"font-family: sans-serif; padding: 20px; line-height: 1.6; color: #1e293b;\"><h2 style=\"color: #ff6600; margin-top: 0;\">Consulta de Soporte Técnico</h2><p>Estimados amigos de Solgas,</p><p>Deseamos renovar los reguladores de gas de dos departamentos y queremos saber si el técnico puede realizar la instalación y la prueba de hermeticidad gratuita al momento del despacho.</p><p>Quedamos a la espera de su respuesta para confirmar el pedido.</p><p>Saludos cordiales,<br/><strong>Junta de Propietarios</strong></p></div>"
+      },
+      "fecha": "23 Sep, 10:15 a. m."
+    }
+  ]
+}

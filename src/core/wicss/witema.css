@@ -1,182 +1,265 @@
-/* ============================================================ */
-/* 🎨 SISTEMA DE DISEÑO WITEMA V2.0                             */
-/*    Diseñado por @wilder.taype - 100% Reutilizable          */
+﻿/* ============================================================ */
+/* 🎨 SISTEMA WITEMA V2.0 - FUENTE ÚNICA DE VERDAD (GASWII)     */
 /* ============================================================ */
 
-/* ============================================================ */
-/* VARIABLES GLOBALES Y TEMAS DE COLOR (:root)                */
-/* ============================================================ */
+/* 1. TOKENS GLOBALES Y ESTRUCTURALES (Invariables por tema) */
 :root {
-  --fz_s1: clamp(0.625rem, 0.8vh, 0.7rem);
-  --fz_s2: clamp(0.675rem, 0.85vh, 0.75rem);
-  --fz_s3: clamp(0.725rem, 0.9vh, 0.8rem);
-  --fz_s4: clamp(0.775rem, 1vh, 0.85rem);
-  --fz_m: clamp(0.8rem, 1.05vh, 0.9rem);
-  --fz_m1: clamp(0.85rem, 1.1vh, 0.95rem);
-  --fz_m2: clamp(0.9rem, 1.15vh, 1rem);
-  --fz_m3: clamp(0.95rem, 1.2vh, 1.05rem);
-  --fz_m4: clamp(1rem, 1.3vh, 1.1rem);
-  --fz_m5: clamp(1.15rem, 1.5vh, 1.25rem);
-  --fz_l1: clamp(1.5rem, 2vh, 1.7rem);
-  --fz_l2: clamp(1.8rem, 2.3vh, 2rem);
-  --fz_x1: clamp(2.2rem, 3vh, 2.8rem);
-  --fz_x2: clamp(2.5rem, 3.6vh, 3.5rem);
-  --fz_x3: clamp(2.9rem, 5vh, 3.9rem);
-  --fz_x4: clamp(3.3rem, 5.9vh, 4.3rem);
-  --fz_y1: clamp(3rem, 14vh, 8rem);
-  --bs_m: 0 0 0.3vh 0.1vh var(--white);
-  --bs_l: 0 0.4vh 0.8vh rgba(0, 0, 0, 0.15);
-  --tr_s: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  --tr_m: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Tipografía Oficial */
+  --ff_P: 'Poppins', system-ui, -apple-system, sans-serif;
+  --ff_O: 'Outfit', system-ui, -apple-system, sans-serif;
+  --ff_T: 'Orbitron', system-ui, -apple-system, sans-serif;
+
+  /* Escala Tipográfica Fluida */
+  --fz_s1: clamp(0.65rem, 0.8vh, 0.75rem);
+  --fz_s2: clamp(0.70rem, 0.85vh, 0.80rem);
+  --fz_s3: clamp(0.75rem, 0.9vh, 0.85rem);
+  --fz_s4: clamp(0.80rem, 1vh, 0.90rem);
+  --fz_m:  clamp(0.85rem, 1.05vh, 0.95rem);
+  --fz_m1: clamp(0.90rem, 1.1vh, 1.00rem);
+  --fz_m2: clamp(0.95rem, 1.15vh, 1.05rem);
+  --fz_m3: clamp(1.00rem, 1.2vh, 1.10rem);
+  --fz_m4: clamp(1.10rem, 1.3vh, 1.20rem);
+  --fz_m5: clamp(1.20rem, 1.5vh, 1.35rem);
+  --fz_l1: clamp(1.50rem, 2vh, 1.75rem);
+  --fz_l2: clamp(1.80rem, 2.3vh, 2.10rem);
+  --fz_x1: clamp(2.20rem, 3vh, 2.70rem);
+  --fz_x2: clamp(2.60rem, 3.8vh, 3.40rem);
+  --fz_x3: clamp(3.00rem, 5vh, 4.00rem);
+
+  /* Radios de Borde Estándar (Basados en 1vh) */
+  --r_xs: 0.5vh;
+  --r_s:  0.8vh;
+  --r_m:  1.0vh;
+  --r_l:  1.5vh;
+  --r_xl: 2.0vh;
+  --r_full: 9999px;
+
+  /* Transiciones Suaves */
   --tr_f: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --ff_P: 'Poppins', 'Segoe UI', system-ui;
-  --ff_O: 'Outfit', 'Segoe UI', system-ui;
-  --ff_T: 'Orbitron', 'Segoe UI', system-ui;
+  --tr_m: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --tr_s: 0.40s cubic-bezier(0.4, 0, 0.2, 1);
 
-  --success: #3cd741;
-  --error: #ff3849;
-  --warning: #ffa726;
-  --info: #00a8e6;
-
-  --white: #fff;
+  /* Colores Utilitarios de Estado */
+  --success: #16a34a;
+  --error:   #ef4444;
+  --warning: #f59e0b;
+  --info:    #0284c7;
+  --wa:      #25d366;
+  --wa_hover:#1ebd5b;
+  --wa-green:#25d366;
+  --white:   #ffffff;
   --offline: #ddd;
-  --pdf: #555;
-  --futuro: #21273B;
-  --luz: #18c5c5;
+  --pdf:     #555;
+  --futuro:  #0e192c;
+  --luz:     #0284c7;
 }
 
-:root[data-theme="futuro"],
-:root[data-theme="dark"] {
-  /* Lienzo y elevaciones cromáticas */
-  --bg1: #070d19;
-  --bg2: #0e192c;
-  --bg3: #14223a;
-  --bg4: #1b2d4c;
-  --bg5: #21355a;
+/* ============================================================ */
+/* ☀️ TEMA LUZ (LIGHT) - SOLGAS SURQUILLO (CLARO / LIMPIO)       */
+/* ============================================================ */
+:root[data-theme="luz"] {
+  /* 1. Lienzos y Superficies */
+  --bg:                  #f8fafc;
+  --bg1:                 #f8fafc;
+  --bg2:                 #ffffff;
+  --bg3:                 #edf2f7;
+  --bg4:                 #e2e8f0;
+  --bg5:                 #cbd5e1;
+  --bg-body:             #f8fafc;
+  --bg_body:             #f8fafc;
+  --wb:                  #ffffff;
+  --surface:             #ffffff;
+  --bg-surface:          #ffffff;
+  --raised:              #edf2f7;
+  --bg-surface-elevated: #edf2f7;
+  --bg-card:             #ffffff;
+  --bg_card:             #ffffff;
+  --bg-card-hover:       #f1f5f9;
+  --bg_card_hv:          #f1f5f9;
+  --bg-subtle:           rgba(255, 102, 0, 0.04);
+  --line:                #e2e8f0;
+  --brd:                 #e2e8f0;
+  --border:              #e2e8f0;
+  --border-card:         rgba(255, 102, 0, 0.16);
+  --border_card:         rgba(255, 102, 0, 0.16);
+  --border-accent:       rgba(255, 102, 0, 0.38);
+  --border_accent:       rgba(255, 102, 0, 0.38);
 
-  --bg: var(--bg1);
-  --bg-body: var(--bg1);
-  --surface: var(--bg2);
-  --raised: var(--bg3);
-  --line: #21314b;
-  --ink: #f3f6fc;
-  --muted: #90a4c3;
+  /* 2. Tipografía y Textos */
+  --tx:                  #0f172a;
+  --tx1:                 #0f172a;
+  --tx2:                 #475569;
+  --tx3:                 #64748b;
+  --txa:                 #ffffff;
+  --txe:                 #ff6600;
+  --ink:                 #0f172a;
+  --muted:               #475569;
+  --text-main:           #0f172a;
+  --text_main:           #0f172a;
+  --text-muted:          #475569;
+  --text_muted:          #475569;
+  --text-bright:         #020617;
 
-  --bg-card: rgba(14, 25, 44, 0.92);
-  --bg-card-hover: rgba(20, 34, 58, 0.98);
-  --bg-subtle: rgba(255, 255, 255, 0.04);
-  --border-card: var(--line);
-  --border-accent: rgba(255, 102, 0, 0.6);
+  /* 3. Colores de Identidad y Marca Solgas Surquillo */
+  --mco:                 #ff6600;
+  --mbg:                 rgba(255, 102, 0, 0.12);
+  --p_v1:                #ff6600;
+  --p_v2:                #0284c7;
+  --primary:             #ff6600;
+  --primary-hover:       #ff771a;
+  --primary_hv:          #ff771a;
+  --brand-primary:       #ff6600;
+  --brand-primary-hover: #ff771a;
+  --brand-soft:          rgba(255, 102, 0, 0.12);
+  --brand-accent:        #0284c7;
+  --brand-accent-soft:   rgba(2, 132, 199, 0.12);
+  --brand-teal:          #0f172a;
+  --brand-blue:          #0284c7;
+  --brand-blue-hover:    #0369a1;
+  --brand-sky:           #38bdf8;
+  --brand-sky-hover:     #0284c7;
+  --brand-orange:        #ff6600;
+  --brand-orange-hover:  #ff771a;
+  --accent:              #ff6600;
+  --accent-hover:        #ff771a;
+  --accent_hv:           #ff771a;
+  --accent-cyan:         #0284c7;
+  --accent-gold:         #f59e0b;
+  --accent-emerald:      #10b981;
+  --bt:                  #ff6600;
+  --hv:                  #ff771a;
+  --hva:                 #0284c7;
 
-  /* Colores Corporativos Solgas Surquillo */
-  --brand-orange: #ff6600;
-  --brand-orange-hover: #ff771a;
-  --brand-blue: #0284c7;
-  --brand-blue-hover: #0369a1;
-  --primary: var(--brand-orange);
-  --orange: var(--brand-orange);
-  --orange-soft: rgba(255, 102, 0, 0.14);
-  --green: #20c396;
-  --blue: #0284c7;
-  --red: #fb7c85;
+  /* 4. Inputs, Formularios y Diálogos */
+  --inp:                 #edf2f7;
+  --input-bg:            #edf2f7;
+  --inp_brd:             #e2e8f0;
+  --modal-bg:            #ffffff;
+  --modal_bg:            #ffffff;
+  --modal_card:          #ffffff;
 
-  --neon-yellow: #ffe600;
-  --fire-orange: var(--brand-orange);
-  --glow-cyan: #00f0ff;
-  --wa-green: #25d366;
-  --text-main: #f3f6fc;
-  --text-muted: #90a4c3;
-  --header-bg: rgba(7, 13, 25, 0.96);
-  --topbar-bg: linear-gradient(90deg, #ff6600, #0284c7, #ff6600);
-  --topbar-text: #ffffff;
-  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
-  --input-bg: var(--bg3);
-
-  --wb: var(--surface);
-  --tx: var(--ink);
-  --tx1: var(--ink);
-  --tx2: var(--muted);
-  --tx3: #64748b;
-  --txa: #070d19;
-  --txe: var(--brand-orange);
-  --hv: var(--brand-orange);
-  --hva: #ff771a;
-  --mco: var(--brand-orange);
-  --mbg: var(--orange-soft);
-  --brd: var(--line);
-  --inp: var(--raised);
-  --bt: var(--brand-orange);
-  --glass-bg: rgba(14, 25, 44, 0.92);
-  --glass-brd: var(--line);
-  --glass-shd: 0 20px 40px rgba(0, 0, 0, 0.6);
-  --glass-blur: 24px;
+  /* 5. Cabeceras, Vidrio (Glass) y Sombras */
+  --header-bg:           rgba(248, 250, 252, 0.97);
+  --header_bg:           rgba(248, 250, 252, 0.97);
+  --topbar-bg:           linear-gradient(90deg, #ff6600 0%, #0284c7 50%, #ff6600 100%);
+  --topbar_bg:           linear-gradient(90deg, #ff6600 0%, #0284c7 50%, #ff6600 100%);
+  --topbar-text:         #ffffff;
+  --glass-bg:            rgba(255, 255, 255, 0.94);
+  --glass_bg:            rgba(255, 255, 255, 0.94);
+  --glass-brd:           rgba(255, 102, 0, 0.16);
+  --glass_brd:           rgba(255, 102, 0, 0.16);
+  --glass-shd:           0 15px 35px rgba(15, 23, 42, 0.08);
+  --glass_shd:           0 15px 35px rgba(15, 23, 42, 0.08);
+  --glass-blur:          20px;
+  --shadow-card:         0 0.8vh 2.5vh rgba(15, 23, 42, 0.06);
+  --shd_card:            0 0.8vh 2.5vh rgba(15, 23, 42, 0.06);
+  --shadow-hover:        0 1.5vh 4vh rgba(255, 102, 0, 0.14);
+  --shd_hover:           0 1.5vh 4vh rgba(255, 102, 0, 0.14);
+  --shadow-xl:           0 15px 35px rgba(15, 23, 42, 0.08);
 }
 
-:root[data-theme="luz"],
-:root[data-theme="light"] {
-  /* Lienzo y elevaciones cromáticas */
-  --bg1: #f3f6fb;
-  --bg2: #ffffff;
-  --bg3: #edf2f8;
-  --bg4: #e2e8f0;
-  --bg5: #cbd5e1;
+/* ============================================================ */
+/* 🌙 TEMA FUTURO (DARK) - AZUL PROFUNDO & LLAMA SOLGAS          */
+/* ============================================================ */
+:root[data-theme="futuro"] {
+  /* 1. Lienzos y Superficies */
+  --bg:                  #070d19;
+  --bg1:                 #070d19;
+  --bg2:                 #0e192c;
+  --bg3:                 #14223a;
+  --bg4:                 #1b2d4c;
+  --bg5:                 #21355a;
+  --bg-body:             #070d19;
+  --bg_body:             #070d19;
+  --wb:                  #0e192c;
+  --surface:             #0e192c;
+  --bg-surface:          #0e192c;
+  --raised:              #14223a;
+  --bg-surface-elevated: #14223a;
+  --bg-card:             rgba(14, 25, 44, 0.92);
+  --bg_card:             rgba(14, 25, 44, 0.92);
+  --bg-card-hover:       rgba(20, 34, 58, 0.98);
+  --bg_card_hv:          rgba(20, 34, 58, 0.98);
+  --bg-subtle:           rgba(255, 102, 0, 0.06);
+  --line:                #21314b;
+  --brd:                 #21314b;
+  --border:              #21314b;
+  --border-card:         rgba(255, 102, 0, 0.32);
+  --border_card:         rgba(255, 102, 0, 0.32);
+  --border-accent:       rgba(255, 102, 0, 0.60);
+  --border_accent:       rgba(255, 102, 0, 0.60);
 
-  --bg: var(--bg1);
-  --bg-body: var(--bg1);
-  --surface: var(--bg2);
-  --raised: var(--bg3);
-  --line: #dde5f0;
-  --ink: #17283f;
-  --muted: #6c7e98;
+  /* 2. Tipografía y Textos */
+  --tx:                  #f3f6fc;
+  --tx1:                 #f3f6fc;
+  --tx2:                 #90a4c3;
+  --tx3:                 #cbd5e1;
+  --txa:                 #070d19;
+  --txe:                 #ff771a;
+  --ink:                 #f3f6fc;
+  --muted:               #90a4c3;
+  --text-main:           #f3f6fc;
+  --text_main:           #f3f6fc;
+  --text-muted:          #90a4c3;
+  --text_muted:          #90a4c3;
+  --text-bright:         #ffffff;
 
-  --bg-card: rgba(255, 255, 255, 0.96);
-  --bg-card-hover: rgba(255, 255, 255, 1);
-  --bg-subtle: rgba(0, 0, 0, 0.04);
-  --border-card: var(--line);
-  --border-accent: rgba(224, 86, 0, 0.6);
+  /* 3. Colores de Identidad y Marca Solgas Surquillo */
+  --mco:                 #ff6600;
+  --mbg:                 rgba(255, 102, 0, 0.16);
+  --p_v1:                #ff6600;
+  --p_v2:                #ff771a;
+  --primary:             #ff6600;
+  --primary-hover:       #ff771a;
+  --primary_hv:          #ff771a;
+  --brand-primary:       #ff6600;
+  --brand-primary-hover: #ff771a;
+  --brand-soft:          rgba(255, 102, 0, 0.16);
+  --brand-accent:        #0284c7;
+  --brand-accent-soft:   rgba(2, 132, 199, 0.16);
+  --brand-teal:          #070d19;
+  --brand-blue:          #0284c7;
+  --brand-blue-hover:    #0369a1;
+  --brand-sky:           #38bdf8;
+  --brand-sky-hover:     #0284c7;
+  --brand-orange:        #ff6600;
+  --brand-orange-hover:  #ff771a;
+  --accent:              #ff6600;
+  --accent-hover:        #ff771a;
+  --accent_hv:           #ff771a;
+  --accent-cyan:         #00f0ff;
+  --accent-gold:         #ffe600;
+  --accent-emerald:      #10b981;
+  --bt:                  #ff6600;
+  --hv:                  #ff771a;
+  --hva:                 #0284c7;
 
-  /* Colores Corporativos Solgas Surquillo */
-  --brand-orange: #e05600;
-  --brand-orange-hover: #c44b00;
-  --brand-blue: #0369a1;
-  --brand-blue-hover: #075985;
-  --primary: var(--brand-orange);
-  --orange: var(--brand-orange);
-  --orange-soft: #fff0e4;
-  --green: #087e61;
-  --blue: #247dad;
-  --red: #c14557;
+  /* 4. Inputs, Formularios y Diálogos */
+  --inp:                 #14223a;
+  --input-bg:            #14223a;
+  --inp_brd:             #21314b;
+  --modal-bg:            #0e192c;
+  --modal_bg:            #0e192c;
+  --modal_card:          #0e192c;
 
-  --neon-yellow: #d97706;
-  --fire-orange: var(--brand-orange);
-  --glow-cyan: #0284c7;
-  --wa-green: #16a34a;
-  --text-main: #17283f;
-  --text-muted: #6c7e98;
-  --header-bg: rgba(255, 255, 255, 0.96);
-  --topbar-bg: linear-gradient(90deg, #f59e0b, #e05600, #f59e0b);
-  --topbar-text: #fff;
-  --shadow-xl: 0 15px 35px rgba(0, 0, 0, 0.08);
-  --input-bg: var(--bg3);
-
-  --wb: var(--surface);
-  --tx: var(--ink);
-  --tx1: var(--ink);
-  --tx2: var(--muted);
-  --tx3: #94a3b8;
-  --txa: #ffffff;
-  --txe: var(--brand-orange);
-  --hv: var(--brand-orange);
-  --hva: #d97706;
-  --mco: var(--brand-orange);
-  --mbg: var(--orange-soft);
-  --brd: var(--line);
-  --inp: var(--raised);
-  --bt: var(--brand-orange);
-  --glass-bg: rgba(255, 255, 255, 0.96);
-  --glass-brd: var(--line);
-  --glass-shd: 0 15px 35px rgba(0, 0, 0, 0.08);
-  --glass-blur: 25px;
+  /* 5. Cabeceras, Vidrio (Glass) y Sombras */
+  --header-bg:           rgba(7, 13, 25, 0.96);
+  --header_bg:           rgba(7, 13, 25, 0.96);
+  --topbar-bg:           linear-gradient(90deg, #ff6600 0%, #0284c7 50%, #ff6600 100%);
+  --topbar_bg:           linear-gradient(90deg, #ff6600 0%, #0284c7 50%, #ff6600 100%);
+  --topbar-text:         #ffffff;
+  --glass-bg:            rgba(14, 25, 44, 0.92);
+  --glass_bg:            rgba(14, 25, 44, 0.92);
+  --glass-brd:           rgba(255, 102, 0, 0.35);
+  --glass_brd:           rgba(255, 102, 0, 0.35);
+  --glass-shd:           0 20px 40px rgba(0, 0, 0, 0.60);
+  --glass_shd:           0 20px 40px rgba(0, 0, 0, 0.60);
+  --glass-blur:          24px;
+  --shadow-card:         0 1vh 3vh rgba(0, 0, 0, 0.45);
+  --shd_card:            0 1vh 3vh rgba(0, 0, 0, 0.45);
+  --shadow-hover:        0 1.8vh 4.5vh rgba(0, 0, 0, 0.65);
+  --shd_hover:           0 1.8vh 4.5vh rgba(0, 0, 0, 0.65);
+  --shadow-xl:           0 20px 40px rgba(0, 0, 0, 0.60);
 }
 
 /* ==================== RESET Y ESTILOS BASE ==================== */
@@ -202,7 +285,7 @@ a {
   text-decoration: none;
 }
 
-/* ── Widget de Cambio de Tema (#wiTema) ─────────────────── */
+/* â”€â”€ Widget de Cambio de Tema (#wiTema) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #wiTema {
   display: flex;
   gap: 0.2vh;
@@ -251,27 +334,12 @@ a {
   transition: var(--tr_m);
 }
 
-/* ── Liquid Glass (Clase Utilitaria Global) ──────────────── */
-.wii_glass {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-brd);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: 0 8px 32px 0 var(--glass-shd), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  transition: box-shadow var(--tr_m), transform var(--tr_m), background var(--tr_m);
-}
-
-.wii_glass:hover {
-  box-shadow: 0 12px 40px 0 var(--glass-shd), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  transform: translateY(-1px);
-}
-
 /* ============================================================ */
-/* ⚙️ ESTILOS REUTILIZABLES PARA COMPONENTES WIDEV             */
+/* âš™ï¸ ESTILOS REUTILIZABLES PARA COMPONENTES WIDEV             */
 /*    (src/core/widev/*)                                        */
 /* ============================================================ */
 
-/* ── 1. MENSAJES Y NOTIFICACIONES (widev/mensajes.js) ──────── */
+/* â”€â”€ 1. MENSAJES Y NOTIFICACIONES (widev/mensajes.js) â”€â”€â”€â”€â”€â”€â”€â”€ */
 .widev-toast {
   position: fixed;
   top: 3vh;
@@ -279,10 +347,9 @@ a {
   transform: translate(-50%, -2vh);
   padding: 1.6vh 2.5vh;
   border-radius: 1vh;
-  background: var(--bg3, #14223a);
-  border: 1px solid var(--brd, #21314b);
-  color: var(--tx1, #f3f6fc);
-  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.35), 0 8px 10px -6px rgba(0,0,0,0.25);
+  background: var(--bg3, #ffffff);
+  color: var(--tx1, #212529);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.15);
   z-index: 999999;
   display: flex;
   align-items: center;
@@ -314,19 +381,18 @@ a {
 }
 
 .notification {
-  background: var(--bg3, #14223a);
-  border: 1px solid var(--brd, #21314b);
-  color: var(--tx1, #f3f6fc);
-  box-shadow: 0 12px 28px -4px rgba(0,0,0,0.45);
+  background: var(--bg3, #ffffff);
+  color: var(--tx1, #212529);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
   border-radius: 1vh;
-  padding: 1.8vh 2.4vh;
+  padding: 2vh 2.5vh;
   display: flex;
   align-items: center;
   gap: 1.5vh;
   opacity: 0;
   transform: translateX(4vh);
   transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
   pointer-events: auto;
 }
 
@@ -351,7 +417,7 @@ a {
   flex: 1;
   font-size: var(--fz_m);
   font-weight: 500;
-  color: var(--tx1, #f3f6fc);
+  color: var(--tx1);
 }
 
 .notification button {
@@ -359,16 +425,16 @@ a {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: var(--tx2, #90a4c3);
+  color: var(--tx2, #6c757d);
   transition: color 0.2s;
   line-height: 1;
   padding: 0;
   margin-left: 1vh;
 }
 
-.notification button:hover { color: var(--tx1, #f3f6fc); }
+.notification button:hover { color: var(--tx1, #212529); }
 
-/* ── 2. TOOLTIPS DINÁMICOS WITIP() (widev/witip.js) ────────── */
+/* â”€â”€ 2. TOOLTIPS DINÃMICOS WITIP() (widev/witip.js) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .wiTip {
   position: fixed;
   color: var(--txa);
@@ -474,7 +540,7 @@ a {
   transform: translateX(-50%) translateY(0);
 }
 
-/* ── 3. EDITOR MARKDOWN ENRIQUECIDO WIEDITOR() (widev/editor.js) */
+/* â”€â”€ 3. EDITOR MARKDOWN ENRIQUECIDO WIEDITOR() (widev/editor.js) */
 .wi_editor_modal_body {
   max-width: 400px !important;
   padding: 24px !important;
@@ -1109,7 +1175,7 @@ a {
 .po_ico_mco { color: var(--mco); }
 .po_ico_warning { color: var(--warning); }
 
-/* ── 4. SELECT PREMIUM WISELECT() (widev/wiselect.js) ───────── */
+/* â”€â”€ 4. SELECT PREMIUM WISELECT() (widev/wiselect.js) â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .wi-select-trigger {
   display: flex;
   align-items: center;
@@ -1275,7 +1341,7 @@ a {
   gap: 8px;
 }
 
-/* ── 5. AUTOCOMPLETADO Y SUGERENCIAS (widev/sugerencias.js) ── */
+/* â”€â”€ 5. AUTOCOMPLETADO Y SUGERENCIAS (widev/sugerencias.js) â”€â”€ */
 .wi-sugerencias-panel {
   position: absolute;
   top: calc(100% + 4px);
@@ -1331,7 +1397,7 @@ a {
   color: var(--mco);
 }
 
-/* ── 6. MODALES Y CONFIRMACIONES (widev/confirmar.js) ─────── */
+/* â”€â”€ 6. MODALES Y CONFIRMACIONES (widev/confirmar.js) â”€â”€â”€â”€â”€â”€â”€ */
 .wiModal {
   display: flex;
   align-items: center;
@@ -1509,7 +1575,7 @@ body.modal-open {
   color: var(--bg, #0a0e1a);
 }
 
-/* ── 7. VISOR DE GALERÍA DE IMÁGENES (widev/galeria.js) ───── */
+/* â”€â”€ 7. VISOR DE GALERÃA DE IMÃGENES (widev/galeria.js) â”€â”€â”€â”€â”€ */
 @keyframes wim_fade_in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -1782,7 +1848,7 @@ body.modal-open {
   .wim_next { right: 1.2vh !important; }
 }
 
-/* ── 8. CARGA DIFERIDA IMGWII() (widev/imgwii.js) ─────────── */
+/* â”€â”€ 8. CARGA DIFERIDA IMGWII() (widev/imgwii.js) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .wi_skeleton {
   filter: blur(8px);
   transition: filter 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -1797,7 +1863,7 @@ img[data-src] {
   opacity: 1;
 }
 
-/* ── 9. ANIMACIONES DE ENTRADA Y WIANIMA (widev/animacion.js) ─ */
+/* â”€â”€ 9. ANIMACIONES DE ENTRADA Y WIANIMA (widev/animacion.js) â”€ */
 .wi_fadeUp,
 .wi_fadeLeft,
 .wi_fadeRight,
@@ -1825,7 +1891,7 @@ img[data-src] {
 .hwi { animation: hwi_fade 0.8s cubic-bezier(0.4, 0, 0.2, 1) backwards; }
 .swi { opacity: 0; transform: translateY(3vh); transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
 
-/* ── 10. BLOQUES DE CÓDIGO WICODE() (widev/wicode.js) ──────── */
+/* â”€â”€ 10. BLOQUES DE CÃ“DIGO WICODE() (widev/wicode.js) â”€â”€â”€â”€â”€â”€â”€â”€ */
 .wiCode-box {
   position: relative;
   background: var(--bg4, #1e1e2e);
@@ -1857,11 +1923,26 @@ img[data-src] {
   color: #fff;
 }
 
-/* ── 11. CLASES UTILITARIAS COMPLEMENTARIAS ───────────────── */
+/* â”€â”€ 11. CLASES UTILITARIAS COMPLEMENTARIAS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .spin_icon_margin {
   margin-left: 1vh;
 }
 
 .wicode_copy_success {
   color: var(--success);
+}
+
+/* â”€â”€ Liquid Glass (Clase Utilitaria Global) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.wii_glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-brd);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 8px 32px 0 var(--glass-shd), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition: box-shadow var(--tr_m), transform var(--tr_m), background var(--tr_m);
+}
+
+.wii_glass:hover {
+  box-shadow: 0 12px 40px 0 var(--glass-shd), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
 }

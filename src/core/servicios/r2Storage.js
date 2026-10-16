@@ -4,8 +4,8 @@
 const ACCOUNT_ID = import.meta.env.PUBLIC_R2_ACCOUNT_ID;
 const ACCESS_KEY_ID = import.meta.env.PUBLIC_R2_ACCESS_KEY_ID;
 const SECRET_ACCESS_KEY = import.meta.env.PUBLIC_R2_SECRET_ACCESS_KEY;
-const BUCKET_NAME = import.meta.env.PUBLIC_R2_BUCKET_NAME || 'gaswii-media';
-const PUBLIC_R2_URL = import.meta.env.PUBLIC_R2_URL || 'https://media.solgassurquillo.com';
+const BUCKET_NAME = import.meta.env.PUBLIC_R2_BUCKET_NAME || '';
+const PUBLIC_R2_URL = import.meta.env.PUBLIC_R2_URL || '';
 
 // Utilidades criptográficas nativas usando crypto.subtle del navegador
 async function hmacSha256(key, data) {

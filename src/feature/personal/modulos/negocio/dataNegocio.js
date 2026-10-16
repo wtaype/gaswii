@@ -1,91 +1,35 @@
 // src/feature/personal/modulos/negocio/dataNegocio.js
-// 🎯 Capa Canónica Local-First de Negocio: 100% Directo de Firebase Firestore + Caché
-// Colección: 'negocio' · Documento: 'principal' · Cero Semillas / Cero Datos Quemados
+// 🎯 Capa Canónica Local-First de Negocio: Firestore + Caché Local + Semilla src/semillas/negocio.json
+// Colección: 'negocio' · Documento: 'principal'
 // Integrado con @widev y Firebase SDK
 
 import { savels, getls, formatearFechaParaInput } from '@widev';
+import negocioSemilla from '../../../../semillas/negocio.json';
 
-export const STORAGE_KEY = 'minegocio';
-export const OLD_STORAGE_KEY = 'gaswii_negocio_config';
+export const STORAGE_KEY = 'wi_negocio';
+export const OLD_STORAGE_KEY = 'minegocio';
 export const COLECCION_NEGOCIO = 'negocio';
 export const DOC_NEGOCIO_ID = 'principal';
 
-// Parser ultraligero de campos de la REST API de Firestore
-export function parseFirestoreDoc(fields = {}) {
-  const res = {};
-  for (const [k, v] of Object.entries(fields)) {
-    if (v.stringValue !== undefined) res[k] = v.stringValue;
-    else if (v.integerValue !== undefined) res[k] = parseInt(v.integerValue, 10);
-    else if (v.doubleValue !== undefined) res[k] = parseFloat(v.doubleValue);
-    else if (v.booleanValue !== undefined) res[k] = v.booleanValue;
-    else if (v.timestampValue !== undefined) res[k] = v.timestampValue;
-    else if (v.mapValue) res[k] = parseFirestoreDoc(v.mapValue.fields || {});
-    else if (v.arrayValue) res[k] = (v.arrayValue.values || []).map(item => item.mapValue ? parseFirestoreDoc(item.mapValue.fields || {}) : Object.values(item)[0]);
-  }
-  return res;
+// 1. Lector canónico de semilla inicial de despegue (lee src/semillas/negocio.json)
+export function obtenerSemillaLocal() {
+  return negocioSemilla && typeof negocioSemilla === 'object' ? negocioSemilla : null;
 }
 
-// Normalizador neutro de estructura (asegura llaves mínimas sin inyectar datos falsos ni semillas)
-export function normalizarConfig(c = {}) {
-  const cfg = c && typeof c === 'object' ? c : {};
-  return {
-    id: cfg.id || DOC_NEGOCIO_ID,
-    principal: Boolean(cfg.principal ?? true),
-    identidad: cfg.identidad ? { ...cfg.identidad } : {},
-    contacto: cfg.contacto ? { ...cfg.contacto } : {},
-    ubicacion: {
-      direccion: cfg.ubicacion?.direccion || '',
-      distrito: cfg.ubicacion?.distrito || '',
-      ciudad: cfg.ubicacion?.ciudad || '',
-      pais: cfg.ubicacion?.pais || 'PE',
-      mapsUrl: cfg.ubicacion?.mapsUrl || '',
-      coordenadas: {
-        lat: Number(cfg.ubicacion?.coordenadas?.lat ?? 0),
-        lng: Number(cfg.ubicacion?.coordenadas?.lng ?? 0)
-      }
-    },
-    zonas: Array.isArray(cfg.zonas) ? cfg.zonas : [],
-    metricas: cfg.metricas ? { ...cfg.metricas } : {},
-    redes: cfg.redes ? { ...cfg.redes } : {},
-    seo: {
-      titulo: {
-        es: cfg.seo?.titulo?.es || '',
-        en: cfg.seo?.titulo?.en || ''
-      },
-      descripcion: {
-        es: cfg.seo?.descripcion?.es || '',
-        en: cfg.seo?.descripcion?.en || ''
-      },
-      keywords: {
-        es: Array.isArray(cfg.seo?.keywords?.es) ? cfg.seo.keywords.es : (typeof cfg.seo?.keywords?.es === 'string' ? cfg.seo.keywords.es.split(',').map(s => s.trim()).filter(Boolean) : []),
-        en: Array.isArray(cfg.seo?.keywords?.en) ? cfg.seo.keywords.en : (typeof cfg.seo?.keywords?.en === 'string' ? cfg.seo.keywords.en.split(',').map(s => s.trim()).filter(Boolean) : [])
-      }
-    },
-    userId: cfg.userId || '',
-    email: cfg.email || '',
-    autor: cfg.autor || '',
-    actualizado: cfg.actualizado || null
-  };
-}
+// 2. Importación y re-exportación canónica desde la fachada oficial @/negocio.js
+import {
+  parseFirestoreDoc,
+  normalizarConfig,
+  obtenerDatosNegocio,
+  obtenerNegocioLocal
+} from '@/negocio.js';
 
-// Lectura en tiempo de compilación (Astro SSG / Cloudflare Build) directamente desde la REST API de Firestore
-let _datosBuildFirestore = null;
-if (typeof window === 'undefined') {
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch('https://firestore.googleapis.com/v1/projects/gaswii/databases/(default)/documents/negocio/principal', {
-      signal: controller.signal
-    });
-    clearTimeout(timer);
-    if (res.ok) {
-      const json = await res.json();
-      _datosBuildFirestore = parseFirestoreDoc(json.fields || {});
-    }
-  } catch (err) {
-    console.warn('[dataNegocio] Build-time Firestore fetch:', err?.message || err);
-  }
-}
+export {
+  parseFirestoreDoc,
+  normalizarConfig,
+  obtenerDatosNegocio,
+  obtenerNegocioLocal
+};
 
 let _memoriaNegocio = null;
 
@@ -100,7 +44,7 @@ export function getUsuarioActivo() {
 
 // Calcula los años de experiencia automáticamente a partir de una fecha YYYY-MM-DD o Timestamp
 export function calcularAnosTrayectoria(fechaInput) {
-  if (!fechaInput) return '';
+  if (!fechaInput) return '1+';
   let dateObj = null;
 
   if (fechaInput?.seconds) {
@@ -111,42 +55,11 @@ export function calcularAnosTrayectoria(fechaInput) {
     dateObj = fechaInput;
   }
 
-  if (!dateObj || isNaN(dateObj.getTime())) return '';
+  if (!dateObj || isNaN(dateObj.getTime())) return '1+';
   const dif = new Date().getFullYear() - dateObj.getFullYear();
-  return dif > 0 ? `${dif}+` : '1';
+  return dif > 0 ? `${dif}+` : '1+';
 }
 
-/**
- * Obtiene los datos oficiales del negocio:
- * 1. Memoria activa en sesión.
- * 2. Caché local persistente (localStorage 'minegocio').
- * 3. En SSG/Build: Datos vivos directo desde Firestore REST API.
- * 4. Neutro si aún no se ha hidratado.
- */
-export function obtenerDatosNegocio() {
-  if (_memoriaNegocio) {
-    return _memoriaNegocio;
-  }
-
-  // 1. En el cliente: Revisar caché local primero
-  try {
-    const local = getls(STORAGE_KEY) || getls(OLD_STORAGE_KEY);
-    if (local && typeof local === 'object' && local.identidad && local.identidad.nombre) {
-      _memoriaNegocio = normalizarConfig(local);
-      return _memoriaNegocio;
-    }
-  } catch (e) {}
-
-  // 2. En Node (build time de Cloudflare/Astro): usar datos frescos de Firestore REST
-  if (_datosBuildFirestore && _datosBuildFirestore.identidad?.nombre) {
-    _memoriaNegocio = normalizarConfig(_datosBuildFirestore);
-    return _memoriaNegocio;
-  }
-
-  // 3. Estructura neutra vacía
-  _memoriaNegocio = normalizarConfig({});
-  return _memoriaNegocio;
-}
 
 /**
  * Guarda en caché local y notifica reactivamente a la UI
@@ -156,27 +69,36 @@ export function guardarDatosNegocioLocal(config) {
     const normalizado = normalizarConfig(config);
     _memoriaNegocio = normalizado;
     savels(STORAGE_KEY, normalizado);
+    savels(OLD_STORAGE_KEY, normalizado);
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('gaswii:negocio-actualizado', { detail: normalizado }));
+      window.dispatchEvent(new CustomEvent('wi:negocio-actualizado', { detail: normalizado }));
     }
   } catch (e) {}
 }
 
 /**
- * Guarda en caché local y sincroniza en segundo plano con Firestore
+ * Guarda en caché local y sincroniza directamente con Firestore
  */
 export function guardarDatosNegocio(input = {}) {
   const actual = obtenerDatosNegocio();
   const usuario = getUsuarioActivo();
 
-  // Parsear fecha de lanzamiento
+  // Parsear fecha de lanzamiento/fundación
   const fechaStr = input.identidad?.lanzamientoFecha || actual.identidad?.lanzamientoFecha || "";
   const yearsCalc = calcularAnosTrayectoria(fechaStr);
 
   const configActualizada = {
     ...actual,
     id: DOC_NEGOCIO_ID,
-    principal: true,
+    moneda: input.moneda || actual.moneda || 'PEN',
+    idiomaPrincipal: input.idiomaPrincipal || actual.idiomaPrincipal || 'es',
+    idiomas: Array.isArray(input.idiomas) ? input.idiomas : (actual.idiomas || ['es', 'en']),
+    titulo: input.titulo || actual.titulo || '',
+    subtitulo: input.subtitulo ?? actual.subtitulo ?? '',
+    hero: {
+      ...actual.hero,
+      ...(input.hero || {})
+    },
     identidad: {
       ...actual.identidad,
       ...(input.identidad || {}),
@@ -186,11 +108,15 @@ export function guardarDatosNegocio(input = {}) {
       ...actual.contacto,
       ...(input.contacto || {})
     },
+    horarios: {
+      ...actual.horarios,
+      ...(input.horarios || {})
+    },
     ubicacion: {
       ...actual.ubicacion,
       ...(input.ubicacion || {})
     },
-    zonas: Array.isArray(input.zonas) ? input.zonas : (actual.zonas || []),
+    sedes: Array.isArray(input.sedes) ? input.sedes : (actual.sedes || []),
     metricas: {
       ...actual.metricas,
       ...(input.metricas || {}),
@@ -200,14 +126,22 @@ export function guardarDatosNegocio(input = {}) {
       ...actual.redes,
       ...(input.redes || {})
     },
+    redesOrden: Array.isArray(input.redesOrden) ? input.redesOrden : (actual.redesOrden || []),
     seo: {
       ...actual.seo,
       ...(input.seo || {})
     },
-    userId: usuario.userId || actual.userId || '',
-    email: usuario.email || actual.email || '',
-    autor: usuario.autor || actual.autor || ''
+    userId: usuario.userId || actual.userId || ''
   };
+
+  // Limpiar campos obsoletos o redundantes
+  delete configActualizada.principal;
+  delete configActualizada.email;
+  delete configActualizada.autor;
+  if (configActualizada.identidad) {
+    delete configActualizada.identidad.lanzamiento;
+    delete configActualizada.identidad.subtitulo;
+  }
 
   guardarDatosNegocioLocal(configActualizada);
 
@@ -217,40 +151,46 @@ export function guardarDatosNegocio(input = {}) {
   return configActualizada;
 }
 
-// Transforma la fecha a Timestamp nativo y persiste en Firestore
+// Persiste de forma limpia en Firestore
 async function sincronizarNegocioFirestore(config, fechaStr) {
   try {
     const { db } = await import('@core/servicios/firebase.js');
     if (!db) return;
-    const { doc, setDoc, Timestamp, serverTimestamp } = await import('firebase/firestore');
+    const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
 
-    let timestampLanzamiento = null;
-    if (fechaStr) {
-      try {
-        timestampLanzamiento = Timestamp.fromDate(new Date(`${fechaStr}T12:00:00`));
-      } catch (e) {}
-    }
+    const identidadLimpia = { ...(config.identidad || {}) };
+    delete identidadLimpia.lanzamiento;
+    delete identidadLimpia.subtitulo;
+
+    const metricasLimpias = {
+      clientes: config.metricas?.clientes || '+240',
+      confidencialidad: config.metricas?.confidencialidad || '100%',
+      satisfaccion: config.metricas?.satisfaccion || '99.4%',
+      years: config.metricas?.years || '12+'
+    };
 
     const payload = {
       id: DOC_NEGOCIO_ID,
-      principal: true,
-      identidad: {
-        ...config.identidad,
-        ...(timestampLanzamiento ? { lanzamiento: timestampLanzamiento } : {})
-      },
-      contacto: config.contacto,
-      ubicacion: config.ubicacion,
-      zonas: config.zonas,
-      metricas: config.metricas,
-      redes: config.redes,
-      seo: config.seo,
-      userId: config.userId,
-      email: config.email,
-      autor: config.autor,
+      moneda: config.moneda || 'PEN',
+      idiomaPrincipal: config.idiomaPrincipal || 'es',
+      idiomas: Array.isArray(config.idiomas) ? config.idiomas : ['es', 'en'],
+      titulo: config.titulo || '',
+      subtitulo: config.subtitulo || '',
+      hero: config.hero || {},
+      identidad: identidadLimpia,
+      contacto: config.contacto || {},
+      horarios: config.horarios || {},
+      ubicacion: config.ubicacion || {},
+      sedes: config.sedes || [],
+      metricas: metricasLimpias,
+      redes: config.redes || {},
+      redesOrden: Array.isArray(config.redesOrden) ? config.redesOrden : [],
+      seo: config.seo || {},
+      userId: config.userId || '',
       actualizado: serverTimestamp()
     };
 
-    // Reemplaza el documento completo en la colección 'negocio'
+    // Reemplaza el documento completo en la colección 'negocio' -> 'principal'
     await setDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID), payload);
   } catch (err) {
     console.warn('[dataNegocio] Sincronización diferida Firestore:', err?.message || err);
@@ -263,7 +203,7 @@ async function sincronizarNegocioFirestore(config, fechaStr) {
 export async function sincronizarDesdeFirestore() {
   try {
     const { db } = await import('@core/servicios/firebase.js');
-    if (!db) return null;
+    if (!db) return normalizarConfig(obtenerSemillaLocal());
     const { doc, getDoc } = await import('firebase/firestore');
 
     const snap = await getDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID));
@@ -284,11 +224,15 @@ export async function sincronizarDesdeFirestore() {
       });
       guardarDatosNegocioLocal(normalizado);
       return normalizado;
+    } else {
+      // Documento aún no creado en Firestore: Usar semilla de infoNegocio.json
+      const semilla = normalizarConfig(obtenerSemillaLocal());
+      return semilla;
     }
   } catch (err) {
     console.warn('[dataNegocio] Lectura Firestore:', err?.message || err);
   }
-  return null;
+  return normalizarConfig(obtenerSemillaLocal());
 }
 
 export const consultarNegocioDesdeFirestore = sincronizarDesdeFirestore;

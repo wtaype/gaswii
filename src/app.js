@@ -9,9 +9,8 @@ export const app = {
   get nombreComercial() { return datosNegocio.nombre; },
   get marcaRespaldo() { return datosNegocio.marcaRespaldo; },
   get autorizacion() { return datosNegocio.razonSocial; },
-  get registroOsinergmin() { return datosNegocio.registroOsinergmin; },
-  slogan: "Balón lleno con peso exacto en tu puerta en 15 - 20 minutos",
-  sloganEn: "100% full gas cylinder with exact digital weight at your door in 15 - 20 mins",
+  get slogan() { return datosNegocio.subtitulo || ''; },
+  get sloganEn() { return datosNegocio.raw?.subtituloEn || datosNegocio.subtitulo || ''; },
   
   // Enlaces y Contacto
   linkweb: wii.linkweb,
@@ -20,7 +19,7 @@ export const app = {
   get telefonoLimpio() { return datosNegocio.telefonoLimpio; },
   get whatsappUrl() {
     const msg = datosNegocio.whatsappMensaje ? `&text=${encodeURIComponent(datosNegocio.whatsappMensaje)}` : '';
-    return `https://api.whatsapp.com/send?phone=${datosNegocio.telefonoLimpio}${msg}`;
+    return `https://api.whatsapp.com/send?phone=${datosNegocio.whatsappLimpio || datosNegocio.telefonoLimpio}${msg}`;
   },
   get mapsUrl() { return datosNegocio.mapsUrl; },
 

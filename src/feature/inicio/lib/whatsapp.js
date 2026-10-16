@@ -1,136 +1,67 @@
 // src/feature/inicio/lib/whatsapp.js
-// 🚀 Motor Centralizado de Mensajes WhatsApp para Gaswii
-// Funciona de forma isomórfica (Build-time SSR en Astro + Runtime en Cliente)
-// Genera mensajes naturales, directos y amigables según la hora del día sin tecnicismos.
+// 🚀 Adaptador Dinámico de Enlaces WhatsApp para Gaswii (Cero Textos Hardcodeados)
+// Consume directamente de la colección reactiva en @feature/personal/modulos/whatsapp/lib/dataWhatsapp.js
+// Sincronización en 0ms con el panel administrativo "Ajustes / Canales"
 
-import { datosNegocio } from '../../../negocio.js';
+import { 
+  formatearCanal, 
+  crearUrlCanal, 
+  obtenerTelefonoOficial 
+} from '@feature/personal/modulos/whatsapp/lib/dataWhatsapp.js';
+import { 
+  obtenerSaludoHora, 
+  construirUrlWhatsapp 
+} from '@feature/personal/modulos/whatsapp/lib/formateador.js';
+import { datosNegocio } from '@/negocio.js';
+
+export { obtenerSaludoHora };
 
 /**
- * Obtiene el saludo dinámico según la hora del día en Perú
- */
-export function obtenerSaludoHora() {
-  const hora = new Date().getHours();
-  if (hora >= 5 && hora < 12) return 'Buenos días';
-  if (hora >= 12 && hora < 19) return 'Buenas tardes';
-  return 'Buenas noches';
-}
-
-/**
- * Obtiene el número de WhatsApp canónico (desde caché local o fallback negocio)
+ * Obtiene el número oficial para recepción de pedidos (resuelto desde la colección o negocio)
  */
 export function obtenerNumeroWhatsApp() {
-  if (typeof window !== 'undefined') {
-    try {
-      const raw = localStorage.getItem('minegocio');
-      if (raw) {
-        const cfg = JSON.parse(raw);
-        const wa = cfg.contacto?.whatsappLimpio || cfg.contacto?.whatsapp;
-        if (wa) return String(wa).replace(/\D/g, '');
-      }
-    } catch (e) {}
-  }
-  return datosNegocio.whatsapp || '51936369384';
+  return obtenerTelefonoOficial();
 }
 
 /**
- * Obtiene el nombre del negocio (desde caché local o fallback canónico)
+ * Obtiene el nombre del negocio
  */
 export function obtenerNombreNegocio() {
-  if (typeof window !== 'undefined') {
-    try {
-      const raw = localStorage.getItem('minegocio');
-      if (raw) {
-        const cfg = JSON.parse(raw);
-        const nom = cfg.identidad?.nombre;
-        if (nom) return nom;
-      }
-    } catch (e) {}
-  }
-  return datosNegocio.nombre || 'Solgas Surquillo';
+  return datosNegocio?.identidad?.nombreCorto || datosNegocio?.nombre || 'Solgas Surquillo';
 }
 
 /**
- * Genera el texto formateado simple, natural y sin etiquetas técnicas
+ * Genera el texto formateado dinámico consultando la colección de canales (0 textos hardcodeados)
  */
-export function generarMensajeWhatsApp({
-  origen = '',
-  producto = '',
-  precio = null,
-  cantidad = 1,
-  distrito = '',
-  direccion = '',
-  cliente = '',
-  celular = '',
-  metodoPago = '',
-  detalle = '',
-  notas = '',
-  extra = ''
-} = {}) {
-  const saludo = obtenerSaludoHora();
-  const lineas = [];
+export function generarMensajeWhatsApp(opciones = {}) {
+  if (typeof opciones === 'string') return opciones;
 
-  const cantTxt = cantidad > 1 ? `${cantidad}x ` : '';
-  const precioTxt = precio !== null && precio !== undefined && !isNaN(Number(precio))
-    ? ` (S/ ${Number(precio).toFixed(2)})`
-    : '';
+  const canalId = opciones.canalId || (
+    (opciones.cliente || opciones.direccion || opciones.metodoPago) ? 'canal_modal_express' :
+    opciones.producto ? 'canal_catalogo_producto' :
+    (opciones.kg || opciones.dias) ? 'canal_calculadora' :
+    'canal_general_header'
+  );
 
-  // CASO A: Pedido formal desde el Modal Express (con dirección, cliente o pago)
-  if (cliente || direccion || metodoPago) {
-    lineas.push(`${saludo}, quiero realizar un pedido:`);
-    if (cliente) {
-      const cel = celular ? ` (📱 ${celular})` : '';
-      lineas.push(`👤 Soy: ${cliente}${cel}`);
-    }
-    if (producto) {
-      lineas.push(`📦 ${cantTxt}${producto}${precioTxt}`);
-    }
-    if (direccion || distrito) {
-      const dirCompleta = direccion && distrito 
-        ? `${direccion}, ${distrito}` 
-        : (direccion || distrito);
-      lineas.push(`📍 Entrega: ${dirCompleta}`);
-    }
-    if (metodoPago) {
-      lineas.push(`💳 Pago: ${metodoPago}`);
-    }
-    if (notas) {
-      lineas.push(`📝 Nota: ${notas}`);
-    }
-    if (extra) {
-      lineas.push(extra);
-    }
-    lineas.push(``);
-    lineas.push(`¿Podrían confirmarme el pedido, por favor? ¡Muchas gracias!`);
-    return lineas.join('\n');
-  }
-
-  // CASO B: Clic directo en tarjeta de producto (Card de Inicio)
-  if (producto) {
-    lineas.push(`${saludo}. He visto en su página web el ${cantTxt}${producto}${precioTxt}. Quiero realizar el pedido, ¿podrían confirmarme por favor? ¡Muchas gracias!`);
-    if (notas) lineas.push(`📝 Nota: ${notas}`);
-    if (extra) lineas.push(extra);
-    return lineas.join('\n');
-  }
-
-  // CASO C: Consulta de sección específica (Balanza, Garantía, FAQ, etc.)
-  if (detalle) {
-    lineas.push(`${saludo}. He visto en su página web: ${detalle}. Quisiera consultar la atención, ¿podrían confirmarme por favor? ¡Muchas gracias!`);
-    return lineas.join('\n');
-  }
-
-  // CASO D: Saludo de consulta general
-  const nombreNegocio = obtenerNombreNegocio();
-  lineas.push(`${saludo}, ${nombreNegocio}. He visto su página web y deseo consultar sobre el pedido de gas a domicilio. ¿Podrían atenderme, por favor? ¡Muchas gracias!`);
-  return lineas.join('\n');
+  return formatearCanal(canalId, opciones);
 }
 
 /**
- * Genera el enlace directo de WhatsApp wa.me codificado
+ * Genera el enlace directo wa.me codificado consultando la colección de canales
  */
 export function crearEnlaceWhatsApp(opciones = {}, numeroPersonalizado = null) {
-  const num = numeroPersonalizado ? String(numeroPersonalizado).replace(/\D/g, '') : obtenerNumeroWhatsApp();
-  const msg = typeof opciones === 'string' ? opciones : generarMensajeWhatsApp(opciones);
-  return `https://wa.me/${num}?text=${encodeURIComponent(msg)}`;
+  if (typeof opciones === 'string') {
+    return construirUrlWhatsapp(opciones, numeroPersonalizado || obtenerTelefonoOficial());
+  }
+
+  const canalId = opciones.canalId || (
+    (opciones.cliente || opciones.direccion || opciones.metodoPago) ? 'canal_modal_express' :
+    opciones.producto ? 'canal_catalogo_producto' :
+    (opciones.kg || opciones.dias) ? 'canal_calculadora' :
+    'canal_general_header'
+  );
+
+  return crearUrlCanal(canalId, opciones, numeroPersonalizado);
 }
 
 export default {

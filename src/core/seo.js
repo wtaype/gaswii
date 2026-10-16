@@ -1,94 +1,113 @@
 // src/core/seo.js
 // --- [Metadatos SEO] titulo = ~47 caracteres, descripcion = ~150 caracteres, keywords = 5 palabras -> no eliminar esta linea.
-import app from '../app.js';
-import { datosNegocio } from '../negocio.js';
+// 🎯 Generador Universal y 100% Dinámico de Metadatos y Schema.org JSON-LD para Google Rich Snippets
+// Cero cadenas hardcodeadas: Todo fluye en cascada desde datosNegocio (src/semillas/negocio.json), wii.js y configurar.js
 
-// ==========================================
-// 1. ASSET CANÓNICO DE IMAGEN PARA GOOGLE SERP Y REDES SOCIALES
-// ==========================================
-export const SEO_IMAGEN = {
-  url: 'https://solgassurquillo.com/imgwii/productos/BALON-10KG.webp',
-  width: 1200,
-  height: 630,
-  type: 'image/webp',
-  alt: 'Balón de Gas Solgas 10 kg con Válvula Premium y Balanza Digital - Solgas Surquillo',
-  caption: 'Distribuidor Autorizado Solgas Surquillo - Delivery en 15 Minutos'
-};
+import wii from '../wii.js';
+import { datosNegocio, configSemilla } from '../negocio.js';
 
-// ==========================================
-// 2. METADATOS CANÓNICOS DE INICIO (PÁGINA PRINCIPAL)
-// ==========================================
-export const SEO_INICIO = {
-  es: {
-    title: "Solgas Surquillo | Balón de Gas a Domicilio en 15 Min - Pedir Aquí",
-    description: "Pide tu balón de gas Solgas en Surquillo al 936 369 384. Entrega express en 15 min con balanza digital a tu puerta y garantía oficial de fábrica.",
-    path: '/',
-    keywords: [
-      'solgas surquillo',
-      'gas surquillo',
-      'pedir gas surquillo',
-      'solgas surquillo telefono',
-      'solgas miraflores',
-      'delivery de gas san borja',
-      'pedir gas san isidro',
-      'balon de gas a domicilio',
-      'balon solgas 10 kg precio',
-      'balon solgas 45 kg',
-      'gas con balanza digital lima',
-      'solgas dante surquillo',
-      'gas de cocina surquillo 15 minutos'
-    ],
-    audience: ['hogares', 'familias', 'restaurantes', 'negocios', 'vecinos'],
-    intent: 'pedir gas de cocina a domicilio con peso exacto en surquillo, miraflores, san borja, san isidro y lima'
-  },
-  en: {
-    title: "Solgas Surquillo | Express LPG Cooking Gas Delivery Lima 15 Min",
-    description: "Order official Solgas LPG cylinders in Surquillo & Miraflores. 15-minute express delivery with certified digital weight scale and factory warranty.",
-    path: '/en',
-    keywords: [
-      'solgas surquillo',
-      'gas delivery lima',
-      'cooking gas surquillo',
-      'solgas miraflores delivery',
-      'lpg gas san isidro',
-      'order gas cylinder lima',
-      'express gas delivery lima'
-    ],
-    audience: ['residents', 'expats', 'families', 'restaurants'],
-    intent: 'order home delivery lpg cooking gas cylinder in lima'
+/**
+ * Resuelve la URL base canónica universal del sistema
+ * Prioridad: 1. baseUrl explícito -> 2. datosNegocio.linkweb (negocio.json) -> 3. wii.linkweb (wii.js)
+ */
+export function getUrlBase(baseUrl = '') {
+  const url = baseUrl || datosNegocio.linkweb || wii.linkweb || '';
+  return url.replace(/\/$/, '');
+}
+
+/**
+ * Resuelve la URL absoluta canónica de cualquier recurso
+ */
+export function getUrlAbsoluta(path = '', baseUrl = '') {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  const base = getUrlBase(baseUrl);
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return base ? `${base}${cleanPath}` : cleanPath;
+}
+
+/**
+ * Resuelve el asset canónico de imagen para Google SERP (Thumbnail) y OpenGraph
+ */
+export function getSeoImagen(idioma = 'es') {
+  const urlBase = getUrlBase();
+  const seoData = datosNegocio.seo || {};
+  const imgRelativa = seoData.imagen || datosNegocio.hero?.imagen || datosNegocio.identidad?.logo || datosNegocio.logo || '/imgwii/logo.webp';
+  const imgUrl = getUrlAbsoluta(imgRelativa, urlBase);
+  
+  const altText = (typeof seoData.imagenAlt === 'object' ? (seoData.imagenAlt[idioma] || seoData.imagenAlt.es) : seoData.imagenAlt)
+    || `${datosNegocio.nombre} - ${datosNegocio.subtitulo || datosNegocio.identidad?.razonSocial || 'Portal Oficial'}`;
+    
+  const captionText = (typeof seoData.imagenCaption === 'object' ? (seoData.imagenCaption[idioma] || seoData.imagenCaption.es) : seoData.imagenCaption)
+    || `${datosNegocio.nombre} - ${datosNegocio.identidad?.razonSocial || datosNegocio.subtitulo || 'Portal Oficial'}`;
+
+  return {
+    url: imgUrl,
+    width: 1200,
+    height: 630,
+    type: imgUrl.endsWith('.png') ? 'image/png' : (imgUrl.endsWith('.jpg') || imgUrl.endsWith('.jpeg') ? 'image/jpeg' : 'image/webp'),
+    alt: altText,
+    caption: captionText
+  };
+}
+
+// Compatibilidad retroactiva para imports directos
+export const SEO_IMAGEN = new Proxy({}, {
+  get(_, prop) {
+    const img = getSeoImagen('es');
+    return img[prop];
   }
+});
+
+/**
+ * Resuelve los metadatos canónicos de la página principal según datosNegocio
+ */
+export function getSeoInicio(idioma = 'es') {
+  const langKey = (idioma || 'es').toLowerCase();
+  const seoData = datosNegocio.seo || {};
+  
+  const title = (seoData.titulo?.[langKey] || (typeof seoData.titulo === 'string' ? seoData.titulo : ''))
+    || `${datosNegocio.nombre} | ${datosNegocio.subtitulo}`;
+    
+  const description = (seoData.descripcion?.[langKey] || (typeof seoData.descripcion === 'string' ? seoData.descripcion : ''))
+    || (datosNegocio.hero?.descripcion || datosNegocio.identidad?.bio || datosNegocio.subtitulo || '');
+    
+  const rawKeywords = seoData.keywords?.[langKey] || seoData.keywords?.es || [];
+  const keywords = Array.isArray(rawKeywords) ? rawKeywords : (typeof rawKeywords === 'string' ? rawKeywords.split(',').map(s => s.trim()) : []);
+
+  return {
+    title,
+    description,
+    path: langKey === 'es' ? '/' : `/${langKey}`,
+    keywords,
+    audience: seoData.audience || ['clientes', 'usuarios', 'publico general'],
+    intent: `${configSemilla.terminologia?.catalogoTituloCorto || 'servicios y productos'} de ${datosNegocio.nombre} en ${datosNegocio.distritoSede || datosNegocio.ciudad || ''}`.trim()
+  };
+}
+
+export const SEO_INICIO = {
+  get es() { return getSeoInicio('es'); },
+  get en() { return getSeoInicio('en'); }
 };
 
-// ==========================================
-// 3. MAPA DE RUTAS PÚBLICAS (EXCLUYE AUTH: CLIENTE Y PERSONAL)
-// ==========================================
 export const seo = {
   inicio: SEO_INICIO
 };
 
 /**
- * Genera metadatos completos para el <head> (OpenGraph, Twitter, Hreflang, Canonical)
- * Prioriza dinámicamente datos de Firestore (colección 'negocio' -> 'seo')
+ * Genera metadatos completos para el <head> (OpenGraph, Twitter, Hreflang, Canonical y Thumbnail Google)
  */
 export function getMeta(ruta = '/', idioma = 'es') {
-  const clave = ruta === '/' || ruta === '/en' ? 'inicio' : ruta.replace(/^\/(en\/)?/, '');
-  const data = seo[clave] ? seo[clave][idioma] : seo.inicio[idioma];
-  const urlBase = (app.linkweb || 'https://gaswii.amorwii.workers.dev').replace(/\/$/, '');
+  const langKey = (idioma || 'es').toLowerCase();
+  const urlBase = getUrlBase();
   const canonical = `${urlBase}${ruta}`;
-
-  // Priorizar SEO dinámico desde la colección 'negocio' en Firestore para la página principal
-  const seoDinamico = clave === 'inicio' ? datosNegocio.seo : null;
-  const title = (seoDinamico?.titulo?.[idioma]?.trim()) || data.title;
-  const description = (seoDinamico?.descripcion?.[idioma]?.trim()) || data.description;
-  const dynamicKeywords = seoDinamico?.keywords?.[idioma];
-  const keywordsList = Array.isArray(dynamicKeywords) && dynamicKeywords.length > 0 
-    ? dynamicKeywords 
-    : data.keywords;
-  const keywords = keywordsList.join(', ');
-
-  const imgCanonical = SEO_IMAGEN.url.startsWith('http') 
-    ? SEO_IMAGEN.url 
-    : `${urlBase}${SEO_IMAGEN.url}`;
+  
+  const seoData = getSeoInicio(langKey);
+  const title = seoData.title;
+  const description = seoData.description;
+  const keywords = seoData.keywords.join(', ');
+  
+  const imgInfo = getSeoImagen(langKey);
 
   return {
     title,
@@ -97,17 +116,17 @@ export function getMeta(ruta = '/', idioma = 'es') {
     canonical,
     ogTitle: title,
     ogDescription: description,
-    ogImage: imgCanonical,
-    ogImageWidth: SEO_IMAGEN.width,
-    ogImageHeight: SEO_IMAGEN.height,
-    ogImageType: SEO_IMAGEN.type,
-    ogImageAlt: SEO_IMAGEN.alt,
+    ogImage: imgInfo.url,
+    ogImageWidth: imgInfo.width,
+    ogImageHeight: imgInfo.height,
+    ogImageType: imgInfo.type,
+    ogImageAlt: imgInfo.alt,
     ogUrl: canonical,
     ogType: 'website',
     siteName: datosNegocio.nombre,
     telefono: datosNegocio.telefonoMostrado,
-    locale: idioma === 'es' ? 'es_PE' : 'en_US',
-    localeAlternate: idioma === 'es' ? 'en_US' : 'es_PE',
+    locale: langKey === 'es' ? 'es_PE' : 'en_US',
+    localeAlternate: langKey === 'es' ? 'en_US' : 'es_PE',
     hreflang: {
       es: `${urlBase}/`,
       en: `${urlBase}/en`,
@@ -118,16 +137,50 @@ export function getMeta(ruta = '/', idioma = 'es') {
 
 /**
  * Genera el marcado de datos estructurados Schema.org JSON-LD para Google Rich Snippets
- * Preserva al 100% el catálogo de productos con precios, stock, ratings y FAQs
  */
 export function getJsonLd(ruta = '/', idioma = 'es') {
-  const urlBase = (app.linkweb || 'https://gaswii.amorwii.workers.dev').replace(/\/$/, '');
-  const isEn = idioma === 'en';
+  const urlBase = getUrlBase();
+  const langKey = (idioma || 'es').toLowerCase();
   const canonical = `${urlBase}${ruta}`;
-  const data = seo.inicio[idioma] || SEO_INICIO.es;
-  const seoDinamico = ruta === '/' || ruta === '/en' ? datosNegocio.seo : null;
-  const title = (seoDinamico?.titulo?.[idioma]?.trim()) || data.title;
-  const description = (seoDinamico?.descripcion?.[idioma]?.trim()) || data.description;
+  
+  const seoData = getSeoInicio(langKey);
+  const title = seoData.title;
+  const description = seoData.description;
+  const imgInfo = getSeoImagen(langKey);
+
+  const inLanguageMap = {
+    es: 'es-PE',
+    en: 'en-US'
+  };
+  const inLanguage = inLanguageMap[langKey] || `${langKey}-${langKey.toUpperCase()}`;
+
+  const seoConfig = datosNegocio.seo || {};
+  const localBusinessDesc = (typeof seoConfig.descripcionNegocio === 'object' 
+    ? (seoConfig.descripcionNegocio[langKey] || seoConfig.descripcionNegocio.es) 
+    : seoConfig.descripcionNegocio) || description;
+
+  const faqsList = Array.isArray(seoConfig.faqs) && seoConfig.faqs.length > 0 
+    ? seoConfig.faqs 
+    : [
+        {
+          pregunta: { es: `¿Cómo solicitar atención o pedidos en ${datosNegocio.nombre}?`, en: `How to place an order at ${datosNegocio.nombre}?` },
+          respuesta: { es: `Puedes comunicarte vía WhatsApp o llamada directa al ${datosNegocio.telefonoMostrado} para atención inmediata.`, en: `You can reach out via WhatsApp or call us directly at ${datosNegocio.telefonoMostrado} for immediate assistance.` }
+        }
+      ];
+
+  const paymentAccepted = Array.isArray(seoConfig.paymentAccepted) && seoConfig.paymentAccepted.length > 0
+    ? seoConfig.paymentAccepted
+    : (datosNegocio.mediosPago?.map(m => m.nombre) || ["Efectivo", "Transferencia"]);
+
+  const currenciesAccepted = seoConfig.currenciesAccepted || datosNegocio.moneda || "PEN";
+  const priceRange = seoConfig.rangoPrecios || (datosNegocio.moneda ? `${datosNegocio.moneda} $$` : '$$');
+
+  // Tipos Schema.org dinámicos gobernados por negocio.json o configurar.js
+  const schemaBusinessTypes = Array.isArray(seoConfig.schemaTypes) && seoConfig.schemaTypes.length > 0
+    ? seoConfig.schemaTypes
+    : (seoConfig.schemaType ? [seoConfig.schemaType] : ['LocalBusiness']);
+
+  const nextYear = new Date().getFullYear() + 1;
 
   return {
     '@context': 'https://schema.org',
@@ -139,7 +192,7 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
         url: canonical,
         name: title,
         description: description,
-        inLanguage: isEn ? 'en-US' : 'es-PE',
+        inLanguage,
         isPartOf: {
           '@type': 'WebSite',
           '@id': `${urlBase}/#website`,
@@ -149,89 +202,88 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
         primaryImageOfPage: {
           '@type': 'ImageObject',
           '@id': `${urlBase}/#primaryimage`,
-          url: SEO_IMAGEN.url,
-          contentUrl: SEO_IMAGEN.url,
-          width: SEO_IMAGEN.width,
-          height: SEO_IMAGEN.height,
-          caption: SEO_IMAGEN.caption
+          url: imgInfo.url,
+          contentUrl: imgInfo.url,
+          width: imgInfo.width,
+          height: imgInfo.height,
+          caption: imgInfo.caption
         }
       },
-      // 1. Negocio Local y Servicio de Emergencia
+      // 1. Negocio Local Dinámico
       {
-        '@type': ['LocalBusiness', 'HomeGoodsStore', 'EmergencyService'],
+        '@type': schemaBusinessTypes,
         '@id': `${urlBase}/#localbusiness`,
         name: datosNegocio.nombre,
-        description: isEn 
-          ? "Authorized OSINERGMIN LPG gas cylinder distributor with mandatory digital scale weighing at your door."
-          : "Distribuidor autorizado OSINERGMIN de balones de gas GLP con pesaje digital obligatorio frente a tu puerta.",
+        description: localBusinessDesc,
         url: urlBase,
         telephone: datosNegocio.telefonoMostrado,
-        image: SEO_IMAGEN.url,
-        priceRange: "S/ 55 - S/ 230",
-        paymentAccepted: ["Cash", "Credit Card", "Debit Card", "Yape", "Plin"],
-        currenciesAccepted: "PEN",
+        image: imgInfo.url,
+        priceRange: priceRange,
+        paymentAccepted: paymentAccepted,
+        currenciesAccepted: currenciesAccepted,
         address: {
           '@type': 'PostalAddress',
           streetAddress: datosNegocio.direccionSede,
           addressLocality: datosNegocio.distritoSede,
           addressRegion: datosNegocio.ciudad,
-          postalCode: '15047',
-          addressCountry: datosNegocio.pais
+          postalCode: datosNegocio.codigoPostal || datosNegocio.ubicacion?.codigoPostal || '',
+          addressCountry: datosNegocio.pais || 'PE'
         },
         geo: {
           '@type': 'GeoCoordinates',
-          latitude: datosNegocio.coordenadas.lat,
-          longitude: datosNegocio.coordenadas.lng
+          latitude: Number(datosNegocio.coordenadas?.lat || 0),
+          longitude: Number(datosNegocio.coordenadas?.lng || 0)
         },
-        openingHoursSpecification: [
-          {
-            '@type': 'OpeningHoursSpecification',
-            dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-            opens: '06:00',
-            closes: '23:00'
-          }
-        ],
-        areaServed: datosNegocio.distritos.map(d => ({
+        openingHoursSpecification: Array.isArray(seoConfig.openingHours) && seoConfig.openingHours.length > 0
+          ? seoConfig.openingHours
+          : [
+              {
+                '@type': 'OpeningHoursSpecification',
+                dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                opens: seoConfig.opens || '06:00',
+                closes: seoConfig.closes || '23:00'
+              }
+            ],
+        areaServed: (datosNegocio.distritos || []).map(d => ({
           '@type': 'AdministrativeArea',
-          name: d.nombre
+          name: d.nombre || d
         }))
       },
-      // 2. Catálogo Oficial de Productos Dinámicos desde Firestore (Google Shopping & Free Listings)
-      ...datosNegocio.productos.map(p => {
-        const prodNom = isEn ? (p.nombreEn || p.nombre) : p.nombre;
-        const prodDesc = isEn ? (p.descripcionEn || p.descripcion) : p.descripcion;
-        const precioNum = Number(p.precioPEN ?? p.precio ?? 65);
-        const stockActual = Number(p.stock ?? 10);
-        const imgUrl = (p.imagen || '/imgwii/productos/BALON-10KG.webp').startsWith('http') 
-          ? (p.imagen || '') 
-          : `${urlBase}${p.imagen || '/imgwii/productos/BALON-10KG.webp'}`;
-        const prodId = (p.id || p.slug || 'solgas-10kg').toUpperCase();
+      // 2. Catálogo Oficial Dinámico (Google Shopping & Free Listings)
+      ...(datosNegocio.productos || []).map(p => {
+        const prodNom = (langKey !== 'es' ? (p[`nombre_${langKey}`] || p.nombreEn) : null) || p.nombre;
+        const prodDesc = (langKey !== 'es' ? (p[`descripcion_${langKey}`] || p.descripcionEn) : null) || p.descripcion;
+        const precioNum = Number(p.precioPEN ?? p.precio ?? 0);
+        const stockActual = Number(p.stock ?? 1);
+        const imgUrl = getUrlAbsoluta(p.imagen || imgInfo.url, urlBase);
+        const prodId = (p.id || p.slug || 'item').toUpperCase();
+        const brandName = p.marca || datosNegocio.marcaRespaldo || datosNegocio.nombre;
 
         return {
           '@type': 'Product',
-          '@id': `${urlBase}/#producto-${p.id || p.slug || 'solgas-10kg'}`,
-          name: prodNom || 'Balón de Gas Solgas 10 kg',
-          description: prodDesc || `${p.tipoUso || 'GLP doméstico'}. Válvula: ${p.valvula || 'Premium'}.`,
+          '@id': `${urlBase}/#${configSemilla.modeloCatalogo || 'producto'}-${p.id || p.slug || 'item'}`,
+          name: prodNom || datosNegocio.nombre,
+          description: prodDesc || `${p.tipoUso || datosNegocio.subtitulo || 'Servicio oficial'}.`,
           image: imgUrl,
-          sku: p.sku || `SOLGAS-${prodId}`,
-          mpn: p.mpn || `SG-${prodId}-PE`,
+          sku: p.sku || `SKU-${prodId}`,
+          mpn: p.mpn || `MPN-${prodId}-${datosNegocio.pais || 'PE'}`,
           brand: {
             '@type': 'Brand',
-            name: (p.id || '').includes('masgas') ? 'Masgas' : 'Solgas'
+            name: brandName
           },
           aggregateRating: {
             '@type': 'AggregateRating',
-            ratingValue: '4.9',
-            reviewCount: '1280',
+            ratingValue: String(p.rating || seoConfig.ratingDefault || '4.9'),
+            reviewCount: String(p.reviewCount || seoConfig.reviewCountDefault || '120'),
             bestRating: '5',
             worstRating: '1'
           },
           offers: {
             '@type': 'Offer',
-            url: `${urlBase}/#productos`,
-            priceCurrency: 'PEN',
-            price: isNaN(precioNum) ? '65.00' : precioNum.toFixed(2),
-            priceValidUntil: '2027-12-31',
+            url: `${urlBase}/#${configSemilla.modeloCatalogo || 'productos'}`,
+            priceCurrency: currenciesAccepted,
+            price: isNaN(precioNum) ? '0.00' : precioNum.toFixed(2),
+            priceValidUntil: `${nextYear}-12-31`,
             availability: stockActual > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
             itemCondition: 'https://schema.org/NewCondition',
             seller: {
@@ -240,20 +292,20 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
             },
             shippingDetails: {
               '@type': 'OfferShippingDetails',
-              shippingRate: { '@type': 'MonetaryAmount', value: 0, currency: 'PEN' },
-              shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'PE', addressRegion: 'Lima' },
+              shippingRate: { '@type': 'MonetaryAmount', value: 0, currency: currenciesAccepted },
+              shippingDestination: { '@type': 'DefinedRegion', addressCountry: datosNegocio.pais || 'PE', addressRegion: datosNegocio.ciudad || '' },
               deliveryTime: {
                 '@type': 'ShippingDeliveryTime',
-                handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 5, unitCode: 'MIN' },
-                transitTime: { '@type': 'QuantitativeValue', minValue: 15, maxValue: 25, unitCode: 'MIN' }
+                handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: Number(seoConfig.handlingMaxMinutes || 5), unitCode: 'MIN' },
+                transitTime: { '@type': 'QuantitativeValue', minValue: Number(seoConfig.transitMinMinutes || 15), maxValue: Number(seoConfig.transitMaxMinutes || 25), unitCode: 'MIN' }
               }
             },
             hasMerchantReturnPolicy: {
               '@type': 'MerchantReturnPolicy',
-              applicableCountry: 'PE',
+              applicableCountry: datosNegocio.pais || 'PE',
               returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-              merchantReturnDays: 1,
-              returnMethod: 'https://schema.org/ReturnAtKiosk',
+              merchantReturnDays: Number(seoConfig.returnDays || 1),
+              returnMethod: 'https://schema.org/ReturnInStore',
               returnFees: 'https://schema.org/FreeReturn'
             }
           }
@@ -262,41 +314,17 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
       // 3. FAQPage para Preguntas y Respuestas en Google
       {
         '@type': 'FAQPage',
-        mainEntity: [
-          {
-            '@type': 'Question',
-            name: isEn ? "How do I know the cylinder is 100% full?" : "¿Cómo sé que el balón viene con el peso exacto?",
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: isEn 
-                ? "Our gas cylinders come with calibrated exact weight directly from the official Solgas plant and verified at our central hub in Jr. Dante 260 before dispatch, with factory tamper-evident seals intact."
-                : "Nuestros balones vienen con peso exacto calibrado directamente desde la planta envasadora oficial de Solgas y verificado en nuestra base central de Jr. Dante 260 antes del despacho, con precinto de fábrica 100% intacto."
-            }
-          },
-          {
-            '@type': 'Question',
-            name: isEn ? "Is there any delivery charge?" : "¿Cobran costo adicional por el delivery?",
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: isEn 
-                ? "No, delivery and technical safety installation are completely free in Surquillo, Miraflores, San Borja, and San Isidro."
-                : "No, el despacho y la instalación técnica con prueba de hermeticidad cero fugas son totalmente gratuitos en Surquillo, Miraflores, San Borja y San Isidro."
-            }
-          },
-          {
-            '@type': 'Question',
-            name: isEn ? "How long does delivery take?" : "¿Cuánto tiempo tarda en llegar el pedido?",
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: isEn 
-                ? "Estimated delivery time is between 12 and 20 minutes from our central hub at Jr. Dante 260, Surquillo."
-                : "El tiempo estimado de entrega es de 12 a 20 minutos despachando desde nuestra sede central en Jr. Dante 260, Surquillo."
-            }
+        mainEntity: faqsList.map(f => ({
+          '@type': 'Question',
+          name: f.pregunta[langKey] || f.pregunta.es,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: f.respuesta[langKey] || f.respuesta.es
           }
-        ]
+        }))
       }
     ]
   };
 }
 
-export default { seo, SEO_IMAGEN, SEO_INICIO, getMeta, getJsonLd };
+export default { seo, SEO_IMAGEN, SEO_INICIO, getSeoImagen, getSeoInicio, getMeta, getJsonLd, getUrlBase, getUrlAbsoluta };

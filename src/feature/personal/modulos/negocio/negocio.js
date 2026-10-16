@@ -1,60 +1,140 @@
 // src/feature/personal/modulos/negocio/negocio.js
-// Controlador Frontend Autónomo del Módulo Mi Negocio (Solgas Surquillo)
-// 100% JS Nativo · Cero TypeScript · Local-First · Integración con @widev
+// Controlador Frontend Autónomo del Módulo Ficha de Negocio & Especialista
+// 100% JS Nativo · Cero TypeScript · Local-First · Integración con @widev y Firestore
 
-import { Notificacion, wiSpin, wiAtajo, wiConfirmar, adrm, savels, getls, removels, Saludar } from '@widev';
+import { Notificacion, wiSpin, wiAtajo, wiConfirmar, wiSelect, adrm, savels, getls, removels, Saludar } from '@widev';
 import {
   obtenerDatosNegocio,
   guardarDatosNegocio,
   calcularAnosTrayectoria,
   sincronizarDesdeFirestore
 } from './dataNegocio.js';
-import { solicitarActualizacionWeb } from '../../../../actualizar.js';
+import { solicitarActualizacionWeb } from '../../lib/actualizar.js';
+import { getCanalesRedes, configSemilla } from '@/negocio.js';
 
 export function inicializarNegocio() {
   const panelNegocio = document.getElementById('panel-negocio');
   if (!panelNegocio || panelNegocio.dataset.negocioInit === 'true') return;
   panelNegocio.dataset.negocioInit = 'true';
 
-  const DRAFT_KEY = 'negocio_borrador_timestamp';
   let isSaving = false;
-  let draftTimer = null;
 
-  // Elementos de la UI
+  // Botón Principal Guardar
   const btnGuardarNegocio = document.getElementById('btnGuardarNegocio');
-  const ngTabsBar = document.getElementById('ngTabsBar');
-  const ngZonasContainer = document.getElementById('ngZonasContainer');
-  const btnAgregarZona = document.getElementById('btnAgregarZona');
   const ngBadgeTrayectoria = document.getElementById('ngBadgeTrayectoria');
   const ngYearsText = document.getElementById('ngYearsText');
 
-  // Inputs de Identidad
-  const inputNombre = document.getElementById('ngInputNombre');
-  const inputNombreCorto = document.getElementById('ngInputNombreCorto');
-  const inputRazonSocial = document.getElementById('ngInputRazonSocial');
-  const inputRuc = document.getElementById('ngInputRuc');
-  const inputOsinergmin = document.getElementById('ngInputOsinergmin');
-  const inputMarcaRespaldo = document.getElementById('ngInputMarcaRespaldo');
+  // ── HELPERS DE URLS INTELIGENTES COMPLETAS ──
+  function formatearUrlCompleta(url = '') {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const origin = (typeof window !== 'undefined' && window.location.origin) ? window.location.origin : '';
+    const clean = url.startsWith('/') ? url : `/${url}`;
+    return `${origin}${clean}`;
+  }
+
+  function normalizarUrlParaGuardar(url = '') {
+    if (!url) return '';
+    const origin = (typeof window !== 'undefined' && window.location.origin) ? window.location.origin : '';
+    if (origin && url.startsWith(origin)) {
+      return url.replace(origin, '');
+    }
+    return url;
+  }
+
+  // ── 0. SELECTOR DE PESTAÑAS HORIZONTALES PRO (PERSISTENTE) ──
+  const TAB_STORAGE_KEY = 'wi_negocio_tab';
+  const mainTabBtns = document.querySelectorAll('.ng-tab-btn');
+  const mainTabPanes = document.querySelectorAll('.ng-tab-pane');
+
+  function switchMainTab(targetId) {
+    if (!targetId) return;
+    const pane = document.getElementById(targetId);
+    if (!pane) targetId = 'ng-tab-identidad';
+
+    mainTabBtns.forEach(b => b.classList.toggle('active', b.getAttribute('data-tab-target') === targetId));
+    mainTabPanes.forEach(p => p.classList.toggle('active', p.id === targetId));
+    savels(TAB_STORAGE_KEY, targetId);
+  }
+
+  mainTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-tab-target');
+      switchMainTab(target);
+    });
+  });
+
+  const tabGuardada = getls(TAB_STORAGE_KEY);
+  if (tabGuardada && document.getElementById(tabGuardada) && tabGuardada !== 'ng-tab-bilingue') {
+    switchMainTab(tabGuardada);
+  } else {
+    switchMainTab('ng-tab-identidad');
+  }
+
+  // ── 1. SELECTOR DE PESTAÑAS DE IDIOMA EN SECCIÓN LIBRE INFERIOR (ES / EN) ──
+  document.querySelectorAll('.ng-lang-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ng-lang-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.ng-lang-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const targetPaneId = btn.getAttribute('data-target');
+      const pane = document.getElementById(targetPaneId);
+      if (pane) pane.classList.add('active');
+    });
+  });
+
+  // ── 2. INPUTS DE IDENTIDAD Y MULTIMEDIA ──
+  const inputEspecialista = document.getElementById('ngInputEspecialista');
+  const inputColegiatura = document.getElementById('ngInputColegiatura');
+  const inputTitulo = document.getElementById('ngInputTitulo');
+  const inputGrado = document.getElementById('ngInputGrado');
   const inputLanzamiento = document.getElementById('ngInputLanzamiento');
   const inputLogo = document.getElementById('ngInputLogo');
+  const inputLogoFull = document.getElementById('ngInputLogoFull');
   const inputImagenSede = document.getElementById('ngInputImagenSede');
   const imgLogoPreview = document.getElementById('ngImgLogoPreview');
+  const imgLogoFullPreview = document.getElementById('ngImgLogoFullPreview');
   const imgHeroPreview = document.getElementById('ngImgHeroPreview');
+  const btnLinkHero = document.getElementById('btnLinkHero');
+  const btnLinkLogo = document.getElementById('btnLinkLogo');
+  const btnLinkLogoFull = document.getElementById('btnLinkLogoFull');
 
-  // Inputs de Contacto
+  // Inputs Bilingües: Identidad (ES)
+  const inputNombre = document.getElementById('ngInputNombre');
+  const inputNombreCorto = document.getElementById('ngInputNombreCorto');
+  const inputEnfoques = document.getElementById('ngInputEnfoques');
+  const inputBioEs = document.getElementById('ngInputBioEs');
+
+  // Inputs Bilingües: Identidad (EN)
+  const inputNombreEn = document.getElementById('ngInputNombreEn');
+  const inputNombreCortoEn = document.getElementById('ngInputNombreCortoEn');
+  const inputEnfoquesEn = document.getElementById('ngInputEnfoquesEn');
+  const inputBioEn = document.getElementById('ngInputBioEn');
+
+  // ── 3. INPUTS DE CONTACTO Y HORARIOS ──
+  const selectPais = document.getElementById('ngSelectPais');
+  const hintPaisCodigo = document.getElementById('hintPaisCodigo');
   const inputTelefono = document.getElementById('ngInputTelefono');
   const inputTelefonoFijo = document.getElementById('ngInputTelefonoFijo');
+  const inputTelefonoSecundario = document.getElementById('ngInputTelefonoSecundario');
   const inputWhatsapp = document.getElementById('ngInputWhatsapp');
   const inputEmail = document.getElementById('ngInputEmail');
-  const inputWhatsappMensaje = document.getElementById('ngInputWhatsappMensaje');
+  const ngHorarioSemanaAbre = document.getElementById('ngHorarioSemanaAbre');
+  const ngHorarioSemanaCierra = document.getElementById('ngHorarioSemanaCierra');
+  const ngHorarioSabadoAbre = document.getElementById('ngHorarioSabadoAbre');
+  const ngHorarioSabadoCierra = document.getElementById('ngHorarioSabadoCierra');
+
   const inputHorario = document.getElementById('ngInputHorario');
   const inputHorarioEn = document.getElementById('ngInputHorarioEn');
+  const inputWhatsappMensaje = document.getElementById('ngInputWhatsappMensaje');
+  const inputWhatsappMensajeEn = document.getElementById('ngInputWhatsappMensajeEn');
   const hintTelefonoFormato = document.getElementById('hintTelefonoFormato');
   const hintWhatsappFormato = document.getElementById('hintWhatsappFormato');
   const btnRestaurarMensajeWs = document.getElementById('btnRestaurarMensajeWs');
 
-  // Inputs de Ubicación
+  // ── 4. INPUTS DE UBICACIÓN Y MAPS ──
   const inputDireccion = document.getElementById('ngInputDireccion');
+  const inputReferencia = document.getElementById('ngInputReferencia');
   const inputDistrito = document.getElementById('ngInputDistrito');
   const inputCiudad = document.getElementById('ngInputCiudad');
   const inputMapsUrl = document.getElementById('ngInputMapsUrl');
@@ -62,547 +142,1287 @@ export function inicializarNegocio() {
   const inputLng = document.getElementById('ngInputLng');
   const btnBuscarGoogleMaps = document.getElementById('btnBuscarGoogleMaps');
   const btnProbarMapsUrl = document.getElementById('btnProbarMapsUrl');
-  const btnAutogenerarMapsUrl = document.getElementById('btnAutogenerarMapsUrl');
 
-  // Inputs de Métricas y Redes
+  // ── 5. SEDES Y MODALIDADES BILINGÜES ──
+  const ngSedeVesTagEs = document.getElementById('ngSedeVesTagEs');
+  const ngSedeVesAtencionEs = document.getElementById('ngSedeVesAtencionEs');
+  const ngSedeVesTagEn = document.getElementById('ngSedeVesTagEn');
+  const ngSedeVesAtencionEn = document.getElementById('ngSedeVesAtencionEn');
+
+  const ngSedeVirtualTagEs = document.getElementById('ngSedeVirtualTagEs');
+  const ngSedeVirtualAtencionEs = document.getElementById('ngSedeVirtualAtencionEs');
+  const ngSedeVirtualTagEn = document.getElementById('ngSedeVirtualTagEn');
+  const ngSedeVirtualAtencionEn = document.getElementById('ngSedeVirtualAtencionEn');
+
+  // ── 6. MÉTRICAS Y REDES SOCIALES ──
   const inputMetricaClientes = document.getElementById('ngInputMetricaClientes');
-  const inputMetricaBalanza = document.getElementById('ngInputMetricaBalanza');
-  const inputMetricaDias = document.getElementById('ngInputMetricaDias');
+  const inputMetricaSatisfaccion = document.getElementById('ngInputMetricaSatisfaccion');
+  const inputMetricaConfidencialidad = document.getElementById('ngInputMetricaConfidencialidad');
+  const inputRedYoutube = document.getElementById('ngInputRedYoutube');
   const inputRedFacebook = document.getElementById('ngInputRedFacebook');
   const inputRedInstagram = document.getElementById('ngInputRedInstagram');
   const inputRedTiktok = document.getElementById('ngInputRedTiktok');
+  const inputRedCanalWhatsapp = document.getElementById('ngInputRedCanalWhatsapp');
+  const inputRedWeb = document.getElementById('ngInputRedWeb');
+  const inputRedLinkedin = document.getElementById('ngInputRedLinkedin');
+  const inputRedTwitter = document.getElementById('ngInputRedTwitter');
 
-  // Inputs de SEO Dinámico
+  // Toolbar de Agregar Red
+  const selectAgregarRed = document.getElementById('ngSelectAgregarRed');
+  const btnAgregarRed = document.getElementById('btnAgregarRed');
+
+  // ── 7. SEO DINÁMICO BILINGÜE Y PREVIEWS EN VIVO ──
   const inputSeoTituloEs = document.getElementById('ngInputSeoTituloEs');
   const inputSeoDescEs = document.getElementById('ngInputSeoDescEs');
   const inputSeoKeywordsEs = document.getElementById('ngInputSeoKeywordsEs');
+  const inputSeoImgEs = document.getElementById('ngInputSeoImgEs');
+  const btnProbarFotoSeoEs = document.getElementById('btnProbarFotoSeoEs');
+  const btnCambiarFotoSeoEs = document.getElementById('btnCambiarFotoSeoEs');
+  const ngSerpThumbBoxEs = document.getElementById('ngSerpThumbBoxEs');
+  const ngSerpImgEs = document.getElementById('ngSerpImgEs');
+  const ngSeoTituloCountEs = document.getElementById('ngSeoTituloCountEs');
+  const ngSeoDescCountEs = document.getElementById('ngSeoDescCountEs');
+  const ngSerpTitleEs = document.getElementById('ngSerpTitleEs');
+  const ngSerpDescEs = document.getElementById('ngSerpDescEs');
+
   const inputSeoTituloEn = document.getElementById('ngInputSeoTituloEn');
   const inputSeoDescEn = document.getElementById('ngInputSeoDescEn');
   const inputSeoKeywordsEn = document.getElementById('ngInputSeoKeywordsEn');
+  const inputSeoImgEn = document.getElementById('ngInputSeoImgEn');
+  const btnProbarFotoSeoEn = document.getElementById('btnProbarFotoSeoEn');
+  const btnCambiarFotoSeoEn = document.getElementById('btnCambiarFotoSeoEn');
+  const ngSerpThumbBoxEn = document.getElementById('ngSerpThumbBoxEn');
+  const ngSerpImgEn = document.getElementById('ngSerpImgEn');
+  const ngSeoTituloCountEn = document.getElementById('ngSeoTituloCountEn');
+  const ngSeoDescCountEn = document.getElementById('ngSeoDescCountEn');
+  const ngSerpTitleEn = document.getElementById('ngSerpTitleEn');
+  const ngSerpDescEn = document.getElementById('ngSerpDescEn');
 
-  let currentZonas = [];
+  // Preview Biografía Oficial
+  const ngBioPreviewTextEs = document.getElementById('ngBioPreviewTextEs');
+  const ngBioPreviewChipsEs = document.getElementById('ngBioPreviewChipsEs');
+  const ngBioPreviewHorarioEs = document.getElementById('ngBioPreviewHorarioEs');
+  const ngBioPreviewWaMsgEs = document.getElementById('ngBioPreviewWaMsgEs');
 
-  // 1. Conmutación de Pestañas con adrm() de widev
-  ngTabsBar?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.ng-tab-btn');
-    if (!btn) return;
-    const tabName = btn.getAttribute('data-tab');
-    if (!tabName) return;
+  const ngBioPreviewTextEn = document.getElementById('ngBioPreviewTextEn');
+  const ngBioPreviewChipsEn = document.getElementById('ngBioPreviewChipsEn');
+  const ngBioPreviewHorarioEn = document.getElementById('ngBioPreviewHorarioEn');
+  const ngBioPreviewWaMsgEn = document.getElementById('ngBioPreviewWaMsgEn');
 
-    adrm(btn, 'active');
-    document.querySelectorAll('.ng-tab-content').forEach(p => {
-      p.classList.toggle('active', p.id === `ngTab-${tabName}`);
-    });
-  });
+  // Preview Sedes & Cobertura
+  const inputSedeVesTagEs = document.getElementById('ngSedeVesTagEs');
+  const inputSedeVesAtencionEs = document.getElementById('ngSedeVesAtencionEs');
+  const inputSedeVirtualTagEs = document.getElementById('ngSedeVirtualTagEs');
+  const inputSedeVirtualAtencionEs = document.getElementById('ngSedeVirtualAtencionEs');
 
-  // 2. Cálculo en tiempo real de años de trayectoria con datepicker
-  inputLanzamiento?.addEventListener('input', () => {
-    const val = inputLanzamiento.value;
-    const years = calcularAnosTrayectoria(val);
+  const inputSedeVesTagEn = document.getElementById('ngSedeVesTagEn');
+  const inputSedeVesAtencionEn = document.getElementById('ngSedeVesAtencionEn');
+  const inputSedeVirtualTagEn = document.getElementById('ngSedeVirtualTagEn');
+  const inputSedeVirtualAtencionEn = document.getElementById('ngSedeVirtualAtencionEn');
+
+  const ngSedesPreviewTagPresencialEs = document.getElementById('ngSedesPreviewTagPresencialEs');
+  const ngSedesPreviewHorPresencialEs = document.getElementById('ngSedesPreviewHorPresencialEs');
+  const ngSedesPreviewTagVirtualEs = document.getElementById('ngSedesPreviewTagVirtualEs');
+  const ngSedesPreviewHorVirtualEs = document.getElementById('ngSedesPreviewHorVirtualEs');
+
+  const ngSedesPreviewTagPresencialEn = document.getElementById('ngSedesPreviewTagPresencialEn');
+  const ngSedesPreviewHorPresencialEn = document.getElementById('ngSedesPreviewHorPresencialEn');
+  const ngSedesPreviewTagVirtualEn = document.getElementById('ngSedesPreviewTagVirtualEn');
+  const ngSedesPreviewHorVirtualEn = document.getElementById('ngSedesPreviewHorVirtualEn');
+
+  // ── CATÁLOGO OFICIAL DE REDES SOCIALES ──
+  const CATALOGO_REDES = [
+    { id: 'linkedin', nombre: 'LinkedIn', icon: 'fa-brands fa-linkedin', color: '#0a66c2', formato: 'https://linkedin.com/in/usuario', portal: 'https://www.linkedin.com/in/' },
+    { id: 'web', nombre: 'Web Oficial', icon: 'fa-solid fa-globe', color: '#00a2ed', formato: 'https://tuweb.com', portal: 'https://google.com' },
+    { id: 'whatsapp', nombre: 'WhatsApp', icon: 'fa-brands fa-whatsapp', color: '#25d366', formato: 'https://wa.me/51... o canal', portal: 'https://web.whatsapp.com' },
+    { id: 'instagram', nombre: 'Instagram', icon: 'fa-brands fa-instagram', color: '#e1306c', formato: 'https://instagram.com/usuario', portal: 'https://www.instagram.com/' },
+    { id: 'facebook', nombre: 'Facebook', icon: 'fa-brands fa-facebook-f', color: '#1877f2', formato: 'https://facebook.com/pagina', portal: 'https://www.facebook.com/' },
+    { id: 'tiktok', nombre: 'TikTok', icon: 'fa-brands fa-tiktok', color: '#ffffff', formato: 'https://tiktok.com/@usuario', portal: 'https://www.tiktok.com/' },
+    { id: 'youtube', nombre: 'YouTube', icon: 'fa-brands fa-youtube', color: '#ff0000', formato: 'https://youtube.com/@canal', portal: 'https://www.youtube.com/' },
+    { id: 'twitter', nombre: 'X (Twitter)', icon: 'fa-brands fa-x-twitter', color: '#e2e8f0', formato: 'https://x.com/usuario', portal: 'https://x.com/' }
+  ];
+
+  const MAPA_INPUTS_REDES = {
+    linkedin: inputRedLinkedin,
+    web: inputRedWeb,
+    whatsapp: inputRedCanalWhatsapp,
+    instagram: inputRedInstagram,
+    facebook: inputRedFacebook,
+    tiktok: inputRedTiktok,
+    youtube: inputRedYoutube,
+    twitter: inputRedTwitter
+  };
+
+  // ── GESTIÓN DE AÑOS DE TRAYECTORIA ──
+  inputLanzamiento?.addEventListener('change', () => {
+    const years = calcularAnosTrayectoria(inputLanzamiento.value);
     if (ngYearsText) ngYearsText.textContent = `${years} años`;
-    autoGuardarBorrador();
   });
 
-  // 3. Previsualizaciones en vivo de Logo y Sede
-  inputLogo?.addEventListener('input', () => {
-    if (imgLogoPreview) imgLogoPreview.src = inputLogo.value || '/imgwii/logo.webp';
-    autoGuardarBorrador();
-  });
-
+  // ── ACTUALIZACIÓN DE PREVIEWS EN TIEMPO REAL CON URL COMPLETA ──
   inputImagenSede?.addEventListener('input', () => {
-    if (imgHeroPreview) imgHeroPreview.src = inputImagenSede.value || '/imgwii/hero.webp';
-    autoGuardarBorrador();
+    const val = inputImagenSede.value.trim();
+    if (imgHeroPreview) imgHeroPreview.src = val || '';
+    if (btnLinkHero) btnLinkHero.href = val || '#';
   });
 
-  // 3.0. Normalizador Inteligente de Celular y WhatsApp Perú (9 dígitos)
-  function normalizarTelefonoPeru(val) {
-    const digitos = String(val || '').replace(/\D/g, '');
-    
-    // Si tiene 9 dígitos y empieza con 9 (ej. 936369384)
-    if (digitos.length === 9 && digitos.startsWith('9')) {
-      return {
-        esCelular9: true,
-        celular9: digitos,
-        whatsappLimpio: `51${digitos}`,
-        visible: `+51 ${digitos.slice(0, 3)} ${digitos.slice(3, 6)} ${digitos.slice(6)}`
-      };
-    }
+  inputLogo?.addEventListener('input', () => {
+    const val = inputLogo.value.trim();
+    if (imgLogoPreview) imgLogoPreview.src = val || '';
+    if (btnLinkLogo) btnLinkLogo.href = val || '#';
+  });
 
-    // Si tiene 11 dígitos y empieza con 519 (ej. 51936369384)
-    if (digitos.length === 11 && digitos.startsWith('519')) {
-      const cel9 = digitos.slice(2);
-      return {
-        esCelular9: true,
-        celular9: cel9,
-        whatsappLimpio: digitos,
-        visible: `+51 ${cel9.slice(0, 3)} ${cel9.slice(3, 6)} ${cel9.slice(6)}`
-      };
-    }
+  inputLogoFull?.addEventListener('input', () => {
+    const val = inputLogoFull.value.trim();
+    if (imgLogoFullPreview) imgLogoFullPreview.src = val || '';
+    if (btnLinkLogoFull) btnLinkLogoFull.href = val || '#';
+  });
 
-    return {
-      esCelular9: false,
-      celular9: digitos,
-      whatsappLimpio: digitos ? (digitos.startsWith('51') ? digitos : `51${digitos}`) : '',
-      visible: String(val || '').trim()
-    };
-  }
-
-  function actualizarHintTelefono() {
-    const val = inputTelefono?.value?.trim() || '';
-    if (!hintTelefonoFormato) return;
-    if (!val) {
-      hintTelefonoFormato.textContent = 'Ingresa 9 dígitos de celular o con prefijo +51';
-      hintTelefonoFormato.style.color = 'var(--muted)';
-      return;
-    }
-    const info = normalizarTelefonoPeru(val);
-    if (info.esCelular9) {
-      hintTelefonoFormato.textContent = `✓ Formato oficial: ${info.visible} (Celular Perú)`;
-      hintTelefonoFormato.style.color = '#10b981';
-    } else {
-      hintTelefonoFormato.textContent = `✓ Número registrado: ${info.visible}`;
-      hintTelefonoFormato.style.color = 'var(--muted)';
+  // ── 7.1 CONTROLADORES Y PREVIEWS EN TIEMPO REAL (BILINGÜE) ──
+  function actualizarContadorChar(elBadge, len, min, max) {
+    if (!elBadge) return;
+    elBadge.textContent = `${len} / ${max}`;
+    elBadge.classList.remove('warning', 'danger');
+    if (len > max) {
+      elBadge.classList.add('danger');
+    } else if (len < min && len > 0) {
+      elBadge.classList.add('warning');
     }
   }
 
-  function actualizarHintWhatsapp() {
-    const val = inputWhatsapp?.value?.trim() || '';
-    if (!hintWhatsappFormato) return;
-    if (!val) {
-      hintWhatsappFormato.textContent = 'Ingresa 9 dígitos de WhatsApp';
-      hintWhatsappFormato.style.color = 'var(--muted)';
-      return;
-    }
-    const info = normalizarTelefonoPeru(val);
-    if (info.esCelular9) {
-      hintWhatsappFormato.textContent = `✓ Enlace directo: wa.me/${info.whatsappLimpio}`;
-      hintWhatsappFormato.style.color = '#10b981';
-    } else {
-      hintWhatsappFormato.textContent = `✓ Enlace directo: wa.me/${info.whatsappLimpio || val}`;
-      hintWhatsappFormato.style.color = '#10b981';
+  // 1. Previews SEO Google SERP
+  function sincronizarSeoEs() {
+    const tit = inputSeoTituloEs?.value?.trim() || inputSeoTituloEs?.placeholder || 'Solgas Surquillo | Pedir Gas en Surquillo, Miraflores y Lima';
+    const desc = inputSeoDescEs?.value?.trim() || inputSeoDescEs?.placeholder || 'Solgas Surquillo: pide tu gas en Surquillo, Miraflores, San Borja y San Isidro. Delivery express en 15 min con balanza digital y garantía oficial Solgas.';
+    if (ngSerpTitleEs) ngSerpTitleEs.textContent = tit;
+    if (ngSerpDescEs) ngSerpDescEs.textContent = desc;
+    actualizarContadorChar(ngSeoTituloCountEs, (inputSeoTituloEs?.value || '').length, 45, 65);
+    actualizarContadorChar(ngSeoDescCountEs, (inputSeoDescEs?.value || '').length, 120, 160);
+  }
+
+  function sincronizarSeoEn() {
+    const tit = inputSeoTituloEn?.value?.trim() || inputSeoTituloEn?.placeholder || 'Solgas Surquillo | Express LPG Cooking Gas Delivery Lima 15 Min';
+    const desc = inputSeoDescEn?.value?.trim() || inputSeoDescEn?.placeholder || 'Order official Solgas LPG cylinders in Surquillo & Miraflores. 15-minute express delivery with certified digital weight scale and factory warranty.';
+    if (ngSerpTitleEn) ngSerpTitleEn.textContent = tit;
+    if (ngSerpDescEn) ngSerpDescEn.textContent = desc;
+    actualizarContadorChar(ngSeoTituloCountEn, (inputSeoTituloEn?.value || '').length, 45, 65);
+    actualizarContadorChar(ngSeoDescCountEn, (inputSeoDescEn?.value || '').length, 120, 160);
+  }
+
+  function actualizarFotoMiniatura(url) {
+    if (!url) return;
+    const cleanUrl = url.trim();
+    const fullUrl = formatearUrlCompleta(cleanUrl);
+    if (inputSeoImgEs) inputSeoImgEs.value = fullUrl;
+    if (inputSeoImgEn) inputSeoImgEn.value = fullUrl;
+    if (ngSerpImgEs) ngSerpImgEs.src = cleanUrl;
+    if (ngSerpImgEn) ngSerpImgEn.src = cleanUrl;
+  }
+
+  function promptCambiarFotoSeo() {
+    const actual = inputSeoImgEs?.value || ngSerpImgEs?.getAttribute('src') || '/imgwii/productos/BALON-10KG.webp';
+    const sugeridas = [
+      '/imgwii/productos/BALON-10KG.webp',
+      '/imgwii/hero.webp',
+      '/imgwii/logo.webp',
+      '/imgwii/productos/BALON-45KG.webp'
+    ];
+    const nueva = window.prompt(`Ingresa la URL o ruta de la imagen miniatura para Google SERP:\n\nSugerencias frecuentes:\n- ${sugeridas.join('\n- ')}`, actual);
+    if (nueva && nueva.trim() && nueva.trim() !== actual) {
+      actualizarFotoMiniatura(nueva.trim());
+      Notificacion.exito('Miniatura de Google SERP actualizada en vivo');
     }
   }
 
-  inputTelefono?.addEventListener('input', () => {
-    actualizarHintTelefono();
-    autoGuardarBorrador();
+  btnCambiarFotoSeoEs?.addEventListener('click', (e) => { e.stopPropagation(); promptCambiarFotoSeo(); });
+  btnCambiarFotoSeoEn?.addEventListener('click', (e) => { e.stopPropagation(); promptCambiarFotoSeo(); });
+  ngSerpThumbBoxEs?.addEventListener('dblclick', () => promptCambiarFotoSeo());
+  ngSerpThumbBoxEn?.addEventListener('dblclick', () => promptCambiarFotoSeo());
+
+  inputSeoImgEs?.addEventListener('input', () => {
+    const val = inputSeoImgEs.value.trim();
+    if (ngSerpImgEs) ngSerpImgEs.src = val || '/imgwii/productos/BALON-10KG.webp';
+    if (inputSeoImgEn) inputSeoImgEn.value = val;
+    if (ngSerpImgEn) ngSerpImgEn.src = val || '/imgwii/productos/BALON-10KG.webp';
   });
 
-  inputTelefono?.addEventListener('blur', () => {
-    const val = inputTelefono.value.trim();
-    const info = normalizarTelefonoPeru(val);
-    if (info.esCelular9) {
-      inputTelefono.value = info.visible;
-      actualizarHintTelefono();
-      autoGuardarBorrador();
+  inputSeoImgEn?.addEventListener('input', () => {
+    const val = inputSeoImgEn.value.trim();
+    if (ngSerpImgEn) ngSerpImgEn.src = val || '/imgwii/productos/BALON-10KG.webp';
+    if (inputSeoImgEs) inputSeoImgEs.value = val;
+    if (ngSerpImgEs) ngSerpImgEs.src = val || '/imgwii/productos/BALON-10KG.webp';
+  });
+
+  btnProbarFotoSeoEs?.addEventListener('click', () => {
+    const url = inputSeoImgEs?.value?.trim() || ngSerpImgEs?.getAttribute('src');
+    if (url) window.open(url, '_blank');
+  });
+
+  btnProbarFotoSeoEn?.addEventListener('click', () => {
+    const url = inputSeoImgEn?.value?.trim() || ngSerpImgEn?.getAttribute('src');
+    if (url) window.open(url, '_blank');
+  });
+
+  inputSeoTituloEs?.addEventListener('input', sincronizarSeoEs);
+  inputSeoDescEs?.addEventListener('input', sincronizarSeoEs);
+  inputSeoTituloEn?.addEventListener('input', sincronizarSeoEn);
+  inputSeoDescEn?.addEventListener('input', sincronizarSeoEn);
+
+  // 2. Previews Biografía y Nosotros
+  function sincronizarBioEs() {
+    if (ngBioPreviewTextEs) {
+      ngBioPreviewTextEs.textContent = inputBioEs?.value?.trim() || inputBioEs?.placeholder || 'Distribuidor oficial de GLP con certificación OSINERGMIN y balanza digital.';
     }
-  });
-
-  inputWhatsapp?.addEventListener('input', () => {
-    actualizarHintWhatsapp();
-    autoGuardarBorrador();
-  });
-
-  inputWhatsapp?.addEventListener('blur', () => {
-    const val = inputWhatsapp.value.trim();
-    const info = normalizarTelefonoPeru(val);
-    if (info.esCelular9) {
-      inputWhatsapp.value = info.whatsappLimpio;
-      actualizarHintWhatsapp();
-      autoGuardarBorrador();
+    if (ngBioPreviewChipsEs) {
+      const rawChips = inputEnfoques?.value?.trim() || inputEnfoques?.placeholder || 'Delivery Express · Balanza Digital · Peso Exacto';
+      const items = rawChips.split(/[·,]/).map(s => s.trim()).filter(Boolean);
+      ngBioPreviewChipsEs.innerHTML = items.map(t => `<span class="mockup-bio-chip"><i class="fa-solid fa-check"></i> ${t}</span>`).join('');
     }
-  });
-
-  // Generador de Saludo Dinámico para WhatsApp
-  btnRestaurarMensajeWs?.addEventListener('click', () => {
-    const saludo = Saludar().replace(/,/g, '').trim();
-    const nombreNegocio = inputNombre?.value?.trim() || '';
-    const msg = `¡${saludo}${nombreNegocio ? ' ' + nombreNegocio : ''}! He visto en su página que tienen el *producto* y deseo consultar precio y pedir un balón de gas para entrega a domicilio.`;
-    if (inputWhatsappMensaje) {
-      inputWhatsappMensaje.value = msg;
-      autoGuardarBorrador();
-      Notificacion(`Mensaje generado con "${saludo}"`, 'success', 2500);
+    if (ngBioPreviewHorarioEs) {
+      ngBioPreviewHorarioEs.textContent = inputHorario?.value?.trim() || inputHorario?.placeholder || 'Lunes a Domingo: 6:00 a.m. a 11:00 p.m.';
     }
-  });
+    if (ngBioPreviewWaMsgEs) {
+      ngBioPreviewWaMsgEs.textContent = inputWhatsappMensaje?.value?.trim() || inputWhatsappMensaje?.placeholder || '¡Hola Solgas Surquillo! Deseo pedir un balón...';
+    }
+  }
 
-  // 3.1. Acciones y Utilidades de Google Maps
+  function sincronizarBioEn() {
+    if (ngBioPreviewTextEn) {
+      ngBioPreviewTextEn.textContent = inputBioEn?.value?.trim() || inputBioEn?.placeholder || 'Official LPG distributor certified by OSINERGMIN with digital scale verification.';
+    }
+    if (ngBioPreviewChipsEn) {
+      const rawChips = inputEnfoquesEn?.value?.trim() || inputEnfoquesEn?.placeholder || 'Express Delivery · Digital Scale · Exact Weight';
+      const items = rawChips.split(/[·,]/).map(s => s.trim()).filter(Boolean);
+      ngBioPreviewChipsEn.innerHTML = items.map(t => `<span class="mockup-bio-chip"><i class="fa-solid fa-check"></i> ${t}</span>`).join('');
+    }
+    if (ngBioPreviewHorarioEn) {
+      ngBioPreviewHorarioEn.textContent = inputHorarioEn?.value?.trim() || inputHorarioEn?.placeholder || 'Monday to Sunday: 6:00 a.m. to 11:00 p.m.';
+    }
+    if (ngBioPreviewWaMsgEn) {
+      ngBioPreviewWaMsgEn.textContent = inputWhatsappMensajeEn?.value?.trim() || inputWhatsappMensajeEn?.placeholder || 'Hello Solgas Surquillo! I would like to order...';
+    }
+  }
+
+  inputBioEs?.addEventListener('input', sincronizarBioEs);
+  inputEnfoques?.addEventListener('input', sincronizarBioEs);
+  inputHorario?.addEventListener('input', sincronizarBioEs);
+  inputWhatsappMensaje?.addEventListener('input', sincronizarBioEs);
+
+  inputBioEn?.addEventListener('input', sincronizarBioEn);
+  inputEnfoquesEn?.addEventListener('input', sincronizarBioEn);
+  inputHorarioEn?.addEventListener('input', sincronizarBioEn);
+  inputWhatsappMensajeEn?.addEventListener('input', sincronizarBioEn);
+
+  // 3. Previews Sedes y Cobertura
+  function sincronizarSedesEs() {
+    if (ngSedesPreviewTagPresencialEs) {
+      ngSedesPreviewTagPresencialEs.textContent = inputSedeVesTagEs?.value?.trim() || inputSedeVesTagEs?.placeholder || 'Sede Central Express';
+    }
+    if (ngSedesPreviewHorPresencialEs) {
+      ngSedesPreviewHorPresencialEs.textContent = inputSedeVesAtencionEs?.value?.trim() || inputSedeVesAtencionEs?.placeholder || 'Lun-Dom 6:00am - 11:00pm';
+    }
+    if (ngSedesPreviewTagVirtualEs) {
+      ngSedesPreviewTagVirtualEs.textContent = inputSedeVirtualTagEs?.value?.trim() || inputSedeVirtualTagEs?.placeholder || 'Delivery Express';
+    }
+    if (ngSedesPreviewHorVirtualEs) {
+      ngSedesPreviewHorVirtualEs.textContent = inputSedeVirtualAtencionEs?.value?.trim() || inputSedeVirtualAtencionEs?.placeholder || '15 a 20 minutos';
+    }
+  }
+
+  function sincronizarSedesEn() {
+    if (ngSedesPreviewTagPresencialEn) {
+      ngSedesPreviewTagPresencialEn.textContent = inputSedeVesTagEn?.value?.trim() || inputSedeVesTagEn?.placeholder || 'Main Hub Express';
+    }
+    if (ngSedesPreviewHorPresencialEn) {
+      ngSedesPreviewHorPresencialEn.textContent = inputSedeVesAtencionEn?.value?.trim() || inputSedeVesAtencionEn?.placeholder || 'Mon-Sun 6:00am - 11:00pm';
+    }
+    if (ngSedesPreviewTagVirtualEn) {
+      ngSedesPreviewTagVirtualEn.textContent = inputSedeVirtualTagEn?.value?.trim() || inputSedeVirtualTagEn?.placeholder || 'Express Delivery';
+    }
+    if (ngSedesPreviewHorVirtualEn) {
+      ngSedesPreviewHorVirtualEn.textContent = inputSedeVirtualAtencionEn?.value?.trim() || inputSedeVirtualAtencionEn?.placeholder || '15 to 20 mins';
+    }
+  }
+
+  inputSedeVesTagEs?.addEventListener('input', sincronizarSedesEs);
+  inputSedeVesAtencionEs?.addEventListener('input', sincronizarSedesEs);
+  inputSedeVirtualTagEs?.addEventListener('input', sincronizarSedesEs);
+  inputSedeVirtualAtencionEs?.addEventListener('input', sincronizarSedesEs);
+
+  inputSedeVesTagEn?.addEventListener('input', sincronizarSedesEn);
+  inputSedeVesAtencionEn?.addEventListener('input', sincronizarSedesEn);
+  inputSedeVirtualTagEn?.addEventListener('input', sincronizarSedesEn);
+  inputSedeVirtualAtencionEn?.addEventListener('input', sincronizarSedesEn);
+
+  function refrescarTodosLosPreviews() {
+    sincronizarSeoEs();
+    sincronizarSeoEn();
+    sincronizarBioEs();
+    sincronizarBioEn();
+    sincronizarSedesEs();
+    sincronizarSedesEn();
+  }
+
+  // ── ASISTENTE DE GOOGLE MAPS ──
   btnBuscarGoogleMaps?.addEventListener('click', () => {
     const dir = inputDireccion?.value?.trim() || '';
-    const dist = inputDistrito?.value?.trim() || '';
-    const nom = inputNombre?.value?.trim() || '';
-    const partes = [nom, dir, dist].filter(Boolean);
-    const query = partes.length > 0 ? partes.join(', ') : 'Lima, Peru';
-    const mapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-    window.open(mapsSearchUrl, '_blank', 'noopener,noreferrer');
-    Notificacion('Google Maps abierto en nueva pestaña. Copia el vínculo de compartir y pégalo aquí.', 'info', 4000);
+    if (dir) {
+      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dir)}`, '_blank');
+    } else {
+      window.open('https://maps.google.com', '_blank');
+    }
   });
 
   btnProbarMapsUrl?.addEventListener('click', () => {
-    let url = inputMapsUrl?.value?.trim();
-    if (!url) {
-      Notificacion('Ingresa o genera un enlace de Google Maps primero', 'warning', 3000);
-      inputMapsUrl?.focus();
-      return;
-    }
-    if (!/^https?:\/\//i.test(url)) {
-      url = 'https://' + url;
-      inputMapsUrl.value = url;
-    }
-    window.open(url, '_blank', 'noopener,noreferrer');
+    const url = inputMapsUrl?.value?.trim() || 'https://maps.google.com';
+    window.open(url, '_blank');
   });
 
-  btnAutogenerarMapsUrl?.addEventListener('click', () => {
-    const lat = parseFloat(inputLat?.value);
-    const lng = parseFloat(inputLng?.value);
-    let autoUrl = '';
+  // ── GESTIÓN INTELIGENTE DE PAÍS, TELÉFONO Y WHATSAPP ──
+  let instSelectPais = null;
 
-    if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
-      autoUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-    } else {
-      const dir = inputDireccion?.value?.trim() || inputDistrito?.value?.trim() || 'Lima';
-      autoUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dir)}`;
-    }
-
-    if (inputMapsUrl) {
-      inputMapsUrl.value = autoUrl;
-      autoGuardarBorrador();
-      Notificacion('Enlace de Google Maps generado automáticamente', 'success', 2500);
-    }
-  });
-
-  // 4. Renderizado de la lista de Zonas de Cobertura
-  function renderZonas() {
-    if (!ngZonasContainer) return;
-    if (currentZonas.length === 0) {
-      ngZonasContainer.innerHTML = `
-        <div style="text-align:center; padding: 24px; color: var(--muted); font-size: var(--fz_s4);">
-          No hay zonas registradas. Presiona <strong>Agregar Zona</strong> para añadir cobertura.
-        </div>
-      `;
-      return;
-    }
-
-    ngZonasContainer.innerHTML = currentZonas.map((z, idx) => `
-      <div class="ng-zona-row ${z.activo ? '' : 'inactive'}" data-index="${idx}">
-        <input type="text" class="ng-input input-zona-distrito" placeholder="Distrito (ej: Surquillo)" value="${z.distrito || ''}" />
-        <input type="number" class="ng-input input-zona-min" placeholder="Min (12)" value="${z.tiempoMin || 10}" title="Tiempo mínimo" />
-        <input type="number" class="ng-input input-zona-max" placeholder="Max (18)" value="${z.tiempoMax || 20}" title="Tiempo máximo" />
-        <select class="ng-input input-zona-unidad">
-          <option value="min" ${z.unidad === 'min' ? 'selected' : ''}>min</option>
-          <option value="h" ${z.unidad === 'h' ? 'selected' : ''}>h</option>
-        </select>
-        <input type="text" class="ng-input input-zona-tag" placeholder="Tag (Sede Express / Ruta Directa)" value="${z.tag || ''}" />
-        <label class="ng-switch" title="${z.activo ? 'Desactivar zona' : 'Activar zona'}">
-          <input type="checkbox" class="input-zona-activo" ${z.activo ? 'checked' : ''} />
-          <span class="ng-slider"></span>
-        </label>
-        <button type="button" class="ng-btn-icon-del btn-del-zona" title="Eliminar zona">
-          <i class="fa-solid fa-trash"></i>
-        </button>
-      </div>
-    `).join('');
+  function soloDigitos(str = '') {
+    return String(str || '').replace(/\D/g, '');
   }
 
-  // 5. Delegación de eventos en la lista de Zonas (0 memory leaks)
-  ngZonasContainer?.addEventListener('input', (e) => {
-    const row = e.target.closest('.ng-zona-row');
-    if (!row) return;
-    const idx = parseInt(row.getAttribute('data-index') || '0', 10);
-    const z = currentZonas[idx];
-    if (!z) return;
+  function getPaisCodeActual() {
+    const opt = selectPais?.options[selectPais.selectedIndex];
+    return opt?.dataset?.code || '51';
+  }
 
-    if (e.target.classList.contains('input-zona-distrito')) z.distrito = e.target.value.trim();
-    if (e.target.classList.contains('input-zona-min')) z.tiempoMin = parseInt(e.target.value, 10) || 0;
-    if (e.target.classList.contains('input-zona-max')) z.tiempoMax = parseInt(e.target.value, 10) || 0;
-    if (e.target.classList.contains('input-zona-tag')) z.tag = e.target.value.trim();
+  function formatearTelefonoVisible(numeroRaw, code = getPaisCodeActual()) {
+    const raw = String(numeroRaw || '').trim();
+    if (!raw) return '';
+    let digitos = soloDigitos(raw);
+    if (!digitos) return '';
 
-    autoGuardarBorrador();
-  });
-
-  ngZonasContainer?.addEventListener('change', (e) => {
-    const row = e.target.closest('.ng-zona-row');
-    if (!row) return;
-    const idx = parseInt(row.getAttribute('data-index') || '0', 10);
-    const z = currentZonas[idx];
-    if (!z) return;
-
-    if (e.target.classList.contains('input-zona-unidad')) z.unidad = e.target.value;
-    if (e.target.classList.contains('input-zona-activo')) {
-      z.activo = e.target.checked;
-      row.classList.toggle('inactive', !z.activo);
+    if (code && digitos.startsWith(code) && digitos.length > code.length) {
+      digitos = digitos.slice(code.length);
     }
 
-    autoGuardarBorrador();
+    if (code === '51' && digitos.length === 9) {
+      return `+51 ${digitos.slice(0, 3)} ${digitos.slice(3, 6)} ${digitos.slice(6)}`;
+    }
+
+    if (digitos.length >= 6) {
+      const partes = digitos.match(/.{1,3}/g) || [digitos];
+      return `+${code} ${partes.join(' ')}`;
+    }
+
+    return `+${code} ${digitos}`;
+  }
+
+  function generarWhatsappApi(numeroRaw, code = getPaisCodeActual()) {
+    const raw = String(numeroRaw || '').trim();
+    if (!raw) return '';
+    let digitos = soloDigitos(raw);
+    if (!digitos) return '';
+
+    if (code && !digitos.startsWith(code)) {
+      digitos = `${code}${digitos}`;
+    }
+    return digitos;
+  }
+
+  function sincronizarTelefonosDesdePais(code) {
+    if (inputTelefono?.value) {
+      inputTelefono.value = formatearTelefonoVisible(inputTelefono.value, code);
+    }
+    if (inputWhatsapp?.value) {
+      inputWhatsapp.value = generarWhatsappApi(inputWhatsapp.value, code);
+      if (hintWhatsappFormato) hintWhatsappFormato.textContent = inputWhatsapp.value;
+    }
+  }
+
+  // Inicializar wiSelect para el País
+  if (selectPais) {
+    instSelectPais = wiSelect(selectPais, {
+      placeholder: 'Selecciona país...',
+      onChange: (val) => {
+        const opt = selectPais.querySelector(`option[value="${val}"]`);
+        const code = opt?.dataset.code || '51';
+        if (hintPaisCodigo) hintPaisCodigo.textContent = `${opt?.text.slice(0, 2) || '🇵🇪'} +${code}`;
+        sincronizarTelefonosDesdePais(code);
+      }
+    });
+  }
+
+  // Listener para Teléfono Visible: actualiza WhatsApp en vivo y formatea en blur
+  inputTelefono?.addEventListener('input', () => {
+    const code = getPaisCodeActual();
+    const wsApi = generarWhatsappApi(inputTelefono.value, code);
+    if (inputWhatsapp) {
+      inputWhatsapp.value = wsApi;
+    }
+    if (hintWhatsappFormato) {
+      hintWhatsappFormato.textContent = wsApi || '';
+    }
   });
 
-  ngZonasContainer?.addEventListener('click', async (e) => {
-    const btnDel = e.target.closest('.btn-del-zona');
-    if (!btnDel) return;
-    const row = btnDel.closest('.ng-zona-row');
-    const idx = parseInt(row?.getAttribute('data-index') || '0', 10);
-    const z = currentZonas[idx];
+  inputTelefono?.addEventListener('blur', () => {
+    const code = getPaisCodeActual();
+    if (inputTelefono.value.trim()) {
+      inputTelefono.value = formatearTelefonoVisible(inputTelefono.value, code);
+    }
+  });
 
-    const conf = await wiConfirmar(`¿Deseas remover la zona de cobertura "${z?.distrito || 'Seleccionada'}"?`, {
-      titulo: 'Eliminar Zona',
-      tipo: 'danger',
-      siTexto: 'Sí, Eliminar'
+  // Listener para WhatsApp API: limpia espacios de inmediato y sincroniza Teléfono
+  inputWhatsapp?.addEventListener('input', () => {
+    const limpio = soloDigitos(inputWhatsapp.value);
+    inputWhatsapp.value = limpio;
+    if (hintWhatsappFormato) {
+      hintWhatsappFormato.textContent = limpio || '';
+    }
+    if (limpio && inputTelefono && !inputTelefono.value) {
+      inputTelefono.value = formatearTelefonoVisible(limpio, getPaisCodeActual());
+    }
+  });
+
+  // ── SALUDO DINÁMICO WHATSAPP ──
+  btnRestaurarMensajeWs?.addEventListener('click', () => {
+    const saludo = Saludar ? Saludar() : 'Hola';
+    const esp = inputEspecialista?.value?.trim() || inputNombreCorto?.value?.trim() || '';
+    if (inputWhatsappMensaje) {
+      const esServicios = configSemilla?.modeloNegocio === 'servicios_y_asesorias';
+      const mensajeDefecto = esServicios
+        ? `¡${saludo}${esp ? ' ' + esp : ''}! Deseo orientación sobre mis trámites y consultas.`
+        : `¡${saludo}${esp ? ' ' + esp : ''}! Deseo realizar un pedido de balón de gas.`;
+      inputWhatsappMensaje.value = mensajeDefecto;
+      Notificacion('Mensaje restaurado', 'info', 1800);
+    }
+  });
+
+  // ── GESTIÓN DE ENLACES COMPLETOS Y HANDLES DE REDES SOCIALES ──
+  function limpiarHandleRed(valor, tipo) {
+    if (!valor) return '';
+    let limpio = String(valor).trim();
+    if (!limpio) return '';
+
+    if (tipo === 'web') {
+      return limpio
+        .replace(/^https?:\/\//i, '')
+        .replace(/^www\./i, '')
+        .replace(/\/+$/, '');
+    }
+
+    if (tipo === 'whatsapp') {
+      limpio = limpio
+        .replace(/^https?:\/\/(www\.)?wa\.me\//i, '')
+        .replace(/^https?:\/\/(www\.)?whatsapp\.com\/channel\//i, 'channel/')
+        .replace(/^https?:\/\/(www\.)?chat\.whatsapp\.com\//i, 'chat/');
+      return limpio;
+    }
+
+    limpio = limpio
+      .replace(/^https?:\/\/(www\.)?youtube\.com\/(@|c\/|user\/)?/i, '')
+      .replace(/^https?:\/\/(www\.)?youtu\.be\//i, '')
+      .replace(/^https?:\/\/(www\.)?facebook\.com\//i, '')
+      .replace(/^https?:\/\/(www\.)?instagram\.com\//i, '')
+      .replace(/^https?:\/\/(www\.)?tiktok\.com\/(@)?/i, '')
+      .replace(/^https?:\/\/(www\.)?linkedin\.com\/(in\/|company\/)?/i, '')
+      .replace(/^https?:\/\/(www\.)?(twitter\.com|x\.com)\//i, '');
+
+    limpio = limpio.replace(/^@+/, '');
+    limpio = limpio.replace(/^\/+|\/+$/g, '');
+
+    return limpio;
+  }
+
+  function armarUrlRed(valor, tipo) {
+    if (!valor) return '';
+    const raw = String(valor).trim();
+    if (!raw) return '';
+
+    if (raw.startsWith('http://') || raw.startsWith('https://')) {
+      return raw;
+    }
+
+    const user = limpiarHandleRed(raw, tipo);
+    if (!user) return '';
+
+    switch (tipo) {
+      case 'youtube':
+        return `https://youtube.com/@${user}`;
+      case 'facebook':
+        return `https://facebook.com/${user}`;
+      case 'instagram':
+        return `https://instagram.com/${user}`;
+      case 'tiktok':
+        return `https://tiktok.com/@${user}`;
+      case 'linkedin':
+        return `https://linkedin.com/in/${user}`;
+      case 'twitter':
+        return `https://x.com/${user}`;
+      case 'web':
+        return `https://${user}`;
+      case 'whatsapp':
+        if (user.startsWith('channel/') || user.startsWith('chat/')) {
+          return `https://whatsapp.com/${user}`;
+        }
+        return `https://wa.me/${user.replace(/\D/g, '')}`;
+      default:
+        return raw;
+    }
+  }
+
+  // ── GESTIÓN DINÁMICA DE REDES SOCIALES (AGREGAR / QUITAR / REORDENAR / PROBAR) ──
+  let instSelectAgregarRed = null;
+
+  function refrescarSelectAgregarRed() {
+    if (!selectAgregarRed) return;
+
+    const disponibles = CATALOGO_REDES.filter(red => {
+      const row = document.querySelector(`.ng-red-row[data-red-id="${red.id}"]`);
+      return row && row.classList.contains('ng-red-hidden');
     });
 
-    if (conf) {
-      currentZonas.splice(idx, 1);
-      renderZonas();
-      autoGuardarBorrador();
-      Notificacion('Zona de cobertura eliminada', 'info', 2000);
+    selectAgregarRed.innerHTML = '';
+    const optDefecto = document.createElement('option');
+    optDefecto.value = '';
+    optDefecto.disabled = true;
+    optDefecto.selected = true;
+    optDefecto.textContent = disponibles.length > 0 ? '+ Agregar red social...' : '✓ Todas las redes agregadas';
+    selectAgregarRed.appendChild(optDefecto);
+
+    disponibles.forEach(red => {
+      const opt = document.createElement('option');
+      opt.value = red.id;
+      opt.textContent = `+ ${red.nombre}`;
+      selectAgregarRed.appendChild(opt);
+    });
+
+    if (btnAgregarRed) {
+      btnAgregarRed.disabled = disponibles.length === 0;
     }
-  });
+  }
 
-  // Botón para agregar una nueva zona
-  btnAgregarZona?.addEventListener('click', () => {
-    const nuevaZona = {
-      id: `zona_${Date.now()}`,
-      distrito: "Nuevo Distrito",
-      tiempoMin: 15,
-      tiempoMax: 25,
-      unidad: "min",
-      tag: "Ruta Directa",
-      activo: true
-    };
-    currentZonas.push(nuevaZona);
-    renderZonas();
-    autoGuardarBorrador();
+  function agregarRedPorId(redId) {
+    if (!redId) return;
+    const row = document.querySelector(`.ng-red-row[data-red-id="${redId}"]`);
+    const input = MAPA_INPUTS_REDES[redId];
+    const contenedor = document.getElementById('ngListaRedesOrdenables');
 
-    // Enfocar el input de la nueva zona
-    setTimeout(() => {
-      const inputs = ngZonasContainer?.querySelectorAll('.input-zona-distrito');
-      if (inputs && inputs.length > 0) {
-        inputs[inputs.length - 1].focus();
-        inputs[inputs.length - 1].select();
+    if (row) {
+      row.classList.remove('ng-red-hidden');
+      if (contenedor) contenedor.appendChild(row);
+      if (input) {
+        input.focus();
+        const cfg = CATALOGO_REDES.find(r => r.id === redId);
+        if (cfg && !input.value) {
+          input.placeholder = cfg.formato;
+        }
       }
-    }, 50);
-  });
+      actualizarBadgesRedes();
+      refrescarSelectAgregarRed();
+      Notificacion(`Red agregada a la lista`, 'success', 2000);
+    }
+  }
 
-  // 6. Carga de Datos en el Formulario
+  function quitarRedPorId(redId) {
+    if (!redId) return;
+    const row = document.querySelector(`.ng-red-row[data-red-id="${redId}"]`);
+    const input = MAPA_INPUTS_REDES[redId];
+
+    if (row) {
+      if (input) input.value = '';
+      row.classList.add('ng-red-hidden');
+      actualizarBadgesRedes();
+      refrescarSelectAgregarRed();
+      Notificacion(`Red quitada de la lista`, 'info', 1800);
+    }
+  }
+
+  // Inicializar wiSelect para el selector de agregar red
+  if (selectAgregarRed) {
+    if (wiSelect) {
+      instSelectAgregarRed = wiSelect(selectAgregarRed, {
+        placeholder: '+ Agregar red social...',
+        onChange: (val) => {
+          if (val) {
+            agregarRedPorId(val);
+            selectAgregarRed.value = '';
+          }
+        }
+      });
+    }
+
+    btnAgregarRed?.addEventListener('click', () => {
+      const val = selectAgregarRed.value;
+      if (val) {
+        agregarRedPorId(val);
+        selectAgregarRed.value = '';
+      } else {
+        Notificacion('Selecciona una red para agregar', 'info', 1800);
+      }
+    });
+  }
+
+  function reordenarFilasRedes(ordenIds = []) {
+    const contenedor = document.getElementById('ngListaRedesOrdenables');
+    if (!contenedor || !Array.isArray(ordenIds) || ordenIds.length === 0) return;
+
+    const filas = Array.from(contenedor.querySelectorAll('.ng-red-row'));
+    const mapaFilas = new Map();
+    filas.forEach(f => mapaFilas.set(f.dataset.redId, f));
+
+    ordenIds.forEach(id => {
+      const f = mapaFilas.get(id);
+      if (f) {
+        contenedor.appendChild(f);
+        mapaFilas.delete(id);
+      }
+    });
+
+    mapaFilas.forEach(f => contenedor.appendChild(f));
+  }
+
+  function actualizarBadgesRedes() {
+    const mapaInputs = [
+      { id: 'youtube', input: inputRedYoutube },
+      { id: 'facebook', input: inputRedFacebook },
+      { id: 'instagram', input: inputRedInstagram },
+      { id: 'tiktok', input: inputRedTiktok },
+      { id: 'whatsapp', input: inputRedCanalWhatsapp },
+      { id: 'web', input: inputRedWeb },
+      { id: 'linkedin', input: inputRedLinkedin },
+      { id: 'twitter', input: inputRedTwitter }
+    ];
+
+    mapaInputs.forEach(({ id, input }) => {
+      const badge = document.querySelector(`[data-badge-red="${id}"]`);
+      if (!badge) return;
+      const tieneValor = Boolean(input?.value?.trim());
+      if (tieneValor) {
+        badge.textContent = 'Visible';
+        badge.className = 'ng-red-badge active';
+      } else {
+        badge.textContent = 'Sin enlace';
+        badge.className = 'ng-red-badge inactive';
+      }
+    });
+  }
+
+  function inicializarEventosRedes() {
+    const contenedor = document.getElementById('ngListaRedesOrdenables');
+    if (!contenedor) return;
+
+    // 1. Botón Probar Enlace
+    contenedor.querySelectorAll('.ng-btn-probar-red').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const redId = btn.dataset.redId;
+        const el = MAPA_INPUTS_REDES[redId];
+        const val = el?.value?.trim() || '';
+        if (!val) {
+          Notificacion('Ingresa un enlace o usuario para probar esta red', 'info', 2000);
+          return;
+        }
+        const targetUrl = armarUrlRed(val, redId);
+        if (targetUrl) {
+          window.open(targetUrl, '_blank');
+        }
+      });
+    });
+
+    // 2. Botón Portal Oficial (Buscar o conseguir usuario)
+    contenedor.querySelectorAll('.ng-btn-portal-red').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const redId = btn.dataset.redId;
+        const config = CATALOGO_REDES.find(r => r.id === redId);
+        if (config?.portal) {
+          window.open(config.portal, '_blank');
+        }
+      });
+    });
+
+    // 3. Botón Quitar Red de la Lista
+    contenedor.querySelectorAll('.ng-btn-quitar-red').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const redId = btn.dataset.redId;
+        quitarRedPorId(redId);
+      });
+    });
+
+    // 4. Botones de Subir y Bajar (▲ / ▼)
+    contenedor.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ng-btn-move');
+      if (!btn) return;
+      const row = btn.closest('.ng-red-row');
+      if (!row) return;
+
+      const dir = btn.dataset.dir;
+      if (dir === 'up') {
+        const prev = row.previousElementSibling;
+        if (prev && prev.classList.contains('ng-red-row')) {
+          contenedor.insertBefore(row, prev);
+        }
+      } else if (dir === 'down') {
+        const next = row.nextElementSibling;
+        if (next && next.classList.contains('ng-red-row')) {
+          contenedor.insertBefore(next, row);
+        }
+      }
+    });
+
+    // 5. Drag & Drop HTML5 para Desktop
+    let draggedRow = null;
+
+    contenedor.querySelectorAll('.ng-red-row').forEach(row => {
+      row.addEventListener('dragstart', (e) => {
+        draggedRow = row;
+        row.classList.add('is-dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', row.dataset.redId || '');
+      });
+
+      row.addEventListener('dragend', () => {
+        if (draggedRow) draggedRow.classList.remove('is-dragging');
+        draggedRow = null;
+        contenedor.querySelectorAll('.ng-red-row').forEach(r => r.classList.remove('is-drag-over'));
+      });
+
+      row.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (!draggedRow || draggedRow === row) return;
+        row.classList.add('is-drag-over');
+      });
+
+      row.addEventListener('dragleave', () => {
+        row.classList.remove('is-drag-over');
+      });
+
+      row.addEventListener('drop', (e) => {
+        e.preventDefault();
+        row.classList.remove('is-drag-over');
+        if (!draggedRow || draggedRow === row) return;
+
+        const rect = row.getBoundingClientRect();
+        const middleY = rect.top + rect.height / 2;
+        if (e.clientY < middleY) {
+          contenedor.insertBefore(draggedRow, row);
+        } else {
+          contenedor.insertBefore(draggedRow, row.nextSibling);
+        }
+      });
+    });
+
+    // 6. Touch Drag nativo en el handle para Celulares
+    let touchRow = null;
+
+    contenedor.querySelectorAll('.ng-red-drag-handle').forEach(handle => {
+      handle.addEventListener('touchstart', (e) => {
+        const row = handle.closest('.ng-red-row');
+        if (!row) return;
+        touchRow = row;
+        row.classList.add('is-dragging');
+      }, { passive: true });
+
+      handle.addEventListener('touchmove', (e) => {
+        if (!touchRow) return;
+        const touch = e.touches[0];
+        const targetElem = document.elementFromPoint(touch.clientX, touch.clientY);
+        const targetRow = targetElem?.closest('.ng-red-row');
+        if (targetRow && targetRow !== touchRow && targetRow.parentElement === contenedor) {
+          const rect = targetRow.getBoundingClientRect();
+          const middleY = rect.top + rect.height / 2;
+          if (touch.clientY < middleY) {
+            contenedor.insertBefore(touchRow, targetRow);
+          } else {
+            contenedor.insertBefore(touchRow, targetRow.nextSibling);
+          }
+        }
+      }, { passive: true });
+
+      handle.addEventListener('touchend', () => {
+        if (touchRow) {
+          touchRow.classList.remove('is-dragging');
+          touchRow = null;
+        }
+      });
+    });
+
+    // Escuchar cambios en los inputs para actualizar badges
+    Object.values(MAPA_INPUTS_REDES).forEach(inp => {
+      inp?.addEventListener('input', actualizarBadgesRedes);
+    });
+  }
+
+  inicializarEventosRedes();
+
+  // ── CARGAR DATOS EN FORMULARIO ──
   function cargarFormulario(cfg) {
     if (!cfg) return;
 
-    if (inputNombre) inputNombre.value = cfg.identidad?.nombre || '';
-    if (inputNombreCorto) inputNombreCorto.value = cfg.identidad?.nombreCorto || '';
-    if (inputRazonSocial) inputRazonSocial.value = cfg.identidad?.razonSocial || '';
-    if (inputRuc) inputRuc.value = cfg.identidad?.ruc || '';
-    if (inputOsinergmin) inputOsinergmin.value = cfg.identidad?.registroOsinergmin || '';
-    if (inputMarcaRespaldo) inputMarcaRespaldo.value = cfg.identidad?.marcaRespaldo || '';
+    // Identidad Global
+    if (inputEspecialista) inputEspecialista.value = cfg.identidad?.especialista || '';
+    if (inputColegiatura) inputColegiatura.value = cfg.identidad?.colegiatura || '';
+    if (inputTitulo) inputTitulo.value = cfg.identidad?.titulo || '';
+    if (inputGrado) inputGrado.value = cfg.identidad?.grado || '';
 
     const fechaLanz = cfg.identidad?.lanzamientoFecha || '';
     if (inputLanzamiento) inputLanzamiento.value = fechaLanz;
-    const years = calcularAnosTrayectoria(fechaLanz);
-    if (ngYearsText) ngYearsText.textContent = years ? `${years} años` : '—';
+    const years = fechaLanz ? calcularAnosTrayectoria(fechaLanz) : (cfg.metricas?.years || '');
+    if (ngYearsText) ngYearsText.textContent = years ? `${years} años` : '';
 
-    if (inputLogo) inputLogo.value = cfg.identidad?.logo || '';
-    if (inputImagenSede) inputImagenSede.value = cfg.identidad?.imagenSede || '';
-    if (imgLogoPreview) imgLogoPreview.src = cfg.identidad?.logo || '';
-    if (imgHeroPreview) imgHeroPreview.src = cfg.identidad?.imagenSede || '';
+    const foto = cfg.identidad?.imagenSede || '';
+    const logo = cfg.identidad?.logo || '';
+    const logoFull = cfg.identidad?.logoFull || '';
+    if (inputImagenSede) inputImagenSede.value = foto ? formatearUrlCompleta(foto) : '';
+    if (inputLogo) inputLogo.value = logo ? formatearUrlCompleta(logo) : '';
+    if (inputLogoFull) inputLogoFull.value = logoFull ? formatearUrlCompleta(logoFull) : '';
+    if (imgHeroPreview) imgHeroPreview.src = foto || '';
+    if (imgLogoPreview) imgLogoPreview.src = logo || '';
+    if (imgLogoFullPreview) imgLogoFullPreview.src = logoFull || '';
+    if (btnLinkHero) btnLinkHero.href = foto ? formatearUrlCompleta(foto) : '#';
+    if (btnLinkLogo) btnLinkLogo.href = logo ? formatearUrlCompleta(logo) : '#';
+    if (btnLinkLogoFull) btnLinkLogoFull.href = logoFull ? formatearUrlCompleta(logoFull) : '#';
 
-    // Contacto
-    if (inputTelefono) inputTelefono.value = cfg.contacto?.telefono || '';
-    if (inputTelefonoFijo) inputTelefonoFijo.value = cfg.contacto?.telefonoFijo || '';
-    if (inputWhatsapp) inputWhatsapp.value = cfg.contacto?.whatsapp || '';
-    if (inputEmail) inputEmail.value = cfg.contacto?.email || '';
-
-    // Mensaje de WhatsApp
-    if (inputWhatsappMensaje) {
-      inputWhatsappMensaje.value = cfg.contacto?.whatsappMensaje || '';
+    // Identidad (ES)
+    if (inputNombre) inputNombre.value = cfg.identidad?.nombre || '';
+    if (inputNombreCorto) inputNombreCorto.value = cfg.identidad?.nombreCorto || '';
+    if (inputEnfoques) inputEnfoques.value = cfg.identidad?.enfoques || '';
+    if (inputBioEs) {
+      inputBioEs.value = typeof cfg.identidad?.bio === 'object' && cfg.identidad?.bio !== null
+        ? (cfg.identidad.bio.es || '')
+        : (cfg.identidad?.bio || '');
     }
 
-    if (inputHorario) inputHorario.value = cfg.contacto?.horario || '';
-    if (inputHorarioEn) inputHorarioEn.value = cfg.contacto?.horarioEn || '';
+    // Identidad (EN)
+    if (inputNombreEn) inputNombreEn.value = cfg.identidad?.nombreEn || cfg.identidad?.nombre || '';
+    if (inputNombreCortoEn) inputNombreCortoEn.value = cfg.identidad?.nombreCortoEn || cfg.identidad?.nombreCorto || '';
+    if (inputEnfoquesEn) inputEnfoquesEn.value = cfg.identidad?.enfoquesEn || cfg.identidad?.enfoques || '';
+    if (inputBioEn) {
+      inputBioEn.value = typeof cfg.identidad?.bio === 'object' && cfg.identidad?.bio !== null
+        ? (cfg.identidad.bio.en || '')
+        : (cfg.identidad?.bioEn || '');
+    }
 
-    actualizarHintTelefono();
-    actualizarHintWhatsapp();
+    // Canales de Atención Directa
+    const paisVal = cfg.contacto?.pais || cfg.ubicacion?.pais || 'PE';
+    if (selectPais) {
+      selectPais.value = paisVal;
+      if (instSelectPais && typeof instSelectPais.setValue === 'function') {
+        instSelectPais.setValue(paisVal);
+      }
+      const opt = selectPais.querySelector(`option[value="${paisVal}"]`);
+      if (hintPaisCodigo) {
+        hintPaisCodigo.textContent = `${opt?.text.slice(0, 2) || '🇵🇪'} +${opt?.dataset.code || '51'}`;
+      }
+    }
+
+    if (inputTelefono) inputTelefono.value = cfg.contacto?.telefono || '';
+    if (inputTelefonoFijo) inputTelefonoFijo.value = cfg.contacto?.telefonoFijo || '';
+    if (inputTelefonoSecundario) inputTelefonoSecundario.value = cfg.contacto?.telefonoSecundario || '';
+    if (inputWhatsapp) {
+      inputWhatsapp.value = soloDigitos(cfg.contacto?.whatsapp || '');
+      if (hintWhatsappFormato) hintWhatsappFormato.textContent = inputWhatsapp.value || '';
+    }
+    if (inputEmail) inputEmail.value = cfg.contacto?.email || '';
+
+    if (ngHorarioSemanaAbre) ngHorarioSemanaAbre.value = cfg.horarios?.semana?.abre || '';
+    if (ngHorarioSemanaCierra) ngHorarioSemanaCierra.value = cfg.horarios?.semana?.cierra || '';
+    if (ngHorarioSabadoAbre) ngHorarioSabadoAbre.value = cfg.horarios?.sabado?.abre || '';
+    if (ngHorarioSabadoCierra) ngHorarioSabadoCierra.value = cfg.horarios?.sabado?.cierra || '';
+
+    // Horario Texto
+    if (inputHorario) {
+      inputHorario.value = typeof cfg.contacto?.horario === 'object' && cfg.contacto?.horario !== null
+        ? (cfg.contacto.horario.es || '')
+        : (cfg.contacto?.horario || '');
+    }
+    if (inputHorarioEn) {
+      inputHorarioEn.value = typeof cfg.contacto?.horario === 'object' && cfg.contacto?.horario !== null
+        ? (cfg.contacto.horario.en || '')
+        : (cfg.contacto?.horarioEn || '');
+    }
+
+    // WhatsApp Mensaje
+    const ws = cfg.contacto?.whatsappMensaje;
+    if (inputWhatsappMensaje) {
+      inputWhatsappMensaje.value = typeof ws === 'object' && ws !== null
+        ? (ws.es || '')
+        : (typeof ws === 'string' ? ws : '');
+    }
+    if (inputWhatsappMensajeEn) {
+      inputWhatsappMensajeEn.value = typeof ws === 'object' && ws !== null
+        ? (ws.en || '')
+        : (cfg.contacto?.whatsappMensajeEn || '');
+    }
 
     // Ubicación
     if (inputDireccion) inputDireccion.value = cfg.ubicacion?.direccion || '';
+    if (inputReferencia) inputReferencia.value = cfg.ubicacion?.referencia || '';
     if (inputDistrito) inputDistrito.value = cfg.ubicacion?.distrito || '';
     if (inputCiudad) inputCiudad.value = cfg.ubicacion?.ciudad || '';
     if (inputMapsUrl) inputMapsUrl.value = cfg.ubicacion?.mapsUrl || '';
-    if (inputLat) inputLat.value = cfg.ubicacion?.coordenadas?.lat || '';
-    if (inputLng) inputLng.value = cfg.ubicacion?.coordenadas?.lng || '';
+    if (inputLat) inputLat.value = cfg.ubicacion?.coordenadas?.lat ?? '';
+    if (inputLng) inputLng.value = cfg.ubicacion?.coordenadas?.lng ?? '';
 
-    // Métricas y Redes
+    // Sedes
+    const sedes = (Array.isArray(cfg.sedes) && cfg.sedes.length > 0) ? cfg.sedes : (actual.sedes || []);
+    const sedePresencial = sedes[0] || {};
+    const sedeVirtual = sedes[1] || {};
+
+    if (ngSedeVesTagEs) ngSedeVesTagEs.value = typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.es || '') : (sedePresencial.tag || '');
+    if (ngSedeVesAtencionEs) ngSedeVesAtencionEs.value = typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.es || '') : (sedePresencial.atencion || '');
+    if (ngSedeVesTagEn) ngSedeVesTagEn.value = typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.en || '') : (sedePresencial.tagEn || '');
+    if (ngSedeVesAtencionEn) ngSedeVesAtencionEn.value = typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.en || '') : (sedePresencial.atencionEn || '');
+
+    if (ngSedeVirtualTagEs) ngSedeVirtualTagEs.value = typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.es || '') : (sedeVirtual.tag || '');
+    if (ngSedeVirtualAtencionEs) ngSedeVirtualAtencionEs.value = typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.es || '') : (sedeVirtual.atencion || '');
+    if (ngSedeVirtualTagEn) ngSedeVirtualTagEn.value = typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.en || '') : (sedeVirtual.tag || '');
+    if (ngSedeVirtualAtencionEn) ngSedeVirtualAtencionEn.value = typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.en || '') : (sedeVirtual.atencionEn || '');
+
+    // Métricas
     if (inputMetricaClientes) inputMetricaClientes.value = cfg.metricas?.clientes || '';
-    if (inputMetricaBalanza) inputMetricaBalanza.value = cfg.metricas?.balanza || '';
-    if (inputMetricaDias) inputMetricaDias.value = cfg.metricas?.dias || '';
-    if (inputRedFacebook) inputRedFacebook.value = cfg.redes?.facebook || '';
-    if (inputRedInstagram) inputRedInstagram.value = cfg.redes?.instagram || '';
-    if (inputRedTiktok) inputRedTiktok.value = cfg.redes?.tiktok || '';
+    if (inputMetricaSatisfaccion) inputMetricaSatisfaccion.value = cfg.metricas?.satisfaccion || '';
+    if (inputMetricaConfidencialidad) inputMetricaConfidencialidad.value = cfg.metricas?.confidencialidad || '';
 
-    // SEO Dinámico
+    // Redes & Canales
+    const r = cfg.redes || {};
+    if (inputRedYoutube) {
+      inputRedYoutube.value = r.youtube || (r.youtubeUser ? armarUrlRed(r.youtubeUser, 'youtube') : '');
+    }
+    if (inputRedFacebook) {
+      inputRedFacebook.value = r.facebook || (r.facebookUser ? armarUrlRed(r.facebookUser, 'facebook') : '');
+    }
+    if (inputRedInstagram) {
+      inputRedInstagram.value = r.instagram || (r.instagramUser ? armarUrlRed(r.instagramUser, 'instagram') : '');
+    }
+    if (inputRedTiktok) {
+      inputRedTiktok.value = r.tiktok || (r.tiktokUser ? armarUrlRed(r.tiktokUser, 'tiktok') : '');
+    }
+    if (inputRedCanalWhatsapp) {
+      inputRedCanalWhatsapp.value = r.canalWhatsapp || (r.canalWhatsappUser ? armarUrlRed(r.canalWhatsappUser, 'whatsapp') : (r.whatsapp || ''));
+    }
+    if (inputRedWeb) {
+      inputRedWeb.value = r.web || (r.webUser ? armarUrlRed(r.webUser, 'web') : (r.webOficial || ''));
+    }
+    if (inputRedLinkedin) {
+      inputRedLinkedin.value = r.linkedin || (r.linkedinUser ? armarUrlRed(r.linkedinUser, 'linkedin') : '');
+    }
+    if (inputRedTwitter) {
+      inputRedTwitter.value = r.twitter || (r.twitterUser ? armarUrlRed(r.twitterUser, 'twitter') : '');
+    }
+
+    // Ocultar redes vacías para que se listen en el selector de agregar
+    CATALOGO_REDES.forEach(red => {
+      const row = document.querySelector(`.ng-red-row[data-red-id="${red.id}"]`);
+      const inp = MAPA_INPUTS_REDES[red.id];
+      if (row) {
+        if (inp && inp.value.trim()) {
+          row.classList.remove('ng-red-hidden');
+        } else {
+          row.classList.add('ng-red-hidden');
+        }
+      }
+    });
+
+    // Reordenar filas visuales según redesOrden
+    const ordenGuardado = Array.isArray(cfg.redesOrden) && cfg.redesOrden.length > 0
+      ? cfg.redesOrden
+      : getCanalesRedes().map(c => c.id);
+    reordenarFilasRedes(ordenGuardado);
+
+    // Actualizar badges y selector de agregar red
+    actualizarBadgesRedes();
+    refrescarSelectAgregarRed();
+
+    // SEO
     if (inputSeoTituloEs) inputSeoTituloEs.value = cfg.seo?.titulo?.es || '';
     if (inputSeoDescEs) inputSeoDescEs.value = cfg.seo?.descripcion?.es || '';
     if (inputSeoKeywordsEs) {
       const kw = cfg.seo?.keywords?.es;
       inputSeoKeywordsEs.value = Array.isArray(kw) ? kw.join(', ') : (kw || '');
     }
+    if (inputSeoImgEs) {
+      const seoImgVal = cfg.seo?.imagen || actual.seo?.imagen || '';
+      inputSeoImgEs.value = formatearUrlCompleta(seoImgVal);
+      if (ngSerpImgEs && seoImgVal) ngSerpImgEs.src = seoImgVal;
+    }
+
     if (inputSeoTituloEn) inputSeoTituloEn.value = cfg.seo?.titulo?.en || '';
     if (inputSeoDescEn) inputSeoDescEn.value = cfg.seo?.descripcion?.en || '';
     if (inputSeoKeywordsEn) {
       const kw = cfg.seo?.keywords?.en;
       inputSeoKeywordsEn.value = Array.isArray(kw) ? kw.join(', ') : (kw || '');
     }
+    if (inputSeoImgEn) {
+      const seoImgVal = cfg.seo?.imagen || actual.seo?.imagen || '';
+      inputSeoImgEn.value = formatearUrlCompleta(seoImgVal);
+      if (ngSerpImgEn && seoImgVal) ngSerpImgEn.src = seoImgVal;
+    }
 
-    currentZonas = Array.isArray(cfg.zonas) ? JSON.parse(JSON.stringify(cfg.zonas)) : [];
-    renderZonas();
+    // Inicializar todos los previews interactivos
+    refrescarTodosLosPreviews();
   }
 
-  // 7. Extraer Datos del Formulario
-  function recolectarDatosFormulario() {
+  // ── RECOLECTAR DATOS DE LA UI ──
+  function recolectarDatos() {
+    const kwEs = (inputSeoKeywordsEs?.value || '').split(',').map(s => s.trim()).filter(Boolean);
+    const kwEn = (inputSeoKeywordsEn?.value || '').split(',').map(s => s.trim()).filter(Boolean);
+    const actual = obtenerDatosNegocio();
+    const paisSel = selectPais?.value || 'PE';
+    const optPais = selectPais?.options[selectPais.selectedIndex];
+    const paisCodeSel = optPais?.dataset?.code || '51';
+    const rawTel = (inputTelefono?.value || '').trim();
+    const rawWs = soloDigitos(inputWhatsapp?.value || '');
+    const idnt = actual.identidad || {};
+    const cont = actual.contacto || {};
+    const ubic = actual.ubicacion || {};
+
     return {
+      id: actual.id || 'principal',
+      moneda: actual.moneda || 'PEN',
+      idiomaPrincipal: actual.idiomaPrincipal || 'es',
+      idiomas: actual.idiomas || ['es', 'en'],
+      titulo: actual.titulo || idnt.nombre || '',
+      subtitulo: actual.subtitulo || idnt.cargo || '',
+      hero: actual.hero || {},
+
       identidad: {
-        nombre: inputNombre?.value?.trim() || "",
-        nombreCorto: inputNombreCorto?.value?.trim() || "",
-        razonSocial: inputRazonSocial?.value?.trim() || "",
-        ruc: inputRuc?.value?.trim() || "",
-        registroOsinergmin: inputOsinergmin?.value?.trim() || "",
-        marcaRespaldo: inputMarcaRespaldo?.value?.trim() || "",
-        lanzamientoFecha: inputLanzamiento?.value || "",
-        logo: inputLogo?.value?.trim() || "",
-        imagenSede: inputImagenSede?.value?.trim() || ""
+        nombre: inputNombre?.value?.trim() || idnt.nombre || '',
+        nombreCorto: inputNombreCorto?.value?.trim() || idnt.nombreCorto || '',
+        especialista: inputEspecialista?.value?.trim() || idnt.especialista || idnt.nombre || '',
+        colegiatura: inputColegiatura?.value?.trim() || idnt.colegiatura || '',
+        cargo: inputTitulo?.value?.trim() || idnt.cargo || idnt.titulo || '',
+        titulo: inputTitulo?.value?.trim() || idnt.titulo || '',
+        grado: inputGrado?.value?.trim() || idnt.grado || '',
+        enfoques: inputEnfoques?.value?.trim() || idnt.enfoques || '',
+        nombreEn: inputNombreEn?.value?.trim() || idnt.nombreEn || idnt.nombre || '',
+        nombreCortoEn: inputNombreCortoEn?.value?.trim() || idnt.nombreCortoEn || idnt.nombreCorto || '',
+        enfoquesEn: inputEnfoquesEn?.value?.trim() || idnt.enfoquesEn || idnt.enfoques || '',
+        bio: {
+          es: inputBioEs?.value?.trim() || (typeof idnt.bio === 'object' ? idnt.bio?.es : idnt.bio) || '',
+          en: inputBioEn?.value?.trim() || (typeof idnt.bio === 'object' ? idnt.bio?.en : idnt.bioEn) || ''
+        },
+        lanzamientoFecha: inputLanzamiento?.value || idnt.lanzamientoFecha || '',
+        logo: normalizarUrlParaGuardar(inputLogo?.value?.trim()) || idnt.logo || '',
+        logoFull: normalizarUrlParaGuardar(inputLogoFull?.value?.trim()) || idnt.logoFull || '',
+        imagenSede: normalizarUrlParaGuardar(inputImagenSede?.value?.trim()) || idnt.imagenSede || ''
       },
+
       contacto: {
-        telefono: (() => {
-          const raw = inputTelefono?.value?.trim() || "";
-          if (!raw) return "";
-          const info = normalizarTelefonoPeru(raw);
-          return info.esCelular9 ? info.visible : raw;
-        })(),
-        telefonoFijo: inputTelefonoFijo?.value?.trim() || "",
-        telefonoLimpio: (() => {
-          const raw = inputTelefono?.value?.trim() || "";
-          if (!raw) return "";
-          const info = normalizarTelefonoPeru(raw);
-          return info.whatsappLimpio || raw.replace(/\D/g, '');
-        })(),
-        whatsapp: (() => {
-          const raw = inputWhatsapp?.value?.trim() || "";
-          if (!raw) return "";
-          const info = normalizarTelefonoPeru(raw);
-          return info.whatsappLimpio || raw.replace(/\D/g, '');
-        })(),
-        email: inputEmail?.value?.trim() || "",
-        whatsappMensaje: inputWhatsappMensaje?.value?.trim() || "",
-        horario: inputHorario?.value?.trim() || "",
-        horarioEn: inputHorarioEn?.value?.trim() || ""
-      },
-      ubicacion: {
-        direccion: inputDireccion?.value?.trim() || "",
-        distrito: inputDistrito?.value?.trim() || "",
-        ciudad: inputCiudad?.value?.trim() || "",
-        mapsUrl: inputMapsUrl?.value?.trim() || "",
-        coordenadas: {
-          lat: parseFloat(inputLat?.value) || 0,
-          lng: parseFloat(inputLng?.value) || 0
+        pais: paisSel,
+        paisCode: paisCodeSel,
+        telefono: rawTel || cont.telefono || '',
+        telefonoFijo: inputTelefonoFijo?.value?.trim() || cont.telefonoFijo || '',
+        telefonoSecundario: inputTelefonoSecundario?.value?.trim() || cont.telefonoSecundario || '',
+        whatsapp: rawWs || (rawTel ? `${paisCodeSel}${soloDigitos(rawTel)}` : (cont.whatsapp || '')),
+        email: (inputEmail?.value || '').trim() || cont.email || '',
+        whatsappMensaje: {
+          es: inputWhatsappMensaje?.value?.trim() || (typeof cont.whatsappMensaje === 'object' ? cont.whatsappMensaje?.es : cont.whatsappMensaje) || '',
+          en: inputWhatsappMensajeEn?.value?.trim() || (typeof cont.whatsappMensaje === 'object' ? cont.whatsappMensaje?.en : cont.whatsappMensajeEn) || ''
+        },
+        horario: {
+          es: (inputHorario?.value || '').trim() || (typeof cont.horario === 'object' ? cont.horario?.es : cont.horario) || '',
+          en: (inputHorarioEn?.value || '').trim() || (typeof cont.horario === 'object' ? cont.horario?.en : cont.horarioEn) || ''
         }
       },
-      zonas: currentZonas,
+
+      horarios: {
+        semana: {
+          abre: ngHorarioSemanaAbre?.value || actual.horarios?.semana?.abre || '',
+          cierra: ngHorarioSemanaCierra?.value || actual.horarios?.semana?.cierra || ''
+        },
+        sabado: {
+          abre: ngHorarioSabadoAbre?.value || actual.horarios?.sabado?.abre || '',
+          cierra: ngHorarioSabadoCierra?.value || actual.horarios?.sabado?.cierra || ''
+        }
+      },
+
+      ubicacion: {
+        direccion: inputDireccion?.value?.trim() || ubic.direccion || '',
+        referencia: inputReferencia?.value?.trim() || ubic.referencia || '',
+        distrito: inputDistrito?.value?.trim() || ubic.distrito || '',
+        ciudad: inputCiudad?.value?.trim() || ubic.ciudad || '',
+        pais: paisSel,
+        codigoPostal: ubic.codigoPostal || '',
+        mapsUrl: inputMapsUrl?.value?.trim() || ubic.mapsUrl || '',
+        coordenadas: {
+          lat: parseFloat(inputLat?.value) || ubic.coordenadas?.lat || 0,
+          lng: parseFloat(inputLng?.value) || ubic.coordenadas?.lng || 0
+        }
+      },
+
+      sedes: [
+        {
+          ...(actual.sedes?.[0] || {}),
+          id: actual.sedes?.[0]?.id || 'sede-presencial',
+          tipo: 'presencial',
+          nombre: actual.sedes?.[0]?.nombre || 'Sede Central Express Surquillo',
+          direccion: inputDireccion?.value?.trim() || actual.sedes?.[0]?.direccion || ubic.direccion || '',
+          referencia: inputReferencia?.value?.trim() || actual.sedes?.[0]?.referencia || ubic.referencia || '',
+          distrito: inputDistrito?.value?.trim() || actual.sedes?.[0]?.distrito || ubic.distrito || '',
+          ciudad: inputCiudad?.value?.trim() || actual.sedes?.[0]?.ciudad || ubic.ciudad || '',
+          pais: paisSel,
+          mapsUrl: inputMapsUrl?.value?.trim() || actual.sedes?.[0]?.mapsUrl || ubic.mapsUrl || '',
+          atencion: {
+            es: ngSedeVesAtencionEs?.value?.trim() || (typeof actual.sedes?.[0]?.atencion === 'object' ? actual.sedes?.[0]?.atencion?.es : actual.sedes?.[0]?.atencion) || '',
+            en: ngSedeVesAtencionEn?.value?.trim() || (typeof actual.sedes?.[0]?.atencion === 'object' ? actual.sedes?.[0]?.atencion?.en : '') || ''
+          },
+          tag: {
+            es: ngSedeVesTagEs?.value?.trim() || (typeof actual.sedes?.[0]?.tag === 'object' ? actual.sedes?.[0]?.tag?.es : actual.sedes?.[0]?.tag) || '',
+            en: ngSedeVesTagEn?.value?.trim() || (typeof actual.sedes?.[0]?.tag === 'object' ? actual.sedes?.[0]?.tag?.en : '') || ''
+          },
+          coordenadas: {
+            lat: parseFloat(inputLat?.value) || actual.sedes?.[0]?.coordenadas?.lat || ubic.coordenadas?.lat || 0,
+            lng: parseFloat(inputLng?.value) || actual.sedes?.[0]?.coordenadas?.lng || ubic.coordenadas?.lng || 0
+          }
+        },
+        {
+          ...(actual.sedes?.[1] || {}),
+          id: actual.sedes?.[1]?.id || 'modalidad-delivery',
+          tipo: 'delivery',
+          nombre: actual.sedes?.[1]?.nombre || 'Delivery Express a Domicilio',
+          atencion: {
+            es: ngSedeVirtualAtencionEs?.value?.trim() || (typeof actual.sedes?.[1]?.atencion === 'object' ? actual.sedes?.[1]?.atencion?.es : actual.sedes?.[1]?.atencion) || '',
+            en: ngSedeVirtualAtencionEn?.value?.trim() || (typeof actual.sedes?.[1]?.atencion === 'object' ? actual.sedes?.[1]?.atencion?.en : '') || ''
+          },
+          tag: {
+            es: ngSedeVirtualTagEs?.value?.trim() || (typeof actual.sedes?.[1]?.tag === 'object' ? actual.sedes?.[1]?.tag?.es : actual.sedes?.[1]?.tag) || '',
+            en: ngSedeVirtualTagEn?.value?.trim() || (typeof actual.sedes?.[1]?.tag === 'object' ? actual.sedes?.[1]?.tag?.en : '') || ''
+          }
+        }
+      ],
+
       metricas: {
-        clientes: inputMetricaClientes?.value?.trim() || "",
-        balanza: inputMetricaBalanza?.value?.trim() || "",
-        years: calcularAnosTrayectoria(inputLanzamiento?.value),
-        dias: inputMetricaDias?.value?.trim() || ""
+        clientes: inputMetricaClientes?.value?.trim() || actual.metricas?.clientes || '',
+        satisfaccion: inputMetricaSatisfaccion?.value?.trim() || actual.metricas?.satisfaccion || '',
+        confidencialidad: inputMetricaConfidencialidad?.value?.trim() || actual.metricas?.confidencialidad || '',
+        years: inputLanzamiento?.value ? calcularAnosTrayectoria(inputLanzamiento.value) : (actual.metricas?.years || '')
       },
-      redes: {
-        facebook: inputRedFacebook?.value?.trim() || "",
-        instagram: inputRedInstagram?.value?.trim() || "",
-        tiktok: inputRedTiktok?.value?.trim() || ""
-      },
+
+      redes: (() => {
+        const getVal = (redId, input) => {
+          const row = document.querySelector(`.ng-red-row[data-red-id="${redId}"]`);
+          if (row && row.classList.contains('ng-red-hidden')) return '';
+          return input?.value?.trim() || '';
+        };
+
+        const ytVal = getVal('youtube', inputRedYoutube);
+        const fbVal = getVal('facebook', inputRedFacebook);
+        const igVal = getVal('instagram', inputRedInstagram);
+        const tkVal = getVal('tiktok', inputRedTiktok);
+        const wsVal = getVal('whatsapp', inputRedCanalWhatsapp);
+        const wbVal = getVal('web', inputRedWeb);
+        const inVal = getVal('linkedin', inputRedLinkedin);
+        const twVal = getVal('twitter', inputRedTwitter);
+
+        return {
+          youtube: ytVal ? armarUrlRed(ytVal, 'youtube') : '',
+          youtubeUser: ytVal ? limpiarHandleRed(ytVal, 'youtube') : '',
+          facebook: fbVal ? armarUrlRed(fbVal, 'facebook') : '',
+          facebookUser: fbVal ? limpiarHandleRed(fbVal, 'facebook') : '',
+          instagram: igVal ? armarUrlRed(igVal, 'instagram') : '',
+          instagramUser: igVal ? limpiarHandleRed(igVal, 'instagram') : '',
+          tiktok: tkVal ? armarUrlRed(tkVal, 'tiktok') : '',
+          tiktokUser: tkVal ? limpiarHandleRed(tkVal, 'tiktok') : '',
+          canalWhatsapp: wsVal ? armarUrlRed(wsVal, 'whatsapp') : '',
+          canalWhatsappUser: wsVal ? limpiarHandleRed(wsVal, 'whatsapp') : '',
+          web: wbVal ? armarUrlRed(wbVal, 'web') : '',
+          webUser: wbVal ? limpiarHandleRed(wbVal, 'web') : '',
+          linkedin: inVal ? armarUrlRed(inVal, 'linkedin') : '',
+          linkedinUser: inVal ? limpiarHandleRed(inVal, 'linkedin') : '',
+          twitter: twVal ? armarUrlRed(twVal, 'twitter') : '',
+          twitterUser: twVal ? limpiarHandleRed(twVal, 'twitter') : ''
+        };
+      })(),
+
+      redesOrden: (() => {
+        const contenedorRedes = document.getElementById('ngListaRedesOrdenables');
+        return contenedorRedes
+          ? Array.from(contenedorRedes.querySelectorAll('.ng-red-row:not(.ng-red-hidden)')).map(r => r.dataset.redId).filter(Boolean)
+          : ['whatsapp', 'linkedin', 'web', 'instagram', 'facebook', 'tiktok', 'youtube', 'twitter'];
+      })(),
+
       seo: {
         titulo: {
-          es: inputSeoTituloEs?.value?.trim() || "",
-          en: inputSeoTituloEn?.value?.trim() || ""
+          es: inputSeoTituloEs?.value?.trim() || actual.seo?.titulo?.es || '',
+          en: inputSeoTituloEn?.value?.trim() || actual.seo?.titulo?.en || ''
         },
         descripcion: {
-          es: inputSeoDescEs?.value?.trim() || "",
-          en: inputSeoDescEn?.value?.trim() || ""
+          es: inputSeoDescEs?.value?.trim() || actual.seo?.descripcion?.es || '',
+          en: inputSeoDescEn?.value?.trim() || actual.seo?.descripcion?.en || ''
         },
         keywords: {
-          es: (inputSeoKeywordsEs?.value || "").split(',').map(s => s.trim()).filter(Boolean),
-          en: (inputSeoKeywordsEn?.value || "").split(',').map(s => s.trim()).filter(Boolean)
-        }
+          es: kwEs.length > 0 ? kwEs : (actual.seo?.keywords?.es || []),
+          en: kwEn.length > 0 ? kwEn : (actual.seo?.keywords?.en || [])
+        },
+        imagen: normalizarUrlParaGuardar(inputSeoImgEs?.value?.trim() || inputSeoImgEn?.value?.trim()) || actual.seo?.imagen || '/imgwii/productos/BALON-10KG.webp',
+        imagenAlt: actual.seo?.imagenAlt || { es: idnt.nombre, en: idnt.nombreEn || idnt.nombre },
+        imagenCaption: actual.seo?.imagenCaption || { es: idnt.razonSocial, en: idnt.razonSocial },
+        descripcionNegocio: actual.seo?.descripcionNegocio || { es: idnt.bio, en: idnt.bioEn || idnt.bio },
+        rangoPrecios: actual.seo?.rangoPrecios || 'S/ 55 - S/ 230',
+        currenciesAccepted: actual.seo?.currenciesAccepted || actual.moneda || 'PEN',
+        paymentAccepted: actual.seo?.paymentAccepted || ["Cash", "Credit Card", "Debit Card", "Yape", "Plin"],
+        faqs: Array.isArray(actual.seo?.faqs) && actual.seo.faqs.length > 0 ? actual.seo.faqs : [],
+        schema: actual.seo?.schema || {
+          tipo: ["LocalBusiness", "HomeGoodsStore", "EmergencyService"],
+          especialidades: [],
+          descripcionCorta: {
+            es: inputBioEs?.value?.trim() || "",
+            en: inputBioEn?.value?.trim() || ""
+          }
+        },
+        audiencia: actual.seo?.audiencia || { es: [], en: [] },
+        intencion: actual.seo?.intencion || { es: "", en: "" }
       }
     };
   }
 
-  // 8. Auto-Guardado de Borrador Reactivo (Debounce 500ms)
-  function autoGuardarBorrador() {
-    clearTimeout(draftTimer);
-    draftTimer = setTimeout(() => {
-      const data = recolectarDatosFormulario();
-      savels(DRAFT_KEY, { ...data, timestamp: Date.now() });
-    }, 500);
-  }
-
-  // Escuchar cambios en todos los inputs del panel para auto-borrador
-  panelNegocio?.querySelectorAll('input, select, textarea').forEach(el => {
-    el.addEventListener('input', autoGuardarBorrador);
-  });
-
-  // 9. Guardar Cambios Centralizado con wiSpin y Notificacion
-  function guardarCambiosNegocio() {
+  // ── 8. EVENTO GUARDAR EN BASE DE DATOS Y LOCALSTORAGE ──
+  btnGuardarNegocio?.addEventListener('click', async () => {
     if (isSaving) return;
     isSaving = true;
 
-    if (btnGuardarNegocio) wiSpin(btnGuardarNegocio, true, 'Guardando...');
+    const spin = wiSpin ? wiSpin(btnGuardarNegocio) : null;
+    btnGuardarNegocio.disabled = true;
 
-    const payload = recolectarDatosFormulario();
-    guardarDatosNegocio(payload);
-    removels(DRAFT_KEY);
+    try {
+      const payload = recolectarDatos();
+      guardarDatosNegocio(payload);
 
-    setTimeout(() => {
-      if (btnGuardarNegocio) wiSpin(btnGuardarNegocio, false);
-      Notificacion('Ficha guardada con éxito', 'success', 2500);
+      Notificacion('Ficha de negocio guardada con éxito en Firestore', 'success', 3000);
+
+      // Ofrecer compilación/despliegue en la nube
+      if (typeof solicitarActualizacionWeb === 'function') {
+        setTimeout(() => {
+          solicitarActualizacionWeb({
+            modulo: 'negocio',
+            titulo: 'Actualizar Web Pública',
+            mensaje: '¿Deseas desplegar los cambios en el sitio web público ahora?'
+          });
+        }, 600);
+      }
+    } catch (err) {
+      console.error(err);
+      Notificacion('Error al guardar datos: ' + (err?.message || err), 'danger', 4000);
+    } finally {
+      btnGuardarNegocio.disabled = false;
+      wiSpin(btnGuardarNegocio, false);
+      if (spin && typeof spin.stop === 'function') spin.stop();
       isSaving = false;
-
-      // Disparar re-cocinado en Cloudflare con debounce inteligente
-      solicitarActualizacionWeb({ motivo: 'negocio' });
-    }, 400);
-  }
-
-  btnGuardarNegocio?.addEventListener('click', guardarCambiosNegocio);
-
-  // 10. Atajo de teclado Ctrl + S en todo el módulo
-  panelNegocio?.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
-      e.preventDefault();
-      e.stopPropagation();
-      guardarCambiosNegocio();
     }
   });
 
-  wiAtajo('ctrl+s', () => {
-    if (panelNegocio?.classList.contains('active')) guardarCambiosNegocio();
-  });
+  // Atajo Ctrl+S gestionado centralizadamente por el router universal de personal.js
 
-  // 11. Inicialización y Recuperación de Borrador
+  // ── INICIALIZACIÓN CON DATOS OFICIALES ──
   const datosIniciales = obtenerDatosNegocio();
-  const borrador = getls(DRAFT_KEY);
+  cargarFormulario(datosIniciales);
 
-  if (borrador && borrador.identidad && (Date.now() - (borrador.timestamp || 0) < 86400000)) {
-    cargarFormulario(borrador);
-    Notificacion('Se restauraron cambios del borrador no guardado', 'info', 2500);
-  } else {
-    cargarFormulario(datosIniciales);
-  }
-
-  // Intentar sincronizar datos frescos en background desde Firestore si existe conexión
-  sincronizarDesdeFirestore().then(remoto => {
-    if (remoto && !borrador) {
-      cargarFormulario(remoto);
-    }
+  // Sincronización en segundo plano con Firestore
+  sincronizarDesdeFirestore().then(fresco => {
+    if (fresco) cargarFormulario(fresco);
   });
 }
 
-// Auto-inicialización segura
+// Inicialización automática
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', inicializarNegocio);
 } else {
   inicializarNegocio();
 }
+
+document.addEventListener('astro:page-load', inicializarNegocio);
