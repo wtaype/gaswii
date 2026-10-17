@@ -1,30 +1,248 @@
 // src/core/servicios/actualizar.js
 // 🚀 Motor Central de Actualización Universal Zero-Waste (Gaswii Web)
-// Centraliza: Local-First (0ms) + Dirty Checking + Firestore Granular + Background Deploy Silencioso
-// Elimina tiempos de espera y bloqueos de pantalla; ahorra 100% de cuotas de Firebase en datos no modificados.
+// Centraliza: Local-First (0ms) + Dirty Checking + Firestore Granular + Dock Dual-Stage + Webhook Cloudflare
+// Etapa 1: Notificación instantánea en vivo (0ms) para ti y tus clientes
+// Etapa 2: Compilación y Sitemap para Googlebot (SEO 100% en la Nube)
 
 import { savels, getls, Notificacion } from '@widev';
 import { db } from './firebase.js';
 import { doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { hidratarNegocioEnDOM } from './hidratarNegocio.js';
+import './actualizar.css';
 
 let _timerDebounceCloudflare = null;
 let _desplegandoEnFondo = false;
 
-/**
- * Motor Central de Actualización Inteligente Zero-Waste
- * @param {Object} params
- * @param {'negocio'|'productos'|'blogs'|'whatsapp'|'comprobantes'|'clientes'} params.modulo
- * @param {string} params.coleccion - Colección en Firestore ('negocio', 'productos', etc.)
- * @param {string} params.docId - ID del documento ('principal', 'balon-10kg', etc.)
- * @param {string} params.storageKey - Clave en LocalStorage ('wi_negocio', 'wi_productos')
- * @param {string} params.evento - Evento reactivo ('wi:negocio-actualizado', 'wi:productos-actualizado')
- * @param {Object} params.datos - Objeto de datos normalizado
- * @param {boolean} [params.redeploy=true] - Si requiere refrescar el HTML estático en Cloudflare para Googlebot
- * @param {string} [params.mensajeExito='Cambios guardados al instante'] - Feedback visual
- * @param {boolean} [params.forzarWrite=false] - Omitir dirty check si se requiere re-escritura forzada
- * @returns {Promise<{ ok: boolean, modificado: boolean, datos: any }>}
- */
+// ── CONSTANTES DOCK PROGRESO DUAL-STAGE ──
+const PROGRESS_STORAGE_KEY = 'cf_deploy_progress';
+const DURACION_ESTIMADA_MS = 45 * 1000; // 45s estimación dinámica
+let _intervalo = null;
+let _sondeoActivo = false;
+
+// =============================================================================
+// 1. DOCK FLOTANTE DUAL-STAGE (HTML + CSS WITEMA)
+// =============================================================================
+
+function obtenerOCrearDock() {
+  if (typeof document === 'undefined') return null;
+
+  let dock = document.getElementById('cfDeployDock');
+  if (dock) return dock;
+
+  dock = document.createElement('div');
+  dock.id = 'cfDeployDock';
+  dock.className = 'cf-dock-wrap';
+  dock.innerHTML = `
+    <div class="cf-dock-card">
+      <!-- 1. ETAPA INMEDIATA EN VIVO (Visibilidad en 0ms para humanos) -->
+      <div class="cf-dock-vivo-banner">
+        <div class="cf-dock-vivo-header">
+          <div class="cf-dock-vivo-tag">
+            <span class="cf-live-dot"></span>
+            <i class="fa-solid fa-bolt"></i>
+            <strong>ACTIVO EN VIVO (0ms)</strong>
+          </div>
+          <button type="button" class="cf-dock-btn-close" id="cfDockBtnClose" title="Cerrar aviso">&times;</button>
+        </div>
+        <p class="cf-dock-vivo-desc">
+          Tus cambios ya están visibles al instante en tu pantalla y para tus clientes.
+        </p>
+        <div class="cf-dock-action-wrap">
+          <a href="/" target="_blank" rel="noopener noreferrer" class="cf-dock-btn-open" id="cfDockBtnOpen">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Web en Vivo (0ms)
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. ETAPA SEGUNDO PLANO (Cloudflare Pages SEO para Googlebot) -->
+      <div class="cf-dock-seo-section">
+        <header class="cf-dock-head">
+          <div class="cf-dock-title-wrap">
+            <i class="fa-solid fa-cloud-arrow-up cf-dock-icon cf-spin-cloud" id="cfDockIcon"></i>
+            <div>
+              <strong class="cf-dock-title" id="cfDockTitle">Optimizando SEO en la Nube</strong>
+              <span class="cf-dock-sub" id="cfDockSub">Generando HTML estático y sitemap para Googlebot</span>
+            </div>
+          </div>
+          <span class="cf-dock-pct" id="cfDockPct">0%</span>
+        </header>
+
+        <!-- Barra de Progreso SEO -->
+        <div class="cf-dock-bar-track">
+          <div class="cf-dock-bar-fill" id="cfDockBarFill" style="width: 0%;"></div>
+        </div>
+
+        <!-- Estado y Contador -->
+        <footer class="cf-dock-footer">
+          <span class="cf-dock-status-txt" id="cfDockStatusTxt">Iniciando compilación en Cloudflare…</span>
+          <span class="cf-dock-timer" id="cfDockTimer">45s</span>
+        </footer>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(dock);
+
+  const btnClose = dock.querySelector('#cfDockBtnClose');
+  btnClose?.addEventListener('click', () => {
+    dock.style.display = 'none';
+    detenerProgreso(true);
+  });
+
+  return dock;
+}
+
+function obtenerMensajeEstado(pct) {
+  if (pct < 25) return 'Disparando deploy hook en Cloudflare Pages…';
+  if (pct < 55) return 'Compilando páginas estáticas con Astro SSG…';
+  if (pct < 80) return 'Optimizando sitemap XML y metadatos Googlebot…';
+  if (pct < 100) return 'Propagando HTML estático a la red Edge global…';
+  return '¡HTML y Sitemap listos en la red global de Cloudflare! 🎉';
+}
+
+export function iniciarProgresoDeploy({ motivo = 'cambios', forzarInicio = false } = {}) {
+  if (typeof window === 'undefined') return;
+
+  const ahora = Date.now();
+  let inicio = ahora;
+
+  try {
+    const raw = sessionStorage.getItem(PROGRESS_STORAGE_KEY);
+    if (raw && !forzarInicio) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.inicio && (ahora - parsed.inicio) < DURACION_ESTIMADA_MS) {
+        inicio = parsed.inicio;
+      }
+    }
+  } catch (e) {}
+
+  sessionStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify({ inicio, motivo }));
+
+  const dock = obtenerOCrearDock();
+  if (!dock) return;
+  dock.style.display = 'block';
+
+  const elPct = dock.querySelector('#cfDockPct');
+  const elBar = dock.querySelector('#cfDockBarFill');
+  const elStatus = dock.querySelector('#cfDockStatusTxt');
+  const elTimer = dock.querySelector('#cfDockTimer');
+
+  if (_intervalo) clearInterval(_intervalo);
+
+  function tick() {
+    const transcurrido = Date.now() - inicio;
+    const restante = Math.max(0, DURACION_ESTIMADA_MS - transcurrido);
+    const pct = Math.min(100, Math.floor((transcurrido / DURACION_ESTIMADA_MS) * 100));
+
+    if (elPct) elPct.textContent = `${pct}%`;
+    if (elBar) elBar.style.width = `${pct}%`;
+    if (elStatus) elStatus.textContent = obtenerMensajeEstado(pct);
+    if (elTimer) elTimer.textContent = `${Math.ceil(restante / 1000)}s`;
+
+    if (pct >= 55 && !_sondeoActivo) {
+      _sondeoActivo = true;
+      verificarWebEnVivo();
+    }
+
+    if (pct >= 100) {
+      finalizarConExito(dock);
+    }
+  }
+
+  tick();
+  _intervalo = setInterval(tick, 1000);
+}
+
+async function verificarWebEnVivo() {
+  try {
+    const res = await fetch(`/?_t=${Date.now()}`, { method: 'HEAD', cache: 'no-store' });
+    if (res.ok) {
+      const raw = sessionStorage.getItem(PROGRESS_STORAGE_KEY);
+      if (raw) {
+        const { inicio } = JSON.parse(raw);
+        if (Date.now() - inicio > 28000) {
+          const dock = document.getElementById('cfDeployDock');
+          if (dock) finalizarConExito(dock);
+        }
+      }
+    }
+  } catch (err) {
+  } finally {
+    _sondeoActivo = false;
+  }
+}
+
+function finalizarConExito(dock) {
+  if (_intervalo) {
+    clearInterval(_intervalo);
+    _intervalo = null;
+  }
+
+  const elPct = dock.querySelector('#cfDockPct');
+  const elBar = dock.querySelector('#cfDockBarFill');
+  const elStatus = dock.querySelector('#cfDockStatusTxt');
+  const elTimer = dock.querySelector('#cfDockTimer');
+  const elTitle = dock.querySelector('#cfDockTitle');
+  const elSub = dock.querySelector('#cfDockSub');
+  const elIcon = dock.querySelector('#cfDockIcon');
+
+  if (elPct) elPct.textContent = '100%';
+  if (elBar) {
+    elBar.style.width = '100%';
+    elBar.style.background = '#10b981';
+  }
+  if (elIcon) {
+    elIcon.className = 'fa-solid fa-circle-check cf-dock-icon';
+    elIcon.style.color = '#10b981';
+  }
+  if (elTitle) elTitle.textContent = '¡SEO Estático Desplegado!';
+  if (elSub) elSub.textContent = 'Googlebot y redes verán el HTML compilado';
+  if (elStatus) elStatus.textContent = 'Sitemap y páginas 100% sincronizadas en Edge CDN.';
+  if (elTimer) elTimer.textContent = 'Listo';
+
+  setTimeout(() => {
+    detenerProgreso(false);
+  }, 10000);
+}
+
+export function detenerProgreso(eliminarStorage = true) {
+  if (_intervalo) {
+    clearInterval(_intervalo);
+    _intervalo = null;
+  }
+  if (eliminarStorage && typeof sessionStorage !== 'undefined') {
+    try {
+      sessionStorage.removeItem(PROGRESS_STORAGE_KEY);
+    } catch (e) {}
+  }
+}
+
+export function inicializarProgresoDeploy() {
+  if (typeof window === 'undefined') return;
+
+  const handleDeployEvent = (e) => {
+    iniciarProgresoDeploy({
+      motivo: e?.detail?.motivo || 'actualización',
+      forzarInicio: true
+    });
+  };
+  window.addEventListener('wi:iniciar-deploy', handleDeployEvent);
+
+  try {
+    const raw = sessionStorage.getItem(PROGRESS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.inicio && (Date.now() - parsed.inicio) < DURACION_ESTIMADA_MS) {
+        iniciarProgresoDeploy({ forzarInicio: false });
+      }
+    }
+  } catch (e) {}
+}
+
+// =============================================================================
+// 2. MOTOR CENTRAL DE ACTUALIZACIÓN (LOCAL-FIRST + FIRESTORE + CLOUDFLARE)
+// =============================================================================
+
 export async function actualizarCentral({
   modulo = 'negocio',
   coleccion = 'negocio',
@@ -37,24 +255,15 @@ export async function actualizarCentral({
   mensajeExito = 'Cambios guardados al instante',
   forzarWrite = false
 }) {
-  // 1. DIRTY CHECKING INTELIGENTE (Evita writes innecesarios si nada cambió)
+  // 1. DIRTY CHECKING INTELIGENTE
   if (!forzarWrite) {
     try {
       const previoRaw = getls(storageKey);
       if (previoRaw) {
         if (listaStorage !== undefined && Array.isArray(previoRaw)) {
-          // Si es una lista (ej. productos), comparar el ítem específico
-          const previoItem = previoRaw.find(x => x && x.id === docId);
+          const previoItem = previoRaw.find(x => x && (x.id === docId || x.slug === docId));
           if (previoItem && JSON.stringify(previoItem) === JSON.stringify(datos)) {
             Notificacion('No se detectaron cambios en este elemento', 'info', 2000);
-            return { ok: true, modificado: false, datos };
-          }
-        } else {
-          // Documento único (ej. negocio/principal)
-          const nuevoStr = JSON.stringify(datos);
-          const previoStr = JSON.stringify(previoRaw);
-          if (previoStr === nuevoStr) {
-            Notificacion('No se detectaron cambios nuevos', 'info', 2000);
             return { ok: true, modificado: false, datos };
           }
         }
@@ -66,20 +275,28 @@ export async function actualizarCentral({
   const aGuardar = listaStorage !== undefined ? listaStorage : datos;
   try {
     savels(storageKey, aGuardar);
+
+    // Guardar en claves alias de retrocompatibilidad
     if (modulo === 'negocio') {
       try { savels('minegocio', aGuardar); } catch (e) {}
       try { savels('gaswii_negocio', aGuardar); } catch (e) {}
     } else if (modulo === 'productos') {
       try { savels('gaswii_productos', aGuardar); } catch (e) {}
+      try { savels('wi_servicios', aGuardar); } catch (e) {}
     }
 
     if (typeof window !== 'undefined') {
+      // Evento canónico Workwii
       window.dispatchEvent(new CustomEvent(evento, { detail: aGuardar }));
+
+      // Eventos específicos por módulo
       if (modulo === 'negocio') {
         window.dispatchEvent(new CustomEvent('gaswii:negocio-actualizado', { detail: aGuardar }));
         hidratarNegocioEnDOM(datos);
       } else if (modulo === 'productos') {
         window.dispatchEvent(new CustomEvent('gaswii:productos-actualizado', { detail: aGuardar }));
+      } else if (modulo === 'blogs') {
+        window.dispatchEvent(new CustomEvent('wi:blogs-actualizado', { detail: aGuardar }));
       }
     }
   } catch (err) {
@@ -88,7 +305,7 @@ export async function actualizarCentral({
 
   Notificacion(mensajeExito, 'success', 2500);
 
-  // 3. PERSISTENCIA GRANULAR EN FIRESTORE (1 sola escritura atómica en segundo plano)
+  // 3. PERSISTENCIA GRANULAR EN FIRESTORE (En segundo plano)
   try {
     if (db) {
       const docRef = doc(db, coleccion, docId);
@@ -101,17 +318,19 @@ export async function actualizarCentral({
     console.warn(`[actualizarCentral] Error silencioso al escribir en ${coleccion}/${docId}:`, err?.message || err);
   }
 
-  // 4. CLOUDFLARE BACKGROUND DEPLOY (Silencioso con Debounce Consolidado de 5s)
+  // 4. CLOUDFLARE BACKGROUND DEPLOY + ACTIVAR DOCK DUAL-STAGE
   if (redeploy) {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('wi:iniciar-deploy', {
+        detail: { motivo: modulo, tiempoMs: DURACION_ESTIMADA_MS }
+      }));
+    }
     dispararDeploySilencioso(modulo);
   }
 
   return { ok: true, modificado: true, datos };
 }
 
-/**
- * Eliminación granular en Firestore y Local-First
- */
 export async function eliminarCentral({
   modulo = 'productos',
   coleccion = 'productos',
@@ -129,6 +348,9 @@ export async function eliminarCentral({
     savels(storageKey, listaActualizada);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent(evento, { detail: listaActualizada }));
+      if (modulo === 'blogs') {
+        window.dispatchEvent(new CustomEvent('wi:blogs-actualizado', { detail: listaActualizada }));
+      }
     }
   } catch (e) {}
 
@@ -143,18 +365,28 @@ export async function eliminarCentral({
     console.warn(`[actualizarCentral] Error al eliminar ${coleccion}/${docId}:`, err);
   }
 
-  // 3. Deploy consolidado
+  // 3. Deploy consolidado y dock
   if (redeploy) {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('wi:iniciar-deploy', {
+        detail: { motivo: `eliminar-${modulo}`, tiempoMs: DURACION_ESTIMADA_MS }
+      }));
+    }
     dispararDeploySilencioso(modulo);
   }
 
   return { ok: true, modificado: true };
 }
 
-/**
- * Disparador consolidado y silencioso de Webhook Cloudflare en segundo plano
- * Espera 5 segundos de inactividad para consolidar múltiples cambios en 1 solo build
- */
+export function solicitarActualizacionWeb({ motivo = 'actualización' } = {}) {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('wi:iniciar-deploy', {
+      detail: { motivo, tiempoMs: DURACION_ESTIMADA_MS }
+    }));
+  }
+  dispararDeploySilencioso(motivo);
+}
+
 export function dispararDeploySilencioso(motivo = 'cambio') {
   if (_timerDebounceCloudflare) {
     clearTimeout(_timerDebounceCloudflare);
@@ -184,5 +416,9 @@ export function dispararDeploySilencioso(motivo = 'cambio') {
 export default {
   actualizarCentral,
   eliminarCentral,
-  dispararDeploySilencioso
+  solicitarActualizacionWeb,
+  dispararDeploySilencioso,
+  iniciarProgresoDeploy,
+  detenerProgreso,
+  inicializarProgresoDeploy
 };

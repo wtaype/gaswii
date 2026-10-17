@@ -4,9 +4,10 @@
 import Principal from '../core/layouts/Principal.astro';
 import PostPage from '../feature/blog/components/PostPage.astro';
 import PostSidebar from '../feature/blog/components/PostSidebar.astro';
-import blogsData from '../semillas/blogs.json';
+import { consultarBlogsFirestoreFresco } from '../negocio.js';
 
 export async function getStaticPaths() {
+  const blogsData = await consultarBlogsFirestoreFresco();
   const allPosts = blogsData || [];
   const posts = allPosts.filter((p: any) => (p.lang === 'es' || !p.lang) && p.activo !== false);
 

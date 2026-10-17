@@ -287,20 +287,33 @@ function initReconciliacionProductos() {
       if (!card) return;
 
       const precioNum = p.precioPEN ?? p.precio;
-      const precioEl = card.querySelector('.producto-card-precio');
+      const precioEl = card.querySelector(`[data-price-id="${id}"]`) || card.querySelector('[data-price-id]') || card.querySelector('.producto-card-precio');
       if (precioEl && precioNum !== undefined) {
-        precioEl.textContent = `S/ ${Number(precioNum).toFixed(2)}`;
+        precioEl.textContent = Number(precioNum).toFixed(2);
       }
 
       // Nombre si cambió
       const nombreTxt = typeof p.nombre === 'object' ? p.nombre?.es : p.nombre;
-      const tituloEl = card.querySelector('.producto-card-titulo, h3');
+      const tituloEl = card.querySelector('.card-title, .producto-card-titulo, h3');
       if (tituloEl && nombreTxt) {
         tituloEl.textContent = nombreTxt;
+      }
+
+      // Actualizar enlace directo de WhatsApp con el nuevo precio
+      const btnWs = card.querySelector('.btn-card-ws');
+      if (btnWs && (nombreTxt || tituloEl)) {
+        const nom = (nombreTxt || tituloEl?.textContent || '').trim();
+        const pr = precioNum !== undefined ? Number(precioNum) : null;
+        btnWs.href = crearEnlaceWhatsApp({
+          canalId: 'canal_catalogo_producto',
+          producto: nom,
+          precio: pr
+        });
       }
     });
   }
 
+  // 1. Sincronización Local-First inmediata (0 ms)
   try {
     const local = localStorage.getItem('wi_productos') || localStorage.getItem('gaswii_productos');
     if (local) {
@@ -310,6 +323,7 @@ function initReconciliacionProductos() {
     }
   } catch (e) {}
 
+  // 2. Escucha reactiva en caliente (mismo navegador / pestañas)
   window.addEventListener('wi:productos-actualizado', (e) => {
     if (e.detail) aplicarReconciliacion(e.detail);
   });
@@ -342,6 +356,17 @@ function initReconciliacionProductos() {
       }
     });
   });
+
+  // 3. Hidratación en segundo plano desde Firestore para clientes sin LocalStorage
+  setTimeout(async () => {
+    try {
+      const { consultarProductosFirestoreFresco } = await import('@/negocio.js');
+      const frescos = await consultarProductosFirestoreFresco();
+      if (Array.isArray(frescos) && frescos.length > 0) {
+        aplicarReconciliacion(frescos);
+      }
+    } catch (err) {}
+  }, 150);
 }
 
 /**

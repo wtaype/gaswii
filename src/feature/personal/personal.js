@@ -5,7 +5,7 @@
 import { Notificacion, wiConfirmar, wiTema, getls, savels } from '@widev';
 import { salir } from '@/feature/auth/sesion.js';
 import { moduloDefecto, esModuloValido } from './modulos.js';
-import { inicializarProgresoDeploy } from './lib/progreso.js';
+import { inicializarProgresoDeploy } from '@core/servicios/actualizar.js';
 
 export function inicializarPersonal() {
   // Inicializar dock de progreso de despliegue Cloudflare

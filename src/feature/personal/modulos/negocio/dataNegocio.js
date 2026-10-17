@@ -145,6 +145,11 @@ export function guardarDatosNegocio(input = {}) {
     delete configActualizada.identidad.subtitulo;
   }
 
+  // Normalización oficial Workwii y actualización de memoria volátil inmediata
+  const normalizado = normalizarConfig(configActualizada);
+  _memoriaNegocio = normalizado;
+  guardarDatosNegocioLocal(normalizado);
+
   // Delegar actualización universal al motor central Zero-Waste (Local-First + Firestore + Debounced Deploy)
   actualizarCentral({
     modulo: 'negocio',
@@ -152,12 +157,12 @@ export function guardarDatosNegocio(input = {}) {
     docId: DOC_NEGOCIO_ID,
     storageKey: STORAGE_KEY,
     evento: 'wi:negocio-actualizado',
-    datos: configActualizada,
+    datos: normalizado,
     redeploy: true,
     mensajeExito: 'Ficha de negocio actualizada con éxito'
   });
 
-  return configActualizada;
+  return normalizado;
 }
 
 // Persiste de forma limpia en Firestore

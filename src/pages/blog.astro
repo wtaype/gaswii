@@ -3,8 +3,7 @@
 // Catálogo Público de Artículos de Blog en Español
 import Principal from '../core/layouts/Principal.astro';
 import BlogCatalog from '../feature/blog/components/BlogCatalog.astro';
-import blogsData from '../semillas/blogs.json';
-import { datosNegocio } from '../negocio.js';
+import { datosNegocio, consultarBlogsFirestoreFresco } from '../negocio.js';
 
 const idioma = 'es';
 const ruta = '/blog';
@@ -13,6 +12,7 @@ const rutasIdioma = {
   en: '/en/blog'
 };
 
+const blogsData = await consultarBlogsFirestoreFresco();
 const posts = (blogsData || []).filter((p: any) => (p.lang === 'es' || !p.lang) && p.activo !== false);
 
 const pageTitle = `Blog & Consejos Oficiales | ${datosNegocio.nombre}`;

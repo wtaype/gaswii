@@ -14,7 +14,7 @@ import {
   inicializarModalProducto,
   abrirModalProducto
 } from './modales.js';
-import { solicitarActualizacionWeb } from '../../lib/actualizar.js';
+import { solicitarActualizacionWeb } from '@core/servicios/actualizar.js';
 
 export function inicializarProductos() {
   const panel = document.getElementById('panel-productos');

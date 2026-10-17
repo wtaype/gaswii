@@ -8,6 +8,7 @@
 import wii from './wii.js';
 import negocioSemilla from './semillas/negocio.json';
 import productosSemilla from './semillas/productos.json';
+import blogsSemilla from './semillas/blogs.json';
 import {
   configurarSistema,
   configurarPersonal,
@@ -333,6 +334,55 @@ if (typeof window === 'undefined') {
   await consultarProductosFirestoreFresco();
 }
 
+let _blogsBuildFirestore = Array.isArray(blogsSemilla) ? blogsSemilla : [];
+
+export async function consultarBlogsFirestoreFresco() {
+  if (typeof window !== 'undefined') {
+    try {
+      const local = localStorage.getItem('wi_blogs_data_v3');
+      if (local) {
+        const parsed = JSON.parse(local);
+        const lista = Array.isArray(parsed) ? parsed : (parsed?.value || null);
+        if (Array.isArray(lista) && lista.length > 0) {
+          return lista.filter(b => b.activo !== false);
+        }
+      }
+    } catch (e) {}
+  }
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 4000);
+    const projectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || 'gaswii';
+    const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/blogs`, {
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (res.ok) {
+      const json = await res.json();
+      if (Array.isArray(json.documents) && json.documents.length > 0) {
+        const blogs = json.documents
+          .map(d => {
+            const parsed = parseFirestoreDoc(d.fields || {});
+            const id = parsed.id || (d.name ? d.name.split('/').pop() : '');
+            return { id, ...parsed };
+          })
+          .filter(b => b.activo !== false);
+        if (blogs.length > 0) {
+          _blogsBuildFirestore = blogs;
+          return blogs;
+        }
+      }
+    }
+  } catch (err) {}
+
+  return _blogsBuildFirestore;
+}
+
+if (typeof window === 'undefined') {
+  await consultarBlogsFirestoreFresco();
+}
+
 function calcularAnosTrayectoria(fechaStr) {
   if (!fechaStr) return 26;
   try {
@@ -464,6 +514,7 @@ export const datosNegocio = {
   get config() { return configurarSistema; },
   get productos() { return _productosBuildFirestore; },
   get servicios() { return this.productos; },
+  get blogs() { return _blogsBuildFirestore; },
   get asesorias() { return []; },
   get talleres() { return []; },
   get todosServicios() { return this.productos; },

@@ -9,7 +9,7 @@ import {
   generarSlug,
   obtenerProductosLocal
 } from '../dataProductos.js';
-import { solicitarActualizacionWeb } from '../../../lib/actualizar.js';
+import { solicitarActualizacionWeb } from '@core/servicios/actualizar.js';
 
 export const MODAL_ID = 'prModalBackdrop';
 

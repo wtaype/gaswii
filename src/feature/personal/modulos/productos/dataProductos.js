@@ -14,8 +14,7 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 import productosSemilla from '../../../../semillas/productos.json';
-import { solicitarActualizacionWeb } from '../../lib/actualizar.js';
-import { actualizarCentral, eliminarCentral } from '@core/servicios/actualizar.js';
+import { actualizarCentral, eliminarCentral, solicitarActualizacionWeb } from '@core/servicios/actualizar.js';
 
 export const STORAGE_KEY = 'wi_productos';
 export const OLD_STORAGE_KEY = 'wi_servicios';

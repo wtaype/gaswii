@@ -3,8 +3,7 @@
 // Public Blog Catalog in English
 import Principal from '../../core/layouts/Principal.astro';
 import BlogCatalog from '../../feature/blog/components/BlogCatalog.astro';
-import blogsData from '../../semillas/blogs.json';
-import { datosNegocio } from '../../negocio.js';
+import { datosNegocio, consultarBlogsFirestoreFresco } from '../../negocio.js';
 
 const idioma = 'en';
 const ruta = '/en/blog';
@@ -13,6 +12,7 @@ const rutasIdioma = {
   en: '/en/blog'
 };
 
+const blogsData = await consultarBlogsFirestoreFresco();
 const posts = (blogsData || []).filter((p: any) => p.lang === 'en' && p.activo !== false);
 
 const pageTitle = `Blog & Official Guides | ${datosNegocio.nombre}`;

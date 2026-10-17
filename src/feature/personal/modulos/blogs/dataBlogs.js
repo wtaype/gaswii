@@ -4,6 +4,7 @@
 import { getls, savels } from '@widev';
 import blogsSemilla from '../../../../semillas/blogs.json';
 import { slugify, countWords } from '../../../blog/lib/procesarmd.js';
+import { actualizarCentral, eliminarCentral } from '@core/servicios/actualizar.js';
 
 export const STORAGE_KEY = 'wi_blogs_data_v3';
 
@@ -113,6 +114,19 @@ export function guardarBlog(blogData = {}) {
     window.dispatchEvent(new CustomEvent('wi:blogs-actualizado', { detail: actualizados }));
   }
 
+  // Sincronización universal (Local-First + Firestore + Cloudflare Deploy con Dock)
+  actualizarCentral({
+    modulo: 'blogs',
+    coleccion: 'blogs',
+    docId: normalizado.id,
+    storageKey: STORAGE_KEY,
+    evento: 'wi:blogs-actualizado',
+    datos: normalizado,
+    listaStorage: actualizados,
+    redeploy: true,
+    mensajeExito: `Artículo "${normalizado.titulo}" publicado con éxito`
+  });
+
   return normalizado;
 }
 
@@ -127,6 +141,18 @@ export function eliminarBlog(id) {
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('wi:blogs-actualizado', { detail: filtrados }));
   }
+
+  eliminarCentral({
+    modulo: 'blogs',
+    coleccion: 'blogs',
+    docId: id,
+    storageKey: STORAGE_KEY,
+    evento: 'wi:blogs-actualizado',
+    listaActualizada: filtrados,
+    redeploy: true,
+    mensajeExito: 'Artículo eliminado con éxito'
+  });
+
   return true;
 }
 
