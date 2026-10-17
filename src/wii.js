@@ -21,3 +21,4 @@ git tag -d v6 ; git tag v6 -m "Version v3 actualizada" ; git push origin v3 --fo
 git rm --cached skills-lock.json ; git commit -m "Archivo Eliminado" ; git push origin main
 git rm -r --cached .claude/ ; git commit -m "Carpeta Eliminada" ; git push origin main
  ACTUALIZACION TAG[END] */
+ 
