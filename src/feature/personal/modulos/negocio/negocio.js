@@ -942,6 +942,14 @@ export function inicializarNegocio() {
       });
     }
 
+    selectAgregarRed.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val) {
+        agregarRedPorId(val);
+        e.target.value = '';
+      }
+    });
+
     btnAgregarRed?.addEventListener('click', () => {
       const val = selectAgregarRed.value;
       if (val) {

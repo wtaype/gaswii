@@ -18,6 +18,105 @@
   display: none !important;
 }
 
+/* ── MODO COLAPSADO (MINI PILL FLOTANTE CON TIEMPO EN BORDE) ── */
+.cf-dock-wrap.is-collapsed {
+  width: auto;
+  max-width: none;
+}
+
+.cf-dock-wrap.is-collapsed .cf-dock-card {
+  display: none !important;
+}
+
+.cf-dock-wrap:not(.is-collapsed) .cf-dock-pill-btn {
+  display: none !important;
+}
+
+.cf-dock-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg2, rgba(17, 24, 39, 0.94));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid var(--brand-primary, #ff6600);
+  border-radius: 999px;
+  color: var(--tx, #f8fafc);
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), 0 0 14px rgba(255, 102, 0, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cfPillPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cfPillPop {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.cf-dock-pill-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55), 0 0 20px rgba(255, 102, 0, 0.45);
+  border-color: #ff8533;
+}
+
+.cf-dock-pill-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.cf-pill-icon {
+  font-size: 13px;
+  color: var(--brand-primary, #ff6600);
+  display: flex;
+  align-items: center;
+}
+
+.cf-pill-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--tx, #f8fafc);
+}
+
+.cf-pill-time {
+  background: rgba(255, 102, 0, 0.12);
+  border: 1px solid rgba(255, 102, 0, 0.35);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff6600;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.cf-pill-time.is-compiling {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+.cf-pill-expand-icon {
+  font-size: 10px;
+  color: var(--tx2, #94a3b8);
+  margin-left: 2px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.cf-dock-pill-btn:hover .cf-pill-expand-icon {
+  color: var(--tx, #fff);
+  transform: translateY(-1px);
+}
+
 @keyframes cfDockSlideUp {
   from {
     transform: translateY(28px);
@@ -87,6 +186,33 @@
     opacity: 0.4;
     transform: scale(0.85);
   }
+}
+
+.cf-dock-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cf-dock-btn-control {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--tx2, #94a3b8);
+  font-size: 11px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 6px;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cf-dock-btn-control:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--tx, #fff);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .cf-dock-btn-close {

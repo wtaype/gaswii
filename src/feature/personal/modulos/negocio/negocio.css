@@ -513,6 +513,7 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .ng-redes-list-wrap {

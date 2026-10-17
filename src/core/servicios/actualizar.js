@@ -3,7 +3,7 @@
 // Centraliza: Local-First (0ms) + Dirty Checking + Firestore Granular + Smart Dock Cloudflare
 // Etapa 1: Visualización Inmediata en Vivo (0ms) en pantalla y clientes
 // Etapa 2: Smart Dock Cloudflare (Cooldown 30s + Pausa "Espérame" + Auto-deploy 5 min para cuidar cuota de 500 builds)
-// 100% Clean Code: Estilos encapsulados con Clases e IDs semánticos en actualizar.css (Zero CSS Inline)
+// 100% Clean Code: Toggle colapsable / expandible a botón flotante con tiempo en borde para máxima comodidad visual.
 
 import { savels, getls, Notificacion } from '@widev';
 import { db } from './firebase.js';
@@ -73,6 +73,22 @@ function ocultarDock(dock) {
   if (dock) dock.classList.add('is-hidden');
 }
 
+export function colapsarDock(dock, colapsado = true) {
+  if (!dock) return;
+  if (colapsado) {
+    dock.classList.add('is-collapsed');
+  } else {
+    dock.classList.remove('is-collapsed');
+  }
+  const estadoObj = leerEstadoDeSession();
+  if (estadoObj) {
+    guardarEstadoEnSession({
+      ...estadoObj,
+      colapsado: !!colapsado
+    });
+  }
+}
+
 // =============================================================================
 // 2. DOCK FLOTANTE INTELIGENTE (HTML + WITEMA)
 // =============================================================================
@@ -87,6 +103,15 @@ function obtenerOCrearDock() {
   dock.id = 'cfDeployDock';
   dock.className = 'cf-dock-wrap';
   dock.innerHTML = `
+    <!-- BOTÓN MINI PILL (Cuando está colapsado para liberar pantalla) -->
+    <button type="button" class="cf-dock-pill-btn" id="cfDockPillBtn" title="Clic para expandir panel de despliegue SEO">
+      <span class="cf-pill-icon" id="cfPillIcon"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+      <span class="cf-pill-label" id="cfPillLabel">SEO</span>
+      <span class="cf-pill-time" id="cfPillTime">5:00 min</span>
+      <i class="fa-solid fa-chevron-up cf-pill-expand-icon"></i>
+    </button>
+
+    <!-- TARJETA COMPLETA (Cuando está expandido) -->
     <div class="cf-dock-card" id="cfDockCard">
       <!-- 1. BANNER EN VIVO (0ms para humanos) -->
       <div class="cf-dock-vivo-banner" id="cfDockVivoBanner">
@@ -96,7 +121,12 @@ function obtenerOCrearDock() {
             <i class="fa-solid fa-bolt"></i>
             <strong>ACTIVO EN VIVO (0ms)</strong>
           </div>
-          <button type="button" class="cf-dock-btn-close" id="cfDockBtnClose" title="Cerrar aviso">&times;</button>
+          <div class="cf-dock-header-controls">
+            <button type="button" class="cf-dock-btn-control" id="cfDockBtnCollapse" title="Minimizar a botón flotante">
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <button type="button" class="cf-dock-btn-close" id="cfDockBtnClose" title="Cerrar aviso">&times;</button>
+          </div>
         </div>
         <p class="cf-dock-vivo-desc">
           Tus cambios ya están visibles al instante en tu pantalla y para tus clientes.
@@ -120,6 +150,16 @@ function obtenerOCrearDock() {
   btnClose?.addEventListener('click', () => {
     ocultarDock(dock);
     detenerProgreso(true);
+  });
+
+  const btnCollapse = dock.querySelector('#cfDockBtnCollapse');
+  btnCollapse?.addEventListener('click', () => {
+    colapsarDock(dock, true);
+  });
+
+  const pillBtn = dock.querySelector('#cfDockPillBtn');
+  pillBtn?.addEventListener('click', () => {
+    colapsarDock(dock, false);
   });
 
   return dock;
@@ -262,9 +302,14 @@ function iniciarSmartTicker() {
     const dock = document.getElementById('cfDeployDock');
     if (!dock) return;
 
+    const pillTime = dock.querySelector('#cfPillTime');
+    const pillLabel = dock.querySelector('#cfPillLabel');
+    const pillIcon = dock.querySelector('#cfPillIcon');
+
     if (estadoObj.estado === 'pendiente' || estadoObj.estado === 'pausado') {
       const cooldownRestante = Math.max(0, Math.ceil((estadoObj.cooldownFin - ahora) / 1000));
       const autoRestanteMs = Math.max(0, estadoObj.autoDeployFin - ahora);
+      const textoTiempo = formatearMinutosSegundos(autoRestanteMs);
 
       // Actualizar botón de acción SEO
       const btnSeo = dock.querySelector('#cfDockBtnSeo');
@@ -282,12 +327,24 @@ function iniciarSmartTicker() {
       // Actualizar cuenta regresiva de auto-deploy
       const autoCountEl = dock.querySelector('#cfDockAutoCountdown');
       if (autoCountEl) {
-        autoCountEl.textContent = formatearMinutosSegundos(autoRestanteMs);
+        autoCountEl.textContent = textoTiempo;
       }
 
       const pauseCountEl = dock.querySelector('#cfPauseCountdown');
       if (pauseCountEl) {
-        pauseCountEl.textContent = formatearMinutosSegundos(autoRestanteMs);
+        pauseCountEl.textContent = textoTiempo;
+      }
+
+      // Actualizar Mini Pill flotante
+      if (pillTime) {
+        pillTime.textContent = textoTiempo;
+        pillTime.classList.remove('is-compiling');
+      }
+      if (pillLabel) {
+        pillLabel.textContent = estadoObj.estado === 'pausado' ? 'Pausado' : 'SEO';
+      }
+      if (pillIcon) {
+        pillIcon.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i>`;
       }
 
       // Si vence el tiempo de inactividad de 5 minutos, auto-compilar
@@ -309,6 +366,18 @@ function iniciarSmartTicker() {
       if (elBar) elBar.style.width = `${pct}%`;
       if (elStatus) elStatus.textContent = obtenerMensajeEstado(pct);
       if (elTimer) elTimer.textContent = `${Math.ceil(restante / 1000)}s`;
+
+      // Actualizar Mini Pill en compilación
+      if (pillTime) {
+        pillTime.textContent = `${pct}% (${Math.ceil(restante / 1000)}s)`;
+        pillTime.classList.add('is-compiling');
+      }
+      if (pillLabel) {
+        pillLabel.textContent = 'Compilando';
+      }
+      if (pillIcon) {
+        pillIcon.innerHTML = `<i class="fa-solid fa-cloud-arrow-up fa-spin"></i>`;
+      }
 
       if (pct >= 55 && !_sondeoActivo) {
         _sondeoActivo = true;
@@ -361,6 +430,20 @@ function marcarComoListo(dock) {
   guardarEstadoEnSession(estadoListo);
   renderizarSeccionSEO(estadoListo);
 
+  const pillTime = dock.querySelector('#cfPillTime');
+  const pillLabel = dock.querySelector('#cfPillLabel');
+  const pillIcon = dock.querySelector('#cfPillIcon');
+  if (pillTime) {
+    pillTime.textContent = 'Listo 🎉';
+    pillTime.classList.add('is-compiling');
+  }
+  if (pillLabel) {
+    pillLabel.textContent = 'Desplegado';
+  }
+  if (pillIcon) {
+    pillIcon.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+  }
+
   setTimeout(() => {
     ocultarDock(dock);
     limpiarEstadoDeSession();
@@ -403,13 +486,15 @@ export function activarSmartDock({ motivo = 'cambios' } = {}) {
   // 1. Reiniciar cooldown a 30s para proteger la cuota
   // 2. Extender el auto-deploy 5 min más para permitir múltiples ediciones
   // 3. Mantener el modo pausado si Wilder ya lo había pedido
+  // 4. Mantener la preferencia de colapsado
   const nuevoEstado = {
     estado: (previo && previo.estado === 'pausado') ? 'pausado' : 'pendiente',
     motivo,
     inicioActivacion: ahora,
     cooldownFin: ahora + (COOLDOWN_SEG * 1000),
     autoDeployFin: ahora + AUTO_DEPLOY_MS,
-    inicioCompilacion: 0
+    inicioCompilacion: 0,
+    colapsado: previo ? !!previo.colapsado : false
   };
 
   guardarEstadoEnSession(nuevoEstado);
@@ -417,6 +502,7 @@ export function activarSmartDock({ motivo = 'cambios' } = {}) {
   const dock = obtenerOCrearDock();
   if (!dock) return;
   mostrarDock(dock);
+  colapsarDock(dock, nuevoEstado.colapsado);
 
   renderizarSeccionSEO(nuevoEstado);
   iniciarSmartTicker();
@@ -426,13 +512,15 @@ export async function ejecutarDeployCloudflare(origen = 'manual') {
   if (typeof window === 'undefined') return;
 
   const ahora = Date.now();
+  const previo = leerEstadoDeSession();
   const estadoCompilando = {
     estado: 'compilando',
     motivo: origen,
     inicioActivacion: ahora,
     cooldownFin: 0,
     autoDeployFin: 0,
-    inicioCompilacion: ahora
+    inicioCompilacion: ahora,
+    colapsado: previo ? !!previo.colapsado : false
   };
 
   guardarEstadoEnSession(estadoCompilando);
@@ -440,6 +528,7 @@ export async function ejecutarDeployCloudflare(origen = 'manual') {
   const dock = obtenerOCrearDock();
   if (dock) {
     mostrarDock(dock);
+    colapsarDock(dock, estadoCompilando.colapsado);
     renderizarSeccionSEO(estadoCompilando);
   }
 
@@ -489,6 +578,7 @@ export function inicializarProgresoDeploy() {
       const dock = obtenerOCrearDock();
       if (dock) {
         mostrarDock(dock);
+        colapsarDock(dock, !!estadoObj.colapsado);
         renderizarSeccionSEO(estadoObj);
         iniciarSmartTicker();
       }
@@ -501,6 +591,7 @@ export function inicializarProgresoDeploy() {
       const dock = obtenerOCrearDock();
       if (dock) {
         mostrarDock(dock);
+        colapsarDock(dock, !!estadoObj.colapsado);
         renderizarSeccionSEO(estadoObj);
         iniciarSmartTicker();
       }
@@ -670,5 +761,6 @@ export default {
   inicializarProgresoDeploy,
   activarSmartDock,
   pausarSmartDock,
+  colapsarDock,
   ejecutarDeployCloudflare
 };
