@@ -5,14 +5,14 @@
   "idiomaPrincipal": "es",
   "idiomas": ["es", "en"],
 
-  "titulo": "Solgas Surquillo | Distribuidor Autorizado de Balones de Gas GLP",
-  "subtitulo": "Delivery Express en 15-20 min con Balanza Digital y Garantía de Peso Exacto",
+  "titulo": "Solgas Surquillo | Cocina de Gas para Surquillo, Miraflores, San Isidro y San Borja",
+  "subtitulo": "Delivery de balones de gas para cocina en 15-20 min con Balanza Digital y Peso Exacto",
 
   "hero": {
-    "titulo": "Hacemos Delivery de Gas a Surquillo, Miraflores, San Borja y San Isidro con Solgas",
-    "subtitulo": "Tu balón de gas de cocina con peso exacto comprobado en tu puerta con balanza digital y prueba de cero fugas gratis.",
-    "tituloEn": "Express Solgas LPG Gas Delivery to Surquillo, Miraflores, San Borja & San Isidro",
-    "subtituloEn": "Order official Solgas cylinders with digital weight verification at your door and free leak-free test.",
+    "titulo": "Cocina de Gas para Surquillo, Miraflores, San Isidro y San Borja con Solgas",
+    "subtitulo": "Balones de gas para cocina con peso exacto comprobado en balanza digital frente a tu puerta. Delivery express en 15 a 20 minutos con instalación y prueba de cero fugas gratis en Surquillo, Miraflores, San Isidro y San Borja con Solgas.",
+    "tituloEn": "Cooking Gas for Surquillo, Miraflores, San Isidro and San Borja with Solgas",
+    "subtituloEn": "Official Solgas cooking gas cylinders with exact weight verified on digital scale at your doorstep. Express 15-20 min delivery with free installation across Surquillo, Miraflores, San Isidro, and San Borja.",
     "badge": {
       "es": "DELIVERY OFICIAL",
       "en": "OFFICIAL DELIVERY"
@@ -26,10 +26,10 @@
       "en": "Place your order now and we'll deliver it right away."
     },
     "imagen": "/imgwii/hero.webp",
-    "alt": "Solgas Surquillo Balones de Gas",
+    "alt": "Solgas Surquillo Balones de Gas para Cocina",
     "precioHero": "65 soles",
     "servicio": "Balón Solgas Premium 10 kg",
-    "descripcion": "Llevamos tu balón de gas con balanza digital calibrada para comprobar el peso exacto en tu puerta. Despacho rápido en 15 a 20 minutos a Surquillo, Miraflores, San Borja y San Isidro."
+    "descripcion": "Llevamos tu balón de gas para cocina con balanza digital calibrada para comprobar el peso exacto en tu puerta. Despacho rápido en 15 a 20 minutos a Surquillo, Miraflores, San Isidro y San Borja con Solgas."
   },
 
   "identidad": {
@@ -191,37 +191,38 @@
 
   "seo": {
     "titulo": {
-      "es": "Solgas Surquillo | Balones de Gas a Domicilio con Balanza Digital",
-      "en": "Solgas Surquillo | LPG Cooking Gas Delivery with Digital Scale"
+      "es": "Cocina de Gas para Surquillo, Miraflores, San Isidro y San Borja | Solgas",
+      "en": "Cooking Gas for Surquillo, Miraflores, San Isidro & San Borja | Solgas"
     },
     "descripcion": {
-      "es": "Solgas Surquillo: pide tu gas en Surquillo, Miraflores, San Borja y San Isidro. Delivery express en 15 min con balanza digital y garantía oficial Solgas.",
-      "en": "Solgas Surquillo: order LPG cooking gas in Surquillo, Miraflores & San Borja. Express 15-min delivery with certified digital scale and official guarantee."
+      "es": "Pide tu balón de gas para cocina en Surquillo, Miraflores, San Isidro y San Borja con Solgas. Delivery express en 15 a 20 min, balanza digital y peso exacto garantizado.",
+      "en": "Order official Solgas cooking gas cylinders in Surquillo, Miraflores, San Isidro & San Borja. Express 15-20 min delivery with digital scale and exact weight."
     },
     "keywords": {
       "es": [
+        "cocina de gas surquillo",
+        "gas de cocina miraflores",
+        "balon de gas cocina san isidro",
+        "solgas cocina san borja",
+        "cocina de gas con solgas",
         "solgas surquillo",
-        "gas surquillo",
         "pedir gas surquillo",
         "solgas surquillo telefono",
-        "solgas miraflores",
         "delivery de gas san borja",
         "pedir gas san isidro",
         "balon de gas a domicilio",
         "balon solgas 10 kg precio",
         "balon solgas 45 kg",
-        "gas con balanza digital lima",
-        "solgas dante surquillo",
-        "gas de cocina surquillo 15 minutos"
+        "gas con balanza digital lima"
       ],
       "en": [
-        "solgas surquillo",
-        "gas delivery lima",
         "cooking gas surquillo",
-        "solgas miraflores delivery",
+        "cooking gas miraflores",
+        "solgas cooking gas",
         "lpg gas san isidro",
-        "order gas cylinder lima",
-        "express gas delivery lima"
+        "solgas san borja",
+        "gas delivery lima",
+        "order gas cylinder lima"
       ]
     },
     "imagen": "/imgwii/productos/BALON-10KG.webp",

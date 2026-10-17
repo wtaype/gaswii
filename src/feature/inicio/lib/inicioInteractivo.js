@@ -153,7 +153,7 @@ function hidratarHeroDesdeNegocio(datos) {
     const p1 = tieneMarca ? titulo.replace(/con Solgas/i, '').trim() : titulo;
     const p2 = tieneMarca ? 'con Solgas' : '';
     document.querySelectorAll('[data-negocio-hero-titulo]').forEach(el => {
-      el.innerHTML = `<span>${p1}</span>${p2 ? `<br /><span class="hero-title-highlight"> ${p2} </span>` : ''}`;
+      el.innerHTML = `<span>${p1} </span>${p2 ? `<span class="hero-title-highlight">${p2}</span>` : ''}`;
     });
   }
 
@@ -415,8 +415,8 @@ function initReconciliacionProductos() {
     });
   });
 
-  // 3. Hidratación en segundo plano desde Firestore para clientes sin LocalStorage
-  setTimeout(async () => {
+  // 3. Sincronización REST Inteligente (Disparada exclusivamente por wiSmart bajo interacción, 0 impacto en Lighthouse)
+  (async () => {
     try {
       const { consultarProductosFirestoreFresco } = await import('@/negocio.js');
       const frescos = await consultarProductosFirestoreFresco();
@@ -424,7 +424,7 @@ function initReconciliacionProductos() {
         aplicarReconciliacion(frescos);
       }
     } catch (err) {}
-  }, 150);
+  })();
 }
 
 /**
@@ -462,7 +462,15 @@ export function initInicioInteractivo() {
   // 6. Sincronización Local-First de productos
   initReconciliacionProductos();
 
-  // 7. Accesibilidad: Cerrar Drawer con tecla Escape
+  // 7. Sincronización REST de Negocio (Diferida bajo interacción con wiSmart)
+  (async () => {
+    try {
+      const { sincronizarNegocioDesdeFirestore } = await import('@/negocio.js');
+      await sincronizarNegocioDesdeFirestore();
+    } catch (err) {}
+  })();
+
+  // 8. Accesibilidad: Cerrar Drawer con tecla Escape
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       window.cerrarDrawer?.();

@@ -3,7 +3,7 @@
 // Conecta Firebase Firestore + Local-First con la Web Pública e Inicio en Tiempo Real.
 // Cero datos fijos o sueltos: cualquier cambio en Personal se refleja inmediatamente en Inicio.
 
-import { sincronizarNegocioDesdeFirestore as sincronizarDesdeFirestore, obtenerDatosNegocio } from '../../negocio.js';
+import { obtenerDatosNegocio } from '../../negocio.js';
 
 /**
  * Aplica cache-busting dinámico para forzar la actualización inmediata de imágenes
@@ -287,15 +287,6 @@ export function iniciarSincronizacionNegocio() {
       } catch (err) {}
     }
   });
-
-  setTimeout(async () => {
-    try {
-      const fresco = await sincronizarDesdeFirestore();
-      if (fresco) {
-        hidratarNegocioEnDOM(fresco);
-      }
-    } catch (err) {}
-  }, 100);
 }
 
 export default {

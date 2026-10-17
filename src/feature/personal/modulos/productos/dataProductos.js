@@ -198,12 +198,21 @@ export function guardarProductosLocal(lista = []) {
   savels(STORAGE_KEY, normalizados);
   try {
     savels('gaswii_productos', normalizados);
+    sessionStorage.removeItem('wi_sync_prods_ts');
   } catch (e) {}
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('wi:productos-actualizado', { detail: normalizados }));
     window.dispatchEvent(new CustomEvent('gaswii:productos-actualizado', { detail: normalizados }));
   }
   return normalizados;
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('wi:productos-actualizado', (e) => {
+    if (Array.isArray(e.detail) && e.detail.length > 0) {
+      _memoriaProductos = e.detail;
+    }
+  });
 }
 
 /**
@@ -295,6 +304,11 @@ export async function guardarProductoFirestore(productoRaw = {}) {
     actuales.push(prodFinal);
   }
 
+  _memoriaProductos = [...actuales];
+  try {
+    sessionStorage.removeItem('wi_sync_prods_ts');
+  } catch (e) {}
+
   // 2. Ejecutar mediante el Motor Central Zero-Waste
   await actualizarCentral({
     modulo: 'productos',
@@ -305,6 +319,7 @@ export async function guardarProductoFirestore(productoRaw = {}) {
     datos: prodFinal,
     listaStorage: actuales,
     redeploy: true,
+    forzarWrite: true,
     mensajeExito: `Producto ${prodFinal.nombre.es || prodFinal.id} actualizado al instante`
   });
 

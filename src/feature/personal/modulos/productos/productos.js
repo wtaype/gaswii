@@ -270,6 +270,14 @@ export function inicializarProductos() {
       }
     });
 
+    // Guardar al presionar Enter en inputs de edición rápida
+    prGrid.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.target.classList.contains('pr-quick-precio') || e.target.classList.contains('pr-quick-stock'))) {
+        e.preventDefault();
+        e.target.blur();
+      }
+    });
+
     // Botón Editar Ficha Completa
     prGrid.addEventListener('click', (e) => {
       const btnEdit = e.target.closest('.pr-btn-edit');

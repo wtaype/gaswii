@@ -21,18 +21,22 @@ export const app = getApps()[0] || initializeApp(firebaseConfig);
 
 export let appCheck = null;
 
-if (typeof window !== 'undefined' && import.meta.env.PUBLIC_RECAPTCHA_WEB) {
-  if (['localhost', '127.0.0.1'].includes(location.hostname)) {
-    self.FIREBASE_APPCHECK_DEBUG_TOKEN = import.meta.env.PUBLIC_APPCHECK_DEBUG_TOKEN || true;
+export function initAppCheck() {
+  if (appCheck) return appCheck;
+  if (typeof window !== 'undefined' && import.meta.env.PUBLIC_RECAPTCHA_WEB) {
+    if (['localhost', '127.0.0.1'].includes(location.hostname)) {
+      self.FIREBASE_APPCHECK_DEBUG_TOKEN = import.meta.env.PUBLIC_APPCHECK_DEBUG_TOKEN || true;
+    }
+    try {
+      appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider(import.meta.env.PUBLIC_RECAPTCHA_WEB),
+        isTokenAutoRefreshEnabled: true
+      });
+    } catch (err) {
+      console.warn('[Firebase AppCheck] Inicialización ignorada:', err?.message || err);
+    }
   }
-  try {
-    appCheck = initializeAppCheck(app, {
-      provider: new ReCaptchaEnterpriseProvider(import.meta.env.PUBLIC_RECAPTCHA_WEB),
-      isTokenAutoRefreshEnabled: true
-    });
-  } catch (err) {
-    console.warn('[Firebase AppCheck] Inicialización ignorada:', err?.message || err);
-  }
+  return appCheck;
 }
 
 export const auth = getAuth(app);

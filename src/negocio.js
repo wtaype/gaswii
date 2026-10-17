@@ -84,11 +84,11 @@ export function normalizarConfig(c = {}) {
     moneda: cfg.moneda || base.moneda || configurarSistema.parametros.moneda || 'PEN',
     idiomaPrincipal: cfg.idiomaPrincipal || base.idiomaPrincipal || 'es',
     idiomas: Array.isArray(cfg.idiomas) && cfg.idiomas.length > 0 ? cfg.idiomas : (base.idiomas || ['es', 'en']),
-    titulo: cfg.titulo || base.titulo || '',
+    titulo: (cfg.titulo && !cfg.titulo.includes('Distribuidor Autorizado de Balones de Gas GLP')) ? cfg.titulo : (base.titulo || ''),
     subtitulo: cfg.subtitulo ?? base.subtitulo ?? '',
     hero: {
-      titulo: cfg.hero?.titulo || base.hero?.titulo || '',
-      subtitulo: cfg.hero?.subtitulo || base.hero?.subtitulo || '',
+      titulo: (cfg.hero?.titulo && cfg.hero.titulo !== 'Solgas Surquillo') ? cfg.hero.titulo : (base.hero?.titulo || 'Cocina de Gas para Surquillo, Miraflores, San Isidro y San Borja con Solgas'),
+      subtitulo: (cfg.hero?.subtitulo && cfg.hero.subtitulo !== 'Energía Segura, Balanza Digital y Peso Exacto en tu Hogar') ? cfg.hero.subtitulo : (base.hero?.subtitulo || ''),
       tituloEn: cfg.hero?.tituloEn || base.hero?.tituloEn || '',
       subtituloEn: cfg.hero?.subtituloEn || base.hero?.subtituloEn || '',
       badge: cfg.hero?.badge ?? base.hero?.badge ?? { es: '', en: '' },
@@ -170,9 +170,15 @@ export function normalizarConfig(c = {}) {
     },
     redes: cfg.redes || base.redes || {},
     seo: {
-      titulo: cfg.seo?.titulo || base.seo?.titulo || {},
-      descripcion: cfg.seo?.descripcion || base.seo?.descripcion || {},
-      keywords: cfg.seo?.keywords || base.seo?.keywords || {},
+      titulo: {
+        es: (cfg.seo?.titulo?.es && !cfg.seo.titulo.es.includes('Pedir Gas en Surquillo, Miraflores y Lima')) ? cfg.seo.titulo.es : (base.seo?.titulo?.es || ''),
+        en: (cfg.seo?.titulo?.en && !cfg.seo.titulo.en.includes('LPG Gas Delivery Lima')) ? cfg.seo.titulo.en : (base.seo?.titulo?.en || '')
+      },
+      descripcion: {
+        es: (cfg.seo?.descripcion?.es && !cfg.seo.descripcion.es.includes('Solgas Surquillo: pide tu gas')) ? cfg.seo.descripcion.es : (base.seo?.descripcion?.es || ''),
+        en: (cfg.seo?.descripcion?.en && !cfg.seo.descripcion.en.includes('Solgas Surquillo: order LPG')) ? cfg.seo.descripcion.en : (base.seo?.descripcion?.en || '')
+      },
+      keywords: (cfg.seo?.keywords?.es && Array.isArray(cfg.seo.keywords.es) && cfg.seo.keywords.es[0]?.includes('cocina')) ? cfg.seo.keywords : (base.seo?.keywords || {}),
       imagen: cfg.seo?.imagen || base.seo?.imagen || cfg.hero?.imagen || cfg.identidad?.logo || base.hero?.imagen || base.identidad?.logo || '/imgwii/logo.webp',
       imagenAlt: cfg.seo?.imagenAlt || base.seo?.imagenAlt || {},
       imagenCaption: cfg.seo?.imagenCaption || base.seo?.imagenCaption || {},
@@ -229,23 +235,43 @@ export function obtenerDatosNegocio() {
 export const obtenerNegocioLocal = obtenerDatosNegocio;
 
 /**
- * Sincroniza datos frescos desde Firestore en cliente
+ * Sincroniza datos frescos desde Firestore en cliente vía REST (0 KB SDK de Firebase)
+ * Protegido con throttle de 3 minutos para cuidar la cuota gratuita de Firebase Spark
  */
-export async function sincronizarNegocioDesdeFirestore() {
+export async function sincronizarNegocioDesdeFirestore(forzar = false) {
   if (typeof window === 'undefined') return obtenerDatosNegocio();
-  try {
-    const { db } = await import('./core/servicios/firebase.js');
-    if (!db) return obtenerDatosNegocio();
-    const { doc, getDoc } = await import('firebase/firestore');
 
-    const snap = await getDoc(doc(db, COLECCION_NEGOCIO, DOC_NEGOCIO_ID));
-    if (snap.exists()) {
-      const data = snap.data();
-      const normalizado = normalizarConfig(data);
-      try {
-        localStorage.setItem(STORAGE_KEY_NEGOCIO, JSON.stringify(normalizado));
-      } catch (e) {}
-      return normalizado;
+  const SYNC_THROTTLE_MS = 180000; // 3 minutos
+  if (!forzar) {
+    try {
+      const lastSync = sessionStorage.getItem('wi_sync_negocio_ts');
+      if (lastSync && (Date.now() - Number(lastSync)) < SYNC_THROTTLE_MS) {
+        return obtenerDatosNegocio();
+      }
+    } catch (e) {}
+  }
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3500);
+    const projectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || configurarSistema.id || wii.id || '';
+    if (projectId) {
+      const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/negocio/principal`, {
+        signal: controller.signal
+      });
+      clearTimeout(timer);
+      if (res.ok) {
+        const json = await res.json();
+        const rawDoc = parseFirestoreDoc(json.fields || {});
+        const normalizado = normalizarConfig(rawDoc);
+        try {
+          localStorage.setItem(STORAGE_KEY_NEGOCIO, JSON.stringify(normalizado));
+          sessionStorage.setItem('wi_sync_negocio_ts', String(Date.now()));
+          window.dispatchEvent(new CustomEvent('wi:negocio-actualizado', { detail: normalizado }));
+          window.dispatchEvent(new CustomEvent('gaswii:negocio-actualizado', { detail: normalizado }));
+        } catch (e) {}
+        return normalizado;
+      }
     }
   } catch (err) {
     // Fallback Local-First
@@ -305,15 +331,23 @@ export function normalizarProductoFirestore(docRaw = {}) {
 
 let _productosBuildFirestore = Array.isArray(productosSemilla) ? productosSemilla.map(p => normalizarProductoFirestore(p)) : [];
 
-export async function consultarProductosFirestoreFresco() {
-  if (typeof window !== 'undefined') {
+/**
+ * Consulta y reconcilia productos frescos desde Firestore vía REST (0 KB SDK de Firebase)
+ * Protegido con throttle de 3 minutos por sesión para visitantes reales bajo wiSmart
+ */
+export async function consultarProductosFirestoreFresco(forzar = false) {
+  const SYNC_THROTTLE_MS = 180000; // 3 minutos
+  if (typeof window !== 'undefined' && !forzar) {
     try {
-      const local = localStorage.getItem(STORAGE_KEY_PRODUCTOS) || localStorage.getItem(OLD_STORAGE_KEY_PRODUCTOS);
-      if (local) {
-        const parsed = JSON.parse(local);
-        const lista = Array.isArray(parsed) ? parsed : (parsed?.value || null);
-        if (Array.isArray(lista) && lista.length > 0) {
-          return lista.filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo');
+      const lastSync = sessionStorage.getItem('wi_sync_prods_ts');
+      if (lastSync && (Date.now() - Number(lastSync)) < SYNC_THROTTLE_MS) {
+        const local = localStorage.getItem(STORAGE_KEY_PRODUCTOS) || localStorage.getItem(OLD_STORAGE_KEY_PRODUCTOS);
+        if (local) {
+          const parsed = JSON.parse(local);
+          const lista = Array.isArray(parsed) ? parsed : (parsed?.value || null);
+          if (Array.isArray(lista) && lista.length > 0) {
+            return lista.filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo');
+          }
         }
       }
     } catch (e) {}
@@ -321,7 +355,7 @@ export async function consultarProductosFirestoreFresco() {
 
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 5000);
+    const timer = setTimeout(() => controller.abort(), 4000);
     const projectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || configurarSistema.id || wii.id || '';
     if (projectId) {
       const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/productos`, {
@@ -336,11 +370,32 @@ export async function consultarProductosFirestoreFresco() {
             .filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo')
             .sort((a, b) => (a.orden || 999) - (b.orden || 999));
           _productosBuildFirestore = prods;
+          if (typeof window !== 'undefined') {
+            try {
+              localStorage.setItem(STORAGE_KEY_PRODUCTOS, JSON.stringify(prods));
+              localStorage.setItem(OLD_STORAGE_KEY_PRODUCTOS, JSON.stringify(prods));
+              sessionStorage.setItem('wi_sync_prods_ts', String(Date.now()));
+              window.dispatchEvent(new CustomEvent('wi:productos-actualizado', { detail: prods }));
+            } catch (e) {}
+          }
           return prods;
         }
       }
     }
   } catch (err) {}
+
+  if (typeof window !== 'undefined') {
+    try {
+      const local = localStorage.getItem(STORAGE_KEY_PRODUCTOS) || localStorage.getItem(OLD_STORAGE_KEY_PRODUCTOS);
+      if (local) {
+        const parsed = JSON.parse(local);
+        const lista = Array.isArray(parsed) ? parsed : (parsed?.value || null);
+        if (Array.isArray(lista) && lista.length > 0) {
+          return lista.filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo');
+        }
+      }
+    } catch (e) {}
+  }
 
   return _productosBuildFirestore;
 }
