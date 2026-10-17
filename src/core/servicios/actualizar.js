@@ -1,8 +1,9 @@
 // src/core/servicios/actualizar.js
 // 🚀 Motor Central de Actualización Universal Zero-Waste (Gaswii Web)
-// Centraliza: Local-First (0ms) + Dirty Checking + Firestore Granular + Dock Dual-Stage + Webhook Cloudflare
-// Etapa 1: Notificación instantánea en vivo (0ms) para ti y tus clientes
-// Etapa 2: Compilación y Sitemap para Googlebot (SEO 100% en la Nube)
+// Centraliza: Local-First (0ms) + Dirty Checking + Firestore Granular + Smart Dock Cloudflare
+// Etapa 1: Visualización Inmediata en Vivo (0ms) en pantalla y clientes
+// Etapa 2: Smart Dock Cloudflare (Cooldown 30s + Pausa "Espérame" + Auto-deploy 5 min para cuidar cuota de 500 builds)
+// 100% Clean Code: Estilos encapsulados con Clases e IDs semánticos en actualizar.css (Zero CSS Inline)
 
 import { savels, getls, Notificacion } from '@widev';
 import { db } from './firebase.js';
@@ -10,17 +11,70 @@ import { doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { hidratarNegocioEnDOM } from './hidratarNegocio.js';
 import './actualizar.css';
 
-let _timerDebounceCloudflare = null;
-let _desplegandoEnFondo = false;
+// ── CONSTANTES DE TIEMPO Y CONFIGURACIÓN SMART DOCK ──
+const COOLDOWN_SEG = 30; // 30s de enfriamiento preventivo antes de habilitar "Actualizar SEO"
+const AUTO_DEPLOY_MIN = 5; // 5 minutos de seguridad antes del auto-deploy
+const AUTO_DEPLOY_MS = AUTO_DEPLOY_MIN * 60 * 1000;
+const DURACION_COMPILACION_MS = 45 * 1000; // 45s estimación dinámica de compilación
+const DOCK_STORAGE_KEY = 'cf_smart_dock_state';
 
-// ── CONSTANTES DOCK PROGRESO DUAL-STAGE ──
-const PROGRESS_STORAGE_KEY = 'cf_deploy_progress';
-const DURACION_ESTIMADA_MS = 45 * 1000; // 45s estimación dinámica
-let _intervalo = null;
+let _timerInterval = null;
+let _desplegandoEnFondo = false;
 let _sondeoActivo = false;
 
 // =============================================================================
-// 1. DOCK FLOTANTE DUAL-STAGE (HTML + CSS WITEMA)
+// 1. HELPERS DE SESIÓN, FORMATEO Y VISIBILIDAD (ZERO INLINE CSS)
+// =============================================================================
+
+function guardarEstadoEnSession(data) {
+  if (typeof sessionStorage === 'undefined') return;
+  try {
+    sessionStorage.setItem(DOCK_STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {}
+}
+
+function leerEstadoDeSession() {
+  if (typeof sessionStorage === 'undefined') return null;
+  try {
+    const raw = sessionStorage.getItem(DOCK_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function limpiarEstadoDeSession() {
+  if (typeof sessionStorage === 'undefined') return;
+  try {
+    sessionStorage.removeItem(DOCK_STORAGE_KEY);
+  } catch (e) {}
+}
+
+function formatearMinutosSegundos(ms) {
+  const totalSeg = Math.max(0, Math.ceil(ms / 1000));
+  const min = Math.floor(totalSeg / 60);
+  const seg = totalSeg % 60;
+  return `${min}:${seg < 10 ? '0' : ''}${seg} min`;
+}
+
+function obtenerMensajeEstado(pct) {
+  if (pct < 25) return 'Disparando deploy hook en Cloudflare Pages…';
+  if (pct < 55) return 'Compilando páginas estáticas con Astro SSG…';
+  if (pct < 80) return 'Optimizando sitemap XML y metadatos Googlebot…';
+  if (pct < 100) return 'Propagando HTML estático a la red Edge global…';
+  return '¡HTML y Sitemap listos en la red global de Cloudflare! 🎉';
+}
+
+function mostrarDock(dock) {
+  if (dock) dock.classList.remove('is-hidden');
+}
+
+function ocultarDock(dock) {
+  if (dock) dock.classList.add('is-hidden');
+}
+
+// =============================================================================
+// 2. DOCK FLOTANTE INTELIGENTE (HTML + WITEMA)
 // =============================================================================
 
 function obtenerOCrearDock() {
@@ -33,9 +87,9 @@ function obtenerOCrearDock() {
   dock.id = 'cfDeployDock';
   dock.className = 'cf-dock-wrap';
   dock.innerHTML = `
-    <div class="cf-dock-card">
-      <!-- 1. ETAPA INMEDIATA EN VIVO (Visibilidad en 0ms para humanos) -->
-      <div class="cf-dock-vivo-banner">
+    <div class="cf-dock-card" id="cfDockCard">
+      <!-- 1. BANNER EN VIVO (0ms para humanos) -->
+      <div class="cf-dock-vivo-banner" id="cfDockVivoBanner">
         <div class="cf-dock-vivo-header">
           <div class="cf-dock-vivo-tag">
             <span class="cf-live-dot"></span>
@@ -54,29 +108,8 @@ function obtenerOCrearDock() {
         </div>
       </div>
 
-      <!-- 2. ETAPA SEGUNDO PLANO (Cloudflare Pages SEO para Googlebot) -->
-      <div class="cf-dock-seo-section">
-        <header class="cf-dock-head">
-          <div class="cf-dock-title-wrap">
-            <i class="fa-solid fa-cloud-arrow-up cf-dock-icon cf-spin-cloud" id="cfDockIcon"></i>
-            <div>
-              <strong class="cf-dock-title" id="cfDockTitle">Optimizando SEO en la Nube</strong>
-              <span class="cf-dock-sub" id="cfDockSub">Generando HTML estático y sitemap para Googlebot</span>
-            </div>
-          </div>
-          <span class="cf-dock-pct" id="cfDockPct">0%</span>
-        </header>
-
-        <!-- Barra de Progreso SEO -->
-        <div class="cf-dock-bar-track">
-          <div class="cf-dock-bar-fill" id="cfDockBarFill" style="width: 0%;"></div>
-        </div>
-
-        <!-- Estado y Contador -->
-        <footer class="cf-dock-footer">
-          <span class="cf-dock-status-txt" id="cfDockStatusTxt">Iniciando compilación en Cloudflare…</span>
-          <span class="cf-dock-timer" id="cfDockTimer">45s</span>
-        </footer>
+      <!-- 2. SECCIÓN DINÁMICA SMART SEO CLOUDFLARE -->
+      <div class="cf-dock-seo-section" id="cfDockSeoSection">
       </div>
     </div>
   `;
@@ -85,84 +118,223 @@ function obtenerOCrearDock() {
 
   const btnClose = dock.querySelector('#cfDockBtnClose');
   btnClose?.addEventListener('click', () => {
-    dock.style.display = 'none';
+    ocultarDock(dock);
     detenerProgreso(true);
   });
 
   return dock;
 }
 
-function obtenerMensajeEstado(pct) {
-  if (pct < 25) return 'Disparando deploy hook en Cloudflare Pages…';
-  if (pct < 55) return 'Compilando páginas estáticas con Astro SSG…';
-  if (pct < 80) return 'Optimizando sitemap XML y metadatos Googlebot…';
-  if (pct < 100) return 'Propagando HTML estático a la red Edge global…';
-  return '¡HTML y Sitemap listos en la red global de Cloudflare! 🎉';
-}
-
-export function iniciarProgresoDeploy({ motivo = 'cambios', forzarInicio = false } = {}) {
-  if (typeof window === 'undefined') return;
-
-  const ahora = Date.now();
-  let inicio = ahora;
-
-  try {
-    const raw = sessionStorage.getItem(PROGRESS_STORAGE_KEY);
-    if (raw && !forzarInicio) {
-      const parsed = JSON.parse(raw);
-      if (parsed && parsed.inicio && (ahora - parsed.inicio) < DURACION_ESTIMADA_MS) {
-        inicio = parsed.inicio;
-      }
-    }
-  } catch (e) {}
-
-  sessionStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify({ inicio, motivo }));
-
+function renderizarSeccionSEO(estadoObj) {
   const dock = obtenerOCrearDock();
   if (!dock) return;
-  dock.style.display = 'block';
+  const seoSection = dock.querySelector('#cfDockSeoSection');
+  if (!seoSection) return;
 
-  const elPct = dock.querySelector('#cfDockPct');
-  const elBar = dock.querySelector('#cfDockBarFill');
-  const elStatus = dock.querySelector('#cfDockStatusTxt');
-  const elTimer = dock.querySelector('#cfDockTimer');
+  const { estado, cooldownFin = 0, autoDeployFin = 0 } = estadoObj;
+  const ahora = Date.now();
 
-  if (_intervalo) clearInterval(_intervalo);
+  if (estado === 'pendiente' || estado === 'pausado') {
+    const cooldownRestante = Math.max(0, Math.ceil((cooldownFin - ahora) / 1000));
+    const autoRestanteMs = Math.max(0, autoDeployFin - ahora);
+    const estaEnPausa = estado === 'pausado';
+
+    seoSection.innerHTML = `
+      <header class="cf-dock-head">
+        <div class="cf-dock-title-wrap">
+          <i class="fa-solid fa-cloud-arrow-up cf-dock-icon" id="cfDockIcon"></i>
+          <div>
+            <strong class="cf-dock-title" id="cfDockTitle">Actualización SEO (Cloudflare)</strong>
+            <span class="cf-dock-sub" id="cfDockSub">Recompilación estática para Googlebot</span>
+          </div>
+        </div>
+        <span class="cf-dock-pct cf-dock-pct-pending" id="cfDockPctBadge">
+          ${estaEnPausa ? 'Pausado' : 'Pendiente'}
+        </span>
+      </header>
+
+      ${estaEnPausa ? `
+        <div class="cf-dock-pause-view" id="cfDockPauseView">
+          <span class="cf-dock-pause-title"><i class="fa-solid fa-mug-hot"></i> ¡Tómate tu tiempo, Wilder!</span>
+          <p class="cf-dock-pause-desc">
+            Edita tranquilo tus productos, blogs o zonas. Cuando termines todo, presiona <strong>"Actualizar SEO"</strong>. Si te olvidas, el sistema lo compilará automáticamente en <strong id="cfPauseCountdown">${formatearMinutosSegundos(autoRestanteMs)}</strong>.
+          </p>
+        </div>
+      ` : `
+        <p class="cf-dock-advice" id="cfDockAdvice">
+          ⚠️ <strong>Límite Cloudflare (500/mes):</strong> Si vas a editar más productos, blogs o zonas, hazlo ahora y compila todo en un solo deploy.
+        </p>
+      `}
+
+      <div class="cf-dock-actions-row">
+        <button type="button" class="cf-dock-btn-seo" id="cfDockBtnSeo" ${cooldownRestante > 0 ? 'disabled' : ''}>
+          <i class="fa-solid fa-rocket"></i>
+          <span id="cfDockBtnSeoTxt">${cooldownRestante > 0 ? `Actualizar SEO (${cooldownRestante}s)` : 'Actualizar SEO Ahora'}</span>
+        </button>
+        ${!estaEnPausa ? `
+          <button type="button" class="cf-dock-btn-wait" id="cfDockBtnWait">
+            <i class="fa-solid fa-hourglass-half"></i> ¡Espérame, falta actualizar!
+          </button>
+        ` : ''}
+      </div>
+
+      <p class="cf-dock-countdown-txt">
+        <i class="fa-regular fa-clock"></i>
+        Se compilará automáticamente en: <strong id="cfDockAutoCountdown">${formatearMinutosSegundos(autoRestanteMs)}</strong>
+      </p>
+    `;
+
+    // Conectar eventos a los botones
+    const btnSeo = seoSection.querySelector('#cfDockBtnSeo');
+    const btnWait = seoSection.querySelector('#cfDockBtnWait');
+
+    btnSeo?.addEventListener('click', () => {
+      ejecutarDeployCloudflare('click-manual');
+    });
+
+    btnWait?.addEventListener('click', () => {
+      pausarSmartDock();
+    });
+
+  } else if (estado === 'compilando') {
+    seoSection.innerHTML = `
+      <header class="cf-dock-head">
+        <div class="cf-dock-title-wrap">
+          <i class="fa-solid fa-cloud-arrow-up cf-dock-icon cf-spin-cloud" id="cfDockIcon"></i>
+          <div>
+            <strong class="cf-dock-title" id="cfDockTitle">Optimizando SEO en la Nube</strong>
+            <span class="cf-dock-sub" id="cfDockSub">Generando HTML estático y sitemap para Googlebot</span>
+          </div>
+        </div>
+        <span class="cf-dock-pct" id="cfDockPct">0%</span>
+      </header>
+
+      <div class="cf-dock-bar-track">
+        <div class="cf-dock-bar-fill cf-dock-bar-fill-init" id="cfDockBarFill"></div>
+      </div>
+
+      <footer class="cf-dock-footer">
+        <span class="cf-dock-status-txt" id="cfDockStatusTxt">Iniciando compilación en Cloudflare Pages…</span>
+        <span class="cf-dock-timer" id="cfDockTimer">45s</span>
+      </footer>
+    `;
+
+  } else if (estado === 'listo') {
+    seoSection.innerHTML = `
+      <header class="cf-dock-head">
+        <div class="cf-dock-title-wrap">
+          <i class="fa-solid fa-circle-check cf-dock-icon cf-dock-icon-success" id="cfDockIconSuccess"></i>
+          <div>
+            <strong class="cf-dock-title cf-dock-title-success" id="cfDockTitleSuccess">¡SEO Estático Desplegado!</strong>
+            <span class="cf-dock-sub" id="cfDockSub">Googlebot y clientes verán el HTML compilado</span>
+          </div>
+        </div>
+        <span class="cf-dock-pct cf-dock-pct-success" id="cfDockPctSuccess">100%</span>
+      </header>
+
+      <div class="cf-dock-bar-track">
+        <div class="cf-dock-bar-fill cf-dock-bar-fill-success" id="cfDockBarFillSuccess"></div>
+      </div>
+
+      <footer class="cf-dock-footer">
+        <span class="cf-dock-status-txt">Sitemap y páginas 100% sincronizadas en Edge CDN 🎉</span>
+        <span class="cf-dock-timer">Listo</span>
+      </footer>
+    `;
+  }
+}
+
+// =============================================================================
+// 3. TICKER INTELIGENTE Y MÁQUINA DE ESTADOS
+// =============================================================================
+
+function iniciarSmartTicker() {
+  if (_timerInterval) clearInterval(_timerInterval);
 
   function tick() {
-    const transcurrido = Date.now() - inicio;
-    const restante = Math.max(0, DURACION_ESTIMADA_MS - transcurrido);
-    const pct = Math.min(100, Math.floor((transcurrido / DURACION_ESTIMADA_MS) * 100));
-
-    if (elPct) elPct.textContent = `${pct}%`;
-    if (elBar) elBar.style.width = `${pct}%`;
-    if (elStatus) elStatus.textContent = obtenerMensajeEstado(pct);
-    if (elTimer) elTimer.textContent = `${Math.ceil(restante / 1000)}s`;
-
-    if (pct >= 55 && !_sondeoActivo) {
-      _sondeoActivo = true;
-      verificarWebEnVivo();
+    const estadoObj = leerEstadoDeSession();
+    if (!estadoObj) {
+      detenerProgreso(false);
+      return;
     }
 
-    if (pct >= 100) {
-      finalizarConExito(dock);
+    const ahora = Date.now();
+    const dock = document.getElementById('cfDeployDock');
+    if (!dock) return;
+
+    if (estadoObj.estado === 'pendiente' || estadoObj.estado === 'pausado') {
+      const cooldownRestante = Math.max(0, Math.ceil((estadoObj.cooldownFin - ahora) / 1000));
+      const autoRestanteMs = Math.max(0, estadoObj.autoDeployFin - ahora);
+
+      // Actualizar botón de acción SEO
+      const btnSeo = dock.querySelector('#cfDockBtnSeo');
+      const btnSeoTxt = dock.querySelector('#cfDockBtnSeoTxt');
+      if (btnSeo && btnSeoTxt) {
+        if (cooldownRestante > 0) {
+          btnSeo.disabled = true;
+          btnSeoTxt.textContent = `Actualizar SEO (${cooldownRestante}s)`;
+        } else {
+          btnSeo.disabled = false;
+          btnSeoTxt.textContent = 'Actualizar SEO Ahora';
+        }
+      }
+
+      // Actualizar cuenta regresiva de auto-deploy
+      const autoCountEl = dock.querySelector('#cfDockAutoCountdown');
+      if (autoCountEl) {
+        autoCountEl.textContent = formatearMinutosSegundos(autoRestanteMs);
+      }
+
+      const pauseCountEl = dock.querySelector('#cfPauseCountdown');
+      if (pauseCountEl) {
+        pauseCountEl.textContent = formatearMinutosSegundos(autoRestanteMs);
+      }
+
+      // Si vence el tiempo de inactividad de 5 minutos, auto-compilar
+      if (autoRestanteMs <= 0) {
+        ejecutarDeployCloudflare('auto-deploy-5min');
+      }
+
+    } else if (estadoObj.estado === 'compilando') {
+      const transcurrido = ahora - (estadoObj.inicioCompilacion || ahora);
+      const restante = Math.max(0, DURACION_COMPILACION_MS - transcurrido);
+      const pct = Math.min(100, Math.floor((transcurrido / DURACION_COMPILACION_MS) * 100));
+
+      const elPct = dock.querySelector('#cfDockPct');
+      const elBar = dock.querySelector('#cfDockBarFill');
+      const elStatus = dock.querySelector('#cfDockStatusTxt');
+      const elTimer = dock.querySelector('#cfDockTimer');
+
+      if (elPct) elPct.textContent = `${pct}%`;
+      if (elBar) elBar.style.width = `${pct}%`;
+      if (elStatus) elStatus.textContent = obtenerMensajeEstado(pct);
+      if (elTimer) elTimer.textContent = `${Math.ceil(restante / 1000)}s`;
+
+      if (pct >= 55 && !_sondeoActivo) {
+        _sondeoActivo = true;
+        verificarWebEnVivo();
+      }
+
+      if (pct >= 100) {
+        marcarComoListo(dock);
+      }
     }
   }
 
   tick();
-  _intervalo = setInterval(tick, 1000);
+  _timerInterval = setInterval(tick, 1000);
 }
 
 async function verificarWebEnVivo() {
   try {
     const res = await fetch(`/?_t=${Date.now()}`, { method: 'HEAD', cache: 'no-store' });
     if (res.ok) {
-      const raw = sessionStorage.getItem(PROGRESS_STORAGE_KEY);
-      if (raw) {
-        const { inicio } = JSON.parse(raw);
-        if (Date.now() - inicio > 28000) {
+      const estadoObj = leerEstadoDeSession();
+      if (estadoObj && estadoObj.estado === 'compilando') {
+        const transcurrido = Date.now() - (estadoObj.inicioCompilacion || 0);
+        if (transcurrido > 30000) {
           const dock = document.getElementById('cfDeployDock');
-          if (dock) finalizarConExito(dock);
+          if (dock) marcarComoListo(dock);
         }
       }
     }
@@ -172,75 +344,195 @@ async function verificarWebEnVivo() {
   }
 }
 
-function finalizarConExito(dock) {
-  if (_intervalo) {
-    clearInterval(_intervalo);
-    _intervalo = null;
+function marcarComoListo(dock) {
+  if (_timerInterval) {
+    clearInterval(_timerInterval);
+    _timerInterval = null;
   }
 
-  const elPct = dock.querySelector('#cfDockPct');
-  const elBar = dock.querySelector('#cfDockBarFill');
-  const elStatus = dock.querySelector('#cfDockStatusTxt');
-  const elTimer = dock.querySelector('#cfDockTimer');
-  const elTitle = dock.querySelector('#cfDockTitle');
-  const elSub = dock.querySelector('#cfDockSub');
-  const elIcon = dock.querySelector('#cfDockIcon');
-
-  if (elPct) elPct.textContent = '100%';
-  if (elBar) {
-    elBar.style.width = '100%';
-    elBar.style.background = '#10b981';
-  }
-  if (elIcon) {
-    elIcon.className = 'fa-solid fa-circle-check cf-dock-icon';
-    elIcon.style.color = '#10b981';
-  }
-  if (elTitle) elTitle.textContent = '¡SEO Estático Desplegado!';
-  if (elSub) elSub.textContent = 'Googlebot y redes verán el HTML compilado';
-  if (elStatus) elStatus.textContent = 'Sitemap y páginas 100% sincronizadas en Edge CDN.';
-  if (elTimer) elTimer.textContent = 'Listo';
+  const estadoListo = {
+    estado: 'listo',
+    motivo: 'completado',
+    inicioActivacion: Date.now(),
+    cooldownFin: 0,
+    autoDeployFin: 0,
+    inicioCompilacion: 0
+  };
+  guardarEstadoEnSession(estadoListo);
+  renderizarSeccionSEO(estadoListo);
 
   setTimeout(() => {
-    detenerProgreso(false);
-  }, 10000);
+    ocultarDock(dock);
+    limpiarEstadoDeSession();
+  }, 8000);
+}
+
+// =============================================================================
+// 4. CONTROLADORES SMART DOCK (ACTIVAR, PAUSAR, EJECUTAR)
+// =============================================================================
+
+export function pausarSmartDock() {
+  const actual = leerEstadoDeSession();
+  if (!actual || actual.estado === 'compilando') return;
+
+  const nuevoEstado = {
+    ...actual,
+    estado: 'pausado'
+  };
+  guardarEstadoEnSession(nuevoEstado);
+
+  const dock = obtenerOCrearDock();
+  if (dock) {
+    mostrarDock(dock);
+    renderizarSeccionSEO(nuevoEstado);
+  }
+}
+
+export function activarSmartDock({ motivo = 'cambios' } = {}) {
+  if (typeof window === 'undefined') return;
+
+  const ahora = Date.now();
+  const previo = leerEstadoDeSession();
+
+  // Si ya se encuentra en fase de compilación activa, no interrumpir
+  if (previo && previo.estado === 'compilando') {
+    return;
+  }
+
+  // Al guardar un cambio nuevo:
+  // 1. Reiniciar cooldown a 30s para proteger la cuota
+  // 2. Extender el auto-deploy 5 min más para permitir múltiples ediciones
+  // 3. Mantener el modo pausado si Wilder ya lo había pedido
+  const nuevoEstado = {
+    estado: (previo && previo.estado === 'pausado') ? 'pausado' : 'pendiente',
+    motivo,
+    inicioActivacion: ahora,
+    cooldownFin: ahora + (COOLDOWN_SEG * 1000),
+    autoDeployFin: ahora + AUTO_DEPLOY_MS,
+    inicioCompilacion: 0
+  };
+
+  guardarEstadoEnSession(nuevoEstado);
+
+  const dock = obtenerOCrearDock();
+  if (!dock) return;
+  mostrarDock(dock);
+
+  renderizarSeccionSEO(nuevoEstado);
+  iniciarSmartTicker();
+}
+
+export async function ejecutarDeployCloudflare(origen = 'manual') {
+  if (typeof window === 'undefined') return;
+
+  const ahora = Date.now();
+  const estadoCompilando = {
+    estado: 'compilando',
+    motivo: origen,
+    inicioActivacion: ahora,
+    cooldownFin: 0,
+    autoDeployFin: 0,
+    inicioCompilacion: ahora
+  };
+
+  guardarEstadoEnSession(estadoCompilando);
+
+  const dock = obtenerOCrearDock();
+  if (dock) {
+    mostrarDock(dock);
+    renderizarSeccionSEO(estadoCompilando);
+  }
+
+  iniciarSmartTicker();
+
+  // Enviar webhook seguro a Cloudflare Pages
+  const hookUrl = import.meta.env.PUBLIC_CLOUDFLARE_DEPLOY_HOOK;
+  if (hookUrl && !_desplegandoEnFondo) {
+    try {
+      _desplegandoEnFondo = true;
+      console.log(`[actualizar.js] Disparando redeploy en Cloudflare Pages (${origen})...`);
+      await fetch(hookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      console.log('[actualizar.js] Webhook Cloudflare recibido con éxito.');
+    } catch (err) {
+      console.warn('[actualizar.js] Error al invocar deploy hook:', err);
+    } finally {
+      _desplegandoEnFondo = false;
+    }
+  }
 }
 
 export function detenerProgreso(eliminarStorage = true) {
-  if (_intervalo) {
-    clearInterval(_intervalo);
-    _intervalo = null;
+  if (_timerInterval) {
+    clearInterval(_timerInterval);
+    _timerInterval = null;
   }
-  if (eliminarStorage && typeof sessionStorage !== 'undefined') {
-    try {
-      sessionStorage.removeItem(PROGRESS_STORAGE_KEY);
-    } catch (e) {}
+  if (eliminarStorage) {
+    limpiarEstadoDeSession();
   }
 }
 
 export function inicializarProgresoDeploy() {
   if (typeof window === 'undefined') return;
 
-  const handleDeployEvent = (e) => {
-    iniciarProgresoDeploy({
-      motivo: e?.detail?.motivo || 'actualización',
-      forzarInicio: true
-    });
-  };
-  window.addEventListener('wi:iniciar-deploy', handleDeployEvent);
+  const estadoObj = leerEstadoDeSession();
+  if (!estadoObj) return;
 
-  try {
-    const raw = sessionStorage.getItem(PROGRESS_STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && parsed.inicio && (Date.now() - parsed.inicio) < DURACION_ESTIMADA_MS) {
-        iniciarProgresoDeploy({ forzarInicio: false });
+  const ahora = Date.now();
+
+  if (estadoObj.estado === 'pendiente' || estadoObj.estado === 'pausado') {
+    if (ahora < estadoObj.autoDeployFin) {
+      // Reanudar estado y ticker existente
+      const dock = obtenerOCrearDock();
+      if (dock) {
+        mostrarDock(dock);
+        renderizarSeccionSEO(estadoObj);
+        iniciarSmartTicker();
+      }
+    } else {
+      // Vencieron los 5 minutos mientras navegaba -> compilar automáticamente
+      ejecutarDeployCloudflare('auto-deploy-expirado');
+    }
+  } else if (estadoObj.estado === 'compilando') {
+    if ((ahora - (estadoObj.inicioCompilacion || ahora)) < DURACION_COMPILACION_MS) {
+      const dock = obtenerOCrearDock();
+      if (dock) {
+        mostrarDock(dock);
+        renderizarSeccionSEO(estadoObj);
+        iniciarSmartTicker();
+      }
+    } else {
+      const dock = obtenerOCrearDock();
+      if (dock) {
+        mostrarDock(dock);
+        marcarComoListo(dock);
       }
     }
-  } catch (e) {}
+  }
+}
+
+// Retrocompatibilidad con nombres anteriores
+export function iniciarProgresoDeploy({ motivo = 'cambios', forzarInicio = false } = {}) {
+  if (forzarInicio) {
+    ejecutarDeployCloudflare(motivo);
+  } else {
+    activarSmartDock({ motivo });
+  }
+}
+
+export function solicitarActualizacionWeb({ motivo = 'actualización' } = {}) {
+  activarSmartDock({ motivo });
+}
+
+export function dispararDeploySilencioso(motivo = 'cambio') {
+  ejecutarDeployCloudflare(motivo);
 }
 
 // =============================================================================
-// 2. MOTOR CENTRAL DE ACTUALIZACIÓN (LOCAL-FIRST + FIRESTORE + CLOUDFLARE)
+// 5. MOTOR CENTRAL DE ACTUALIZACIÓN (LOCAL-FIRST + FIRESTORE + SMART DOCK)
 // =============================================================================
 
 export async function actualizarCentral({
@@ -318,14 +610,9 @@ export async function actualizarCentral({
     console.warn(`[actualizarCentral] Error silencioso al escribir en ${coleccion}/${docId}:`, err?.message || err);
   }
 
-  // 4. CLOUDFLARE BACKGROUND DEPLOY + ACTIVAR DOCK DUAL-STAGE
+  // 4. ACTIVAR SMART DOCK (Control de Cuotas Cloudflare + 0ms Live)
   if (redeploy) {
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('wi:iniciar-deploy', {
-        detail: { motivo: modulo, tiempoMs: DURACION_ESTIMADA_MS }
-      }));
-    }
-    dispararDeploySilencioso(modulo);
+    activarSmartDock({ motivo: modulo });
   }
 
   return { ok: true, modificado: true, datos };
@@ -365,52 +652,12 @@ export async function eliminarCentral({
     console.warn(`[actualizarCentral] Error al eliminar ${coleccion}/${docId}:`, err);
   }
 
-  // 3. Deploy consolidado y dock
+  // 3. Activar Smart Dock consolidado
   if (redeploy) {
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('wi:iniciar-deploy', {
-        detail: { motivo: `eliminar-${modulo}`, tiempoMs: DURACION_ESTIMADA_MS }
-      }));
-    }
-    dispararDeploySilencioso(modulo);
+    activarSmartDock({ motivo: `eliminar-${modulo}` });
   }
 
   return { ok: true, modificado: true };
-}
-
-export function solicitarActualizacionWeb({ motivo = 'actualización' } = {}) {
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('wi:iniciar-deploy', {
-      detail: { motivo, tiempoMs: DURACION_ESTIMADA_MS }
-    }));
-  }
-  dispararDeploySilencioso(motivo);
-}
-
-export function dispararDeploySilencioso(motivo = 'cambio') {
-  if (_timerDebounceCloudflare) {
-    clearTimeout(_timerDebounceCloudflare);
-  }
-
-  _timerDebounceCloudflare = setTimeout(async () => {
-    const hookUrl = import.meta.env.PUBLIC_CLOUDFLARE_DEPLOY_HOOK;
-    if (!hookUrl || _desplegandoEnFondo) return;
-
-    try {
-      _desplegandoEnFondo = true;
-      console.log(`[actualizarCentral] Sincronizando HTML estático en Cloudflare [${motivo}]...`);
-      await fetch(hookUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' }
-      });
-      console.log(`[actualizarCentral] Webhook Cloudflare enviado con éxito.`);
-    } catch (e) {
-      console.warn('[actualizarCentral] Webhook diferido:', e);
-    } finally {
-      _desplegandoEnFondo = false;
-    }
-  }, 5000);
 }
 
 export default {
@@ -420,5 +667,8 @@ export default {
   dispararDeploySilencioso,
   iniciarProgresoDeploy,
   detenerProgreso,
-  inicializarProgresoDeploy
+  inicializarProgresoDeploy,
+  activarSmartDock,
+  pausarSmartDock,
+  ejecutarDeployCloudflare
 };
