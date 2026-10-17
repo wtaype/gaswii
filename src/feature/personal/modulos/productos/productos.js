@@ -125,9 +125,9 @@ export function inicializarProductos() {
               <span class="pr-spec-chip"><i class="fa-solid fa-location-dot"></i> ${modalidad}</span>
             </div>
 
-            <!-- Edición rápida de Honorario -->
+            <!-- Edición rápida de Honorario y Stock -->
             <div class="pr-quick-edit-row">
-              <div class="pr-quick-field" style="width: 100%;">
+              <div class="pr-quick-field">
                 <span class="pr-quick-label">Honorario / Precio</span>
                 <div class="pr-quick-input-wrap">
                   <span class="pr-quick-prefix">S/</span>
@@ -138,7 +138,22 @@ export function inicializarProductos() {
                     class="pr-quick-input pr-quick-precio"
                     data-id="${p.id}"
                     value="${precio}"
-                    title="Modificar honorario directamente"
+                    title="Modificar precio"
+                  />
+                </div>
+              </div>
+              <div class="pr-quick-field">
+                <span class="pr-quick-label">Stock</span>
+                <div class="pr-quick-input-wrap">
+                  <span class="pr-quick-prefix"><i class="fa-solid fa-boxes-stacked" style="font-size: 0.75rem; color: var(--muted, #94a3b8);"></i></span>
+                  <input
+                    type="number"
+                    step="1"
+                    min="0"
+                    class="pr-quick-input pr-quick-stock"
+                    data-id="${p.id}"
+                    value="${p.stock ?? (p.tipoCategoria === 'accesorio' || (p.id && p.id.includes('valvula')) ? 35 : 50)}"
+                    title="Modificar stock disponible"
                   />
                 </div>
               </div>
@@ -223,7 +238,7 @@ export function inicializarProductos() {
       }
     });
 
-    // Edición rápida de precio (onChange)
+    // Edición rápida de precio y stock (onChange)
     prGrid.addEventListener('change', async (e) => {
       if (e.target.classList.contains('pr-quick-precio')) {
         const id = e.target.getAttribute('data-id');
@@ -233,6 +248,15 @@ export function inicializarProductos() {
         if (item) {
           item.precioPEN = nuevoPrecio;
           item.precio = nuevoPrecio;
+          await guardarProductoFirestore(item);
+        }
+      } else if (e.target.classList.contains('pr-quick-stock')) {
+        const id = e.target.getAttribute('data-id');
+        const nuevoStock = Number(e.target.value || 0);
+        const lista = obtenerProductosLocal();
+        const item = lista.find(p => p.id === id);
+        if (item) {
+          item.stock = nuevoStock;
           await guardarProductoFirestore(item);
         }
       }

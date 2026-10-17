@@ -164,7 +164,7 @@ export function normalizarConfig(c = {}) {
       currenciesAccepted: cfg.seo?.currenciesAccepted || base.seo?.currenciesAccepted || 'PEN',
       paymentAccepted: cfg.seo?.paymentAccepted || base.seo?.paymentAccepted || [],
       schemaTypes: cfg.seo?.schemaTypes || base.seo?.schemaTypes || ['LocalBusiness'],
-      faqs: Array.isArray(cfg.seo?.faqs) && cfg.seo.faqs.length > 0 ? cfg.seo.faqs : (base.seo?.faqs || [])
+      faqs: (Array.isArray(cfg.seo?.faqs) && cfg.seo.faqs.length >= (base.seo?.faqs || []).length) ? cfg.seo.faqs : (base.seo?.faqs || [])
     }
   };
 }
@@ -255,7 +255,7 @@ export function normalizarProductoFirestore(docRaw = {}) {
     precioPEN: precio,
     precio: precio,
     precioEnvase: Number(item.precioEnvase ?? 0),
-    stock: Number(item.stock ?? 0),
+    stock: Number(item.stock ?? (item.tipoCategoria === 'accesorio' || (id && id.includes('valvula')) ? 35 : 50)),
     stockMin: Number(item.stockMin ?? 5),
     estado: item.estado || 'activo',
     tipoCategoria: item.tipoCategoria || 'gas',

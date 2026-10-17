@@ -257,6 +257,26 @@
           "es": "El tiempo estimado de entrega es de 12 a 20 minutos despachando desde nuestra sede central en Jr. Dante 260, Surquillo.",
           "en": "Estimated delivery time is between 12 and 20 minutes from our central hub at Jr. Dante 260, Surquillo."
         }
+      },
+      {
+        "pregunta": {
+          "es": "¿Qué medios de pago aceptan?",
+          "en": "What payment methods do you accept?"
+        },
+        "respuesta": {
+          "es": "Aceptamos Efectivo contra entrega, billeteras digitales Yape y Plin, y Transferencia bancaria directa al recibir tu balón.",
+          "en": "We accept Cash on delivery, mobile wallets Yape and Plin, and direct bank transfers upon receiving your cylinder."
+        }
+      },
+      {
+        "pregunta": {
+          "es": "¿Qué hago si siento olor a gas en mi cocina?",
+          "en": "What should I do if I smell gas in my kitchen?"
+        },
+        "respuesta": {
+          "es": "Cierra de inmediato la perilla del regulador, ventila el ambiente abriendo ventanas y llámanos de inmediato a nuestra Central de Emergencias SOS al +51 936 369 384.",
+          "en": "Immediately close the regulator valve, ventilate the area by opening windows, and call our Emergency SOS line right away at +51 936 369 384."
+        }
       }
     ]
   }
