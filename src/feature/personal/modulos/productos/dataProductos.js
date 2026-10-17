@@ -166,21 +166,25 @@ export function getUsuarioActivo() {
  */
 export function obtenerProductosLocal() {
   if (_memoriaProductos && Array.isArray(_memoriaProductos) && _memoriaProductos.length > 0) {
-    return _memoriaProductos;
+    return _memoriaProductos.sort((a, b) => (Number(a.orden) || 999) - (Number(b.orden) || 999));
   }
 
   // 1. Revisar localStorage (wi_productos, wi_servicios o gaswii_productos)
   try {
     const local = getls(STORAGE_KEY) || getls(OLD_STORAGE_KEY) || getls('gaswii_productos');
     if (Array.isArray(local) && local.length > 0) {
-      _memoriaProductos = local.map(normalizarProducto).sort((a, b) => (a.orden || 999) - (b.orden || 999));
+      _memoriaProductos = local
+        .map(normalizarProducto)
+        .sort((a, b) => (Number(a.orden) || 999) - (Number(b.orden) || 999));
       savels(STORAGE_KEY, _memoriaProductos);
       return _memoriaProductos;
     }
   } catch (e) {}
 
   // 2. Fallback a Semilla oficial
-  const semillas = (Array.isArray(productosSemilla) ? productosSemilla : []).map(normalizarProducto);
+  const semillas = (Array.isArray(productosSemilla) ? productosSemilla : [])
+    .map(normalizarProducto)
+    .sort((a, b) => (Number(a.orden) || 999) - (Number(b.orden) || 999));
   _memoriaProductos = semillas;
   try {
     savels(STORAGE_KEY, semillas);
@@ -193,7 +197,9 @@ export function obtenerProductosLocal() {
  * Guarda el array de productos en caché local
  */
 export function guardarProductosLocal(lista = []) {
-  const normalizados = lista.map(normalizarProducto).sort((a, b) => (a.orden || 999) - (b.orden || 999));
+  const normalizados = (Array.isArray(lista) ? [...lista] : [])
+    .map(normalizarProducto)
+    .sort((a, b) => (Number(a.orden) || 999) - (Number(b.orden) || 999));
   _memoriaProductos = normalizados;
   savels(STORAGE_KEY, normalizados);
   try {
@@ -210,7 +216,9 @@ export function guardarProductosLocal(lista = []) {
 if (typeof window !== 'undefined') {
   window.addEventListener('wi:productos-actualizado', (e) => {
     if (Array.isArray(e.detail) && e.detail.length > 0) {
-      _memoriaProductos = e.detail;
+      _memoriaProductos = e.detail
+        .map(normalizarProducto)
+        .sort((a, b) => (Number(a.orden) || 999) - (Number(b.orden) || 999));
     }
   });
 }
@@ -237,13 +245,35 @@ export async function sincronizarProductosFirestore(opciones = {}) {
       return { ok: true, origen: 'semilla_sembrada', datos: locales };
     }
 
+    const locales = obtenerProductosLocal();
     const remotos = snap.docs.map(d => {
       const data = d.data();
       return normalizarProducto({ id: d.id, ...data });
     });
 
-    guardarProductosLocal(remotos);
-    return { ok: true, origen: 'firestore', datos: remotos };
+    // Fusión inteligente: Si local tiene actualización más reciente en memoria/LS, preservar cambios recientes
+    const mapa = new Map();
+    remotos.forEach(r => mapa.set(r.id, r));
+
+    locales.forEach(l => {
+      const r = mapa.get(l.id);
+      if (!r) {
+        mapa.set(l.id, l);
+      } else {
+        const timeLocal = new Date(l.actualizado || 0).getTime();
+        const timeRemoto = new Date(r.actualizado || 0).getTime();
+        if (timeLocal > timeRemoto) {
+          mapa.set(l.id, { ...r, ...l });
+        }
+      }
+    });
+
+    const fusionados = Array.from(mapa.values())
+      .map(normalizarProducto)
+      .sort((a, b) => (Number(a.orden) || 999) - (Number(b.orden) || 999));
+
+    guardarProductosLocal(fusionados);
+    return { ok: true, origen: 'firestore', datos: fusionados };
   } catch (err) {
     console.warn('[dataProductos] Sincronización Firestore:', err?.message || err);
     return { ok: false, error: err?.message, datos: obtenerProductosLocal() };
@@ -296,13 +326,16 @@ export async function guardarProductoFirestore(productoRaw = {}) {
   }
 
   // 1. Preparar lista para Local-First
-  const actuales = obtenerProductosLocal();
+  const actuales = [...obtenerProductosLocal()];
   const idx = actuales.findIndex(p => p.id === prodFinal.id);
   if (idx >= 0) {
     actuales[idx] = prodFinal;
   } else {
     actuales.push(prodFinal);
   }
+
+  // Orden estricto garantizado siempre por la propiedad orden
+  actuales.sort((a, b) => (Number(a.orden) || 999) - (Number(b.orden) || 999));
 
   _memoriaProductos = [...actuales];
   try {

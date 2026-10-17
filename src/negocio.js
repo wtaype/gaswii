@@ -540,11 +540,11 @@ export const datosNegocio = {
   get coordenadas() { return this.raw.ubicacion?.coordenadas || { lat: 0, lng: 0 }; },
   get horario() {
     const h = this.raw.contacto?.horario;
-    return typeof h === 'object' && h !== null ? (h.es || '') : (h || '');
+    return typeof h === 'object' && h !== null ? (h.es || h.en || '') : (h || '');
   },
   get horarioEn() {
     const h = this.raw.contacto?.horario;
-    return typeof h === 'object' && h !== null ? (h.en || '') : (this.raw.contacto?.horarioEn || '');
+    return typeof h === 'object' && h !== null ? (h.en || h.es || '') : (this.raw.contacto?.horarioEn || this.horario);
   },
   getHorario(idioma = 'es') {
     return idioma === 'en' ? this.horarioEn : this.horario;

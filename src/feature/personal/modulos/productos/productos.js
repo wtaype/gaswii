@@ -8,7 +8,8 @@ import {
   sincronizarProductosFirestore,
   cambiarEstadoProducto,
   guardarProductoFirestore,
-  eliminarProductoFirestore
+  eliminarProductoFirestore,
+  normalizarProducto
 } from './dataProductos.js';
 import {
   inicializarModalProducto,
@@ -38,12 +39,19 @@ export function inicializarProductos() {
 
   let categoriaFiltro = 'todos';
   let busquedaTexto = '';
+  let _ultimoEditadoId = null;
+  let _ultimoCampoEditado = null;
 
-  // 1. RENDERIZADOR DE SERVICIOS Y ASESORÍAS
+  // 1. RENDERIZADOR DE SERVICIOS Y ASESORÍAS (Orden estricto 1, 2, 3... garantizado)
   function renderizar(productos = obtenerProductosLocal()) {
-    const total = productos.length;
-    const totalServicios = productos.filter(p => p.tipo === 'servicio').length;
-    const totalAsesorias = productos.filter(p => p.tipo === 'asesoria' || p.tipo === 'taller').length;
+    const listaBase = Array.isArray(productos) && productos.length > 0 ? productos : obtenerProductosLocal();
+    const productosOrdenados = [...listaBase]
+      .map(normalizarProducto)
+      .sort((a, b) => (Number(a.orden) || 999) - (Number(b.orden) || 999));
+
+    const total = productosOrdenados.length;
+    const totalServicios = productosOrdenados.filter(p => p.tipo === 'servicio').length;
+    const totalAsesorias = productosOrdenados.filter(p => p.tipo === 'asesoria' || p.tipo === 'taller').length;
 
     if (prStatTotal) prStatTotal.textContent = total;
     if (prStatServicios) prStatServicios.textContent = totalServicios;
@@ -58,7 +66,7 @@ export function inicializarProductos() {
     if (prEmpty) prEmpty.style.display = 'none';
 
     // Filtrar por categoría y texto
-    const filtrados = productos.filter(p => {
+    const filtrados = productosOrdenados.filter(p => {
       const tipoReal = (p.tipo === 'asesoria' || p.tipo === 'taller') ? 'asesoria' : 'servicio';
       const matchCat = categoriaFiltro === 'todos' || tipoReal === categoriaFiltro;
       const texto = busquedaTexto.toLowerCase().trim();
@@ -172,6 +180,20 @@ export function inicializarProductos() {
         </article>
       `;
     }).join('');
+
+    // Restaurar feedback visual verde si se editó un input recientemente
+    if (_ultimoEditadoId) {
+      const selector = _ultimoCampoEditado === 'stock'
+        ? `.pr-quick-stock[data-id="${_ultimoEditadoId}"]`
+        : `.pr-quick-precio[data-id="${_ultimoEditadoId}"]`;
+      const inputEl = prGrid.querySelector(selector);
+      if (inputEl) {
+        inputEl.classList.add('pr-input-saved');
+        setTimeout(() => inputEl.classList.remove('pr-input-saved'), 1000);
+      }
+      _ultimoEditadoId = null;
+      _ultimoCampoEditado = null;
+    }
   }
 
   // 2. LISTENERS DE BOTONES Y FILTROS
@@ -198,7 +220,7 @@ export function inicializarProductos() {
     });
   }
 
-  // Sincronizar con Firestore (Reflejo seguro sin sobrescribir con semillas)
+  // Sincronizar con Firestore (Reflejo seguro y ordenado)
   if (prBtnSincronizar) {
     prBtnSincronizar.addEventListener('click', async () => {
       prBtnSincronizar.disabled = true;
@@ -248,10 +270,12 @@ export function inicializarProductos() {
         const lista = obtenerProductosLocal();
         const item = lista.find(p => p.id === id);
         if (item) {
+          _ultimoEditadoId = id;
+          _ultimoCampoEditado = 'precio';
           item.precio = nuevoPrecio;
           const input = e.target;
           input.classList.add('pr-input-saved');
-          setTimeout(() => input.classList.remove('pr-input-saved'), 900);
+          setTimeout(() => input.classList.remove('pr-input-saved'), 1000);
           await guardarProductoFirestore(item);
         }
       } else if (e.target.classList.contains('pr-quick-stock')) {
@@ -261,10 +285,12 @@ export function inicializarProductos() {
         const lista = obtenerProductosLocal();
         const item = lista.find(p => p.id === id);
         if (item) {
+          _ultimoEditadoId = id;
+          _ultimoCampoEditado = 'stock';
           item.stock = nuevoStock;
           const input = e.target;
           input.classList.add('pr-input-saved');
-          setTimeout(() => input.classList.remove('pr-input-saved'), 900);
+          setTimeout(() => input.classList.remove('pr-input-saved'), 1000);
           await guardarProductoFirestore(item);
         }
       }
@@ -311,25 +337,34 @@ export function inicializarProductos() {
     });
   }
 
+  // Renderizador con rAF para evitar parpadeos y ejecuciones duplicadas simultáneas
+  let _renderTimer = null;
+  function renderizarConDebounce(datos) {
+    if (_renderTimer) cancelAnimationFrame(_renderTimer);
+    _renderTimer = requestAnimationFrame(() => {
+      renderizar(datos);
+    });
+  }
+
   // Escuchar evento personalizado tras guardar desde el modal
   window.addEventListener('producto-guardado', () => {
-    renderizar();
+    renderizarConDebounce();
   });
 
   // Escuchar actualizaciones globales de productos en 0 ms
   window.addEventListener('wi:productos-actualizado', (e) => {
     if (Array.isArray(e.detail) && e.detail.length > 0) {
-      renderizar(e.detail);
+      renderizarConDebounce(e.detail);
     } else {
-      renderizar();
+      renderizarConDebounce();
     }
   });
 
   window.addEventListener('gaswii:productos-actualizado', (e) => {
     if (Array.isArray(e.detail) && e.detail.length > 0) {
-      renderizar(e.detail);
+      renderizarConDebounce(e.detail);
     } else {
-      renderizar();
+      renderizarConDebounce();
     }
   });
 

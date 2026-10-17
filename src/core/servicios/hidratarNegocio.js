@@ -43,11 +43,11 @@ export function hidratarNegocioEnDOM(datos) {
   const telFormateado = contacto.telefono || '';
   const telLimpio = String(contacto.telefonoLimpio || telFormateado).replace(/\D/g, '');
 
-  const direccion = ubicacion.direccion || '';
-  const mapsUrl = ubicacion.mapsUrl || '';
-  const horario = typeof contacto.horario === 'object' && contacto.horario !== null
-    ? (contacto.horario.es || '')
-    : (contacto.horario || '');
+  const isEn = typeof window !== 'undefined' && window.location.pathname.startsWith('/en');
+  const hRaw = contacto.horario;
+  const horario = typeof hRaw === 'object' && hRaw !== null
+    ? (isEn ? (hRaw.en || hRaw.es || '') : (hRaw.es || hRaw.en || ''))
+    : (hRaw || (isEn ? contacto.horarioEn : '') || '');
 
   const nombre = identidad.nombre || '';
 

@@ -18,7 +18,7 @@ const t = resolverIdioma({ es, en }, idioma);
 const direccionSede = datosNegocio.direccionSede;
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
-const horarioDespacho = datosNegocio.horario;
+const horarioDespacho = idioma === 'en' ? (datosNegocio.horarioEn || datosNegocio.horario) : datosNegocio.horario;
 const mapsUrl = datosNegocio.mapsUrl;
 const coords = datosNegocio.coordenadas || { lat: -12.1177408, lng: -77.0226796 };
 const mapEmbedUrl = `https://maps.google.com/maps?q=${coords.lat},${coords.lng}&hl=${idioma}&z=16&output=embed`;

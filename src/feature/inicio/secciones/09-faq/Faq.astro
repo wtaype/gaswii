@@ -20,7 +20,7 @@ const t = resolverIdioma({ es, en }, idioma);
 const telefonoLimpio = datosNegocio.telefonoLimpio;
 const telefonoMostrado = datosNegocio.telefonoMostrado || datosNegocio.telefono;
 const direccionSede = datosNegocio.direccionSede;
-const horarioDespacho = datosNegocio.horario;
+const horarioDespacho = idioma === 'en' ? (datosNegocio.horarioEn || datosNegocio.horario) : datosNegocio.horario;
 const registroOsinergmin = datosNegocio.registroOsinergmin;
 
 const wsLink = crearEnlaceWhatsApp({

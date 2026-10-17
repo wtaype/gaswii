@@ -135,13 +135,16 @@ function hidratarHeroDesdeNegocio(datos) {
     document.querySelectorAll('[data-negocio-tel-link]').forEach(a => a.setAttribute('href', `tel:${telLimpio}`));
   }
 
-  const horario = datos.contacto?.horario || '';
+  const isEn = window.location.pathname.startsWith('/en');
+  const hRaw = datos.contacto?.horario;
+  const horario = typeof hRaw === 'object' && hRaw !== null
+    ? (isEn ? (hRaw.en || hRaw.es || '') : (hRaw.es || hRaw.en || ''))
+    : (hRaw || (isEn ? datos.contacto?.horarioEn : '') || '');
   if (horario) {
     document.querySelectorAll('[data-negocio-horario]').forEach(el => el.textContent = horario);
   }
 
   // Hidratar Titular H1, Subtítulo y Badge del Hero
-  const isEn = window.location.pathname.startsWith('/en');
   const subtitulo = (isEn ? datos.hero?.subtituloEn : datos.hero?.subtitulo) || datos.hero?.subtitulo || '';
   if (subtitulo) {
     document.querySelectorAll('[data-negocio-hero-subtitulo]').forEach(el => el.textContent = subtitulo);

@@ -189,11 +189,8 @@ export function inicializarPersonal() {
     }
 
     if (panelId === 'panel-productos') {
-      const btnSync = document.getElementById('prBtnSincronizar');
-      if (btnSync && !btnSync.disabled) {
-        btnSync.click();
-        return;
-      }
+      Notificacion('Todos los productos y precios están guardados y actualizados.', 'info', 2000);
+      return;
     }
 
     if (panelId === 'panel-notepad') {
