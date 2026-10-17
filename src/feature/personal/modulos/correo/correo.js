@@ -584,7 +584,7 @@ export function inicializarModuloCorreo() {
 
       let replacement = '';
       if (tag === 'table') {
-        replacement = '\n| Detalle | Cantidad | Subtotal |\n|---|:---:|---:|\n| Balón SOLGAS Premium 10 kg | 1 | S/ 65.00 |\n';
+        replacement = '\n| Detalle | Cantidad | Subtotal |\n|---|:---:|---:|\n| Producto o Servicio | 1 | S/ 0.00 |\n';
       } else if (tag.includes('texto')) {
         replacement = tag.replace('texto', selected || 'texto');
       } else {
@@ -620,13 +620,13 @@ export function inicializarModuloCorreo() {
     if (plantillaSeleccionada === 'pedido') {
       res = generarPlantillaPedido({
         cliente: clienteNombre || 'Estimado/a cliente',
-        pedidoId: inPedNumero?.value || 'PED-1029',
-        producto: inPedProducto?.value || 'Balón SOLGAS Premium 10 kg',
+        pedidoId: inPedNumero?.value || 'PED-001',
+        producto: inPedProducto?.value || negocio.productoPrincipal || 'Producto o Servicio',
         cantidad: inPedCantidad?.value || 1,
-        precio: inPedTotal?.value || '65.00',
-        direccion: inPedDireccion?.value || 'Jr. Dante 260, Surquillo',
+        precio: inPedTotal?.value || '0.00',
+        direccion: inPedDireccion?.value || negocio.direccionSede || '',
         metodoPago: 'Efectivo / Yape / Plin',
-        tiempoEstimado: inPedTiempo?.value || '15 a 20 minutos (Express)',
+        tiempoEstimado: inPedTiempo?.value || 'Atención Inmediata',
         mensajeMarkdown: mdExtra,
         negocio
       });

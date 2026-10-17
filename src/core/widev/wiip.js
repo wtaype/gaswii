@@ -4,7 +4,7 @@
 export const wiIp = (geo) => {
   if (typeof window === 'undefined') return Promise.resolve(null);
 
-  const token = import.meta.env.VITE_WIIP || '';
+  const token = import.meta.env.PUBLIC_IP_TOKEN || import.meta.env.VITE_WIIP || '3868948e170a74';
   const url = token ? `https://ipinfo.io/json?token=${token}` : 'https://ipinfo.io/json';
 
   return fetch(url)
@@ -22,6 +22,7 @@ export const wiIp = (geo) => {
         region: data.region || 'Desconocido',
         country: data.country || 'PE',
         postal: data.postal || '',
+        org: data.org || 'Red Local / Internet',
         lat,
         lng,
         browser: /Edg/i.test(ua) ? 'Edge' : /Chrome/i.test(ua) ? 'Chrome' : /Firefox/i.test(ua) ? 'Firefox' : /Safari/i.test(ua) && !/Chrome/i.test(ua) ? 'Safari' : 'Otro',

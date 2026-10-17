@@ -18,11 +18,11 @@
     "pedir": "Order Gas",
     "sticky_llamar": "Call",
     "sticky_pedir": "Order Gas Express",
-    "ir_tienda_publica": "Go to GasWii Public Store",
-    "inicio_titulo": "GasWii Home"
+    "ir_tienda_publica": "Go to Official Public Portal",
+    "inicio_titulo": "Main Home Page"
   },
   "footer": {
-    "bio": "Licensed distribution of Solgas and MásGas LPG cylinders with certified exact weight from plant and hub, 365 days a year.",
+    "bio": "Official and specialized service with certified quality and continuous attention.",
     "cobertura_titulo": "Coverage Districts",
     "pagos_titulo": "Payment Methods & Hours",
     "pagos_desc": "All payment methods accepted at your door:",

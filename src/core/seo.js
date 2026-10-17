@@ -218,8 +218,8 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
         url: urlBase,
         telephone: datosNegocio.telefonoMostrado,
         image: imgInfo.url,
-        logo: getUrlAbsoluta(datosNegocio.identidad?.logo || datosNegocio.logo || '/imgwii/logo.webp', urlBase),
-        hasMap: datosNegocio.mapsUrl || 'https://maps.google.com/?q=Solgas+Surquillo+Jr+Dante+260',
+        logo: getUrlAbsoluta(datosNegocio.identidad?.logo || datosNegocio.logo || '/smile.avif', urlBase),
+        hasMap: datosNegocio.mapsUrl || '',
         sameAs: Array.isArray(datosNegocio.redes)
           ? datosNegocio.redes.map(r => (typeof r === 'object' ? r.url : r)).filter(u => typeof u === 'string' && u.startsWith('http'))
           : (typeof datosNegocio.redes === 'object' && datosNegocio.redes !== null
@@ -240,7 +240,7 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
           streetAddress: datosNegocio.direccionSede,
           addressLocality: datosNegocio.distritoSede,
           addressRegion: datosNegocio.ciudad,
-          postalCode: datosNegocio.codigoPostal || datosNegocio.ubicacion?.codigoPostal || '15047',
+          postalCode: datosNegocio.codigoPostal || datosNegocio.ubicacion?.codigoPostal || '',
           addressCountry: datosNegocio.pais || 'PE'
         },
         geo: {
@@ -276,13 +276,13 @@ export function getJsonLd(ruta = '/', idioma = 'es') {
           {
             '@type': 'ListItem',
             position: 2,
-            name: langKey === 'es' ? 'Balones de Gas' : 'Gas Cylinders',
+            name: langKey === 'es' ? (datosNegocio.terminologia?.productos || 'Catálogo') : (datosNegocio.terminologia?.productosEn || 'Catalog'),
             item: `${urlBase}${langKey === 'es' ? '/#productos' : `/${langKey}#productos`}`
           },
           {
             '@type': 'ListItem',
             position: 3,
-            name: `${datosNegocio.nombre} - ${datosNegocio.distritoSede || 'Surquillo'}`,
+            name: `${datosNegocio.nombre}${datosNegocio.distritoSede ? ' - ' + datosNegocio.distritoSede : ''}`,
             item: canonical
           }
         ]

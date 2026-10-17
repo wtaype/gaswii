@@ -3,41 +3,46 @@
 // 100% JS Nativo · Integrado con @widev y Local-First
 import { obtenerDatosNegocio } from '../negocio/dataNegocio.js';
 import whatsappSemilla from '@/semillas/whatsapp.json';
+import productosSemilla from '@/semillas/productos.json';
 
 export const PLANTILLAS_WHATSAPP = Array.isArray(whatsappSemilla?.plantillas) ? whatsappSemilla.plantillas : [];
 
 export function formatearPlantilla(textoBase, valores = {}) {
   let resultado = textoBase;
   const neg = obtenerDatosNegocio() || {};
-  const nombreEstudio = neg.identidad?.nombreCorto || neg.identidad?.nombre || neg.nombre || 'nuestro equipo';
+  const nombreEstudio = neg.identidad?.nombreCorto || neg.identidad?.nombre || neg.nombre || '';
   const especialista = neg.identidad?.especialista || neg.especialista || 'Atención al Cliente';
-  const direccionSede = neg.ubicacion?.direccion ? neg.ubicacion.direccion : 'Atención y Despacho Express';
+  const direccionSede = neg.ubicacion?.direccion ? neg.ubicacion.direccion : 'Sede Principal';
+
+  const primerProd = Array.isArray(productosSemilla) && productosSemilla[0] ? productosSemilla[0] : null;
+  const prodNombre = typeof primerProd?.nombre === 'object' ? (primerProd?.nombre?.es || '') : (primerProd?.nombre || 'Servicio Oficial');
+  const prodPrecio = String(primerProd?.precioPEN ?? primerProd?.precio ?? '0.00');
 
   const defaults = {
     cliente: 'Estimado/a cliente',
     estudio: nombreEstudio,
     especialista: especialista,
-    pedidoId: 'GW-1029',
-    producto: 'Balón SOLGAS Premium 10 kg',
+    pedidoId: '1001',
+    producto: prodNombre,
     cantidad: '1',
-    monto: '65.00',
-    precioMayorista: '225.00',
-    direccion: 'Jr. Dante 260, Surquillo',
-    distrito: neg.ubicacion?.distrito || 'Surquillo',
-    ruc: '20554897123',
-    digito: '3',
-    periodo: 'Agosto 2026',
-    fechaVencimiento: '18 de Septiembre de 2026',
-    regimen: 'Régimen MYPE Tributario',
-    nps: '9827364510',
-    modalidad: 'Delivery Express a Domicilio',
+    monto: prodPrecio,
+    precioMayorista: prodPrecio,
+    direccion: neg.ubicacion?.direccion || '',
+    distrito: neg.ubicacion?.distrito || '',
+    ruc: neg.identidad?.ruc || '',
+    digito: neg.identidad?.ruc ? neg.identidad.ruc.slice(-1) : '',
+    periodo: 'Periodo Vigente',
+    fechaVencimiento: 'Fin de mes',
+    regimen: 'Régimen Oficial',
+    nps: '',
+    modalidad: neg.sedes?.[0]?.modalidad || 'Atención Inmediata',
     fechaHora: 'Hoy · Salida Inmediata',
-    honorario: '65.00',
+    honorario: prodPrecio,
     lugarEnlace: `${direccionSede}`,
     comprobanteTipo: 'Boleta Electrónica',
-    comprobanteNumero: 'B001-000482',
+    comprobanteNumero: 'B001-000101',
     fecha: 'Hoy',
-    servicio: 'Recarga Balón SOLGAS Premium 10 kg'
+    servicio: prodNombre
   };
 
   const merge = { ...defaults, ...valores };

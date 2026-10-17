@@ -18,7 +18,7 @@ export function obtenerDatosPerfil() {
       celular: user.celular || '',
       rol: user.rol || 'gestor',
       sede: user.sede || sedeNegocio,
-      avatar: user.avatar || user.foto || '/imgwii/smile.webp'
+      avatar: (!user.avatar && !user.foto) || (user.avatar && user.avatar.includes('smile.webp')) ? 'https://imgwii.web.app/smile.avif' : (user.avatar || user.foto)
     };
   }
 
@@ -31,7 +31,7 @@ export function obtenerDatosPerfil() {
     celular: '',
     rol: 'gestor',
     sede: sedeNegocio,
-    avatar: '/imgwii/smile.webp'
+    avatar: 'https://imgwii.web.app/smile.avif'
   };
 }
 

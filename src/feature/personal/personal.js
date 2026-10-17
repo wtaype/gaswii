@@ -27,7 +27,8 @@ export function inicializarPersonal() {
     const heroName = document.getElementById('dbHeroUserName');
     const nombre = user.nombre || user.usuario;
 
-    if (avatar && (user.foto || user.avatar)) avatar.src = user.foto || user.avatar;
+    const userFoto = (!user.foto && !user.avatar) || (user.avatar && user.avatar.includes('smile.webp')) ? 'https://imgwii.web.app/smile.avif' : (user.foto || user.avatar);
+    if (avatar) avatar.src = userFoto;
     if (topName && nombre) topName.textContent = nombre;
     if (dropName && nombre) dropName.textContent = nombre;
     if (dropEmail && user.email) dropEmail.textContent = user.email;

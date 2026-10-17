@@ -129,13 +129,14 @@ export const sincronizarSmile = async (user, extraData = {}) => {
   let docSnap = null;
   try { docSnap = await getDoc(docRef); } catch (e) { console.warn('Firestore offline:', e); }
 
-  const imgEmail = '/imgwii/smile.webp';
+  const imgEmail = 'https://imgwii.web.app/smile.avif';
   const { avatar: calcIniciales } = await import('../../core/widev/nombre.js');
 
   let smileData;
   if (docSnap?.exists()) {
     const ex = docSnap.data();
-    const avatar = user.photoURL || extraData.avatar || ex.avatar || imgEmail;
+    const rawAv = user.photoURL || extraData.avatar || ex.avatar;
+    const avatar = (!rawAv || rawAv.includes('smile.webp')) ? imgEmail : rawAv;
     const iniciales = extraData.iniciales || ex.iniciales || calcIniciales(ex.nombre || user.displayName || 'Usuario');
     smileData = { ...ex, ...extraData, avatar, iniciales, actualizado: new Date().toISOString() };
     const payload = { ...extraData, avatar, iniciales, actualizado: serverTimestamp() };

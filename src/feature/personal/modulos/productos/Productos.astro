@@ -14,8 +14,8 @@ const tituloCat = term.catalogoTitulo || 'Catálogo de Productos & Servicios';
 const subCat = term.catalogoSubtitulo || 'Gestión centralizada del catálogo comercial. Conectado a Firestore y reflejo en la Web Pública.';
 const itemSingular = term.itemSingular || 'Producto';
 const itemsPlural = term.itemsPlural || 'productos';
-const grupo1 = term.grupo1Titulo || 'Balones Hogar';
-const grupo2 = term.grupo2Titulo || 'Balones Comerciales';
+const grupo1 = term.grupo1Titulo || 'Categoría 1';
+const grupo2 = term.grupo2Titulo || 'Categoría 2';
 ---
 
 <section class={`ps-panel ${esActivo ? 'active' : ''}`} id="panel-productos">
@@ -220,7 +220,7 @@ const grupo2 = term.grupo2Titulo || 'Balones Comerciales';
         <div class="pr-lang-pane active" id="pane-es">
           <div class="pr-f-field">
             <label class="pr-f-label" for="prFormNombreEs">Nombre Oficial (ES) *</label>
-            <input type="text" id="prFormNombreEs" class="pr-f-input" placeholder="Ej: Balón SOLGAS Premium 10 kg" required />
+            <input type="text" id="prFormNombreEs" class="pr-f-input" placeholder="Ej: Nombre Oficial del Producto o Servicio" required />
           </div>
 
           <div class="pr-f-field">
@@ -235,18 +235,18 @@ const grupo2 = term.grupo2Titulo || 'Balones Comerciales';
             </div>
             <div class="pr-f-field">
               <label class="pr-f-label" for="prFormModalidadEs">Modalidad de Despacho (ES)</label>
-              <input type="text" id="prFormModalidadEs" class="pr-f-input" placeholder="Delivery Express a Domicilio" />
+              <input type="text" id="prFormModalidadEs" class="pr-f-input" placeholder="Delivery Express / Atención Presencial" />
             </div>
           </div>
 
           <div class="pr-f-field">
             <label class="pr-f-label" for="prFormPublicoEs">Dirigido a / Uso (ES)</label>
-            <input type="text" id="prFormPublicoEs" class="pr-f-input" placeholder="Hogar / Comercial / Restaurantes" />
+            <input type="text" id="prFormPublicoEs" class="pr-f-input" placeholder="Público General / Empresas / Especializado" />
           </div>
 
           <div class="pr-f-field">
             <label class="pr-f-label" for="prFormGarantiasEs">Puntos Clave / Garantías (Una por línea)</label>
-            <textarea id="prFormGarantiasEs" class="pr-f-textarea" rows="3" placeholder="Garantía de peso exacto comprobado&#10;Llama azul constante y duradera&#10;Entrega inmediata sin costo de flete"></textarea>
+            <textarea id="prFormGarantiasEs" class="pr-f-textarea" rows="3" placeholder="Garantía de calidad comprobada&#10;Atención rápida y personalizada&#10;Soporte técnico certificado"></textarea>
           </div>
         </div>
 
@@ -254,7 +254,7 @@ const grupo2 = term.grupo2Titulo || 'Balones Comerciales';
         <div class="pr-lang-pane" id="pane-en">
           <div class="pr-f-field">
             <label class="pr-f-label" for="prFormNombreEn">Item Name (EN)</label>
-            <input type="text" id="prFormNombreEn" class="pr-f-input" placeholder="Ex: SOLGAS Premium 10 kg Cylinder" />
+            <input type="text" id="prFormNombreEn" class="pr-f-input" placeholder="Ex: Official Product or Service Name" />
           </div>
 
           <div class="pr-f-field">

@@ -3,29 +3,30 @@
 
 import { envoltorioBase } from './base.js';
 import { mdToEmailHtml } from './parser.js';
+import { configurarSistema } from '@semillas/configurar.js';
+import { datosNegocio } from '@/negocio.js';
 
 export function generarPlantillaComprobante({
   cliente = 'Estimado cliente',
-  tipoComprobante = 'Factura Electrónica',
-  serieNumero = 'F001-000104',
+  tipoComprobante = 'Comprobante Electrónico',
+  serieNumero = 'B001-000101',
   docIdentidad = '',
-  monto = '65.00',
+  monto = '0.00',
   fecha = '',
   servicio = '',
   mensajeMarkdown = '',
   urlDescarga = '',
   negocio = {}
 } = {}) {
+  const neg = { ...datosNegocio, ...negocio };
   const contenidoExtraHtml = mensajeMarkdown ? mdToEmailHtml(mensajeMarkdown) : '';
   const docTexto = docIdentidad ? `<div style="font-size: 13px; color: #64748b; margin-top: 2px;">RUC / DNI: <strong>${docIdentidad}</strong></div>` : '';
-  const nombreEmpresa = negocio?.nombre || '';
-  const esServicios = negocio?.modeloNegocio === 'servicios_y_asesorias';
-  const colorMarca = negocio?.colorPrimario || '#ff6600';
-  const conceptoDefault = esServicios ? 'Servicio Contable Mensual' : 'Recarga de Balón SOLGAS Premium 10 kg';
+  const nombreEmpresa = neg?.nombreCorto || neg?.nombre || '';
+  const esServicios = neg?.modeloNegocio === 'servicios_y_asesorias';
+  const colorMarca = neg?.colorPrimario || '#ff6600';
+  const conceptoDefault = esServicios ? 'Servicio Profesional y Asesoría' : (configurarSistema.terminologia?.comprobanteConceptoDefault || 'Servicios y Productos');
   const conceptoFinal = servicio || conceptoDefault;
-  const descripcionIntro = esServicios 
-    ? 'Te hacemos llegar el comprobante electrónico oficial por la prestación de servicios contables y asesoría tributaria conforme a las disposiciones de SUNAT.' 
-    : 'Te hacemos llegar el comprobante electrónico oficial correspondiente a tu compra y despacho de gas GLP.';
+  const descripcionIntro = `Te hacemos llegar el comprobante electrónico oficial emitido por ${nombreEmpresa || 'nuestra empresa'} conforme a las disposiciones vigentes de SUNAT.`;
 
   const contenidoHtml = `
     <h2 style="color: #0f172a; margin-top: 0; font-size: 21px; font-weight: 700;">📄 Tu ${tipoComprobante}</h2>

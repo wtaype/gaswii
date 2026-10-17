@@ -178,16 +178,16 @@ export function inicializarBlogs() {
         case 'quote': ins = `\n> ${sel || 'Cita destacada...'}\n`; break;
         case 'code': ins = `\`${sel || 'código'}\``; break;
         case 'table':
-          ins = `\n| Componente | Especificación | Detalle |\n|---|:---:|---:|\n| Balón GLP | 10 kg | Calibrado |\n`;
+          ins = `\n| Detalle | Especificación | Nota |\n|---|:---:|---:|\n| Item Principal | Estándar | Conforme |\n`;
           break;
         case 'image':
-          ins = `\n![Descripción de la imagen](/imgwii/02-solgas-surquillo-balanza.webp)\n`;
+          ins = `\n![Descripción de la imagen](/smile.avif)\n`;
           break;
         case 'note':
-          ins = `\n> [!NOTE]\n> ${sel || 'Nota informativa sobre seguridad...'}\n`;
+          ins = `\n> [!NOTE]\n> ${sel || 'Nota informativa sobre el tema...'}\n`;
           break;
         case 'tip':
-          ins = `\n> [!TIP]\n> ${sel || 'Consejo útil para optimizar tu balón...'}\n`;
+          ins = `\n> [!TIP]\n> ${sel || 'Consejo útil para optimizar tu experiencia...'}\n`;
           break;
         case 'warning':
           ins = `\n> [!WARNING]\n> ${sel || 'Advertencia importante...'}\n`;
@@ -233,7 +233,7 @@ export function inicializarBlogs() {
 
   // Previsualización y Enlaces de Imágenes en tiempo real
   function actualizarPrevisualizacionImagenes() {
-    const valImg = inImagen?.value.trim() || '/imgwii/02-solgas-surquillo-balanza.webp';
+    const valImg = inImagen?.value.trim() || '/smile.avif';
     const valImgTop = inImagenTop?.value.trim() || valImg;
 
     if (previewThumb) previewThumb.src = valImg;
@@ -391,11 +391,10 @@ export function inicializarBlogs() {
     if (inSlug) inSlug.value = '';
     if (inResumen) inResumen.value = '';
     if (inKeywords) inKeywords.value = '';
-    if (inContenido) inContenido.value = '';
-    if (inCategoria) inCategoria.value = 'Seguridad & Peso';
-    if (inAutor) inAutor.value = 'Equipo Técnico Solgas Surquillo';
-    if (inImagen) inImagen.value = '/imgwii/02-solgas-surquillo-balanza.webp';
-    if (inImagenTop) inImagenTop.value = '/imgwii/02-solgas-surquillo-balanza.webp';
+    if (inCategoria) inCategoria.value = 'General';
+    if (inAutor) inAutor.value = datosNegocio.identidad?.nombreCorto || datosNegocio.nombre || 'Redacción';
+    if (inImagen) inImagen.value = datosNegocio.hero?.imagen || '/smile.avif';
+    if (inImagenTop) inImagenTop.value = datosNegocio.hero?.imagen || '/smile.avif';
     if (inActivo) inActivo.checked = true;
     if (inPin) inPin.checked = false;
     if (btnSubmitPost) btnSubmitPost.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publicar';
@@ -406,7 +405,7 @@ export function inicializarBlogs() {
       inLang.value = 'es';
     }
 
-    currentTags = ['solgas', 'balon 10kg'];
+    currentTags = [];
     renderTags();
     actualizarPrevisualizacionImagenes();
     actualizarSelectorLangId('es');
@@ -439,13 +438,13 @@ export function inicializarBlogs() {
       langId: inLangId?.value || null,
       activo: inActivo ? inActivo.checked : true,
       pin: inPin ? inPin.checked : false,
-      userId: 'usr_admin_01',
-      autor: inAutor?.value.trim() || datosNegocio.nombreCorto || 'Equipo Técnico Solgas Surquillo',
+      userId: 'admin',
+      autor: inAutor?.value.trim() || datosNegocio.nombreCorto || datosNegocio.nombre || 'Redacción',
       titulo: tituloVal,
       descripcion: inResumen?.value.trim() || '',
       categoria: inCategoria?.value.trim() || 'General',
-      imagen: inImagen?.value.trim() || '/imgwii/02-solgas-surquillo-balanza.webp',
-      imagenTop: inImagenTop?.value.trim() || inImagen?.value.trim() || '/imgwii/02-solgas-surquillo-balanza.webp',
+      imagen: inImagen?.value.trim() || datosNegocio.hero?.imagen || '/smile.avif',
+      imagenTop: inImagenTop?.value.trim() || inImagen?.value.trim() || datosNegocio.hero?.imagen || '/smile.avif',
       tags: currentTags,
       metaSEO: {
         keywords: inKeywords?.value.trim() || currentTags.join(', '),
@@ -481,7 +480,7 @@ export function inicializarBlogs() {
     if (inKeywords) inKeywords.value = post.metaSEO?.keywords || '';
     if (inContenido) inContenido.value = post.contenidoMD || post.contenido || '';
     if (inCategoria) inCategoria.value = post.categoria || 'General';
-    if (inAutor) inAutor.value = post.autor || 'Equipo Técnico Solgas Surquillo';
+    if (inAutor) inAutor.value = post.autor || datosNegocio.identidad?.nombreCorto || datosNegocio.nombre || 'Redacción';
     if (inImagen) inImagen.value = post.imagen || '';
     if (inImagenTop) inImagenTop.value = post.imagenTop || post.imagen || '';
     if (inActivo) inActivo.checked = post.activo !== false;
@@ -562,7 +561,7 @@ export function inicializarBlogs() {
         <tr data-post-id="${b.id}">
           <td>
             <div class="bl-col-post">
-              <img src="${b.imagen || '/imgwii/02-solgas-surquillo-balanza.webp'}" alt="${b.titulo}" class="bl-table-thumb" loading="lazy" />
+              <img src="${b.imagen || '/smile.avif'}" alt="${b.titulo}" class="bl-table-thumb" loading="lazy" />
               <div class="bl-table-info">
                 <strong class="bl-table-title" title="${b.titulo}">${b.titulo}</strong>
                 <a href="${publicUrl}" target="_blank" rel="noopener noreferrer" class="bl-table-slug" title="Abrir en enlace">

@@ -17,9 +17,7 @@ const AJUSTES_DEFAULT = {
   sonidoPedidos: true,
   notificacionesWebPush: true,
   temaPorDefecto: 'futuro',
-  sidebarColapsado: false,
-  telefonoContacto: datosNegocio.telefono || '',
-  direccionSede: datosNegocio.direccionSede || ''
+  sidebarColapsado: false
 };
 
 export function obtenerAjustes() {

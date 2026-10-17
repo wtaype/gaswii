@@ -2,6 +2,7 @@
 // 📦 Centro de Colecciones y Motor Reactivo de WhatsApp (Local-First)
 // Fuente única de la verdad para Canales Web y Plantillas de Despacho
 import whatsappSemilla from '@/semillas/whatsapp.json';
+import productosSemilla from '@/semillas/productos.json';
 import { datosNegocio } from '@/negocio.js';
 import { 
   obtenerSaludoHora, 
@@ -92,7 +93,11 @@ export function formatearCanal(canalId, datos = {}) {
   const canal = obtenerCanal(canalId);
   const plantillaBase = canal?.formatoMensaje || '';
 
-  const nombreNegocio = datosNegocio?.identidad?.nombreCorto || datosNegocio?.identidad?.nombre || datosNegocio?.nombre || 'Solgas Surquillo';
+  const nombreNegocio = datosNegocio?.identidad?.nombreCorto || datosNegocio?.identidad?.nombre || datosNegocio?.nombre || '';
+  const prodDefault = datosNegocio?.productoPrincipal || productosSemilla?.[0]?.nombre || 'Producto Principal';
+  const dirDefault = datosNegocio?.ubicacion?.direccion || '';
+  const distDefault = datosNegocio?.ubicacion?.distrito || '';
+
   const precioFormateado = datos.precio !== undefined && datos.precio !== null && !isNaN(Number(datos.precio))
     ? Number(datos.precio).toFixed(2)
     : (datos.precio || '');
@@ -103,19 +108,19 @@ export function formatearCanal(canalId, datos = {}) {
   const merge = {
     saludo: obtenerSaludoHora(),
     nombreNegocio: nombreNegocio,
-    producto: datos.producto || 'Balón de Gas',
+    producto: datos.producto || prodDefault,
     precio: precioFormateado,
     total: totalFormateado,
     cantidad: datos.cantidad || 1,
     cliente: datos.cliente || '',
     celular: datos.celular || '',
-    direccion: datos.direccion || '',
-    distrito: datos.distrito || 'Surquillo',
+    direccion: datos.direccion || dirDefault,
+    distrito: datos.distrito || distDefault,
     metodoPago: datos.metodoPago || 'Efectivo',
     notas: datos.notas || '',
-    kg: datos.kg || '10',
-    personas: datos.personas || '3',
-    dias: datos.dias || '25',
+    kg: datos.kg || '',
+    personas: datos.personas || '',
+    dias: datos.dias || '',
     ...datos
   };
 
@@ -154,20 +159,23 @@ export function formatearPlantillaDespacho(plantillaId, datos = {}) {
   const tpl = obtenerPlantillaDespacho(plantillaId);
   if (!tpl) return '';
 
-  const nombreNegocio = datosNegocio?.identidad?.nombreCorto || datosNegocio?.identidad?.nombre || datosNegocio?.nombre || 'Solgas Surquillo';
+  const nombreNegocio = datosNegocio?.identidad?.nombreCorto || datosNegocio?.identidad?.nombre || datosNegocio?.nombre || '';
+  const prodDefault = datosNegocio?.productoPrincipal || productosSemilla?.[0]?.nombre || 'Producto Principal';
+  const dirDefault = datosNegocio?.ubicacion?.direccion || '';
+  const distDefault = datosNegocio?.ubicacion?.distrito || '';
 
   const defaults = {
     saludo: obtenerSaludoHora(),
     nombreNegocio: nombreNegocio,
     cliente: 'Estimado/a cliente',
-    pedidoId: 'GW-1042',
-    producto: 'Balón SOLGAS Premium 10 kg',
+    pedidoId: '001',
+    producto: prodDefault,
     cantidad: '1',
-    monto: '65.00',
-    precioMayorista: '225.00',
-    direccion: 'Jr. Dante 260',
-    distrito: 'Surquillo',
-    tiempoEstimado: '15 a 20 minutos'
+    monto: '0.00',
+    precioMayorista: '0.00',
+    direccion: dirDefault,
+    distrito: distDefault,
+    tiempoEstimado: 'Atención Inmediata'
   };
 
   const merge = { ...defaults, ...datos };
@@ -179,7 +187,7 @@ export const PLANTILLAS_WHATSAPP = Array.isArray(whatsappSemilla?.plantillas) ? 
 export function formatearPlantilla(textoBase, valores = {}) {
   const merge = {
     saludo: obtenerSaludoHora(),
-    nombreNegocio: datosNegocio?.nombre || 'Solgas Surquillo',
+    nombreNegocio: datosNegocio?.nombre || '',
     ...valores
   };
   return interpolarTexto(textoBase, merge);

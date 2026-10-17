@@ -5,6 +5,7 @@ import { getls, savels } from '@widev';
 import blogsSemilla from '../../../../semillas/blogs.json';
 import { slugify, countWords } from '../../../blog/lib/procesarmd.js';
 import { actualizarCentral, eliminarCentral } from '@core/servicios/actualizar.js';
+import { datosNegocio } from '@/negocio.js';
 
 export const STORAGE_KEY = 'wi_blogs_data_v3';
 
@@ -26,13 +27,13 @@ export function normalizarBlog(p = {}) {
     langId: p.langId || null,
     activo: p.activo !== false,
     pin: Boolean(p.pin),
-    userId: p.userId || 'usr_admin_01',
-    autor: p.autor || 'Técnico Solgas Surquillo',
+    userId: p.userId || '',
+    autor: p.autor || datosNegocio.identidad?.nombreCorto || datosNegocio.nombre || 'Redacción',
     titulo: p.titulo || 'Sin Título',
     descripcion: p.descripcion || '',
     categoria: p.categoria || 'General',
-    imagen: p.imagen || '/imgwii/02-solgas-surquillo-balanza.webp',
-    imagenTop: p.imagenTop || p.imagen || '/imgwii/02-solgas-surquillo-balanza.webp',
+    imagen: p.imagen || datosNegocio.hero?.imagen || '/smile.avif',
+    imagenTop: p.imagenTop || p.imagen || datosNegocio.hero?.imagen || '/smile.avif',
     tags: Array.isArray(p.tags) ? p.tags : [],
     vistas: Number(p.vistas || 0),
     likes: Number(p.likes || 0),

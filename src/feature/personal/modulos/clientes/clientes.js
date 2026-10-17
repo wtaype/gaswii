@@ -33,6 +33,8 @@ export function inicializarModuloClientes() {
   const tableBody = document.getElementById('clTableBody');
 
   // ── Ficha CRM Derecha ──
+  const crmAvatarBox = document.getElementById('clCrmAvatarBox');
+  const crmAvatarImg = document.getElementById('clCrmAvatarImg');
   const crmAvatarLetter = document.getElementById('clCrmAvatarLetter');
   const crmNombre = document.getElementById('clCrmNombre');
   const crmDoc = document.getElementById('clCrmDoc');
@@ -137,11 +139,15 @@ export function inicializarModuloClientes() {
       const honorario = (parseFloat(c.honorarioPEN) || 0).toFixed(2);
       const regimen = c.regimenTributario || 'MYPE';
 
-      return `
+        const avatarHtml = c.avatar 
+          ? `<img src="${c.avatar}" alt="${c.nombre}" class="cl-user-avatar" onerror="this.src='https://imgwii.web.app/smile.avif'" />`
+          : `<div class="cl-user-avatar-tag">${c.nombre.charAt(0).toUpperCase()}</div>`;
+
+        return `
         <tr class="cl-row ${isSelected ? 'selected' : ''}" data-id="${c.id}">
           <td>
             <div class="cl-user-cell">
-              <div class="cl-user-avatar-tag">${c.nombre.charAt(0).toUpperCase()}</div>
+              ${avatarHtml}
               <div class="cl-user-meta">
                 <span class="cl-user-name">${c.nombre}</span>
                 <span class="cl-user-doc">${c.documentoTipo || 'RUC'}: ${ruc}</span>
@@ -231,7 +237,24 @@ export function inicializarModuloClientes() {
   // ════════════════════════════════════════════════════════════
   function renderizarFichaCrm(c) {
     if (!c) return;
-    if (crmAvatarLetter) crmAvatarLetter.textContent = (c.nombre || 'E').charAt(0).toUpperCase();
+
+    if (c.avatar) {
+      if (crmAvatarImg) {
+        crmAvatarImg.src = c.avatar;
+        crmAvatarImg.style.display = 'block';
+        crmAvatarImg.onerror = () => {
+          crmAvatarImg.src = 'https://imgwii.web.app/smile.avif';
+        };
+      }
+      if (crmAvatarLetter) crmAvatarLetter.style.display = 'none';
+    } else {
+      if (crmAvatarImg) crmAvatarImg.style.display = 'none';
+      if (crmAvatarLetter) {
+        crmAvatarLetter.style.display = 'flex';
+        crmAvatarLetter.textContent = (c.nombre || 'E').charAt(0).toUpperCase();
+      }
+    }
+
     if (crmNombre) crmNombre.textContent = c.nombre;
     if (crmDoc) crmDoc.textContent = `${c.documentoTipo || 'DOC'}: ${c.documento || 'No registrado'} · ${c.email || 'Sin correo'}`;
     if (crmRegimen) crmRegimen.textContent = c.regimenTributario || (c.documentoTipo === 'RUC' ? 'Comercial' : 'Residencial');

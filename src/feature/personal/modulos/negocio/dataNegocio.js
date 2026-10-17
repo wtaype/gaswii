@@ -45,7 +45,7 @@ export function getUsuarioActivo() {
 
 // Calcula los años de experiencia automáticamente a partir de una fecha YYYY-MM-DD o Timestamp
 export function calcularAnosTrayectoria(fechaInput) {
-  if (!fechaInput) return '1+';
+  if (!fechaInput) return '';
   let dateObj = null;
 
   if (fechaInput?.seconds) {
@@ -56,9 +56,9 @@ export function calcularAnosTrayectoria(fechaInput) {
     dateObj = fechaInput;
   }
 
-  if (!dateObj || isNaN(dateObj.getTime())) return '1+';
+  if (!dateObj || isNaN(dateObj.getTime())) return '';
   const dif = new Date().getFullYear() - dateObj.getFullYear();
-  return dif > 0 ? `${dif}+` : '1+';
+  return dif > 0 ? `${dif}` : '';
 }
 
 
@@ -122,7 +122,7 @@ export function guardarDatosNegocio(input = {}) {
     metricas: {
       ...actual.metricas,
       ...(input.metricas || {}),
-      years: yearsCalc
+      years: yearsCalc ? `${yearsCalc}+` : (input.metricas?.years || actual.metricas?.years || '')
     },
     redes: {
       ...actual.redes,
@@ -177,10 +177,10 @@ async function sincronizarNegocioFirestore(config, fechaStr) {
     delete identidadLimpia.subtitulo;
 
     const metricasLimpias = {
-      clientes: config.metricas?.clientes || '+240',
-      confidencialidad: config.metricas?.confidencialidad || '100%',
-      satisfaccion: config.metricas?.satisfaccion || '99.4%',
-      years: config.metricas?.years || '12+'
+      clientes: config.metricas?.clientes || '',
+      balanza: config.metricas?.balanza || '',
+      years: config.metricas?.years || '',
+      dias: config.metricas?.dias || ''
     };
 
     const payload = {

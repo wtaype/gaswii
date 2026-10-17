@@ -20,6 +20,24 @@ const primerProducto = datosNegocio.productos[0];
 const precioPrimerBalon = primerProducto ? primerProducto.precioPEN.toFixed(2) : '';
 const direccionSede = datosNegocio.direccionSede;
 const mapsUrl = datosNegocio.mapsUrl || '#';
+
+const heroTituloCompleto = (idioma === 'en' ? datosNegocio.hero?.tituloEn : datosNegocio.hero?.titulo) || '';
+const tieneMarca = /con Solgas/i.test(heroTituloCompleto);
+const parte1 = tieneMarca ? heroTituloCompleto.replace(/con Solgas/i, '').trim() : heroTituloCompleto;
+const parte2 = tieneMarca ? 'con Solgas' : '';
+const heroSubtitulo = (idioma === 'en' ? datosNegocio.hero?.subtituloEn : datosNegocio.hero?.subtitulo) || '';
+
+const badgeTexto = typeof datosNegocio.hero?.badge === 'object'
+  ? (datosNegocio.hero?.badge?.[idioma] || datosNegocio.hero?.badge?.es || `${t.badge_prefijo} ${datosNegocio.nombre.toUpperCase()}`)
+  : (datosNegocio.hero?.badge || `${t.badge_prefijo} ${datosNegocio.nombre.toUpperCase()}`);
+
+const driverCardTitulo = typeof datosNegocio.hero?.driverTitulo === 'object'
+  ? (datosNegocio.hero?.driverTitulo?.[idioma] || datosNegocio.hero?.driverTitulo?.es || t.driver_card_titulo)
+  : (datosNegocio.hero?.driverTitulo || t.driver_card_titulo);
+
+const driverCardDesc = typeof datosNegocio.hero?.driverDesc === 'object'
+  ? (datosNegocio.hero?.driverDesc?.[idioma] || datosNegocio.hero?.driverDesc?.es || t.driver_card_desc)
+  : (datosNegocio.hero?.driverDesc || t.driver_card_desc);
 ---
 
 <style is:global set:html={heroCss}></style>
@@ -37,7 +55,7 @@ const mapsUrl = datosNegocio.mapsUrl || '#';
           <div class="hero-saludo">
             <span class="badge-fire hero-badge">
               <i class="fa-solid fa-face-smile-beam"></i> 
-              <span data-negocio-badge data-prefijo={t.badge_prefijo}>{t.badge_prefijo} {datosNegocio.nombre.toUpperCase()}</span>
+              <span data-negocio-badge data-prefijo={t.badge_prefijo}>{badgeTexto}</span>
             </span>
           </div>
 
@@ -59,16 +77,13 @@ const mapsUrl = datosNegocio.mapsUrl || '#';
         </div>
 
         <!-- Línea 3: Pregunta Titular -->
-        <h1 class="hero-main-heading">
-          <span>{t.titulo_1}</span><br />
-          <span class="hero-title-highlight">
-            {t.titulo_resaltado}
-          </span>
+        <h1 class="hero-main-heading" data-negocio-hero-titulo>
+          <span>{parte1}</span>{parte2 ? <><br /><span class="hero-title-highlight"> {parte2} </span></> : null}
         </h1>
 
         <!-- Línea 4: Subtítulo Explicativo -->
-        <p class="hero-main-sub">
-          {t.subtitulo}
+        <p class="hero-main-sub" data-negocio-hero-subtitulo>
+          {heroSubtitulo}
         </p>
 
         <!-- Selector Dinámico de Distrito -->
@@ -168,11 +183,11 @@ const mapsUrl = datosNegocio.mapsUrl || '#';
                 <i class="fa-solid fa-scale-balanced"></i>
               </div>
               <div>
-                <div class="hero-guarantee-title">
-                  {t.driver_card_titulo}
+                <div class="hero-guarantee-title" data-negocio-driver-titulo>
+                  {driverCardTitulo}
                 </div>
-                <div class="hero-guarantee-sub">
-                  {t.driver_card_desc}
+                <div class="hero-guarantee-sub" data-negocio-driver-desc>
+                  {driverCardDesc}
                 </div>
               </div>
             </div>

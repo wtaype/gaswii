@@ -70,7 +70,6 @@ export const configurarSistema = {
     soporte: 'soporte',
     correos: 'correos',
     entradas: 'entradas',
-    paginas: 'paginas',
     galeria: 'galeria',
     notepad: 'notepad'
   },

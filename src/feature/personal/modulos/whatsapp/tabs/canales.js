@@ -12,6 +12,8 @@ import {
   renderizarWhatsappHtml, 
   obtenerSaludoHora 
 } from '../lib/formateador.js';
+import { datosNegocio } from '@/negocio.js';
+import productosSemilla from '@/semillas/productos.json';
 
 let canalActualId = 'canal_catalogo_producto';
 
@@ -60,17 +62,17 @@ export function initCanalesTab() {
   function obtenerValoresSimulacion() {
     return {
       saludo: obtenerSaludoHora(),
-      producto: simProd?.value || 'Balón SOLGAS Premium 10 kg',
-      precio: simPrecio?.value || '65.00',
-      total: simPrecio?.value || '65.00',
+      producto: simProd?.value || datosNegocio?.productoPrincipal || productosSemilla?.[0]?.nombre || 'Producto Principal',
+      precio: simPrecio?.value || '0.00',
+      total: simPrecio?.value || '0.00',
       cantidad: 1,
-      cliente: simCliente?.value?.trim() || 'Familia Gonzales',
-      direccion: simDireccion?.value?.trim() || 'Jr. Dante 260',
-      distrito: simDistrito?.value?.trim() || 'Surquillo',
-      metodoPago: simPago?.value || 'Efectivo / Yape',
+      cliente: simCliente?.value?.trim() || 'Cliente Frecuente',
+      direccion: simDireccion?.value?.trim() || datosNegocio?.ubicacion?.direccion || '',
+      distrito: simDistrito?.value?.trim() || datosNegocio?.ubicacion?.distrito || '',
+      metodoPago: simPago?.value || 'Efectivo / Digital',
       kg: simKg?.value || '10',
       personas: simPersonas?.value || '3',
-      dias: simDias?.value || '25'
+      dias: simDias?.value || '30'
     };
   }
 

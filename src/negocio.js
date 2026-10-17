@@ -87,8 +87,13 @@ export function normalizarConfig(c = {}) {
     titulo: cfg.titulo || base.titulo || '',
     subtitulo: cfg.subtitulo ?? base.subtitulo ?? '',
     hero: {
-      titulo: cfg.hero?.titulo ?? base.hero?.titulo ?? '',
-      subtitulo: cfg.hero?.subtitulo ?? base.hero?.subtitulo ?? '',
+      titulo: cfg.hero?.titulo || base.hero?.titulo || '',
+      subtitulo: cfg.hero?.subtitulo || base.hero?.subtitulo || '',
+      tituloEn: cfg.hero?.tituloEn || base.hero?.tituloEn || '',
+      subtituloEn: cfg.hero?.subtituloEn || base.hero?.subtituloEn || '',
+      badge: cfg.hero?.badge ?? base.hero?.badge ?? { es: '', en: '' },
+      driverTitulo: cfg.hero?.driverTitulo ?? base.hero?.driverTitulo ?? { es: '', en: '' },
+      driverDesc: cfg.hero?.driverDesc ?? base.hero?.driverDesc ?? { es: '', en: '' },
       imagen: cfg.hero?.imagen ?? base.hero?.imagen ?? '',
       alt: cfg.hero?.alt ?? base.hero?.alt ?? '',
       precioHero: cfg.hero?.precioHero ?? base.hero?.precioHero ?? '',
@@ -96,8 +101,8 @@ export function normalizarConfig(c = {}) {
       descripcion: cfg.hero?.descripcion ?? base.hero?.descripcion ?? ''
     },
     identidad: {
-      nombre: (cfg.identidad?.nombre || base.identidad?.nombre || '').replace(/Surquilloo/gi, 'Surquillo'),
-      nombreCorto: (cfg.identidad?.nombreCorto || base.identidad?.nombreCorto || '').replace(/Surquilloo/gi, 'Surquillo'),
+      nombre: cfg.identidad?.nombre || base.identidad?.nombre || '',
+      nombreCorto: cfg.identidad?.nombreCorto || base.identidad?.nombreCorto || '',
       razonSocial: cfg.identidad?.razonSocial || base.identidad?.razonSocial || '',
       ruc: cfg.identidad?.ruc || base.identidad?.ruc || '',
       registroOsinergmin: cfg.identidad?.registroOsinergmin || base.identidad?.registroOsinergmin || '',
@@ -111,8 +116,13 @@ export function normalizarConfig(c = {}) {
       titulo: cfg.identidad?.titulo || base.identidad?.titulo || '',
       cargo: cfg.identidad?.cargo || base.identidad?.cargo || '',
       grado: cfg.identidad?.grado || base.identidad?.grado || '',
-      bio: cfg.identidad?.bio || base.identidad?.bio || '',
-      bioEn: cfg.identidad?.bioEn || base.identidad?.bioEn || '',
+      bio: typeof cfg.identidad?.bio === 'object'
+        ? cfg.identidad?.bio
+        : {
+            es: cfg.identidad?.bio || base.identidad?.bio || '',
+            en: cfg.identidad?.bioEn || base.identidad?.bioEn || ''
+          },
+      bioEn: typeof cfg.identidad?.bio === 'object' ? (cfg.identidad?.bio?.en || '') : (cfg.identidad?.bioEn || base.identidad?.bioEn || ''),
       enfoques: cfg.identidad?.enfoques || base.identidad?.enfoques || '',
       enfoquesEn: cfg.identidad?.enfoquesEn || base.identidad?.enfoquesEn || '',
       nombreEn: cfg.identidad?.nombreEn || base.identidad?.nombreEn || '',
@@ -126,10 +136,12 @@ export function normalizarConfig(c = {}) {
       telefonoSecundario: cfg.contacto?.telefonoSecundario || base.contacto?.telefonoSecundario || '',
       telefonoLimpio: cfg.contacto?.telefonoLimpio || base.contacto?.telefonoLimpio || '',
       whatsapp: cfg.contacto?.whatsapp || base.contacto?.whatsapp || '',
-      whatsappMensaje: cfg.contacto?.whatsappMensaje || base.contacto?.whatsappMensaje || {
-        es: '',
-        en: ''
-      },
+      whatsappMensaje: typeof cfg.contacto?.whatsappMensaje === 'object'
+        ? cfg.contacto?.whatsappMensaje
+        : {
+            es: cfg.contacto?.whatsappMensaje || (typeof base.contacto?.whatsappMensaje === 'object' ? base.contacto?.whatsappMensaje?.es : base.contacto?.whatsappMensaje) || '',
+            en: cfg.contacto?.whatsappMensajeEn || (typeof base.contacto?.whatsappMensaje === 'object' ? base.contacto?.whatsappMensaje?.en : '') || ''
+          },
       whatsappMensajeEn: cfg.contacto?.whatsappMensajeEn || (typeof (cfg.contacto?.whatsappMensaje || base.contacto?.whatsappMensaje) === 'object' ? (cfg.contacto?.whatsappMensaje || base.contacto?.whatsappMensaje)?.en : '') || '',
       email: cfg.contacto?.email || base.contacto?.email || '',
       horario: cfg.contacto?.horario || base.contacto?.horario || {
@@ -150,7 +162,12 @@ export function normalizarConfig(c = {}) {
     sedes: (Array.isArray(cfg.sedes) && cfg.sedes.length > 0) ? cfg.sedes : (Array.isArray(base.sedes) && base.sedes.length > 0 ? base.sedes : []),
     horarios: cfg.horarios || cfg.contacto?.horario || base.contacto?.horario || {},
     zonas: Array.isArray(cfg.zonas) ? cfg.zonas : (base.zonas || []),
-    metricas: cfg.metricas || base.metricas || { years: '26+', clientes: '26K+', balanza: '100%', dias: '365' },
+    metricas: {
+      clientes: cfg.metricas?.clientes || base.metricas?.clientes || '',
+      balanza: cfg.metricas?.balanza || base.metricas?.balanza || '',
+      years: cfg.metricas?.years || base.metricas?.years || '',
+      dias: cfg.metricas?.dias || base.metricas?.dias || ''
+    },
     redes: cfg.redes || base.redes || {},
     seo: {
       titulo: cfg.seo?.titulo || base.seo?.titulo || {},
@@ -178,14 +195,16 @@ if (typeof window === 'undefined') {
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 4000);
-    const projectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || 'gaswii';
-    const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/negocio/principal`, {
-      signal: controller.signal
-    });
-    clearTimeout(timer);
-    if (res.ok) {
-      const json = await res.json();
-      _datosBuildFirestore = parseFirestoreDoc(json.fields || {});
+    const projectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || configurarSistema.id || wii.id || '';
+    if (projectId) {
+      const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/negocio/principal`, {
+        signal: controller.signal
+      });
+      clearTimeout(timer);
+      if (res.ok) {
+        const json = await res.json();
+        _datosBuildFirestore = parseFirestoreDoc(json.fields || {});
+      }
     }
   } catch (err) {}
 }
@@ -255,10 +274,10 @@ export function normalizarProductoFirestore(docRaw = {}) {
     precioPEN: precio,
     precio: precio,
     precioEnvase: Number(item.precioEnvase ?? 0),
-    stock: Number(item.stock ?? (item.tipoCategoria === 'accesorio' || (id && id.includes('valvula')) ? 35 : 50)),
+    stock: Number(item.stock ?? 50),
     stockMin: Number(item.stockMin ?? 5),
     estado: item.estado || 'activo',
-    tipoCategoria: item.tipoCategoria || 'gas',
+    tipoCategoria: item.tipoCategoria || 'general',
     tipo: getTxt(item.tipo),
     tipoEn: getTxtEn(item.tipo, item.tipoEn),
     tipoUso: getTxt(item.tipoUso),
@@ -280,9 +299,9 @@ export function normalizarProductoFirestore(docRaw = {}) {
     deliveryEn: getTxtEn(item.delivery, item.deliveryEn),
     seguridad: getTxt(item.seguridad),
     seguridadEn: getTxtEn(item.seguridad, item.seguridadEn),
-    imagen: item.imagen || '/imgwii/productos/BALON-10KG.webp',
-    badge: getTxt(item.badge) || (item.tagClase === 'badge-fire' ? 'Más Pedido' : ''),
-    badgeEn: getTxtEn(item.badge, item.badgeEn) || (item.tagClase === 'badge-fire' ? 'Most Popular' : ''),
+    imagen: item.imagen || '/smile.avif',
+    badge: getTxt(item.badge) || (item.tagClase === 'badge-fire' ? 'Destacado' : ''),
+    badgeEn: getTxtEn(item.badge, item.badgeEn) || (item.tagClase === 'badge-fire' ? 'Featured' : ''),
     badgeIcon: item.badgeIcon || 'fa-solid fa-star',
     tagClase: item.tagClase || 'badge-fire',
     orden: Number(item.orden ?? 1),
@@ -309,20 +328,22 @@ export async function consultarProductosFirestoreFresco() {
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 5000);
-    const projectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || 'gaswii';
-    const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/productos`, {
-      signal: controller.signal
-    });
-    clearTimeout(timer);
-    if (res.ok) {
-      const json = await res.json();
-      if (Array.isArray(json.documents) && json.documents.length > 0) {
-        const prods = json.documents
-          .map(d => normalizarProductoFirestore(d))
-          .filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo')
-          .sort((a, b) => (a.orden || 999) - (b.orden || 999));
-        _productosBuildFirestore = prods;
-        return prods;
+    const projectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || configurarSistema.id || wii.id || '';
+    if (projectId) {
+      const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/productos`, {
+        signal: controller.signal
+      });
+      clearTimeout(timer);
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json.documents) && json.documents.length > 0) {
+          const prods = json.documents
+            .map(d => normalizarProductoFirestore(d))
+            .filter(p => p.estado !== 'pausado' && p.estado !== 'inactivo')
+            .sort((a, b) => (a.orden || 999) - (b.orden || 999));
+          _productosBuildFirestore = prods;
+          return prods;
+        }
       }
     }
   } catch (err) {}
@@ -353,14 +374,15 @@ export async function consultarBlogsFirestoreFresco() {
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 4000);
-    const projectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || 'gaswii';
-    const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/blogs`, {
-      signal: controller.signal
-    });
-    clearTimeout(timer);
-    if (res.ok) {
-      const json = await res.json();
-      if (Array.isArray(json.documents) && json.documents.length > 0) {
+    const projectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || configurarSistema.id || wii.id || '';
+    if (projectId) {
+      const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/blogs`, {
+        signal: controller.signal
+      });
+      clearTimeout(timer);
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json.documents) && json.documents.length > 0) {
         const blogs = json.documents
           .map(d => {
             const parsed = parseFirestoreDoc(d.fields || {});
@@ -374,7 +396,8 @@ export async function consultarBlogsFirestoreFresco() {
         }
       }
     }
-  } catch (err) {}
+  }
+} catch (err) {}
 
   return _blogsBuildFirestore;
 }
@@ -384,14 +407,14 @@ if (typeof window === 'undefined') {
 }
 
 function calcularAnosTrayectoria(fechaStr) {
-  if (!fechaStr) return 26;
+  if (!fechaStr) return 0;
   try {
     const inicio = new Date(fechaStr);
     const actual = new Date();
     const dif = actual.getFullYear() - inicio.getFullYear();
-    return dif > 0 ? dif : 26;
+    return dif > 0 ? dif : 0;
   } catch (e) {
-    return 26;
+    return 0;
   }
 }
 
@@ -405,6 +428,7 @@ export const datosNegocio = {
   get ubicacion() { return this.raw.ubicacion || {}; },
   get sedes() { return this.raw.sedes || []; },
   get horarios() { return this.raw.horarios || this.contacto?.horario || {}; },
+  get hero() { return this.raw.hero || {}; },
   get slogan() { return this.subtitulo; },
   get linkweb() { return (this.raw.redes?.web || this.raw.linkweb || wii.linkweb || '').replace(/\/$/, '') + '/'; },
   get linkWhatsapp() { return `https://wa.me/${this.whatsappLimpio}`; },
@@ -413,8 +437,8 @@ export const datosNegocio = {
   get subtitulo() { return this.raw.subtitulo || this.raw.identidad?.subtitulo || ''; },
   get idiomaPrincipal() { return this.raw.idiomaPrincipal || 'es'; },
   get idiomas() { return this.raw.idiomas || ['es', 'en']; },
-  get nombre() { return (this.raw.identidad?.nombre || '').replace(/Surquilloo/gi, 'Surquillo'); },
-  get nombreCorto() { return (this.raw.identidad?.nombreCorto || this.nombre).replace(/Surquilloo/gi, 'Surquillo'); },
+  get nombre() { return this.raw.identidad?.nombre || ''; },
+  get nombreCorto() { return this.raw.identidad?.nombreCorto || this.nombre; },
   get razonSocial() { return this.raw.identidad?.razonSocial || ''; },
   get autorizacion() { return this.razonSocial; },
   get ruc() { return this.raw.identidad?.ruc || ''; },
@@ -423,7 +447,7 @@ export const datosNegocio = {
   get especialista() { return this.raw.identidad?.especialista || this.nombre; },
   get colegiatura() { return this.raw.identidad?.colegiatura || this.registroOsinergmin; },
   get cargo() { return this.raw.identidad?.cargo || this.raw.identidad?.titulo || ''; },
-  get registroColegio() { return this.registroOsinergmin ? `${this.registroOsinergmin} · Registro Vigente OSINERGMIN` : ''; },
+  get registroColegio() { return this.colegiatura ? `${this.colegiatura}` : ''; },
   get colegiaturaNumero() { return (this.colegiatura || '').replace(/\D/g, ''); },
   get grado() { return this.raw.identidad?.grado || ''; },
   get enfoques() { return this.raw.identidad?.enfoques || ''; },
@@ -503,12 +527,7 @@ export const datosNegocio = {
         tagEn: z.tag || ''
       }));
     }
-    return [
-      { id: 'surquillo', nombre: 'Surquillo', tiempo: '8 - 18 min', tag: 'Sede Central Express', tagEn: 'Central Express' },
-      { id: 'miraflores', nombre: 'Miraflores', tiempo: '15 - 20 min', tag: 'Ruta Directa', tagEn: 'Direct Route' },
-      { id: 'san-borja', nombre: 'San Borja', tiempo: '15 - 22 min', tag: 'Ruta Directa', tagEn: 'Direct Route' },
-      { id: 'san-isidro', nombre: 'San Isidro', tiempo: '18 - 25 min', tag: 'Ruta Directa', tagEn: 'Direct Route' }
-    ];
+    return [];
   },
 
   get config() { return configurarSistema; },

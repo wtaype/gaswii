@@ -6,6 +6,8 @@ import {
   formatearPlantillaDespacho 
 } from '../lib/dataWhatsapp.js';
 import { construirUrlWhatsapp, renderizarWhatsappHtml } from '../lib/formateador.js';
+import { datosNegocio } from '@/negocio.js';
+import productosSemilla from '@/semillas/productos.json';
 
 let plantillaActualId = 'tpl_pedido_confirmado';
 
@@ -32,18 +34,18 @@ export function initPlantillasTab() {
   const btnOpenWs = document.getElementById('btnWaOpenWs');
   const btnCopy = document.getElementById('btnWaCopy');
 
-  // 1. Recoger valores actuales de variables operativas de gas
+  // 1. Recoger valores actuales de variables operativas
   function obtenerValoresOperativos() {
     return {
       cliente: inpCliente?.value?.trim() || 'Estimado/a cliente',
       celular: inpCelular?.value?.trim() || '',
-      pedidoId: inpPedidoId?.value?.trim() || 'GW-1042',
-      producto: selProducto?.value?.trim() || 'Balón SOLGAS Premium 10 kg',
-      monto: inpMonto?.value?.trim() || '65.00',
-      precioMayorista: '225.00',
-      direccion: inpDireccion?.value?.trim() || 'Jr. Dante 260',
-      distrito: inpDistrito?.value?.trim() || 'Surquillo',
-      tiempoEstimado: inpEta?.value?.trim() || '15 a 20 minutos'
+      pedidoId: inpPedidoId?.value?.trim() || '001',
+      producto: selProducto?.value?.trim() || datosNegocio?.productoPrincipal || productosSemilla?.[0]?.nombre || 'Producto Principal',
+      monto: inpMonto?.value?.trim() || '0.00',
+      precioMayorista: '0.00',
+      direccion: inpDireccion?.value?.trim() || datosNegocio?.ubicacion?.direccion || '',
+      distrito: inpDistrito?.value?.trim() || datosNegocio?.ubicacion?.distrito || '',
+      tiempoEstimado: inpEta?.value?.trim() || 'Atención Inmediata'
     };
   }
 

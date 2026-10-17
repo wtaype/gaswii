@@ -101,7 +101,7 @@ const { esActivo = true } = Astro.props;
                   id="blInputKeywords" 
                   class="bl-textarea" 
                   rows="3" 
-                  placeholder="Keywords separadas por comas (Ej: peso exacto, solgas surquillo, balanza)..." 
+                  placeholder="Keywords separadas por comas (Ej: calidad, servicio oficial, asesoría)..." 
                   maxlength="160"
                 ></textarea>
               </div>
@@ -244,7 +244,7 @@ const { esActivo = true } = Astro.props;
               <div class="bl-img-field-group">
                 <div class="bl-img-field-header">
                   <label class="bl-img-label">Miniatura / Card (334x208px):</label>
-                  <a id="blLinkVerImagen" href="/imgwii/02-solgas-surquillo-balanza.webp" target="_blank" rel="noopener noreferrer" class="bl-img-link-open" title="Abrir imagen en nueva pestaña">
+                  <a id="blLinkVerImagen" href="/smile.avif" target="_blank" rel="noopener noreferrer" class="bl-img-link-open" title="Abrir imagen en nueva pestaña">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver imagen
                   </a>
                 </div>
@@ -252,14 +252,14 @@ const { esActivo = true } = Astro.props;
                   type="text" 
                   id="blInputImagen" 
                   class="bl-input" 
-                  value="/imgwii/02-solgas-surquillo-balanza.webp" 
+                  value="/smile.avif" 
                   required 
                 />
                 <!-- Vista previa abajo -->
                 <div class="bl-img-preview-box">
-                  <img id="blPreviewThumb" src="/imgwii/02-solgas-surquillo-balanza.webp" alt="Miniatura" loading="lazy" />
+                  <img id="blPreviewThumb" src="/smile.avif" alt="Miniatura" loading="lazy" />
                   <div class="bl-img-preview-overlay">
-                    <a id="blLinkVerImagenOverlay" href="/imgwii/02-solgas-surquillo-balanza.webp" target="_blank" rel="noopener noreferrer" class="bl-img-preview-btn">
+                    <a id="blLinkVerImagenOverlay" href="/smile.avif" target="_blank" rel="noopener noreferrer" class="bl-img-preview-btn">
                       <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir en nueva pestaña
                     </a>
                   </div>
@@ -270,7 +270,7 @@ const { esActivo = true } = Astro.props;
               <div class="bl-img-field-group" style="margin-bottom:0;">
                 <div class="bl-img-field-header">
                   <label class="bl-img-label">Cabecera Panorámica (1200x450px):</label>
-                  <a id="blLinkVerImagenTop" href="/imgwii/02-solgas-surquillo-balanza.webp" target="_blank" rel="noopener noreferrer" class="bl-img-link-open" title="Abrir cabecera en nueva pestaña">
+                  <a id="blLinkVerImagenTop" href="/smile.avif" target="_blank" rel="noopener noreferrer" class="bl-img-link-open" title="Abrir cabecera en nueva pestaña">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver cabecera
                   </a>
                 </div>
@@ -278,13 +278,13 @@ const { esActivo = true } = Astro.props;
                   type="text" 
                   id="blInputImagenTop" 
                   class="bl-input" 
-                  value="/imgwii/02-solgas-surquillo-balanza.webp" 
+                  value="/smile.avif" 
                 />
                 <!-- Vista previa abajo -->
                 <div class="bl-img-preview-box panoramic">
-                  <img id="blPreviewThumbTop" src="/imgwii/02-solgas-surquillo-balanza.webp" alt="Cabecera Panorámica" loading="lazy" />
+                  <img id="blPreviewThumbTop" src="/smile.avif" alt="Cabecera Panorámica" loading="lazy" />
                   <div class="bl-img-preview-overlay">
-                    <a id="blLinkVerImagenTopOverlay" href="/imgwii/02-solgas-surquillo-balanza.webp" target="_blank" rel="noopener noreferrer" class="bl-img-preview-btn">
+                    <a id="blLinkVerImagenTopOverlay" href="/smile.avif" target="_blank" rel="noopener noreferrer" class="bl-img-preview-btn">
                       <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir en nueva pestaña
                     </a>
                   </div>
@@ -305,8 +305,8 @@ const { esActivo = true } = Astro.props;
                   type="text" 
                   id="blInputAutor" 
                   class="bl-input" 
-                  placeholder="Ej: Equipo Técnico Solgas Surquillo" 
-                  value="Equipo Técnico Solgas Surquillo" 
+                  placeholder="Ej: Redacción Oficial" 
+                  value={datosNegocio.identidad?.nombreCorto || datosNegocio.nombre || 'Redacción'} 
                   required
                 />
               </div>

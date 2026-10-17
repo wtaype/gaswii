@@ -55,11 +55,11 @@ const { esActivo = false } = Astro.props;
 
     <div class="pe-kpi-card">
       <div class="pe-kpi-icon-wrap pe-kpi-icon-green">
-        <i class="fa-solid fa-motorcycle"></i>
+        <i class="fa-solid fa-briefcase"></i>
       </div>
       <div class="pe-kpi-data">
         <span class="pe-kpi-val" id="peKpiAsistentes">0</span>
-        <span class="pe-kpi-lbl">Técnicos & Operaciones</span>
+        <span class="pe-kpi-lbl">Equipo Operativo</span>
       </div>
     </div>
 
@@ -105,23 +105,26 @@ const { esActivo = false } = Astro.props;
 
         <div class="cl-modal-row">
           <div class="sn-form-group">
-            <label class="sn-label" for="peModalCargo">Cargo / Rol en Negocio</label>
-            <input type="text" id="peModalCargo" class="sn-input" placeholder="Técnico Despachador" autocomplete="off" />
+            <label class="sn-label" for="peModalCargo">Cargo / Función</label>
+            <input type="text" id="peModalCargo" class="sn-input" placeholder="Ej: Administrador, Operador, Asistente" autocomplete="off" />
           </div>
           <div class="sn-form-group">
-            <label class="sn-label" for="peModalDni">DNI / Documento</label>
-            <input type="text" id="peModalDni" class="sn-input" placeholder="Ej. 70809010" />
+            <label class="sn-label" for="peModalRol">Rol de Sistema *</label>
+            <select id="peModalRol" class="sn-input">
+              <option value="personal">Personal (Operaciones / Atención)</option>
+              <option value="gestor">Gestor (Administración / Finanzas)</option>
+            </select>
           </div>
         </div>
 
         <div class="cl-modal-row">
           <div class="sn-form-group">
-            <label class="sn-label" for="peModalCelular">Celular WhatsApp *</label>
-            <input type="tel" id="peModalCelular" class="sn-input" placeholder="+51 900 000 000" required />
+            <label class="sn-label" for="peModalDni">DNI / Documento</label>
+            <input type="text" id="peModalDni" class="sn-input" placeholder="Ej. 70809010" />
           </div>
           <div class="sn-form-group">
-            <label class="sn-label" for="peModalEmail">Correo Electrónico</label>
-            <input type="email" id="peModalEmail" class="sn-input" placeholder={datosNegocio.email || "correo@ejemplo.com"} />
+            <label class="sn-label" for="peModalCelular">Celular WhatsApp *</label>
+            <input type="tel" id="peModalCelular" class="sn-input" placeholder="+51 900 000 000" required />
           </div>
         </div>
 
@@ -165,7 +168,7 @@ const { esActivo = false } = Astro.props;
         <!-- HERO Y TOGGLE DE ESTADO (HABILITAR / DESHABILITAR) -->
         <div class="pe-edit-hero">
           <div class="pe-edit-avatar-wrap">
-            <img src="/imgwii/hero.webp" alt="Avatar colaborador" id="peEditAvatarImg" class="pe-edit-avatar" />
+            <img src="https://imgwii.web.app/smile.avif" alt="Avatar colaborador" id="peEditAvatarImg" class="pe-edit-avatar" />
           </div>
           <div class="pe-edit-hero-meta">
             <h4 class="pe-edit-nombre-title" id="peEditNombreTitle">Colaborador</h4>
@@ -198,32 +201,42 @@ const { esActivo = false } = Astro.props;
 
         <div class="cl-modal-row">
           <div class="sn-form-group">
-            <label class="sn-label" for="peEditCargo">Cargo / Rol en Negocio</label>
+            <label class="sn-label" for="peEditCargo">Cargo / Función</label>
             <input type="text" id="peEditCargo" class="sn-input" placeholder="Técnico Despachador" autocomplete="off" />
           </div>
+          <div class="sn-form-group">
+            <label class="sn-label" for="peEditRol">Rol de Sistema *</label>
+            <select id="peEditRol" class="sn-input">
+              <option value="personal">Personal (Técnico / Operaciones)</option>
+              <option value="gestor">Gestor (Administración / Operaciones)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="cl-modal-row">
           <div class="sn-form-group">
             <label class="sn-label" for="peEditDni">DNI / Documento</label>
             <input type="text" id="peEditDni" class="sn-input" placeholder="Ej. 70809010" />
           </div>
-        </div>
-
-        <div class="cl-modal-row">
           <div class="sn-form-group">
             <label class="sn-label" for="peEditCelular">Celular WhatsApp</label>
             <input type="tel" id="peEditCelular" class="sn-input" placeholder="+51 900 000 000" />
           </div>
-          <div class="sn-form-group">
-            <label class="sn-label" for="peEditEmail">Correo Electrónico</label>
-            <input type="email" id="peEditEmail" class="sn-input" placeholder="correo@ejemplo.com" />
-          </div>
         </div>
 
         <div class="cl-modal-row">
           <div class="sn-form-group">
+            <label class="sn-label" for="peEditEmail">Correo Electrónico</label>
+            <input type="email" id="peEditEmail" class="sn-input" placeholder="correo@ejemplo.com" />
+          </div>
+          <div class="sn-form-group">
             <label class="sn-label" for="peEditCumpleanos">Fecha de Cumpleaños</label>
             <input type="date" id="peEditCumpleanos" class="sn-input" />
           </div>
-          <div class="sn-form-group">
+        </div>
+
+        <div class="cl-modal-row">
+          <div class="sn-form-group" style="width: 100%;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
               <label class="sn-label" for="peEditFechaIngreso" style="margin-bottom:0;">Fecha de Ingreso</label>
               <span class="pe-antiguedad-badge" id="peEditAntiguedadBadge">Indica fecha</span>

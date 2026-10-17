@@ -4,36 +4,40 @@
 
 import { envoltorioBase } from './base.js';
 import { mdToEmailHtml } from './parser.js';
+import { configurarSistema } from '@semillas/configurar.js';
+import { datosNegocio } from '@/negocio.js';
 
 export function generarPlantillaPedido({
   cliente = 'Estimado/a cliente',
-  pedidoId = 'PED-1029',
-  producto = 'Balón SOLGAS Premium 10 kg',
+  pedidoId = '1001',
+  producto = '',
   cantidad = 1,
-  precio = '65.00',
-  direccion = 'Jr. Dante 260, Surquillo',
-  metodoPago = 'Efectivo / Yape / Plin',
-  tiempoEstimado = '15 a 20 minutos (Express)',
+  precio = '0.00',
+  direccion = '',
+  metodoPago = 'Efectivo / Digital',
+  tiempoEstimado = '',
   mensajeMarkdown = '',
   negocio = {}
 } = {}) {
+  const neg = { ...datosNegocio, ...negocio };
+  const prodFinal = producto || configurarSistema.terminologia?.itemSingular || 'Servicio';
+  const dirFinal = direccion || neg.direccionSede || '';
+  const tiempoFinal = tiempoEstimado || neg.horarios?.es || 'Atención y Entrega Oficial';
   const contenidoExtraHtml = mensajeMarkdown ? mdToEmailHtml(mensajeMarkdown) : '';
-  const nombreEmpresa = negocio?.nombre || '';
-  const esServicios = negocio?.modeloNegocio === 'servicios_y_asesorias';
-  const colorMarca = negocio?.colorPrimario || '#ff6600';
+  const nombreEmpresa = neg?.nombreCorto || neg?.nombre || 'nuestra empresa';
+  const esServicios = neg?.modeloNegocio === 'servicios_y_asesorias';
+  const colorMarca = neg?.colorPrimario || '#ff6600';
 
-  const tituloEncabezado = esServicios ? '⚖️ ¡Tu cita de asesoría está confirmada!' : '📦 ¡Tu pedido de gas está confirmado!';
-  const bajadaTexto = esServicios 
-    ? 'Hemos registrado tu solicitud de atención. Nuestro especialista revisará tu caso para guiarte en tu gestión.' 
-    : 'Hemos recibido tu pedido con éxito y nuestra unidad de reparto se encuentra preparando tu despacho con balanza digital calibrada.';
-  const itemLabel = esServicios ? 'Servicio contratado:' : 'Balón / Producto:';
+  const tituloEncabezado = esServicios ? '⚖️ ¡Tu solicitud está confirmada!' : '📦 ¡Tu pedido está confirmado!';
+  const bajadaTexto = `Hemos recibido tu solicitud con éxito en ${nombreEmpresa} y nos encontramos coordinando tu atención.`;
+  const itemLabel = esServicios ? 'Servicio contratado:' : 'Ítem / Producto:';
   const modalidadLabel = esServicios ? 'Modalidad / Ubicación:' : 'Dirección de Entrega:';
-  const tiempoLabel = esServicios ? 'Duración:' : 'Tiempo de Entrega:';
-  const totalLabel = esServicios ? 'Honorario Total:' : 'Total a Pagar en Puerta:';
-  const garantiaTexto = esServicios
-    ? '🛡️ <strong>Garantía Profesional:</strong> Asesoría directa con especialista colegiada con absolución fundamentada en el Código Tributario.'
-    : '🛡️ <strong>Garantía Oficial Solgas:</strong> Precinto de seguridad termocontraíble intacto. Nuestro repartidor verificará el peso neto exacto con balanza digital en su presencia.';
-  const botonTexto = esServicios ? '📲 Coordinar Horario por WhatsApp' : '🛵 Consultar Estado por WhatsApp';
+  const tiempoLabel = esServicios ? 'Horario / Duración:' : 'Tiempo Estimado:';
+  const totalLabel = esServicios ? 'Honorario Total:' : 'Total a Pagar:';
+  const garantiaTexto = neg.hero?.descripcion
+    ? `🛡️ <strong>Garantía Oficial:</strong> ${neg.hero.descripcion}`
+    : '🛡️ <strong>Garantía de Servicio:</strong> Atención oficial y respaldo garantizado en cada solicitud.';
+  const botonTexto = '📲 Coordinar por WhatsApp';
 
   const contenidoHtml = `
     <h2 style="color: ${colorMarca}; margin-top: 0; font-size: 22px; font-weight: 800;">${tituloEncabezado}</h2>
@@ -49,11 +53,11 @@ export function generarPlantillaPedido({
         </tr>
         <tr>
           <td style="padding: 6px 0; color: #64748b;">${itemLabel}</td>
-          <td style="padding: 6px 0; font-weight: 700; text-align: right; color: #0f172a;">${cantidad}x ${producto}</td>
+          <td style="padding: 6px 0; font-weight: 700; text-align: right; color: #0f172a;">${cantidad}x ${prodFinal}</td>
         </tr>
         <tr>
           <td style="padding: 6px 0; color: #64748b;">${modalidadLabel}</td>
-          <td style="padding: 6px 0; font-weight: 500; text-align: right; color: #334155;">${direccion}</td>
+          <td style="padding: 6px 0; font-weight: 500; text-align: right; color: #334155;">${dirFinal}</td>
         </tr>
         <tr>
           <td style="padding: 6px 0; color: #64748b;">Medio de Pago:</td>

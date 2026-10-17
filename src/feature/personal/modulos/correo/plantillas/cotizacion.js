@@ -1,45 +1,34 @@
-// src/feature/personal/modulos/correo/plantillas/cotizacion.js
-// Plantilla de Propuesta de Servicios Contables y Asesoría Tributaria
-
 import { envoltorioBase } from './base.js';
 import { mdToEmailHtml } from './parser.js';
+import { datosNegocio } from '@/negocio.js';
+import productosSemilla from '@semillas/productos.json';
 
 export function generarPlantillaCotizacion({
   cliente = 'Contacto Comercial',
   empresa = 'Empresa Solicitante',
-  cotizacionId = 'COT-2026-15',
+  cotizacionId = 'COT-1001',
   validez = '15 días calendario',
   mensajeMarkdown = '',
   negocio = {}
 } = {}) {
-  const nombreEmpresa = negocio?.nombre || '';
-  const esServicios = negocio?.modeloNegocio === 'servicios_y_asesorias';
-  const colorMarca = negocio?.colorPrimario || '#ff6600';
+  const neg = { ...datosNegocio, ...negocio };
+  const nombreEmpresa = neg?.nombreCorto || neg?.nombre || 'nuestra empresa';
+  const colorMarca = neg?.colorPrimario || '#ff6600';
 
-  const contenidoMarkdownDefecto = esServicios ? `
-| Servicio Profesional Propuesto | Modalidad | Inversión Estimada |
+  const primerProd = Array.isArray(productosSemilla) && productosSemilla[0] ? productosSemilla[0] : null;
+  const nombreProd = typeof primerProd?.nombre === 'object' ? (primerProd?.nombre?.es || '') : (primerProd?.nombre || 'Propuesta Comercial');
+  const precioProd = Number(primerProd?.precioPEN ?? primerProd?.precio ?? 0).toFixed(2);
+
+  const contenidoMarkdownDefecto = `
+| Propuesta Comercial | Detalle / Cantidad | Tarifa Unitaria (S/) |
 | :--- | :---: | :---: |
-| Consultoría Especializada y Asesoría Técnica | Mensual | S/ 150.00 |
-| Gestión de Procesos y Supervisión Periódica | Mensual | S/ 180.00 |
-| Soporte Continuo y Acompañamiento Estratégico | Incluido | S/ 0.00 |
+| ${nombreProd} | 1 servicio / unidad | S/ ${precioProd} |
+| Soporte y Acompañamiento Oficial | Incluido | S/ 0.00 |
 
-### Entregables del Servicio:
-- Plan de trabajo estructurado y metas mensuales.
-- Informes periódicos de cumplimiento y rendimiento.
-- Sesiones de consultoría y seguimiento continuo.
-- Soporte prioritario ante requerimientos o incidencias.
-  `.trim() : `
-| Suministro GLP Comercial | Cantidad Estimada | Tarifa por Unidad (S/) |
-| :--- | :---: | :---: |
-| Balón SOLGAS Comercial 45 kg | 4 unidades | S/ 225.00 |
-| Balón SOLGAS Premium 10 kg | 6 unidades | S/ 63.00 |
-| Kit Regulador Industrial / Manguera | 1 set | S/ 0.00 (Bonificado) |
-
-### Beneficios del Suministro:
-- Reparto express prioritario con ventana garantizada de 30 minutos.
-- Balanza digital certificada en cada despacho (peso neto exacto verificado en puerta).
-- Facturación mensual electrónica consolidada o crédito según evaluación.
-- Mantenimiento preventivo e inspección de fugas sin costo adicional.
+### Beneficios de la Propuesta:
+- Atención directa y despacho / coordinación prioritaria de ${nombreEmpresa}.
+- Comprobante electrónico oficial conforme a las normas de SUNAT.
+- Garantía oficial y seguimiento personalizado de cada requerimiento.
   `.trim();
 
   const tablaHtml = mdToEmailHtml(mensajeMarkdown || contenidoMarkdownDefecto);

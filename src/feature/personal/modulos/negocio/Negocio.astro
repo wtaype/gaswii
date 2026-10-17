@@ -73,11 +73,6 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
         <i class="fa-solid fa-map-location-dot"></i>
         <span>Zonas & Cobertura</span>
       </button>
-
-      <button type="button" class="ng-tab-btn" data-tab-target="ng-tab-metricas">
-        <i class="fa-solid fa-chart-line"></i>
-        <span>Métricas & Trayectoria</span>
-      </button>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
@@ -709,7 +704,7 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
                   <div class="ng-grid-zona-inputs">
                     <div class="ng-field">
                       <label class="ng-label">Nombre del Distrito</label>
-                      <input type="text" class="ng-input ng-zona-distrito" value={z.distrito || ''} placeholder="Ej: Surquillo" />
+                      <input type="text" class="ng-input ng-zona-distrito" value={z.distrito || ''} placeholder="Ej: Distrito" />
                     </div>
 
                     <div class="ng-field">
@@ -769,61 +764,7 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- PESTAÑA 4: 📈 MÉTRICAS & TRAYECTORIA                        -->
-    <!-- REORDENADO: MÉTRICAS EN LEFT Y TRAYECTORIA EN RIGHT        -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <div class="ng-tab-pane" id="ng-tab-metricas">
-      <div class="ng-grid-2-equal">
-        
-        <!-- Columna Izquierda (LEFT): Cifras de Impacto y Confianza -->
-        <div class="ng-card">
-          <div class="ng-card-header">
-            <div>
-              <h2 class="ng-card-title"><i class="fa-solid fa-chart-pie"></i> Métricas de Confianza</h2>
-              <p class="ng-card-desc">Indicadores destacados visibles en la página web.</p>
-            </div>
-          </div>
 
-          <div class="ng-grid-1">
-            <div class="ng-field">
-              <label class="ng-label" for="ngInputMetricaClientes">Clientes Atendidos</label>
-              <input type="text" id="ngInputMetricaClientes" class="ng-input" placeholder={met.clientes || ""} />
-            </div>
-
-            <div class="ng-field">
-              <label class="ng-label" for="ngInputMetricaResenas">Reseñas 5 Estrellas</label>
-              <input type="text" id="ngInputMetricaResenas" class="ng-input" placeholder={met.satisfaccion || ""} />
-            </div>
-
-            <div class="ng-field">
-              <label class="ng-label" for="ngInputMetricaSatisfaccion">Satisfacción de Clientes</label>
-              <input type="text" id="ngInputMetricaSatisfaccion" class="ng-input" placeholder={met.confidencialidad || ""} />
-            </div>
-          </div>
-        </div>
-
-        <!-- Columna Derecha (RIGHT): Fecha de Fundación & Trayectoria Calculada -->
-        <div class="ng-card">
-          <div class="ng-card-header">
-            <div>
-              <h2 class="ng-card-title"><i class="fa-solid fa-calendar-days"></i> Trayectoria & Fundación</h2>
-              <p class="ng-card-desc">Cálculo dinámico de experiencia profesional en vivo.</p>
-            </div>
-            <span class="ng-badge-trayectoria" id="ngBadgeTrayectoria">
-              <i class="fa-solid fa-award"></i> <span id="ngYearsText">{met.years ? `${met.years} años` : (n.experienciaAnos ? `${n.experienciaAnos} años` : "")}</span>
-            </span>
-          </div>
-
-          <div class="ng-field">
-            <label class="ng-label" for="ngInputLanzamiento">Fecha de Fundación / Inicio de Operaciones</label>
-            <input type="date" id="ngInputLanzamiento" class="ng-input" value={iden.lanzamientoFecha || ""} />
-            <p class="ng-field-hint sn-mt-10">Calcula y actualiza automáticamente los años de experiencia para la web.</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- 🌐 SECCIÓN LIBRE INFERIOR: TEXTOS BILINGÜES & SEO           -->
@@ -920,7 +861,7 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
                   <div class="google-serp-meta-left">
                     <img src={iden.logo || "/imgwii/logo.webp"} alt="Favicon" class="google-serp-favicon" id="ngSerpFaviconEs" />
                     <div class="google-serp-site-info">
-                      <span class="google-serp-sitename" id="ngSerpSiteNameEs">{iden.nombre || 'Solgas Surquillo'}</span>
+                      <span class="google-serp-sitename" id="ngSerpSiteNameEs">{iden.nombre || ''}</span>
                       <div class="google-serp-url-row">
                         <span id="ngSerpUrlTextEs">{canonicalEs}</span>
                         <span class="google-serp-translate">· Translate this page</span>
@@ -935,10 +876,10 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
                 <div class="google-serp-body">
                   <div class="google-serp-text">
                     <h3 class="google-serp-title" id="ngSerpTitleEs">
-                      {typeof seo.titulo === 'object' ? (seo.titulo?.es || n.titulo) : (seo.titulo || n.titulo || 'Solgas Surquillo | Pedir Gas en Surquillo, Miraflores y Lima')}
+                      {typeof seo.titulo === 'object' ? (seo.titulo?.es || n.titulo || iden.nombre || '') : (seo.titulo || n.titulo || iden.nombre || '')}
                     </h3>
                     <p class="google-serp-desc" id="ngSerpDescEs">
-                      {typeof seo.descripcion === 'object' ? (seo.descripcion?.es || n.hero?.descripcion) : (seo.descripcion || n.hero?.descripcion || 'Solgas Surquillo: pide tu gas en Surquillo, Miraflores, San Borja y San Isidro. Delivery express en 15 min con balanza digital y garantía oficial Solgas.')}
+                      {typeof seo.descripcion === 'object' ? (seo.descripcion?.es || n.hero?.descripcion || '') : (seo.descripcion || n.hero?.descripcion || '')}
                     </p>
                   </div>
 
@@ -957,88 +898,93 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
           </div>
         </div>
 
-        <!-- 2. Presentación & Biografía Ejecutiva (SEGUNDO - 55% Editor / 45% Live Ficha Mockup) -->
+        <!-- 2. Titular Principal H1 & Hero Web (ES) (55% Editor / 45% Live Hero Mockup) -->
         <div class="ng-card">
           <div class="ng-card-header">
             <div>
-              <h3 class="ng-card-title"><i class="fa-solid fa-signature"></i> Presentación & Biografía Ejecutiva (ES)</h3>
-              <p class="ng-card-desc">Narrativa del titular profesional visible en la cabecera y sección nosotros.</p>
+              <h3 class="ng-card-title"><i class="fa-solid fa-heading"></i> Titular Principal H1 & Hero Web (ES)</h3>
+              <p class="ng-card-desc">Configuración del titular principal H1, descripción del servicio y métricas destacadas.</p>
             </div>
-            <div class="ng-preview-pill"><i class="fa-solid fa-user-tie"></i> Ficha Web en Vivo</div>
+            <div class="ng-preview-pill"><i class="fa-solid fa-eye"></i> Hero Web en Vivo</div>
           </div>
 
           <div class="ng-card-split">
             <!-- Columna Izquierda: Editor (55%) -->
             <div class="ng-split-editor">
               <div class="ng-field">
-                <label class="ng-label ng-label-prominent" for="ngInputBioEs">
-                  <span>Biografía Profesional / Resumen Ejecutivo</span>
-                  <span class="ng-label-hint">Párrafo principal de presentación</span>
+                <label class="ng-label ng-label-prominent" for="ngInputHeroTituloEs">
+                  <span>Título Principal H1 para la Web</span>
+                  <span class="ng-label-hint">Encabezado principal visible en el Hero</span>
                 </label>
-                <textarea id="ngInputBioEs" class="ng-textarea ng-textarea-lg" rows="4" placeholder={typeof iden.bio === 'object' ? (iden.bio?.es || "") : (iden.bio || "")}></textarea>
+                <input type="text" id="ngInputHeroTituloEs" class="ng-input font-bold" placeholder={n.hero?.titulo || ""} value={n.hero?.titulo || ""} />
               </div>
 
               <div class="ng-field">
-                <label class="ng-label ng-label-prominent" for="ngInputEnfoques">
-                  <span>{esServicios ? 'Especialidades Tributarias / Enfoques Principales' : 'Diferenciadores Clave / Puntos Fuertes'}</span>
-                  <span class="ng-label-hint">Separados por viñetas (·) o comas</span>
+                <label class="ng-label ng-label-prominent" for="ngInputHeroDescEs">
+                  <span>Descripción / Subtítulo Hero</span>
+                  <span class="ng-label-hint">Texto explicativo de confianza y garantía</span>
                 </label>
-                <input type="text" id="ngInputEnfoques" class="ng-input" placeholder={iden.enfoques || ""} />
+                <textarea id="ngInputHeroDescEs" class="ng-textarea" rows="3" placeholder={n.hero?.subtitulo || ""}>{n.hero?.subtitulo || ""}</textarea>
               </div>
 
+              <!-- Fila Unificada de Métricas Clave (1 sola línea integrada) -->
               <div class="ng-field">
-                <label class="ng-label ng-label-prominent" for="ngInputHorario">
-                  <span>Horario de Atención Descriptivo</span>
+                <label class="ng-label ng-label-prominent">
+                  <span>Métricas de Confianza & Trayectoria</span>
+                  <span class="ng-label-hint">Cifras clave visibles debajo del Hero</span>
                 </label>
-                <input type="text" id="ngInputHorario" class="ng-input" placeholder={typeof cont.horario === 'object' ? (cont.horario?.es || "") : (cont.horario || "")} />
-              </div>
-
-              <div class="ng-field">
-                <label class="ng-label ng-label-prominent" for="ngInputWhatsappMensaje">
-                  <span>Mensaje Predeterminado de WhatsApp</span>
-                  <button type="button" class="ng-link-btn" id="btnRestaurarMensajeWs" title="Restaurar saludo dinámico">
-                    <i class="fa-solid fa-rotate-left"></i> Restaurar
-                  </button>
-                </label>
-                <input type="text" id="ngInputWhatsappMensaje" class="ng-input" placeholder={typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.es || "") : (cont.whatsappMensaje || "")} />
+                <div class="ng-grid-3-metrics">
+                  <div class="ng-metric-col">
+                    <label class="ng-sublabel" for="ngInputMetricaClientes">Clientes</label>
+                    <input type="text" id="ngInputMetricaClientes" class="ng-input" placeholder="27K+" value={met.clientes || "27K+"} />
+                  </div>
+                  <div class="ng-metric-col">
+                    <label class="ng-sublabel" for="ngInputMetricaBalanza">Garantía / Peso</label>
+                    <input type="text" id="ngInputMetricaBalanza" class="ng-input" placeholder="100%" value={met.balanza || "100%"} />
+                  </div>
+                  <div class="ng-metric-col">
+                    <label class="ng-sublabel" for="ngInputLanzamiento">Fundación <span class="ng-badge-years" id="ngYearsText">{met.years ? `${met.years} años` : "26+ años"}</span></label>
+                    <input type="date" id="ngInputLanzamiento" class="ng-input" value={iden.lanzamientoFecha || "2000-01-13"} />
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Columna Derecha: Live Mockup Ficha del Especialista (45%) -->
+            <!-- Columna Derecha: Live Mockup Hero (45%) -->
             <div class="ng-split-preview">
               <div class="ng-preview-header">
-                <span>Vista en Web (Sección Nosotros)</span>
-                <span class="ng-preview-pill"><i class="fa-solid fa-award"></i> Oficial</span>
+                <span>Vista Previa del Hero Web</span>
+                <span class="ng-preview-pill"><i class="fa-solid fa-circle-check"></i> En Vivo</span>
               </div>
 
-              <div class="mockup-bio-card">
-                <div class="mockup-bio-header">
-                  <img src={iden.imagenSede || iden.logo || "/imgwii/hero.webp"} alt="Foto Especialista" class="mockup-bio-avatar" id="ngBioPreviewAvatarEs" />
-                  <div class="mockup-bio-title-wrap">
-                    <h4 class="mockup-bio-name" id="ngBioPreviewNameEs">{iden.especialista || iden.nombre || 'Solgas Surquillo'}</h4>
-                    <span class="mockup-bio-cargo" id="ngBioPreviewCargoEs">{iden.cargo || iden.titulo || 'Distribuidor Autorizado OSINERGMIN'}</span>
-                    <span class="mockup-bio-registro">{iden.colegiatura || iden.registroOsinergmin || 'Reg. 208492'}</span>
+              <div class="mockup-hero-card">
+                <div class="mockup-hero-badge">
+                  <i class="fa-solid fa-face-smile-beam"></i>
+                  <span>ATENCIÓN OFICIAL {(iden.nombre || '').toUpperCase()}</span>
+                </div>
+                <h4 class="mockup-hero-title" id="ngHeroPreviewTituloEs">
+                  {n.hero?.titulo || ""}
+                </h4>
+                <p class="mockup-hero-desc" id="ngHeroPreviewDescEs">
+                  {n.hero?.subtitulo || ""}
+                </p>
+
+                <div class="mockup-hero-stats">
+                  <div class="mockup-hero-stat">
+                    <strong id="ngHeroPreviewClientesEs" class="color-primary">{met.clientes || "27K+"}</strong>
+                    <span>Clientes Felices</span>
                   </div>
-                </div>
-
-                <div class="mockup-bio-body" id="ngBioPreviewTextEs">
-                  {typeof iden.bio === 'object' ? (iden.bio?.es || "") : (iden.bio || "Distribuidor oficial de GLP con certificación OSINERGMIN y balanza digital.")}
-                </div>
-
-                <div class="mockup-bio-chips" id="ngBioPreviewChipsEs">
-                  {(iden.enfoques || "Delivery Express · Balanza Digital · Peso Exacto").split(/[·,]/).filter(Boolean).map((t: string) => (
-                    <span class="mockup-bio-chip"><i class="fa-solid fa-check"></i> {t.trim()}</span>
-                  ))}
-                </div>
-
-                <div class="mockup-bio-footer">
-                  <div class="mockup-bio-horario">
-                    <i class="fa-regular fa-clock"></i>
-                    <span id="ngBioPreviewHorarioEs">{typeof cont.horario === 'object' ? (cont.horario?.es || "") : (cont.horario || "Lunes a Domingo: 6:00 a.m. a 11:00 p.m.")}</span>
+                  <div class="mockup-hero-stat">
+                    <strong id="ngHeroPreviewBalanzaEs" class="color-emerald">{met.balanza || "100%"}</strong>
+                    <span>Peso Exacto</span>
                   </div>
-                  <div class="mockup-bio-wa-btn">
-                    <i class="fa-brands fa-whatsapp"></i>
-                    <span id="ngBioPreviewWaMsgEs">{typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.es || "") : (cont.whatsappMensaje || "¡Hola Solgas Surquillo! Deseo pedir un balón...")}</span>
+                  <div class="mockup-hero-stat">
+                    <strong id="ngHeroPreviewYearsEs" class="color-brand-blue">{met.years || "26+"}</strong>
+                    <span>Años en Lima</span>
+                  </div>
+                  <div class="mockup-hero-stat">
+                    <strong class="color-gold">365</strong>
+                    <span>Días al Año</span>
                   </div>
                 </div>
               </div>
@@ -1046,86 +992,113 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
           </div>
         </div>
 
-        <!-- 3. Sedes & Modalidades Oficiales (TERCERO - 55% Editor / 45% Live Cobertura Mockup) -->
+        <!-- 3. Más traducciones sobre mi negocio (ES) (Sin Preview - 100% Ancho Útil en Sub-Cards) -->
         <div class="ng-card">
           <div class="ng-card-header">
             <div>
-              <h3 class="ng-card-title"><i class="fa-solid fa-building"></i> Sedes y Modalidades Oficiales (ES)</h3>
-              <p class="ng-card-desc">Etiquetas públicas y disponibilidad por modalidad de atención con mapa de cobertura.</p>
+              <h3 class="ng-card-title"><i class="fa-solid fa-language"></i> Más traducciones sobre mi negocio (ES)</h3>
+              <p class="ng-card-desc">Sede principal, modalidades de atención, diferenciadores y textos clave que alimentan la portada.</p>
             </div>
-            <div class="ng-preview-pill"><i class="fa-solid fa-truck-fast"></i> Cobertura en Vivo</div>
           </div>
 
-          <div class="ng-card-split">
-            <!-- Columna Izquierda: Editor (55%) -->
-            <div class="ng-split-editor">
+          <div class="ng-traducciones-grid">
+            
+            <!-- Sub-Card 1: Sedes & Modalidades de Atención -->
+            <div class="ng-subcard">
+              <div class="ng-subcard-title">
+                <i class="fa-solid fa-store" style="color: var(--brand-primary, #ff6600);"></i>
+                <span>Sede & Modalidades de Atención</span>
+              </div>
+
               <div class="ng-grid-2">
-                <div class="ng-sede-box">
-                  <div class="ng-sede-box-badge"><i class="fa-solid fa-location-dot"></i> Sede Presencial</div>
-                  <div class="ng-grid-1 sn-mt-10">
-                    <div class="ng-field">
-                      <label class="ng-label" for="ngSedeVesTagEs">Etiqueta / Badge</label>
-                      <input type="text" id="ngSedeVesTagEs" class="ng-input" placeholder={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.es || "") : (sedePresencial.tag || "")} value={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.es || "") : (sedePresencial.tag || "")} />
-                    </div>
-                    <div class="ng-field">
-                      <label class="ng-label" for="ngSedeVesAtencionEs">Horario de Atención</label>
-                      <input type="text" id="ngSedeVesAtencionEs" class="ng-input" placeholder={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.es || "") : (sedePresencial.atencion || "")} value={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.es || "") : (sedePresencial.atencion || "")} />
-                    </div>
-                  </div>
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngSedeVesTagEs">Sede Principal (Etiqueta / Badge)</label>
+                  <input type="text" id="ngSedeVesTagEs" class="ng-input" placeholder="Sede Central Express" value={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.es || "") : (sedePresencial.tag || "Sede Central Express")} />
                 </div>
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngSedeVesAtencionEs">Horario de Atención Sede</label>
+                  <input type="text" id="ngSedeVesAtencionEs" class="ng-input" placeholder="Lunes a Domingo: 6:00 a.m. a 11:00 p.m." value={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.es || "") : (sedePresencial.atencion || "Lunes a Domingo: 6:00 a.m. a 11:00 p.m.")} />
+                </div>
+              </div>
 
-                <div class="ng-sede-box">
-                  <div class="ng-sede-box-badge online"><i class="fa-solid fa-video"></i> Modalidad Virtual / Delivery</div>
-                  <div class="ng-grid-1 sn-mt-10">
-                    <div class="ng-field">
-                      <label class="ng-label" for="ngSedeVirtualTagEs">Etiqueta / Badge</label>
-                      <input type="text" id="ngSedeVirtualTagEs" class="ng-input" placeholder={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.es || "") : (sedeVirtual.tag || "")} value={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.es || "") : (sedeVirtual.tag || "")} />
-                    </div>
-                    <div class="ng-field">
-                      <label class="ng-label" for="ngSedeVirtualAtencionEs">Horario de Atención</label>
-                      <input type="text" id="ngSedeVirtualAtencionEs" class="ng-input" placeholder={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.es || "") : (sedeVirtual.atencion || "")} value={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.es || "") : (sedeVirtual.atencion || "")} />
-                    </div>
-                  </div>
+              <div class="ng-grid-2">
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngSedeVirtualTagEs">Modalidad Delivery (Etiqueta)</label>
+                  <input type="text" id="ngSedeVirtualTagEs" class="ng-input" placeholder="Delivery Express en 15 - 20 min" value={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.es || "") : (sedeVirtual.tag || "Delivery Express en 15 - 20 min")} />
+                </div>
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngSedeVirtualAtencionEs">Disponibilidad de Despacho</label>
+                  <input type="text" id="ngSedeVirtualAtencionEs" class="ng-input" placeholder="Despacho Ininterrumpido con Balanza Digital" value={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.es || "") : (sedeVirtual.atencion || "Despacho Ininterrumpido con Balanza Digital")} />
                 </div>
               </div>
             </div>
 
-            <!-- Columna Derecha: Live Mockup Cobertura & Sedes (45%) -->
-            <div class="ng-split-preview">
-              <div class="ng-preview-header">
-                <span>Mapa de Cobertura y Despacho</span>
-                <span class="ng-preview-pill"><i class="fa-solid fa-location-dot"></i> {ubi.distrito || 'Surquillo'}</span>
+            <!-- Sub-Card 2: Diferenciadores, Presentación & WhatsApp -->
+            <div class="ng-subcard">
+              <div class="ng-subcard-title">
+                <i class="fa-solid fa-award" style="color: #10b981;"></i>
+                <span>Diferenciadores, Presentación & WhatsApp</span>
               </div>
 
-              <div class="mockup-sedes-card">
-                <div class="mockup-sedes-loc">
-                  <i class="fa-solid fa-location-dot"></i>
-                  <span id="ngSedesPreviewDirEs">{ubi.direccion || 'Jr. Dante 260, Surquillo, Lima 15047'}</span>
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputEnfoques">
+                  <span>Diferenciadores Clave / Puntos Fuertes</span>
+                  <span class="ng-label-hint">Separados por viñetas (·) o comas</span>
+                </label>
+                <input type="text" id="ngInputEnfoques" class="ng-input" placeholder="Delivery Express · Balanza Digital · Peso Exacto · Cero Fugas" value={iden.enfoques || "Delivery Express · Balanza Digital · Peso Exacto · Cero Fugas"} />
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputBioEs">
+                  <span>Presentación Comercial / Biografía Corta</span>
+                  <span class="ng-label-hint">Resumen institucional del servicio</span>
+                </label>
+                <textarea id="ngInputBioEs" class="ng-textarea" rows="2" placeholder="Resumen descriptivo del negocio o especialidad profesional.">{typeof iden.bio === 'object' ? (iden.bio?.es || "") : (iden.bio || "")}</textarea>
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputWsMensajeEs">
+                  <span>Mensaje Predeterminado de WhatsApp</span>
+                  <span class="ng-label-hint">Texto inicial al abrir chat de pedidos</span>
+                </label>
+                <input type="text" id="ngInputWsMensajeEs" class="ng-input" placeholder="¡Hola! Deseo realizar una consulta o pedido." value={typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.es || "") : (cont.whatsappMensaje || "")} />
+              </div>
+            </div>
+
+            <!-- Sub-Card 3: Textos Destacados de Portada (Feature Inicio) -->
+            <div class="ng-subcard ng-subcard-full">
+              <div class="ng-subcard-title">
+                <i class="fa-solid fa-bullhorn" style="color: #3b82f6;"></i>
+                <span>Textos Destacados de Portada (Hero / Inicio)</span>
+              </div>
+
+              <div class="ng-grid-3">
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngInputHeroBadgeEs">
+                    <span>Insignia Superior del Hero (Badge)</span>
+                    <span class="ng-label-hint">Texto destacado arriba del título</span>
+                  </label>
+                  <input type="text" id="ngInputHeroBadgeEs" class="ng-input font-bold" placeholder="DELIVERY OFICIAL" value={typeof n.hero?.badge === 'object' ? (n.hero?.badge?.es || "DELIVERY OFICIAL") : (n.hero?.badge || "DELIVERY OFICIAL")} />
                 </div>
 
-                <div class="mockup-sedes-grid">
-                  <div class="mockup-sedes-box">
-                    <span class="mockup-sedes-box-title"><i class="fa-solid fa-store"></i> <strong id="ngSedesPreviewTagPresencialEs">{typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.es || "") : (sedePresencial.tag || "Sede Central Express")}</strong></span>
-                    <span class="mockup-sedes-box-hor" id="ngSedesPreviewHorPresencialEs">{typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.es || "") : (sedePresencial.atencion || "Lun-Dom 6:00am - 11:00pm")}</span>
-                  </div>
-
-                  <div class="mockup-sedes-box">
-                    <span class="mockup-sedes-box-title online"><i class="fa-solid fa-truck-fast"></i> <strong id="ngSedesPreviewTagVirtualEs">{typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.es || "") : (sedeVirtual.tag || "Delivery Express")}</strong></span>
-                    <span class="mockup-sedes-box-hor" id="ngSedesPreviewHorVirtualEs">{typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.es || "") : (sedeVirtual.atencion || "15 a 20 minutos")}</span>
-                  </div>
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngInputHeroDriverTituloEs">
+                    <span>Tarjeta de Repartidor (Título)</span>
+                    <span class="ng-label-hint">Título del sello</span>
+                  </label>
+                  <input type="text" id="ngInputHeroDriverTituloEs" class="ng-input" placeholder="El Mejor Gas en Seguridad y Duración" value={typeof n.hero?.driverTitulo === 'object' ? (n.hero?.driverTitulo?.es || "El Mejor Gas en Seguridad y Duración") : (n.hero?.driverTitulo || "El Mejor Gas en Seguridad y Duración")} />
                 </div>
 
-                <div class="mockup-zonas-chips">
-                  {distritosList.map((d: any) => (
-                    <span class="mockup-zona-chip"><i class="fa-solid fa-motorcycle"></i> {d.nombre} <strong>({d.tiempo})</strong></span>
-                  ))}
-                </div>
-
-                <div class="mockup-sedes-action">
-                  <i class="fa-solid fa-phone"></i> Despacho Directo: {cont.telefono || '+51 936 369 384'}
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngInputHeroDriverDescEs">
+                    <span>Tarjeta de Repartidor (Descripción)</span>
+                    <span class="ng-label-hint">Garantía / compromiso</span>
+                  </label>
+                  <input type="text" id="ngInputHeroDriverDescEs" class="ng-input" placeholder="Haz tu pedido ahora y te lo llevamos al instante." value={typeof n.hero?.driverDesc === 'object' ? (n.hero?.driverDesc?.es || "Haz tu pedido ahora y te lo llevamos al instante.") : (n.hero?.driverDesc || "Haz tu pedido ahora y te lo llevamos al instante.")} />
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -1198,7 +1171,7 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
                   <div class="google-serp-meta-left">
                     <img src={iden.logo || "/imgwii/logo.webp"} alt="Favicon" class="google-serp-favicon" id="ngSerpFaviconEn" />
                     <div class="google-serp-site-info">
-                      <span class="google-serp-sitename" id="ngSerpSiteNameEn">{iden.nombreEn || iden.nombre || 'Solgas Surquillo'}</span>
+                      <span class="google-serp-sitename" id="ngSerpSiteNameEn">{iden.nombreEn || iden.nombre || ''}</span>
                       <div class="google-serp-url-row">
                         <span id="ngSerpUrlTextEn">{canonicalEn}</span>
                         <span class="google-serp-translate">· Translate this page</span>
@@ -1213,10 +1186,10 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
                 <div class="google-serp-body">
                   <div class="google-serp-text">
                     <h3 class="google-serp-title" id="ngSerpTitleEn">
-                      {typeof seo.titulo === 'object' ? (seo.titulo?.en || seo.titulo?.es) : (seo.tituloEn || seo.titulo || 'Solgas Surquillo | Express LPG Cooking Gas Delivery Lima 15 Min')}
+                      {typeof seo.titulo === 'object' ? (seo.titulo?.en || seo.titulo?.es || iden.nombreEn || iden.nombre || '') : (seo.tituloEn || seo.titulo || iden.nombreEn || iden.nombre || '')}
                     </h3>
                     <p class="google-serp-desc" id="ngSerpDescEn">
-                      {typeof seo.descripcion === 'object' ? (seo.descripcion?.en || seo.descripcion?.es) : (seo.descripcionEn || seo.descripcion || 'Order official Solgas LPG cylinders in Surquillo & Miraflores. 15-minute express delivery with certified digital weight scale.')}
+                      {typeof seo.descripcion === 'object' ? (seo.descripcion?.en || seo.descripcion?.es || '') : (seo.descripcionEn || seo.descripcion || '')}
                     </p>
                   </div>
 
@@ -1235,87 +1208,93 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
           </div>
         </div>
 
-        <!-- 2. Official Content & Executive Summary (EN) (55% Editor / 45% Live Ficha Mockup) -->
+        <!-- 2. Main Heading H1 & Hero Web (EN) (55% Editor / 45% Live Hero Mockup) -->
         <div class="ng-card">
           <div class="ng-card-header">
             <div>
-              <h3 class="ng-card-title"><i class="fa-solid fa-signature"></i> Official Content & Executive Summary (EN)</h3>
-              <p class="ng-card-desc">Professional narrative for international and english-speaking clients.</p>
+              <h3 class="ng-card-title"><i class="fa-solid fa-heading"></i> Main Heading H1 & Hero Web (EN)</h3>
+              <p class="ng-card-desc">Main H1 headline, service description and highlighted metrics in English.</p>
             </div>
-            <div class="ng-preview-pill"><i class="fa-solid fa-user-tie"></i> Live Web Profile</div>
+            <div class="ng-preview-pill"><i class="fa-solid fa-eye"></i> Live Web Hero</div>
           </div>
 
           <div class="ng-card-split">
             <!-- Columna Izquierda: Editor (55%) -->
             <div class="ng-split-editor">
-              <div class="ng-grid-2">
-                <div class="ng-field">
-                  <label class="ng-label ng-label-prominent" for="ngInputNombreEn">Official Name</label>
-                  <input type="text" id="ngInputNombreEn" class="ng-input" placeholder={iden.nombreEn || iden.nombre || ""} />
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputHeroTituloEn">
+                  <span>Main H1 Headline (English)</span>
+                  <span class="ng-label-hint">Primary heading visible on the Hero section</span>
+                </label>
+                <input type="text" id="ngInputHeroTituloEn" class="ng-input font-bold" placeholder={n.hero?.tituloEn || ""} value={n.hero?.tituloEn || ""} />
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputHeroDescEn">
+                  <span>Hero Description / Subtitle (English)</span>
+                  <span class="ng-label-hint">Guaranteed digital scale weight verification and free safety check</span>
+                </label>
+                <textarea id="ngInputHeroDescEn" class="ng-textarea" rows="3" placeholder={n.hero?.subtituloEn || ""}>{n.hero?.subtituloEn || ""}</textarea>
+              </div>
+
+              <!-- Metrics Reference in English -->
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent">
+                  <span>Trust Metrics (Synchronized)</span>
+                  <span class="ng-label-hint">Values shared across all languages</span>
+                </label>
+                <div class="ng-grid-3-metrics">
+                  <div class="ng-metric-col">
+                    <span class="ng-sublabel">Happy Clients</span>
+                    <input type="text" class="ng-input" value={met.clientes || "27K+"} disabled />
+                  </div>
+                  <div class="ng-metric-col">
+                    <span class="ng-sublabel">Exact Weight</span>
+                    <input type="text" class="ng-input" value={met.balanza || "100%"} disabled />
+                  </div>
+                  <div class="ng-metric-col">
+                    <span class="ng-sublabel">Experience</span>
+                    <input type="text" class="ng-input" value={met.years ? `${met.years} years` : "26+ years"} disabled />
+                  </div>
                 </div>
-
-                <div class="ng-field">
-                  <label class="ng-label ng-label-prominent" for="ngInputNombreCortoEn">Short Name / Brand</label>
-                  <input type="text" id="ngInputNombreCortoEn" class="ng-input" placeholder={iden.nombreCortoEn || iden.nombreCorto || ""} />
-                </div>
-              </div>
-
-              <div class="ng-field">
-                <label class="ng-label ng-label-prominent" for="ngInputBioEn">Professional Summary</label>
-                <textarea id="ngInputBioEn" class="ng-textarea ng-textarea-lg" rows="4" placeholder={typeof iden.bio === 'object' ? (iden.bio?.en || "") : (iden.bioEn || "")}></textarea>
-              </div>
-
-              <div class="ng-field">
-                <label class="ng-label ng-label-prominent" for="ngInputEnfoquesEn">Differentiators / Key Points</label>
-                <input type="text" id="ngInputEnfoquesEn" class="ng-input" placeholder={iden.enfoquesEn || iden.enfoques || ""} />
-              </div>
-
-              <div class="ng-field">
-                <label class="ng-label ng-label-prominent" for="ngInputHorarioEn">Operating Hours Description</label>
-                <input type="text" id="ngInputHorarioEn" class="ng-input" placeholder={typeof cont.horario === 'object' ? (cont.horario?.en || "") : (cont.horarioEn || "")} />
-              </div>
-
-              <div class="ng-field">
-                <label class="ng-label ng-label-prominent" for="ngInputWhatsappMensajeEn">Default WhatsApp Message</label>
-                <input type="text" id="ngInputWhatsappMensajeEn" class="ng-input" placeholder={typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.en || "") : (cont.whatsappMensajeEn || "")} />
               </div>
             </div>
 
-            <!-- Columna Derecha: Live Mockup Ficha (EN) -->
+            <!-- Columna Derecha: Live Mockup Hero (EN) -->
             <div class="ng-split-preview">
               <div class="ng-preview-header">
-                <span>Web Profile Preview (About Us)</span>
-                <span class="ng-preview-pill"><i class="fa-solid fa-award"></i> Verified</span>
+                <span>Web Hero Preview (EN)</span>
+                <span class="ng-preview-pill"><i class="fa-solid fa-circle-check"></i> Live Preview</span>
               </div>
 
-              <div class="mockup-bio-card">
-                <div class="mockup-bio-header">
-                  <img src={iden.imagenSede || iden.logo || "/imgwii/hero.webp"} alt="Specialist Photo" class="mockup-bio-avatar" id="ngBioPreviewAvatarEn" />
-                  <div class="mockup-bio-title-wrap">
-                    <h4 class="mockup-bio-name" id="ngBioPreviewNameEn">{iden.nombreEn || iden.nombre || 'Solgas Surquillo'}</h4>
-                    <span class="mockup-bio-cargo" id="ngBioPreviewCargoEn">{iden.cargo || iden.titulo || 'Authorized OSINERGMIN Distributor'}</span>
-                    <span class="mockup-bio-registro">{iden.colegiatura || iden.registroOsinergmin || 'Reg. 208492'}</span>
+              <div class="mockup-hero-card">
+                <div class="mockup-hero-badge">
+                  <i class="fa-solid fa-face-smile-beam"></i>
+                  <span>OFFICIAL SERVICE {(iden.nombreEn || iden.nombre || '').toUpperCase()}</span>
+                </div>
+                <h4 class="mockup-hero-title" id="ngHeroPreviewTituloEn">
+                  {n.hero?.tituloEn || n.hero?.titulo || ""}
+                </h4>
+                <p class="mockup-hero-desc" id="ngHeroPreviewDescEn">
+                  {n.hero?.subtituloEn || n.hero?.subtitulo || ""}
+                </p>
+
+                <div class="mockup-hero-stats">
+                  <div class="mockup-hero-stat">
+                    <strong class="color-primary">{met.clientes || "27K+"}</strong>
+                    <span>Happy Clients</span>
                   </div>
-                </div>
-
-                <div class="mockup-bio-body" id="ngBioPreviewTextEn">
-                  {typeof iden.bio === 'object' ? (iden.bio?.en || "") : (iden.bioEn || "Official LPG distributor certified by OSINERGMIN with digital scale verification.")}
-                </div>
-
-                <div class="mockup-bio-chips" id="ngBioPreviewChipsEn">
-                  {(iden.enfoquesEn || iden.enfoques || "Express Delivery · Digital Scale · Exact Weight").split(/[·,]/).filter(Boolean).map((t: string) => (
-                    <span class="mockup-bio-chip"><i class="fa-solid fa-check"></i> {t.trim()}</span>
-                  ))}
-                </div>
-
-                <div class="mockup-bio-footer">
-                  <div class="mockup-bio-horario">
-                    <i class="fa-regular fa-clock"></i>
-                    <span id="ngBioPreviewHorarioEn">{typeof cont.horario === 'object' ? (cont.horario?.en || "") : (cont.horarioEn || "Monday to Sunday: 6:00 a.m. to 11:00 p.m.")}</span>
+                  <div class="mockup-hero-stat">
+                    <strong class="color-emerald">{met.balanza || "100%"}</strong>
+                    <span>Exact Weight</span>
                   </div>
-                  <div class="mockup-bio-wa-btn">
-                    <i class="fa-brands fa-whatsapp"></i>
-                    <span id="ngBioPreviewWaMsgEn">{typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.en || "") : (cont.whatsappMensajeEn || "Hello Solgas Surquillo! I would like to order...")}</span>
+                  <div class="mockup-hero-stat">
+                    <strong class="color-brand-blue">{met.years || "26+"}</strong>
+                    <span>Years in Lima</span>
+                  </div>
+                  <div class="mockup-hero-stat">
+                    <strong class="color-gold">365</strong>
+                    <span>Days a Year</span>
                   </div>
                 </div>
               </div>
@@ -1323,86 +1302,113 @@ const zonas = Array.isArray(raw.zonas) && raw.zonas.length > 0 ? raw.zonas : (Ar
           </div>
         </div>
 
-        <!-- 3. Offices & Modalities (EN) (55% Editor / 45% Live Cobertura Mockup) -->
+        <!-- 3. More translations about my business (EN) (No Preview - 100% Full Width Sub-Cards) -->
         <div class="ng-card">
           <div class="ng-card-header">
             <div>
-              <h3 class="ng-card-title"><i class="fa-solid fa-building"></i> Offices & Modalities (EN)</h3>
-              <p class="ng-card-desc">Public badges and operational availability in English with live coverage card.</p>
+              <h3 class="ng-card-title"><i class="fa-solid fa-language"></i> More translations about my business (EN)</h3>
+              <p class="ng-card-desc">Headquarters, delivery modalities, differentiators and featured landing page copy in English.</p>
             </div>
-            <div class="ng-preview-pill"><i class="fa-solid fa-truck-fast"></i> Live Coverage</div>
           </div>
 
-          <div class="ng-card-split">
-            <!-- Columna Izquierda: Editor (55%) -->
-            <div class="ng-split-editor">
+          <div class="ng-traducciones-grid">
+            
+            <!-- Sub-Card 1: Headquarters & Delivery Modalities -->
+            <div class="ng-subcard">
+              <div class="ng-subcard-title">
+                <i class="fa-solid fa-store" style="color: var(--brand-primary, #ff6600);"></i>
+                <span>Headquarters & Delivery Modalities (EN)</span>
+              </div>
+
               <div class="ng-grid-2">
-                <div class="ng-sede-box">
-                  <div class="ng-sede-box-badge"><i class="fa-solid fa-location-dot"></i> In-Person Office</div>
-                  <div class="ng-grid-1 sn-mt-10">
-                    <div class="ng-field">
-                      <label class="ng-label" for="ngSedeVesTagEn">Tag / Badge</label>
-                      <input type="text" id="ngSedeVesTagEn" class="ng-input" placeholder={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.en || "") : (sedePresencial.tagEn || "")} value={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.en || "") : (sedePresencial.tagEn || "")} />
-                    </div>
-                    <div class="ng-field">
-                      <label class="ng-label" for="ngSedeVesAtencionEn">Opening Hours</label>
-                      <input type="text" id="ngSedeVesAtencionEn" class="ng-input" placeholder={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.en || "") : (sedePresencial.atencionEn || "")} value={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.en || "") : (sedePresencial.atencionEn || "")} />
-                    </div>
-                  </div>
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngSedeVesTagEn">Headquarters Tag / Badge</label>
+                  <input type="text" id="ngSedeVesTagEn" class="ng-input" placeholder="Main Hub Express" value={typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.en || "") : (sedePresencial.tagEn || "Main Hub Express")} />
                 </div>
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngSedeVesAtencionEn">Opening Hours</label>
+                  <input type="text" id="ngSedeVesAtencionEn" class="ng-input" placeholder="Monday to Sunday: 6:00 a.m. to 11:00 p.m." value={typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.en || "") : (sedePresencial.atencionEn || "Monday to Sunday: 6:00 a.m. to 11:00 p.m.")} />
+                </div>
+              </div>
 
-                <div class="ng-sede-box">
-                  <div class="ng-sede-box-badge online"><i class="fa-solid fa-video"></i> Online / Delivery Modality</div>
-                  <div class="ng-grid-1 sn-mt-10">
-                    <div class="ng-field">
-                      <label class="ng-label" for="ngSedeVirtualTagEn">Tag / Badge</label>
-                      <input type="text" id="ngSedeVirtualTagEn" class="ng-input" placeholder={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.en || "") : (sedeVirtual.tag || "")} value={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.en || "") : (sedeVirtual.tag || "")} />
-                    </div>
-                    <div class="ng-field">
-                      <label class="ng-label" for="ngSedeVirtualAtencionEn">Opening Hours</label>
-                      <input type="text" id="ngSedeVirtualAtencionEn" class="ng-input" placeholder={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.en || "") : (sedeVirtual.atencionEn || "")} value={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.en || "") : (sedeVirtual.atencionEn || "")} />
-                    </div>
-                  </div>
+              <div class="ng-grid-2">
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngSedeVirtualTagEn">Delivery Modality Tag</label>
+                  <input type="text" id="ngSedeVirtualTagEn" class="ng-input" placeholder="Express Delivery in 15 - 20 min" value={typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.en || "") : (sedeVirtual.tagEn || "Express Delivery in 15 - 20 min")} />
+                </div>
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngSedeVirtualAtencionEn">Dispatch Availability</label>
+                  <input type="text" id="ngSedeVirtualAtencionEn" class="ng-input" placeholder="Non-stop Dispatch with Certified Digital Scale" value={typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.en || "") : (sedeVirtual.atencionEn || "Non-stop Dispatch with Certified Digital Scale")} />
                 </div>
               </div>
             </div>
 
-            <!-- Columna Derecha: Live Mockup Cobertura & Sedes (EN) -->
-            <div class="ng-split-preview">
-              <div class="ng-preview-header">
-                <span>Coverage Map & Dispatch</span>
-                <span class="ng-preview-pill"><i class="fa-solid fa-location-dot"></i> {ubi.distrito || 'Surquillo'}</span>
+            <!-- Sub-Card 2: Differentiators, Profile & WhatsApp -->
+            <div class="ng-subcard">
+              <div class="ng-subcard-title">
+                <i class="fa-solid fa-award" style="color: #10b981;"></i>
+                <span>Differentiators, Profile & WhatsApp (EN)</span>
               </div>
 
-              <div class="mockup-sedes-card">
-                <div class="mockup-sedes-loc">
-                  <i class="fa-solid fa-location-dot"></i>
-                  <span id="ngSedesPreviewDirEn">{ubi.direccion || 'Jr. Dante 260, Surquillo, Lima 15047'}</span>
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputEnfoquesEn">
+                  <span>Differentiators / Key Points</span>
+                  <span class="ng-label-hint">Comma separated values</span>
+                </label>
+                <input type="text" id="ngInputEnfoquesEn" class="ng-input" placeholder="Express Delivery · Digital Scale · Exact Weight · Zero Leaks" value={iden.enfoquesEn || "Express Delivery · Digital Scale · Exact Weight · Zero Leaks"} />
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputBioEn">
+                  <span>Commercial Profile / Short Bio</span>
+                  <span class="ng-label-hint">Institutional service overview</span>
+                </label>
+                <textarea id="ngInputBioEn" class="ng-textarea" rows="2" placeholder="Summary or description of products and services.">{typeof iden.bio === 'object' ? (iden.bio?.en || "") : (iden.bioEn || "")}</textarea>
+              </div>
+
+              <div class="ng-field">
+                <label class="ng-label ng-label-prominent" for="ngInputWsMensajeEn">
+                  <span>Default WhatsApp Order Message</span>
+                  <span class="ng-label-hint">Initial greeting when starting order chat</span>
+                </label>
+                <input type="text" id="ngInputWsMensajeEn" class="ng-input" placeholder="Hello! I would like to inquire or place an order." value={typeof cont.whatsappMensaje === 'object' ? (cont.whatsappMensaje?.en || "") : (cont.whatsappMensajeEn || "")} />
+              </div>
+            </div>
+
+            <!-- Sub-Card 3: Featured Landing Page Copy (Hero / Home) -->
+            <div class="ng-subcard ng-subcard-full">
+              <div class="ng-subcard-title">
+                <i class="fa-solid fa-bullhorn" style="color: #3b82f6;"></i>
+                <span>Featured Landing Page Copy (Hero / Home EN)</span>
+              </div>
+
+              <div class="ng-grid-3">
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngInputHeroBadgeEn">
+                    <span>Hero Top Badge (English)</span>
+                    <span class="ng-label-hint">Headline pill above the title</span>
+                  </label>
+                  <input type="text" id="ngInputHeroBadgeEn" class="ng-input font-bold" placeholder="OFFICIAL DELIVERY" value={typeof n.hero?.badge === 'object' ? (n.hero?.badge?.en || "OFFICIAL DELIVERY") : (n.hero?.badgeEn || "OFFICIAL DELIVERY")} />
                 </div>
 
-                <div class="mockup-sedes-grid">
-                  <div class="mockup-sedes-box">
-                    <span class="mockup-sedes-box-title"><i class="fa-solid fa-store"></i> <strong id="ngSedesPreviewTagPresencialEn">{typeof sedePresencial.tag === 'object' ? (sedePresencial.tag?.en || "") : (sedePresencial.tagEn || "Main Hub Express")}</strong></span>
-                    <span class="mockup-sedes-box-hor" id="ngSedesPreviewHorPresencialEn">{typeof sedePresencial.atencion === 'object' ? (sedePresencial.atencion?.en || "") : (sedePresencial.atencionEn || "Mon-Sun 6:00am - 11:00pm")}</span>
-                  </div>
-
-                  <div class="mockup-sedes-box">
-                    <span class="mockup-sedes-box-title online"><i class="fa-solid fa-truck-fast"></i> <strong id="ngSedesPreviewTagVirtualEn">{typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.en || "") : (sedeVirtual.tagEn || "Express Delivery")}</strong></span>
-                    <span class="mockup-sedes-box-hor" id="ngSedesPreviewHorVirtualEn">{typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.en || "") : (sedeVirtual.atencionEn || "15 to 20 mins")}</span>
-                  </div>
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngInputHeroDriverTituloEn">
+                    <span>Driver Guarantee Card (Title)</span>
+                    <span class="ng-label-hint">Badge heading</span>
+                  </label>
+                  <input type="text" id="ngInputHeroDriverTituloEn" class="ng-input" placeholder="Top Gas in Safety and Durability" value={typeof n.hero?.driverTitulo === 'object' ? (n.hero?.driverTitulo?.en || "Top Gas in Safety and Durability") : (n.hero?.driverTituloEn || "Top Gas in Safety and Durability")} />
                 </div>
 
-                <div class="mockup-zonas-chips">
-                  {distritosList.map((d: any) => (
-                    <span class="mockup-zona-chip"><i class="fa-solid fa-motorcycle"></i> {d.nombre} <strong>({d.tiempo})</strong></span>
-                  ))}
-                </div>
-
-                <div class="mockup-sedes-action">
-                  <i class="fa-solid fa-phone"></i> Express Dispatch: {cont.telefono || '+51 936 369 384'}
+                <div class="ng-field">
+                  <label class="ng-label ng-label-prominent" for="ngInputHeroDriverDescEn">
+                    <span>Driver Guarantee Card (Description)</span>
+                    <span class="ng-label-hint">Safety guarantee</span>
+                  </label>
+                  <input type="text" id="ngInputHeroDriverDescEn" class="ng-input" placeholder="Place your order now and we'll deliver it right away." value={typeof n.hero?.driverDesc === 'object' ? (n.hero?.driverDesc?.en || "Place your order now and we'll deliver it right away.") : (n.hero?.driverDescEn || "Place your order now and we'll deliver it right away.")} />
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 

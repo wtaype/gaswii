@@ -201,11 +201,13 @@
 }
 
 .cl-user-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   object-fit: cover;
   border: 1px solid var(--brd, var(--line, #e2e8f0));
+  background: var(--inp, #14223a);
+  flex-shrink: 0;
 }
 
 .cl-user-meta {
@@ -301,11 +303,12 @@
 }
 
 .cl-crm-avatar-lg {
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 11px;
   object-fit: cover;
-  border: 2px solid var(--mco, var(--brand-primary, #ff6600));
+  border: none;
+  display: block;
 }
 
 .cl-crm-info-head {
@@ -539,31 +542,34 @@
 
 /* Avatar Contable */
 .cl-user-avatar-tag {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   background: var(--mbg, rgba(255, 102, 0, 0.12));
   color: var(--mco, var(--brand-primary, #ff6600));
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 15px;
-  border: 1px solid var(--line, #e2e8f0);
+  font-size: 14px;
+  border: 1px solid var(--brd, var(--line, #e2e8f0));
+  flex-shrink: 0;
 }
 
 .cl-crm-avatar-box {
-  width: 60px;
-  height: 60px;
+  width: 58px;
+  height: 58px;
   border-radius: 12px;
-  background: var(--mbg, rgba(255, 102, 0, 0.12));
+  background: var(--inp, #14223a);
   color: var(--mco, var(--brand-primary, #ff6600));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
-  border: 2px solid var(--mco, var(--brand-primary, #ff6600));
+  border: 1px solid var(--brd, var(--line, #e2e8f0));
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .cl-status-tag {

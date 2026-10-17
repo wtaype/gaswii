@@ -12,6 +12,7 @@ interface Props {
 const { esActivo = false } = Astro.props;
 
 const esServicios = configSemilla?.modeloNegocio === 'servicios_y_asesorias';
+const term = configSemilla?.terminologia || {};
 const tituloCorreo = correosSemilla?.titulo || (esServicios ? 'Correo & Mensajería Tributaria' : 'Centro de Correo & Notificaciones');
 const subtituloCorreo = correosSemilla?.subtitulo || (esServicios 
   ? 'Gestor oficial institucional: Principal, enviados, borradores, plantillas y redactor con Live Preview de liquidaciones y vencimientos SUNAT.' 
@@ -272,11 +273,11 @@ const primeraPlantillaId = plantillas[0]?.id || (esServicios ? 'liquidacion' : '
               <div class="cr-form-row">
                 <div class="cr-form-group">
                   <label class="cr-label" for="crPedNumero">N° de Pedido</label>
-                  <input type="text" id="crPedNumero" class="cr-input cr-live-input" value="PED-1029" />
+                  <input type="text" id="crPedNumero" class="cr-input cr-live-input" value="1001" />
                 </div>
                 <div class="cr-form-group">
-                  <label class="cr-label" for="crPedProducto">Balón / Producto</label>
-                  <input type="text" id="crPedProducto" class="cr-input cr-live-input" value="Balón SOLGAS Premium 10 kg" />
+                  <label class="cr-label" for="crPedProducto">Ítem / Producto</label>
+                  <input type="text" id="crPedProducto" class="cr-input cr-live-input" value={term.itemSingular || 'Servicio'} />
                 </div>
               </div>
               <div class="cr-form-row">
@@ -286,17 +287,17 @@ const primeraPlantillaId = plantillas[0]?.id || (esServicios ? 'liquidacion' : '
                 </div>
                 <div class="cr-form-group">
                   <label class="cr-label" for="crPedTotal">Total a Pagar (S/)</label>
-                  <input type="text" id="crPedTotal" class="cr-input cr-live-input" value="65.00" />
+                  <input type="text" id="crPedTotal" class="cr-input cr-live-input" value="0.00" />
                 </div>
               </div>
               <div class="cr-form-row">
                 <div class="cr-form-group">
                   <label class="cr-label" for="crPedDireccion">Dirección de Entrega</label>
-                  <input type="text" id="crPedDireccion" class="cr-input cr-live-input" value="Jr. Dante 260, Surquillo" />
+                  <input type="text" id="crPedDireccion" class="cr-input cr-live-input" value={datosNegocio.direccionSede || ''} />
                 </div>
                 <div class="cr-form-group">
                   <label class="cr-label" for="crPedTiempo">Tiempo de Entrega (ETA)</label>
-                  <input type="text" id="crPedTiempo" class="cr-input cr-live-input" value="15 a 20 minutos (Express)" />
+                  <input type="text" id="crPedTiempo" class="cr-input cr-live-input" value="Atención Inmediata" />
                 </div>
               </div>
             </div>
@@ -404,7 +405,7 @@ const primeraPlantillaId = plantillas[0]?.id || (esServicios ? 'liquidacion' : '
               </div>
               <div class="cr-form-group" style="margin-bottom:0;">
                 <label class="cr-label" for="crCompServicio">Concepto del Producto / Servicio</label>
-                <input type="text" id="crCompServicio" class="cr-input cr-live-input" value="Recarga de Balón SOLGAS Premium 10 kg" />
+                <input type="text" id="crCompServicio" class="cr-input cr-live-input" value={term.comprobanteConceptoDefault || (esServicios ? 'Servicio de Asesoría Mensual' : 'Suministro Oficial Certificado')} />
               </div>
             </div>
 

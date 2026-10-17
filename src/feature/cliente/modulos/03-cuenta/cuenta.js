@@ -108,7 +108,10 @@ export function poblarDatosUI(datos) {
   if (inpEmail) inpEmail.value = datos.email || '';
   if (inpNom) inpNom.value = datos.nombre || '';
   if (inpApe) inpApe.value = datos.apellidos || '';
-  if (inpAvatar) inpAvatar.value = datos.avatar || '/imgwii/smile.webp';
+  if (inpAvatar) {
+    const rawAv = datos.avatar;
+    inpAvatar.value = (!rawAv || rawAv.includes('smile.webp')) ? 'https://imgwii.web.app/smile.avif' : rawAv;
+  }
   if (inpIniciales) inpIniciales.value = datos.iniciales || avatar(nombreCompleto);
   if (inpCel) inpCel.value = datos.celular || '';
 

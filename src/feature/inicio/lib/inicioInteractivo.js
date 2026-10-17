@@ -140,6 +140,64 @@ function hidratarHeroDesdeNegocio(datos) {
     document.querySelectorAll('[data-negocio-horario]').forEach(el => el.textContent = horario);
   }
 
+  // Hidratar Titular H1, Subtítulo y Badge del Hero
+  const isEn = window.location.pathname.startsWith('/en');
+  const subtitulo = (isEn ? datos.hero?.subtituloEn : datos.hero?.subtitulo) || datos.hero?.subtitulo || '';
+  if (subtitulo) {
+    document.querySelectorAll('[data-negocio-hero-subtitulo]').forEach(el => el.textContent = subtitulo);
+  }
+
+  const titulo = (isEn ? datos.hero?.tituloEn : datos.hero?.titulo) || datos.hero?.titulo || '';
+  if (titulo) {
+    const tieneMarca = /con Solgas/i.test(titulo);
+    const p1 = tieneMarca ? titulo.replace(/con Solgas/i, '').trim() : titulo;
+    const p2 = tieneMarca ? 'con Solgas' : '';
+    document.querySelectorAll('[data-negocio-hero-titulo]').forEach(el => {
+      el.innerHTML = `<span>${p1}</span>${p2 ? `<br /><span class="hero-title-highlight"> ${p2} </span>` : ''}`;
+    });
+  }
+
+  const badgeVal = datos.hero?.badge;
+  if (badgeVal) {
+    const badgeText = typeof badgeVal === 'object' ? (isEn ? badgeVal.en : badgeVal.es) : badgeVal;
+    if (badgeText) {
+      document.querySelectorAll('[data-negocio-badge]').forEach(el => {
+        el.textContent = badgeText;
+      });
+    }
+  }
+
+  const driverTit = datos.hero?.driverTitulo;
+  if (driverTit) {
+    const dtText = typeof driverTit === 'object' ? (isEn ? driverTit.en : driverTit.es) : driverTit;
+    if (dtText) {
+      document.querySelectorAll('[data-negocio-driver-titulo]').forEach(el => el.textContent = dtText);
+    }
+  }
+
+  const driverDesc = datos.hero?.driverDesc;
+  if (driverDesc) {
+    const ddText = typeof driverDesc === 'object' ? (isEn ? driverDesc.en : driverDesc.es) : driverDesc;
+    if (ddText) {
+      document.querySelectorAll('[data-negocio-driver-desc]').forEach(el => el.textContent = ddText);
+    }
+  }
+
+  if (datos.metricas?.clientes) {
+    document.querySelectorAll('[data-negocio-metrica-clientes]').forEach(el => el.textContent = datos.metricas.clientes);
+  }
+  if (datos.metricas?.balanza) {
+    document.querySelectorAll('[data-negocio-metrica-balanza]').forEach(el => el.textContent = datos.metricas.balanza);
+  }
+  if (datos.metricas?.years) {
+    document.querySelectorAll('[data-negocio-metrica-years]').forEach(el => el.textContent = datos.metricas.years);
+  }
+  if (datos.identidad?.imagenSede) {
+    document.querySelectorAll('[data-negocio-imagen-sede]').forEach(img => {
+      img.src = datos.identidad.imagenSede;
+    });
+  }
+
   // Hidratar selector interactivo de distritos en vivo (0ms)
   if (Array.isArray(datos.zonas) && datos.zonas.length > 0) {
     const grid = document.getElementById('districtSelector');

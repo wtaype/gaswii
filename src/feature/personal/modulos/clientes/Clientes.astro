@@ -12,6 +12,9 @@ const { esActivo = false } = Astro.props;
 const term = configurarSistema.terminologia || {};
 const directorioTitulo = term.directorioTitulo || 'Directorio de Clientes & Empresas';
 const directorioSub = term.directorioSub || 'Gestión centralizada de clientes residenciales y comerciales con historial de pedidos y contacto directo.';
+const regimenes = Array.isArray(configurarSistema.parametros?.regimenesTributarios) && configurarSistema.parametros.regimenesTributarios.length > 0
+  ? configurarSistema.parametros.regimenesTributarios
+  : ['Estándar / General', 'Comercial / Empresa'];
 ---
 
 <section class={`ps-panel ${esActivo ? 'active' : ''}`} id="panel-clientes" data-clientes-init="false">
@@ -126,6 +129,7 @@ const directorioSub = term.directorioSub || 'Gestión centralizada de clientes r
       <div class="cl-crm-card">
         <div class="cl-crm-head">
           <div class="cl-crm-avatar-box" id="clCrmAvatarBox">
+            <img id="clCrmAvatarImg" class="cl-crm-avatar-lg" alt="Avatar cliente" src="https://imgwii.web.app/smile.avif" style="display:none;" />
             <span id="clCrmAvatarLetter">E</span>
           </div>
           <div class="cl-crm-info-head">
@@ -230,15 +234,14 @@ const directorioSub = term.directorioSub || 'Gestión centralizada de clientes r
           <div class="sn-form-group">
             <label class="sn-label" for="clModalRegimen">Categoría / Régimen</label>
             <select id="clModalRegimen" class="sn-select">
-              <option value="Residencial (Hogar)">Residencial (Hogar)</option>
-              <option value="Comercial / Empresa">Comercial / Empresa</option>
-              <option value="MYPE Tributario">MYPE Tributario</option>
-              <option value="Especial (RER)">Especial (RER)</option>
+              {regimenes.map((r: string) => (
+                <option value={r}>{r}</option>
+              ))}
             </select>
           </div>
           <div class="sn-form-group">
             <label class="sn-label" for="clModalHonorario">Monto Estimado / Tarifa (S/)</label>
-            <input type="number" step="0.01" id="clModalHonorario" class="sn-input" value="65.00" />
+            <input type="number" step="0.01" id="clModalHonorario" class="sn-input" value="" placeholder="0.00" />
           </div>
         </div>
 

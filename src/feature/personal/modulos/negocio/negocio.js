@@ -7,7 +7,8 @@ import {
   obtenerDatosNegocio,
   guardarDatosNegocio,
   calcularAnosTrayectoria,
-  sincronizarDesdeFirestore
+  sincronizarDesdeFirestore,
+  obtenerSemillaLocal
 } from './dataNegocio.js';
 import { getCanalesRedes, configSemilla } from '@/negocio.js';
 
@@ -98,17 +99,13 @@ export function inicializarNegocio() {
   const btnLinkLogo = document.getElementById('btnLinkLogo');
   const btnLinkLogoFull = document.getElementById('btnLinkLogoFull');
 
-  // Inputs Bilingües: Identidad (ES)
+  // Inputs Bilingües: Identidad (ES / EN)
   const inputNombre = document.getElementById('ngInputNombre');
   const inputNombreCorto = document.getElementById('ngInputNombreCorto');
   const inputEnfoques = document.getElementById('ngInputEnfoques');
-  const inputBioEs = document.getElementById('ngInputBioEs');
-
-  // Inputs Bilingües: Identidad (EN)
   const inputNombreEn = document.getElementById('ngInputNombreEn');
   const inputNombreCortoEn = document.getElementById('ngInputNombreCortoEn');
   const inputEnfoquesEn = document.getElementById('ngInputEnfoquesEn');
-  const inputBioEn = document.getElementById('ngInputBioEn');
 
   // ── 3. INPUTS DE CONTACTO Y HORARIOS ──
   const selectPais = document.getElementById('ngSelectPais');
@@ -122,14 +119,8 @@ export function inicializarNegocio() {
   const ngHorarioSemanaCierra = document.getElementById('ngHorarioSemanaCierra');
   const ngHorarioSabadoAbre = document.getElementById('ngHorarioSabadoAbre');
   const ngHorarioSabadoCierra = document.getElementById('ngHorarioSabadoCierra');
-
-  const inputHorario = document.getElementById('ngInputHorario');
-  const inputHorarioEn = document.getElementById('ngInputHorarioEn');
-  const inputWhatsappMensaje = document.getElementById('ngInputWhatsappMensaje');
-  const inputWhatsappMensajeEn = document.getElementById('ngInputWhatsappMensajeEn');
   const hintTelefonoFormato = document.getElementById('hintTelefonoFormato');
   const hintWhatsappFormato = document.getElementById('hintWhatsappFormato');
-  const btnRestaurarMensajeWs = document.getElementById('btnRestaurarMensajeWs');
 
   // ── 4. INPUTS DE UBICACIÓN Y MAPS ──
   const inputDireccion = document.getElementById('ngInputDireccion');
@@ -142,21 +133,62 @@ export function inicializarNegocio() {
   const btnBuscarGoogleMaps = document.getElementById('btnBuscarGoogleMaps');
   const btnProbarMapsUrl = document.getElementById('btnProbarMapsUrl');
 
-  // ── 5. SEDES Y MODALIDADES BILINGÜES ──
+  // ── 5. TITULAR PRINCIPAL H1 & HERO WEB (ES / EN) ──
+  const inputHeroTituloEs = document.getElementById('ngInputHeroTituloEs');
+  const inputHeroDescEs = document.getElementById('ngInputHeroDescEs');
+  const inputMetricaClientes = document.getElementById('ngInputMetricaClientes');
+  const inputMetricaBalanza = document.getElementById('ngInputMetricaBalanza');
+  const inputHeroTituloEn = document.getElementById('ngInputHeroTituloEn');
+  const inputHeroDescEn = document.getElementById('ngInputHeroDescEn');
+
+  // Previews Hero Mockup (ES / EN)
+  const ngHeroPreviewTituloEs = document.getElementById('ngHeroPreviewTituloEs');
+  const ngHeroPreviewDescEs = document.getElementById('ngHeroPreviewDescEs');
+  const ngHeroPreviewClientesEs = document.getElementById('ngHeroPreviewClientesEs');
+  const ngHeroPreviewBalanzaEs = document.getElementById('ngHeroPreviewBalanzaEs');
+  const ngHeroPreviewYearsEs = document.getElementById('ngHeroPreviewYearsEs');
+  const ngHeroPreviewTituloEn = document.getElementById('ngHeroPreviewTituloEn');
+  const ngHeroPreviewDescEn = document.getElementById('ngHeroPreviewDescEn');
+
+  // ── 6. INFORMACIÓN ADICIONAL & HORARIOS (ES / EN) ──
   const ngSedeVesTagEs = document.getElementById('ngSedeVesTagEs');
   const ngSedeVesAtencionEs = document.getElementById('ngSedeVesAtencionEs');
-  const ngSedeVesTagEn = document.getElementById('ngSedeVesTagEn');
-  const ngSedeVesAtencionEn = document.getElementById('ngSedeVesAtencionEn');
-
   const ngSedeVirtualTagEs = document.getElementById('ngSedeVirtualTagEs');
   const ngSedeVirtualAtencionEs = document.getElementById('ngSedeVirtualAtencionEs');
+
+  const ngSedeVesTagEn = document.getElementById('ngSedeVesTagEn');
+  const ngSedeVesAtencionEn = document.getElementById('ngSedeVesAtencionEn');
   const ngSedeVirtualTagEn = document.getElementById('ngSedeVirtualTagEn');
   const ngSedeVirtualAtencionEn = document.getElementById('ngSedeVirtualAtencionEn');
 
-  // ── 6. MÉTRICAS Y REDES SOCIALES ──
-  const inputMetricaClientes = document.getElementById('ngInputMetricaClientes');
-  const inputMetricaSatisfaccion = document.getElementById('ngInputMetricaSatisfaccion');
-  const inputMetricaConfidencialidad = document.getElementById('ngInputMetricaConfidencialidad');
+  // ── 6.1 MÁS TRADUCCIONES SOBRE MI NEGOCIO (ES / EN) ──
+  const inputBioEs = document.getElementById('ngInputBioEs');
+  const inputBioEn = document.getElementById('ngInputBioEn');
+  const inputWsMensajeEs = document.getElementById('ngInputWsMensajeEs');
+  const inputWsMensajeEn = document.getElementById('ngInputWsMensajeEn');
+  const inputHeroBadgeEs = document.getElementById('ngInputHeroBadgeEs');
+  const inputHeroBadgeEn = document.getElementById('ngInputHeroBadgeEn');
+  const inputHeroDriverTituloEs = document.getElementById('ngInputHeroDriverTituloEs');
+  const inputHeroDriverTituloEn = document.getElementById('ngInputHeroDriverTituloEn');
+  const inputHeroDriverDescEs = document.getElementById('ngInputHeroDriverDescEs');
+  const inputHeroDriverDescEn = document.getElementById('ngInputHeroDriverDescEn');
+
+  // Previews Información Adicional (ES / EN)
+  const ngSedesPreviewDirEs = document.getElementById('ngSedesPreviewDirEs');
+  const ngSedesPreviewTagPresencialEs = document.getElementById('ngSedesPreviewTagPresencialEs');
+  const ngSedesPreviewHorPresencialEs = document.getElementById('ngSedesPreviewHorPresencialEs');
+  const ngSedesPreviewTagVirtualEs = document.getElementById('ngSedesPreviewTagVirtualEs');
+  const ngSedesPreviewHorVirtualEs = document.getElementById('ngSedesPreviewHorVirtualEs');
+  const ngInfoPreviewChipsEs = document.getElementById('ngInfoPreviewChipsEs');
+
+  const ngSedesPreviewDirEn = document.getElementById('ngSedesPreviewDirEn');
+  const ngSedesPreviewTagPresencialEn = document.getElementById('ngSedesPreviewTagPresencialEn');
+  const ngSedesPreviewHorPresencialEn = document.getElementById('ngSedesPreviewHorPresencialEn');
+  const ngSedesPreviewTagVirtualEn = document.getElementById('ngSedesPreviewTagVirtualEn');
+  const ngSedesPreviewHorVirtualEn = document.getElementById('ngSedesPreviewHorVirtualEn');
+  const ngInfoPreviewChipsEn = document.getElementById('ngInfoPreviewChipsEn');
+
+  // ── 7. REDES SOCIALES ──
   const inputRedYoutube = document.getElementById('ngInputRedYoutube');
   const inputRedFacebook = document.getElementById('ngInputRedFacebook');
   const inputRedInstagram = document.getElementById('ngInputRedInstagram');
@@ -170,7 +202,7 @@ export function inicializarNegocio() {
   const selectAgregarRed = document.getElementById('ngSelectAgregarRed');
   const btnAgregarRed = document.getElementById('btnAgregarRed');
 
-  // ── 7. SEO DINÁMICO BILINGÜE Y PREVIEWS EN VIVO ──
+  // ── 8. SEO DINÁMICO BILINGÜE Y PREVIEWS EN VIVO ──
   const inputSeoTituloEs = document.getElementById('ngInputSeoTituloEs');
   const inputSeoDescEs = document.getElementById('ngInputSeoDescEs');
   const inputSeoKeywordsEs = document.getElementById('ngInputSeoKeywordsEs');
@@ -197,38 +229,6 @@ export function inicializarNegocio() {
   const ngSerpTitleEn = document.getElementById('ngSerpTitleEn');
   const ngSerpDescEn = document.getElementById('ngSerpDescEn');
 
-  // Preview Biografía Oficial
-  const ngBioPreviewTextEs = document.getElementById('ngBioPreviewTextEs');
-  const ngBioPreviewChipsEs = document.getElementById('ngBioPreviewChipsEs');
-  const ngBioPreviewHorarioEs = document.getElementById('ngBioPreviewHorarioEs');
-  const ngBioPreviewWaMsgEs = document.getElementById('ngBioPreviewWaMsgEs');
-
-  const ngBioPreviewTextEn = document.getElementById('ngBioPreviewTextEn');
-  const ngBioPreviewChipsEn = document.getElementById('ngBioPreviewChipsEn');
-  const ngBioPreviewHorarioEn = document.getElementById('ngBioPreviewHorarioEn');
-  const ngBioPreviewWaMsgEn = document.getElementById('ngBioPreviewWaMsgEn');
-
-  // Preview Sedes & Cobertura
-  const inputSedeVesTagEs = document.getElementById('ngSedeVesTagEs');
-  const inputSedeVesAtencionEs = document.getElementById('ngSedeVesAtencionEs');
-  const inputSedeVirtualTagEs = document.getElementById('ngSedeVirtualTagEs');
-  const inputSedeVirtualAtencionEs = document.getElementById('ngSedeVirtualAtencionEs');
-
-  const inputSedeVesTagEn = document.getElementById('ngSedeVesTagEn');
-  const inputSedeVesAtencionEn = document.getElementById('ngSedeVesAtencionEn');
-  const inputSedeVirtualTagEn = document.getElementById('ngSedeVirtualTagEn');
-  const inputSedeVirtualAtencionEn = document.getElementById('ngSedeVirtualAtencionEn');
-
-  const ngSedesPreviewTagPresencialEs = document.getElementById('ngSedesPreviewTagPresencialEs');
-  const ngSedesPreviewHorPresencialEs = document.getElementById('ngSedesPreviewHorPresencialEs');
-  const ngSedesPreviewTagVirtualEs = document.getElementById('ngSedesPreviewTagVirtualEs');
-  const ngSedesPreviewHorVirtualEs = document.getElementById('ngSedesPreviewHorVirtualEs');
-
-  const ngSedesPreviewTagPresencialEn = document.getElementById('ngSedesPreviewTagPresencialEn');
-  const ngSedesPreviewHorPresencialEn = document.getElementById('ngSedesPreviewHorPresencialEn');
-  const ngSedesPreviewTagVirtualEn = document.getElementById('ngSedesPreviewTagVirtualEn');
-  const ngSedesPreviewHorVirtualEn = document.getElementById('ngSedesPreviewHorVirtualEn');
-
   // ── CATÁLOGO OFICIAL DE REDES SOCIALES ──
   const CATALOGO_REDES = [
     { id: 'linkedin', nombre: 'LinkedIn', icon: 'fa-brands fa-linkedin', color: '#0a66c2', formato: 'https://linkedin.com/in/usuario', portal: 'https://www.linkedin.com/in/' },
@@ -253,10 +253,15 @@ export function inicializarNegocio() {
   };
 
   // ── GESTIÓN DE AÑOS DE TRAYECTORIA ──
-  inputLanzamiento?.addEventListener('change', () => {
-    const years = calcularAnosTrayectoria(inputLanzamiento.value);
-    if (ngYearsText) ngYearsText.textContent = `${years} años`;
-  });
+  function actualizarAnosTrayectoriaUI() {
+    const fecha = inputLanzamiento?.value;
+    const years = fecha ? calcularAnosTrayectoria(fecha) : '';
+    const text = years ? `${years}+ años` : '';
+    if (ngYearsText) ngYearsText.textContent = text;
+    if (ngHeroPreviewYearsEs) ngHeroPreviewYearsEs.textContent = years ? `${years}+` : '';
+  }
+  inputLanzamiento?.addEventListener('change', actualizarAnosTrayectoriaUI);
+  inputLanzamiento?.addEventListener('input', actualizarAnosTrayectoriaUI);
 
   // ── ACTUALIZACIÓN DE PREVIEWS EN TIEMPO REAL CON URL COMPLETA ──
   inputImagenSede?.addEventListener('input', () => {
@@ -277,7 +282,7 @@ export function inicializarNegocio() {
     if (btnLinkLogoFull) btnLinkLogoFull.href = val || '#';
   });
 
-  // ── 7.1 CONTROLADORES Y PREVIEWS EN TIEMPO REAL (BILINGÜE) ──
+  // ── 8.1 CONTROLADORES Y PREVIEWS EN TIEMPO REAL (BILINGÜE) ──
   function actualizarContadorChar(elBadge, len, min, max) {
     if (!elBadge) return;
     elBadge.textContent = `${len} / ${max}`;
@@ -291,8 +296,8 @@ export function inicializarNegocio() {
 
   // 1. Previews SEO Google SERP
   function sincronizarSeoEs() {
-    const tit = inputSeoTituloEs?.value?.trim() || inputSeoTituloEs?.placeholder || 'Solgas Surquillo | Pedir Gas en Surquillo, Miraflores y Lima';
-    const desc = inputSeoDescEs?.value?.trim() || inputSeoDescEs?.placeholder || 'Solgas Surquillo: pide tu gas en Surquillo, Miraflores, San Borja y San Isidro. Delivery express en 15 min con balanza digital y garantía oficial Solgas.';
+    const tit = inputSeoTituloEs?.value?.trim() || inputSeoTituloEs?.placeholder || '';
+    const desc = inputSeoDescEs?.value?.trim() || inputSeoDescEs?.placeholder || '';
     if (ngSerpTitleEs) ngSerpTitleEs.textContent = tit;
     if (ngSerpDescEs) ngSerpDescEs.textContent = desc;
     actualizarContadorChar(ngSeoTituloCountEs, (inputSeoTituloEs?.value || '').length, 45, 65);
@@ -300,8 +305,8 @@ export function inicializarNegocio() {
   }
 
   function sincronizarSeoEn() {
-    const tit = inputSeoTituloEn?.value?.trim() || inputSeoTituloEn?.placeholder || 'Solgas Surquillo | Express LPG Cooking Gas Delivery Lima 15 Min';
-    const desc = inputSeoDescEn?.value?.trim() || inputSeoDescEn?.placeholder || 'Order official Solgas LPG cylinders in Surquillo & Miraflores. 15-minute express delivery with certified digital weight scale and factory warranty.';
+    const tit = inputSeoTituloEn?.value?.trim() || inputSeoTituloEn?.placeholder || '';
+    const desc = inputSeoDescEn?.value?.trim() || inputSeoDescEn?.placeholder || '';
     if (ngSerpTitleEn) ngSerpTitleEn.textContent = tit;
     if (ngSerpDescEn) ngSerpDescEn.textContent = desc;
     actualizarContadorChar(ngSeoTituloCountEn, (inputSeoTituloEn?.value || '').length, 45, 65);
@@ -367,91 +372,99 @@ export function inicializarNegocio() {
   inputSeoTituloEn?.addEventListener('input', sincronizarSeoEn);
   inputSeoDescEn?.addEventListener('input', sincronizarSeoEn);
 
-  // 2. Previews Biografía y Nosotros
-  function sincronizarBioEs() {
-    if (ngBioPreviewTextEs) {
-      ngBioPreviewTextEs.textContent = inputBioEs?.value?.trim() || inputBioEs?.placeholder || 'Distribuidor oficial de GLP con certificación OSINERGMIN y balanza digital.';
-    }
-    if (ngBioPreviewChipsEs) {
-      const rawChips = inputEnfoques?.value?.trim() || inputEnfoques?.placeholder || 'Delivery Express · Balanza Digital · Peso Exacto';
-      const items = rawChips.split(/[·,]/).map(s => s.trim()).filter(Boolean);
-      ngBioPreviewChipsEs.innerHTML = items.map(t => `<span class="mockup-bio-chip"><i class="fa-solid fa-check"></i> ${t}</span>`).join('');
-    }
-    if (ngBioPreviewHorarioEs) {
-      ngBioPreviewHorarioEs.textContent = inputHorario?.value?.trim() || inputHorario?.placeholder || 'Lunes a Domingo: 6:00 a.m. a 11:00 p.m.';
-    }
-    if (ngBioPreviewWaMsgEs) {
-      ngBioPreviewWaMsgEs.textContent = inputWhatsappMensaje?.value?.trim() || inputWhatsappMensaje?.placeholder || '¡Hola Solgas Surquillo! Deseo pedir un balón...';
-    }
+  // 2. Previews Titular Principal H1 & Hero Web
+  function sincronizarHeroEs() {
+    const sem = (typeof obtenerSemillaLocal === 'function' ? obtenerSemillaLocal()?.hero : null) || configSemilla?.hero || {};
+    const tit = inputHeroTituloEs?.value?.trim() || inputHeroTituloEs?.placeholder || sem.titulo || '';
+    const desc = inputHeroDescEs?.value?.trim() || inputHeroDescEs?.placeholder || sem.subtitulo || '';
+    const clientes = inputMetricaClientes?.value?.trim() || inputMetricaClientes?.placeholder || '';
+    const balanza = inputMetricaBalanza?.value?.trim() || inputMetricaBalanza?.placeholder || '';
+
+    if (ngHeroPreviewTituloEs) ngHeroPreviewTituloEs.textContent = tit;
+    if (ngHeroPreviewDescEs) ngHeroPreviewDescEs.textContent = desc;
+    if (ngHeroPreviewClientesEs) ngHeroPreviewClientesEs.textContent = clientes;
+    if (ngHeroPreviewBalanzaEs) ngHeroPreviewBalanzaEs.textContent = balanza;
   }
 
-  function sincronizarBioEn() {
-    if (ngBioPreviewTextEn) {
-      ngBioPreviewTextEn.textContent = inputBioEn?.value?.trim() || inputBioEn?.placeholder || 'Official LPG distributor certified by OSINERGMIN with digital scale verification.';
-    }
-    if (ngBioPreviewChipsEn) {
-      const rawChips = inputEnfoquesEn?.value?.trim() || inputEnfoquesEn?.placeholder || 'Express Delivery · Digital Scale · Exact Weight';
-      const items = rawChips.split(/[·,]/).map(s => s.trim()).filter(Boolean);
-      ngBioPreviewChipsEn.innerHTML = items.map(t => `<span class="mockup-bio-chip"><i class="fa-solid fa-check"></i> ${t}</span>`).join('');
-    }
-    if (ngBioPreviewHorarioEn) {
-      ngBioPreviewHorarioEn.textContent = inputHorarioEn?.value?.trim() || inputHorarioEn?.placeholder || 'Monday to Sunday: 6:00 a.m. to 11:00 p.m.';
-    }
-    if (ngBioPreviewWaMsgEn) {
-      ngBioPreviewWaMsgEn.textContent = inputWhatsappMensajeEn?.value?.trim() || inputWhatsappMensajeEn?.placeholder || 'Hello Solgas Surquillo! I would like to order...';
-    }
+  function sincronizarHeroEn() {
+    const sem = (typeof obtenerSemillaLocal === 'function' ? obtenerSemillaLocal()?.hero : null) || configSemilla?.hero || {};
+    const tit = inputHeroTituloEn?.value?.trim() || inputHeroTituloEn?.placeholder || sem.tituloEn || '';
+    const desc = inputHeroDescEn?.value?.trim() || inputHeroDescEn?.placeholder || sem.subtituloEn || '';
+
+    if (ngHeroPreviewTituloEn) ngHeroPreviewTituloEn.textContent = tit;
+    if (ngHeroPreviewDescEn) ngHeroPreviewDescEn.textContent = desc;
   }
 
-  inputBioEs?.addEventListener('input', sincronizarBioEs);
-  inputEnfoques?.addEventListener('input', sincronizarBioEs);
-  inputHorario?.addEventListener('input', sincronizarBioEs);
-  inputWhatsappMensaje?.addEventListener('input', sincronizarBioEs);
+  inputHeroTituloEs?.addEventListener('input', sincronizarHeroEs);
+  inputHeroDescEs?.addEventListener('input', sincronizarHeroEs);
+  inputMetricaClientes?.addEventListener('input', sincronizarHeroEs);
+  inputMetricaBalanza?.addEventListener('input', sincronizarHeroEs);
 
-  inputBioEn?.addEventListener('input', sincronizarBioEn);
-  inputEnfoquesEn?.addEventListener('input', sincronizarBioEn);
-  inputHorarioEn?.addEventListener('input', sincronizarBioEn);
-  inputWhatsappMensajeEn?.addEventListener('input', sincronizarBioEn);
+  inputHeroTituloEn?.addEventListener('input', sincronizarHeroEn);
+  inputHeroDescEn?.addEventListener('input', sincronizarHeroEn);
 
-  // 3. Previews Sedes y Cobertura
-  function sincronizarSedesEs() {
+  // 3. Previews Información Adicional & Horarios
+  function sincronizarInfoEs() {
+    if (ngSedesPreviewDirEs && inputDireccion) {
+      ngSedesPreviewDirEs.textContent = inputDireccion.value?.trim() || inputDireccion.placeholder || '';
+    }
     if (ngSedesPreviewTagPresencialEs) {
-      ngSedesPreviewTagPresencialEs.textContent = inputSedeVesTagEs?.value?.trim() || inputSedeVesTagEs?.placeholder || 'Sede Central Express';
+      ngSedesPreviewTagPresencialEs.textContent = ngSedeVesTagEs?.value?.trim() || ngSedeVesTagEs?.placeholder || 'Sede Central';
     }
     if (ngSedesPreviewHorPresencialEs) {
-      ngSedesPreviewHorPresencialEs.textContent = inputSedeVesAtencionEs?.value?.trim() || inputSedeVesAtencionEs?.placeholder || 'Lun-Dom 6:00am - 11:00pm';
+      ngSedesPreviewHorPresencialEs.textContent = ngSedeVesAtencionEs?.value?.trim() || ngSedeVesAtencionEs?.placeholder || '';
     }
     if (ngSedesPreviewTagVirtualEs) {
-      ngSedesPreviewTagVirtualEs.textContent = inputSedeVirtualTagEs?.value?.trim() || inputSedeVirtualTagEs?.placeholder || 'Delivery Express';
+      ngSedesPreviewTagVirtualEs.textContent = ngSedeVirtualTagEs?.value?.trim() || ngSedeVirtualTagEs?.placeholder || 'Atención Virtual / Delivery';
     }
     if (ngSedesPreviewHorVirtualEs) {
-      ngSedesPreviewHorVirtualEs.textContent = inputSedeVirtualAtencionEs?.value?.trim() || inputSedeVirtualAtencionEs?.placeholder || '15 a 20 minutos';
+      ngSedesPreviewHorVirtualEs.textContent = ngSedeVirtualAtencionEs?.value?.trim() || ngSedeVirtualAtencionEs?.placeholder || '';
+    }
+    if (ngInfoPreviewChipsEs) {
+      const rawChips = inputEnfoques?.value?.trim() || inputEnfoques?.placeholder || '';
+      const items = rawChips.split(/[·,]/).map(s => s.trim()).filter(Boolean);
+      ngInfoPreviewChipsEs.innerHTML = items.map(t => `<span class="mockup-info-chip"><i class="fa-solid fa-check"></i> ${t}</span>`).join('');
     }
   }
 
-  function sincronizarSedesEn() {
+  function sincronizarInfoEn() {
+    if (ngSedesPreviewDirEn && inputDireccion) {
+      ngSedesPreviewDirEn.textContent = inputDireccion.value?.trim() || inputDireccion.placeholder || '';
+    }
     if (ngSedesPreviewTagPresencialEn) {
-      ngSedesPreviewTagPresencialEn.textContent = inputSedeVesTagEn?.value?.trim() || inputSedeVesTagEn?.placeholder || 'Main Hub Express';
+      ngSedesPreviewTagPresencialEn.textContent = ngSedeVesTagEn?.value?.trim() || ngSedeVesTagEn?.placeholder || 'Main Headquarters';
     }
     if (ngSedesPreviewHorPresencialEn) {
-      ngSedesPreviewHorPresencialEn.textContent = inputSedeVesAtencionEn?.value?.trim() || inputSedeVesAtencionEn?.placeholder || 'Mon-Sun 6:00am - 11:00pm';
+      ngSedesPreviewHorPresencialEn.textContent = ngSedeVesAtencionEn?.value?.trim() || ngSedeVesAtencionEn?.placeholder || '';
     }
     if (ngSedesPreviewTagVirtualEn) {
-      ngSedesPreviewTagVirtualEn.textContent = inputSedeVirtualTagEn?.value?.trim() || inputSedeVirtualTagEn?.placeholder || 'Express Delivery';
+      ngSedesPreviewTagVirtualEn.textContent = ngSedeVirtualTagEn?.value?.trim() || ngSedeVirtualTagEn?.placeholder || 'Virtual Attention / Delivery';
     }
     if (ngSedesPreviewHorVirtualEn) {
-      ngSedesPreviewHorVirtualEn.textContent = inputSedeVirtualAtencionEn?.value?.trim() || inputSedeVirtualAtencionEn?.placeholder || '15 to 20 mins';
+      ngSedesPreviewHorVirtualEn.textContent = ngSedeVirtualAtencionEn?.value?.trim() || ngSedeVirtualAtencionEn?.placeholder || '';
+    }
+    if (ngInfoPreviewChipsEn) {
+      const rawChips = inputEnfoquesEn?.value?.trim() || inputEnfoquesEn?.placeholder || '';
+      const items = rawChips.split(/[·,]/).map(s => s.trim()).filter(Boolean);
+      ngInfoPreviewChipsEn.innerHTML = items.map(t => `<span class="mockup-info-chip"><i class="fa-solid fa-check"></i> ${t}</span>`).join('');
     }
   }
 
-  inputSedeVesTagEs?.addEventListener('input', sincronizarSedesEs);
-  inputSedeVesAtencionEs?.addEventListener('input', sincronizarSedesEs);
-  inputSedeVirtualTagEs?.addEventListener('input', sincronizarSedesEs);
-  inputSedeVirtualAtencionEs?.addEventListener('input', sincronizarSedesEs);
+  ngSedeVesTagEs?.addEventListener('input', sincronizarInfoEs);
+  ngSedeVesAtencionEs?.addEventListener('input', sincronizarInfoEs);
+  ngSedeVirtualTagEs?.addEventListener('input', sincronizarInfoEs);
+  ngSedeVirtualAtencionEs?.addEventListener('input', sincronizarInfoEs);
+  inputEnfoques?.addEventListener('input', sincronizarInfoEs);
+  inputDireccion?.addEventListener('input', () => {
+    sincronizarInfoEs();
+    sincronizarInfoEn();
+  });
 
-  inputSedeVesTagEn?.addEventListener('input', sincronizarSedesEn);
-  inputSedeVesAtencionEn?.addEventListener('input', sincronizarSedesEn);
-  inputSedeVirtualTagEn?.addEventListener('input', sincronizarSedesEn);
-  inputSedeVirtualAtencionEn?.addEventListener('input', sincronizarSedesEn);
+  ngSedeVesTagEn?.addEventListener('input', sincronizarInfoEn);
+  ngSedeVesAtencionEn?.addEventListener('input', sincronizarInfoEn);
+  ngSedeVirtualTagEn?.addEventListener('input', sincronizarInfoEn);
+  ngSedeVirtualAtencionEn?.addEventListener('input', sincronizarInfoEn);
+  inputEnfoquesEn?.addEventListener('input', sincronizarInfoEn);
 
   // ── GESTIÓN DE ZONAS & COBERTURA DE REPARTO (LIVE PREVIEW 0MS) ──
   const btnAgregarZona = document.getElementById('btnAgregarZona');
@@ -564,7 +577,7 @@ export function inicializarNegocio() {
         <div class="ng-grid-zona-inputs">
           <div class="ng-field">
             <label class="ng-label">Nombre del Distrito</label>
-            <input type="text" class="ng-input ng-zona-distrito" value="${z.distrito || ''}" placeholder="Ej: Surquillo" />
+            <input type="text" class="ng-input ng-zona-distrito" value="${z.distrito || ''}" placeholder="Ej: Distrito" />
           </div>
 
           <div class="ng-field">
@@ -652,10 +665,11 @@ export function inicializarNegocio() {
   function refrescarTodosLosPreviews() {
     sincronizarSeoEs();
     sincronizarSeoEn();
-    sincronizarBioEs();
-    sincronizarBioEn();
-    sincronizarSedesEs();
-    sincronizarSedesEn();
+    sincronizarHeroEs();
+    sincronizarHeroEn();
+    sincronizarInfoEs();
+    sincronizarInfoEn();
+    actualizarAnosTrayectoriaUI();
     renderizarMockZonasChips();
   }
 
@@ -771,20 +785,6 @@ export function inicializarNegocio() {
     }
     if (limpio && inputTelefono && !inputTelefono.value) {
       inputTelefono.value = formatearTelefonoVisible(limpio, getPaisCodeActual());
-    }
-  });
-
-  // ── SALUDO DINÁMICO WHATSAPP ──
-  btnRestaurarMensajeWs?.addEventListener('click', () => {
-    const saludo = Saludar ? Saludar() : 'Hola';
-    const esp = inputEspecialista?.value?.trim() || inputNombreCorto?.value?.trim() || '';
-    if (inputWhatsappMensaje) {
-      const esServicios = configSemilla?.modeloNegocio === 'servicios_y_asesorias';
-      const mensajeDefecto = esServicios
-        ? `¡${saludo}${esp ? ' ' + esp : ''}! Deseo orientación sobre mis trámites y consultas.`
-        : `¡${saludo}${esp ? ' ' + esp : ''}! Deseo realizar un pedido de balón de gas.`;
-      inputWhatsappMensaje.value = mensajeDefecto;
-      Notificacion('Mensaje restaurado', 'info', 1800);
     }
   });
 
@@ -1156,6 +1156,7 @@ export function inicializarNegocio() {
   // ── CARGAR DATOS EN FORMULARIO ──
   function cargarFormulario(cfg) {
     if (!cfg) return;
+    const actual = obtenerDatosNegocio();
 
     // Identidad Global
     if (inputEspecialista) inputEspecialista.value = cfg.identidad?.especialista || '';
@@ -1165,8 +1166,7 @@ export function inicializarNegocio() {
 
     const fechaLanz = cfg.identidad?.lanzamientoFecha || '';
     if (inputLanzamiento) inputLanzamiento.value = fechaLanz;
-    const years = fechaLanz ? calcularAnosTrayectoria(fechaLanz) : (cfg.metricas?.years || '');
-    if (ngYearsText) ngYearsText.textContent = years ? `${years} años` : '';
+    actualizarAnosTrayectoriaUI();
 
     const foto = cfg.identidad?.imagenSede || '';
     const logo = cfg.identidad?.logo || '';
@@ -1181,25 +1181,40 @@ export function inicializarNegocio() {
     if (btnLinkLogo) btnLinkLogo.href = logo ? formatearUrlCompleta(logo) : '#';
     if (btnLinkLogoFull) btnLinkLogoFull.href = logoFull ? formatearUrlCompleta(logoFull) : '#';
 
-    // Identidad (ES)
+    // Identidad (ES / EN)
     if (inputNombre) inputNombre.value = cfg.identidad?.nombre || '';
     if (inputNombreCorto) inputNombreCorto.value = cfg.identidad?.nombreCorto || '';
     if (inputEnfoques) inputEnfoques.value = cfg.identidad?.enfoques || '';
-    if (inputBioEs) {
-      inputBioEs.value = typeof cfg.identidad?.bio === 'object' && cfg.identidad?.bio !== null
-        ? (cfg.identidad.bio.es || '')
-        : (cfg.identidad?.bio || '');
-    }
 
-    // Identidad (EN)
     if (inputNombreEn) inputNombreEn.value = cfg.identidad?.nombreEn || cfg.identidad?.nombre || '';
     if (inputNombreCortoEn) inputNombreCortoEn.value = cfg.identidad?.nombreCortoEn || cfg.identidad?.nombreCorto || '';
     if (inputEnfoquesEn) inputEnfoquesEn.value = cfg.identidad?.enfoquesEn || cfg.identidad?.enfoques || '';
-    if (inputBioEn) {
-      inputBioEn.value = typeof cfg.identidad?.bio === 'object' && cfg.identidad?.bio !== null
-        ? (cfg.identidad.bio.en || '')
-        : (cfg.identidad?.bioEn || '');
-    }
+
+    // Titular Principal H1 & Hero Web (ES / EN)
+    if (inputHeroTituloEs) inputHeroTituloEs.value = cfg.hero?.titulo || '';
+    if (inputHeroDescEs) inputHeroDescEs.value = cfg.hero?.subtitulo || '';
+    if (inputHeroTituloEn) inputHeroTituloEn.value = cfg.hero?.tituloEn || '';
+    if (inputHeroDescEn) inputHeroDescEn.value = cfg.hero?.subtituloEn || '';
+
+    // Más Traducciones y Textos Destacados (Card 3)
+    if (inputBioEs) inputBioEs.value = typeof cfg.identidad?.bio === 'object' ? (cfg.identidad?.bio?.es || '') : (cfg.identidad?.bio || '');
+    if (inputBioEn) inputBioEn.value = typeof cfg.identidad?.bio === 'object' ? (cfg.identidad?.bio?.en || '') : (cfg.identidad?.bioEn || '');
+
+    if (inputWsMensajeEs) inputWsMensajeEs.value = typeof cfg.contacto?.whatsappMensaje === 'object' ? (cfg.contacto?.whatsappMensaje?.es || '') : (cfg.contacto?.whatsappMensaje || '');
+    if (inputWsMensajeEn) inputWsMensajeEn.value = typeof cfg.contacto?.whatsappMensaje === 'object' ? (cfg.contacto?.whatsappMensaje?.en || '') : (cfg.contacto?.whatsappMensajeEn || '');
+
+    if (inputHeroBadgeEs) inputHeroBadgeEs.value = typeof cfg.hero?.badge === 'object' ? (cfg.hero?.badge?.es || '') : (cfg.hero?.badge || '');
+    if (inputHeroBadgeEn) inputHeroBadgeEn.value = typeof cfg.hero?.badge === 'object' ? (cfg.hero?.badge?.en || '') : (cfg.hero?.badgeEn || '');
+
+    if (inputHeroDriverTituloEs) inputHeroDriverTituloEs.value = typeof cfg.hero?.driverTitulo === 'object' ? (cfg.hero?.driverTitulo?.es || '') : (cfg.hero?.driverTitulo || '');
+    if (inputHeroDriverTituloEn) inputHeroDriverTituloEn.value = typeof cfg.hero?.driverTitulo === 'object' ? (cfg.hero?.driverTitulo?.en || '') : (cfg.hero?.driverTituloEn || '');
+
+    if (inputHeroDriverDescEs) inputHeroDriverDescEs.value = typeof cfg.hero?.driverDesc === 'object' ? (cfg.hero?.driverDesc?.es || '') : (cfg.hero?.driverDesc || '');
+    if (inputHeroDriverDescEn) inputHeroDriverDescEn.value = typeof cfg.hero?.driverDesc === 'object' ? (cfg.hero?.driverDesc?.en || '') : (cfg.hero?.driverDescEn || '');
+
+    // Métricas
+    if (inputMetricaClientes) inputMetricaClientes.value = cfg.metricas?.clientes || '';
+    if (inputMetricaBalanza) inputMetricaBalanza.value = cfg.metricas?.balanza || '';
 
     // Canales de Atención Directa
     const paisVal = cfg.contacto?.pais || cfg.ubicacion?.pais || 'PE';
@@ -1228,31 +1243,6 @@ export function inicializarNegocio() {
     if (ngHorarioSabadoAbre) ngHorarioSabadoAbre.value = cfg.horarios?.sabado?.abre || '';
     if (ngHorarioSabadoCierra) ngHorarioSabadoCierra.value = cfg.horarios?.sabado?.cierra || '';
 
-    // Horario Texto
-    if (inputHorario) {
-      inputHorario.value = typeof cfg.contacto?.horario === 'object' && cfg.contacto?.horario !== null
-        ? (cfg.contacto.horario.es || '')
-        : (cfg.contacto?.horario || '');
-    }
-    if (inputHorarioEn) {
-      inputHorarioEn.value = typeof cfg.contacto?.horario === 'object' && cfg.contacto?.horario !== null
-        ? (cfg.contacto.horario.en || '')
-        : (cfg.contacto?.horarioEn || '');
-    }
-
-    // WhatsApp Mensaje
-    const ws = cfg.contacto?.whatsappMensaje;
-    if (inputWhatsappMensaje) {
-      inputWhatsappMensaje.value = typeof ws === 'object' && ws !== null
-        ? (ws.es || '')
-        : (typeof ws === 'string' ? ws : '');
-    }
-    if (inputWhatsappMensajeEn) {
-      inputWhatsappMensajeEn.value = typeof ws === 'object' && ws !== null
-        ? (ws.en || '')
-        : (cfg.contacto?.whatsappMensajeEn || '');
-    }
-
     // Ubicación
     if (inputDireccion) inputDireccion.value = cfg.ubicacion?.direccion || '';
     if (inputReferencia) inputReferencia.value = cfg.ubicacion?.referencia || '';
@@ -1276,11 +1266,6 @@ export function inicializarNegocio() {
     if (ngSedeVirtualAtencionEs) ngSedeVirtualAtencionEs.value = typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.es || '') : (sedeVirtual.atencion || '');
     if (ngSedeVirtualTagEn) ngSedeVirtualTagEn.value = typeof sedeVirtual.tag === 'object' ? (sedeVirtual.tag?.en || '') : (sedeVirtual.tag || '');
     if (ngSedeVirtualAtencionEn) ngSedeVirtualAtencionEn.value = typeof sedeVirtual.atencion === 'object' ? (sedeVirtual.atencion?.en || '') : (sedeVirtual.atencionEn || '');
-
-    // Métricas
-    if (inputMetricaClientes) inputMetricaClientes.value = cfg.metricas?.clientes || '';
-    if (inputMetricaSatisfaccion) inputMetricaSatisfaccion.value = cfg.metricas?.satisfaccion || '';
-    if (inputMetricaConfidencialidad) inputMetricaConfidencialidad.value = cfg.metricas?.confidencialidad || '';
 
     // Redes & Canales
     const r = cfg.redes || {};
@@ -1389,9 +1374,28 @@ export function inicializarNegocio() {
       idiomas: actual.idiomas || ['es', 'en'],
       titulo: actual.titulo || idnt.nombre || '',
       subtitulo: actual.subtitulo || idnt.cargo || '',
-      hero: actual.hero || {},
+      hero: {
+        ...(actual.hero || {}),
+        titulo: inputHeroTituloEs?.value?.trim() || actual.hero?.titulo || '',
+        subtitulo: inputHeroDescEs?.value?.trim() || actual.hero?.subtitulo || '',
+        tituloEn: inputHeroTituloEn?.value?.trim() || actual.hero?.tituloEn || '',
+        subtituloEn: inputHeroDescEn?.value?.trim() || actual.hero?.subtituloEn || '',
+        badge: {
+          es: inputHeroBadgeEs?.value?.trim() || (typeof actual.hero?.badge === 'object' ? actual.hero?.badge?.es : actual.hero?.badge) || 'DELIVERY OFICIAL',
+          en: inputHeroBadgeEn?.value?.trim() || (typeof actual.hero?.badge === 'object' ? actual.hero?.badge?.en : actual.hero?.badgeEn) || 'OFFICIAL DELIVERY'
+        },
+        driverTitulo: {
+          es: inputHeroDriverTituloEs?.value?.trim() || (typeof actual.hero?.driverTitulo === 'object' ? actual.hero?.driverTitulo?.es : actual.hero?.driverTitulo) || 'El Mejor Gas en Seguridad y Duración',
+          en: inputHeroDriverTituloEn?.value?.trim() || (typeof actual.hero?.driverTitulo === 'object' ? actual.hero?.driverTitulo?.en : actual.hero?.driverTituloEn) || 'Top Gas in Safety and Durability'
+        },
+        driverDesc: {
+          es: inputHeroDriverDescEs?.value?.trim() || (typeof actual.hero?.driverDesc === 'object' ? actual.hero?.driverDesc?.es : actual.hero?.driverDesc) || 'Haz tu pedido ahora y te lo llevamos al instante.',
+          en: inputHeroDriverDescEn?.value?.trim() || (typeof actual.hero?.driverDesc === 'object' ? actual.hero?.driverDesc?.en : actual.hero?.driverDescEn) || "Place your order now and we'll deliver it right away."
+        }
+      },
 
       identidad: {
+        ...idnt,
         nombre: inputNombre?.value?.trim() || idnt.nombre || '',
         nombreCorto: inputNombreCorto?.value?.trim() || idnt.nombreCorto || '',
         especialista: inputEspecialista?.value?.trim() || idnt.especialista || idnt.nombre || '',
@@ -1404,8 +1408,8 @@ export function inicializarNegocio() {
         nombreCortoEn: inputNombreCortoEn?.value?.trim() || idnt.nombreCortoEn || idnt.nombreCorto || '',
         enfoquesEn: inputEnfoquesEn?.value?.trim() || idnt.enfoquesEn || idnt.enfoques || '',
         bio: {
-          es: inputBioEs?.value?.trim() || (typeof idnt.bio === 'object' ? idnt.bio?.es : idnt.bio) || '',
-          en: inputBioEn?.value?.trim() || (typeof idnt.bio === 'object' ? idnt.bio?.en : idnt.bioEn) || ''
+          es: inputBioEs?.value?.trim() ?? (typeof idnt.bio === 'object' ? idnt.bio?.es : idnt.bio) ?? '',
+          en: inputBioEn?.value?.trim() ?? (typeof idnt.bio === 'object' ? idnt.bio?.en : idnt.bioEn) ?? ''
         },
         lanzamientoFecha: inputLanzamiento?.value || idnt.lanzamientoFecha || '',
         logo: normalizarUrlParaGuardar(inputLogo?.value?.trim()) || idnt.logo || '',
@@ -1422,13 +1426,10 @@ export function inicializarNegocio() {
         whatsapp: rawWs || (rawTel ? `${paisCodeSel}${soloDigitos(rawTel)}` : (cont.whatsapp || '')),
         email: (inputEmail?.value || '').trim() || cont.email || '',
         whatsappMensaje: {
-          es: inputWhatsappMensaje?.value?.trim() || (typeof cont.whatsappMensaje === 'object' ? cont.whatsappMensaje?.es : cont.whatsappMensaje) || '',
-          en: inputWhatsappMensajeEn?.value?.trim() || (typeof cont.whatsappMensaje === 'object' ? cont.whatsappMensaje?.en : cont.whatsappMensajeEn) || ''
+          es: inputWsMensajeEs?.value?.trim() ?? (typeof cont.whatsappMensaje === 'object' ? cont.whatsappMensaje?.es : cont.whatsappMensaje) ?? '',
+          en: inputWsMensajeEn?.value?.trim() ?? (typeof cont.whatsappMensaje === 'object' ? cont.whatsappMensaje?.en : cont.whatsappMensajeEn) ?? ''
         },
-        horario: {
-          es: (inputHorario?.value || '').trim() || (typeof cont.horario === 'object' ? cont.horario?.es : cont.horario) || '',
-          en: (inputHorarioEn?.value || '').trim() || (typeof cont.horario === 'object' ? cont.horario?.en : cont.horarioEn) || ''
-        }
+        horario: cont.horario || { es: '', en: '' }
       },
 
       horarios: {
@@ -1461,7 +1462,7 @@ export function inicializarNegocio() {
           ...(actual.sedes?.[0] || {}),
           id: actual.sedes?.[0]?.id || 'sede-presencial',
           tipo: 'presencial',
-          nombre: actual.sedes?.[0]?.nombre || 'Sede Central Express Surquillo',
+          nombre: actual.sedes?.[0]?.nombre || 'Sede Principal',
           direccion: inputDireccion?.value?.trim() || actual.sedes?.[0]?.direccion || ubic.direccion || '',
           referencia: inputReferencia?.value?.trim() || actual.sedes?.[0]?.referencia || ubic.referencia || '',
           distrito: inputDistrito?.value?.trim() || actual.sedes?.[0]?.distrito || ubic.distrito || '',
@@ -1501,9 +1502,9 @@ export function inicializarNegocio() {
 
       metricas: {
         clientes: inputMetricaClientes?.value?.trim() || actual.metricas?.clientes || '',
-        satisfaccion: inputMetricaSatisfaccion?.value?.trim() || actual.metricas?.satisfaccion || '',
-        confidencialidad: inputMetricaConfidencialidad?.value?.trim() || actual.metricas?.confidencialidad || '',
-        years: inputLanzamiento?.value ? calcularAnosTrayectoria(inputLanzamiento.value) : (actual.metricas?.years || '')
+        balanza: inputMetricaBalanza?.value?.trim() || actual.metricas?.balanza || '',
+        years: inputLanzamiento?.value ? `${calcularAnosTrayectoria(inputLanzamiento.value)}+` : (actual.metricas?.years || ''),
+        dias: actual.metricas?.dias || '365'
       },
 
       redes: (() => {
@@ -1574,8 +1575,8 @@ export function inicializarNegocio() {
           tipo: ["LocalBusiness", "HomeGoodsStore", "EmergencyService"],
           especialidades: [],
           descripcionCorta: {
-            es: inputBioEs?.value?.trim() || "",
-            en: inputBioEn?.value?.trim() || ""
+            es: inputHeroDescEs?.value?.trim() || "",
+            en: inputHeroDescEn?.value?.trim() || ""
           }
         },
         audiencia: actual.seo?.audiencia || { es: [], en: [] },

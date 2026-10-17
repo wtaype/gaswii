@@ -1,5 +1,5 @@
 // src/wii.js
-export const id = 'gaswii-web';
+export const id = 'gaswii';
 export const app = 'Solgas Surquillo';
 export const by = '@wilder.taype';
 export const linkweb = 'https://solgassurquillo.com/';

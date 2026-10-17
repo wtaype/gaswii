@@ -1640,3 +1640,191 @@
   margin-top: 2px;
 }
 
+/* ── 9.4 GRID DE MÉTRICAS EN 1 LÍNEA & HERO MOCKUP ── */
+.ng-grid-3-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+@media (max-width: 600px) {
+  .ng-grid-3-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ng-metric-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ng-sublabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted, #94a3b8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ng-badge-years {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  padding: 2px 7px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.mockup-hero-card {
+  background: var(--surface, #1e293b);
+  border: 1px solid var(--border-card, var(--line, rgba(255, 255, 255, 0.08)));
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mockup-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 102, 0, 0.12);
+  border: 1px solid rgba(255, 102, 0, 0.3);
+  color: var(--mco, #ff6600);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.mockup-hero-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink, #ffffff);
+  margin: 0;
+  line-height: 1.35;
+  font-family: 'Poppins', sans-serif;
+}
+
+.mockup-hero-desc {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--tx, #cbd5e1);
+  margin: 0;
+}
+
+.mockup-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line, rgba(255, 255, 255, 0.06));
+}
+
+.mockup-hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mockup-hero-stat strong {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.mockup-hero-stat span {
+  font-size: 10px;
+  color: var(--muted, #94a3b8);
+}
+
+/* ── 9.5 MOCKUP FICHA INFORMATIVA & HORARIOS ── */
+.mockup-info-card {
+  background: var(--surface, #1e293b);
+  border: 1px solid var(--border-card, var(--line, rgba(255, 255, 255, 0.08)));
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mockup-info-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mockup-info-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(255, 102, 0, 0.1);
+  border: 1px solid rgba(255, 102, 0, 0.25);
+  color: var(--mco, #ff6600);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── 9.6 TRADUCCIONES SOBRE MI NEGOCIO (DOS COLUMNAS EN WEB + HERO SPAN CON NG-GRID-3) ── */
+.ng-traducciones-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.ng-subcard {
+  background: var(--surface-card, rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--border-card, var(--line, rgba(255, 255, 255, 0.08)));
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ng-subcard-full {
+  grid-column: 1 / -1;
+}
+
+.ng-subcard-title {
+  font-family: var(--ff_O, 'Outfit', sans-serif);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tx, #f3f6fc);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line, rgba(255, 255, 255, 0.06));
+}
+
+.ng-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 992px) {
+  .ng-traducciones-grid {
+    grid-template-columns: 1fr;
+  }
+  .ng-subcard-full {
+    grid-column: auto;
+  }
+  .ng-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+

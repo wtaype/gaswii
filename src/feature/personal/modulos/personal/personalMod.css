@@ -108,9 +108,10 @@
 .pe-driver-avatar {
   width: 52px;
   height: 52px;
-  border-radius: 50%;
+  border-radius: 12px;
   object-fit: cover;
-  border: 2px solid var(--brd, var(--line, #e2e8f0));
+  border: 1px solid var(--brd, var(--line, #e2e8f0));
+  background: var(--inp, #14223a);
 }
 
 .pe-driver-meta {
@@ -343,9 +344,9 @@
 .pe-edit-avatar {
   width: 58px;
   height: 58px;
-  border-radius: 50%;
+  border-radius: 12px;
   object-fit: cover;
-  border: 2px solid var(--brand-primary, #ff6600);
+  border: 1px solid var(--brd, #1e293b);
   background: var(--surface, #0f1c2e);
 }
 

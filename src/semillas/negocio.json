@@ -9,8 +9,22 @@
   "subtitulo": "Delivery Express en 15-20 min con Balanza Digital y Garantía de Peso Exacto",
 
   "hero": {
-    "titulo": "Solgas Surquillo",
-    "subtitulo": "Energía Segura, Balanza Digital y Peso Exacto en tu Hogar",
+    "titulo": "Hacemos Delivery de Gas a Surquillo, Miraflores, San Borja y San Isidro con Solgas",
+    "subtitulo": "Tu balón de gas de cocina con peso exacto comprobado en tu puerta con balanza digital y prueba de cero fugas gratis.",
+    "tituloEn": "Express Solgas LPG Gas Delivery to Surquillo, Miraflores, San Borja & San Isidro",
+    "subtituloEn": "Order official Solgas cylinders with digital weight verification at your door and free leak-free test.",
+    "badge": {
+      "es": "DELIVERY OFICIAL",
+      "en": "OFFICIAL DELIVERY"
+    },
+    "driverTitulo": {
+      "es": "El Mejor Gas en Seguridad y Duración",
+      "en": "Top Gas in Safety and Durability"
+    },
+    "driverDesc": {
+      "es": "Haz tu pedido ahora y te lo llevamos al instante.",
+      "en": "Place your order now and we'll deliver it right away."
+    },
     "imagen": "/imgwii/hero.webp",
     "alt": "Solgas Surquillo Balones de Gas",
     "precioHero": "65 soles",
@@ -160,7 +174,7 @@
 
   "metricas": {
     "years": "26+",
-    "clientes": "26K+",
+    "clientes": "27K+",
     "balanza": "100%",
     "dias": "365"
   },

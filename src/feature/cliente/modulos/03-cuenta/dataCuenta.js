@@ -25,7 +25,7 @@ export function obtenerCuentaLocal() {
     nombre,
     apellidos,
     celular: user.celular || '',
-    avatar: user.avatar || user.foto || '/imgwii/smile.webp',
+    avatar: (!user.avatar && !user.foto) || (user.avatar && user.avatar.includes('smile.webp')) ? 'https://imgwii.web.app/smile.avif' : (user.avatar || user.foto),
     iniciales: user.iniciales || calcIniciales(nombreCompleto),
     rol: user.rol || 'cliente',
     plan: user.plan || 'estandar',
@@ -74,8 +74,8 @@ export async function guardarPerfil(datos = {}) {
   // Avatar e Iniciales personalizables
   if (datos.avatar !== undefined && datos.avatar.trim()) {
     user.avatar = datos.avatar.trim();
-  } else if (!user.avatar) {
-    user.avatar = '/imgwii/smile.webp';
+  } else if (!user.avatar || user.avatar.includes('smile.webp')) {
+    user.avatar = 'https://imgwii.web.app/smile.avif';
   }
 
   if (datos.iniciales !== undefined && datos.iniciales.trim()) {

@@ -20,9 +20,9 @@ export const COLECCION_COMPROBANTES = 'comprobantes';
 export const SERVICIOS_SUNAT_RAPIDOS = Array.isArray(productosSemilla) && productosSemilla.length > 0
   ? productosSemilla.slice(0, 5).map(p => ({
       id: p.id,
-      descripcion: p.nombre,
-      precioUnitario: Number(p.precioPEN || 0),
-      categoria: p.tipoCategoria || 'producto'
+      descripcion: typeof p.nombre === 'object' ? (p.nombre?.es || '') : (p.nombre || ''),
+      precioUnitario: Number(p.precioPEN ?? p.precio ?? 0),
+      categoria: p.tipoCategoria || p.tipo || 'general'
     }))
   : [];
 

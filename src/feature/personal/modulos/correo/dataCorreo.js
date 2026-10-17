@@ -332,7 +332,9 @@ export async function sincronizarCorreosDesdeFirestore() {
       return remotos;
     }
   } catch (err) {
-    console.warn('[dataCorreo] Error al leer historial de Firestore:', err?.message || err);
+    if (!err?.message?.includes('permission') && !err?.code?.includes('permission')) {
+      console.warn('[dataCorreo] Error al leer historial de Firestore:', err?.message || err);
+    }
   }
 
   return obtenerCorreos();

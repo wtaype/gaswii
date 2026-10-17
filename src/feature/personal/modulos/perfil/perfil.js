@@ -56,7 +56,8 @@ export function inicializarModuloPerfil() {
     const usr = inUsuario?.value || 'admin';
     const email = inEmail?.value || datosNegocio.email || '-';
     const cel = inCelular?.value || datosNegocio.telefono || '-';
-    const avt = inAvatar?.value || '/imgwii/smile.webp';
+    const rawAvt = inAvatar?.value;
+    const avt = (!rawAvt || rawAvt.includes('smile.webp')) ? 'https://imgwii.web.app/smile.avif' : rawAvt;
 
     if (idAvatar) idAvatar.src = avt;
     if (idNombre) idNombre.textContent = nom;

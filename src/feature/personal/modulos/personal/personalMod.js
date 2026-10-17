@@ -34,6 +34,7 @@ export function inicializarModuloPersonal() {
   const peModalApellidos = document.getElementById('peModalApellidos');
   const peModalCargo = document.getElementById('peModalCargo');
   const peModalDni = document.getElementById('peModalDni');
+  const peModalRol = document.getElementById('peModalRol');
   const peModalCelular = document.getElementById('peModalCelular');
   const peModalEmail = document.getElementById('peModalEmail');
   const peModalCumpleanos = document.getElementById('peModalCumpleanos');
@@ -56,6 +57,7 @@ export function inicializarModuloPersonal() {
   const peEditNombre = document.getElementById('peEditNombre');
   const peEditApellidos = document.getElementById('peEditApellidos');
   const peEditCargo = document.getElementById('peEditCargo');
+  const peEditRol = document.getElementById('peEditRol');
   const peEditDni = document.getElementById('peEditDni');
   const peEditCelular = document.getElementById('peEditCelular');
   const peEditEmail = document.getElementById('peEditEmail');
@@ -175,13 +177,14 @@ export function inicializarModuloPersonal() {
     const estaActivo = p.activo !== false;
 
     if (peEditId) peEditId.value = p.id;
-    if (peEditAvatarImg) peEditAvatarImg.src = p.avatar || '/imgwii/hero.webp';
+    if (peEditAvatarImg) peEditAvatarImg.src = p.avatar || 'https://imgwii.web.app/smile.avif';
     if (peEditNombreTitle) peEditNombreTitle.textContent = nombreCompleto;
     if (peEditUsuarioTag) peEditUsuarioTag.textContent = `@${p.usuario || (p.nombre ? p.nombre.toLowerCase().replace(/\s+/g, '') : 'personal')}`;
 
     if (peEditNombre) peEditNombre.value = p.nombre || '';
     if (peEditApellidos) peEditApellidos.value = p.apellidos || '';
-    if (peEditCargo) peEditCargo.value = p.cargo || 'Técnico Despachador';
+    if (peEditCargo) peEditCargo.value = p.cargo || (p.rol === 'gestor' ? 'Gestor de Operaciones' : 'Técnico Despachador');
+    if (peEditRol) peEditRol.value = p.rol || 'personal';
     if (peEditDni) peEditDni.value = p.dni || '';
     if (peEditCelular) peEditCelular.value = p.celular || '';
     if (peEditEmail) peEditEmail.value = p.email || '';
@@ -234,6 +237,7 @@ export function inicializarModuloPersonal() {
     const fechaIngreso = peEditFechaIngreso?.value?.trim() || '';
     const experiencia = fechaIngreso ? calcularAntiguedad(fechaIngreso) : (miembroExistente.experiencia || 'Reciente');
     const cumpleanos = peEditCumpleanos?.value || '';
+    const rolSeleccionado = peEditRol?.value || miembroExistente.rol || 'personal';
 
     const spin = wiSpin ? wiSpin(btnEditGuardar) : null;
     if (btnEditGuardar) btnEditGuardar.disabled = true;
@@ -250,9 +254,11 @@ export function inicializarModuloPersonal() {
         celular: peEditCelular?.value?.trim() || '',
         email: peEditEmail?.value?.trim() || '',
         cumpleanos,
-        cargo: peEditCargo?.value?.trim() || 'Técnico Despachador',
+        cargo: peEditCargo?.value?.trim() || (rolSeleccionado === 'gestor' ? 'Gestor de Operaciones' : 'Técnico Despachador'),
         fechaIngreso,
         experiencia,
+        rol: rolSeleccionado,
+        avatar: miembroExistente.avatar || 'https://imgwii.web.app/smile.avif',
         colegiatura: estaActivo ? 'Habilitado/a' : 'Inactivo/a',
         activo: estaActivo
       });
@@ -287,8 +293,10 @@ export function inicializarModuloPersonal() {
 
     if (lista.length === 0) {
       driversGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--tx2);">
-          No hay colaboradores registrados en el equipo.
+        <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: var(--tx2); background: var(--surface-card, rgba(255,255,255,0.02)); border: 1px dashed var(--border-card, rgba(255,255,255,0.1)); border-radius: 14px;">
+          <i class="fa-solid fa-users" style="font-size: 28px; opacity: 0.5; margin-bottom: 12px; display: block; color: var(--mco, #ff6600);"></i>
+          <p style="font-size: 15px; font-weight: 700; color: var(--tx, #f3f6fc); margin: 0 0 6px 0;">No hay colaboradores registrados en el equipo</p>
+          <span style="font-size: 13px; color: var(--tx2, #94a3b8);">Haz clic en "Registrar Colaborador" para añadir al primer miembro del equipo.</span>
         </div>
       `;
       return;
@@ -296,8 +304,8 @@ export function inicializarModuloPersonal() {
 
     driversGrid.innerHTML = lista.map(p => {
       const nombre = p.nombreCompleto || `${p.nombre || ''} ${p.apellidos || ''}`.trim() || 'Colaborador';
-      const avatar = p.avatar || '/imgwii/hero.webp';
-      const cargo = p.cargo || 'Técnico Despachador';
+      const avatar = p.avatar || 'https://imgwii.web.app/smile.avif';
+      const cargo = p.cargo || (p.rol === 'gestor' ? 'Gestor de Operaciones' : 'Técnico Despachador');
       const estaActivo = p.activo !== false;
       const statusBadge = estaActivo
         ? `<span class="pe-status-pill disponible"><i class="fa-solid fa-circle-check" style="font-size: 9px;"></i> Habilitado/a</span>`
@@ -323,10 +331,10 @@ export function inicializarModuloPersonal() {
       return `
         <div class="pe-driver-card" data-id="${p.id}">
           <div class="pe-driver-head">
-            <img src="${avatar}" alt="${nombre}" class="pe-driver-avatar" />
+            <img src="${avatar}" alt="${nombre}" class="pe-driver-avatar" onerror="this.src='https://imgwii.web.app/smile.avif'" />
             <div class="pe-driver-meta">
               <span class="pe-driver-name">${nombre}</span>
-              <span class="pe-driver-cargo">${cargo}</span>
+              <span class="pe-driver-cargo" style="${p.rol === 'gestor' ? 'color: var(--mco, var(--brand-primary, #ff6600)); font-weight: 700;' : ''}">${cargo}</span>
               ${statusBadge}
             </div>
           </div>
@@ -436,6 +444,7 @@ export function inicializarModuloPersonal() {
     const cumpleanos = peModalCumpleanos?.value || '';
     const fechaIngreso = peModalFechaIngreso?.value?.trim() || '';
     const experiencia = fechaIngreso ? calcularAntiguedad(fechaIngreso) : 'Reciente';
+    const rol = peModalRol?.value || 'personal';
 
     const spin = wiSpin ? wiSpin(btnModalGuardar) : null;
     if (btnModalGuardar) btnModalGuardar.disabled = true;
@@ -445,7 +454,7 @@ export function inicializarModuloPersonal() {
         nombre,
         apellidos,
         nombreCompleto,
-        cargo,
+        cargo: cargo || (rol === 'gestor' ? 'Gestor de Operaciones' : 'Técnico Despachador'),
         dni,
         colegiatura: 'Habilitado/a',
         celular: cel,
@@ -453,8 +462,8 @@ export function inicializarModuloPersonal() {
         cumpleanos,
         fechaIngreso,
         experiencia,
-        avatar: '/imgwii/hero.webp',
-        rol: 'personal',
+        avatar: 'https://imgwii.web.app/smile.avif',
+        rol: rol,
         activo: true
       });
 
