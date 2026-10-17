@@ -177,9 +177,9 @@ const telefonoTicket = datosNegocio.telefonoMostrado || datosNegocio.whatsapp ||
                 class="sn-quick-btn" 
                 data-prod-id={prod.id} 
                 data-prod-desc={prod.nombre} 
-                data-prod-price={Number(prod.precioPEN || 0).toFixed(2)}
+                data-prod-price={Number(prod.precio ?? prod.precioPEN ?? 0).toFixed(2)}
               >
-                <span>{prod.nombre}</span> <span class="price-tag">S/ {Number(prod.precioPEN || 0).toFixed(2)}</span>
+                <span>{prod.nombre}</span> <span class="price-tag">S/ {Number(prod.precio ?? prod.precioPEN ?? 0).toFixed(2)}</span>
               </button>
             ))}
           </div>

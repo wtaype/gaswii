@@ -91,16 +91,18 @@ export function inicializarProductos() {
       const esServicio = p.tipo === 'servicio';
       const nombre = typeof p.nombre === 'object' ? (p.nombre?.es || '') : (p.nombre || '');
       const nombreEn = typeof p.nombre === 'object' ? (p.nombre?.en || '') : (p.nombreEn || '');
-      const precio = Number(p.precioPEN ?? p.precio ?? 0);
-      const duracion = typeof p.duracion === 'object' ? (p.duracion?.es || '') : (p.duracion || (esServicio ? 'Mensual' : '1 Hora'));
-      const modalidad = typeof p.modalidad === 'object' ? (p.modalidad?.es || '') : (p.modalidad || 'Online & Presencial');
+      const precio = Number(p.precio ?? p.precioPEN ?? 0);
+      const stock = Number(p.stock ?? (p.tipoCategoria === 'accesorio' ? 35 : 50));
+      const peso = p.peso || '10 kg';
+      const valvula = p.valvula || 'Click-On';
+      const uso = typeof p.publico === 'object' ? (p.publico?.es || 'Hogar') : (p.publico || p.tipoUso || 'Hogar');
 
       return `
         <article class="pr-card ${esActivo ? '' : 'pausado'}" data-id="${p.id}">
           <header class="pr-card-header">
-            <span class="pr-badge-tag ${p.tagClase || 'badge-serenidad'}">
-              <i class="${esServicio ? 'fa-solid fa-fire-flame-curved' : 'fa-solid fa-box'}"></i>
-              ${p.tipo || (esServicio ? 'Balón' : 'Accesorio')}
+            <span class="pr-badge-tag ${p.tagClase || 'badge-fire'}">
+              <i class="${p.badgeIcon || (esServicio ? 'fa-solid fa-star' : 'fa-solid fa-box')}"></i>
+              ${(typeof p.badge === 'object' ? (p.badge?.es || 'Más Pedido') : (p.badge || 'Más Pedido'))}
             </span>
 
             <label class="pr-switch-wrap" title="Activar o pausar visibilidad">
@@ -121,24 +123,24 @@ export function inicializarProductos() {
             ${nombreEn ? `<div class="pr-card-sub-en">${nombreEn}</div>` : ''}
 
             <div class="pr-card-specs">
-              <span class="pr-spec-chip"><i class="fa-solid fa-clock"></i> ${duracion}</span>
-              <span class="pr-spec-chip"><i class="fa-solid fa-location-dot"></i> ${modalidad}</span>
+              <span class="pr-spec-chip"><i class="fa-solid fa-scale-balanced"></i> ${peso}</span>
+              <span class="pr-spec-chip"><i class="fa-solid fa-tag"></i> ${valvula}</span>
+              <span class="pr-spec-chip"><i class="fa-solid fa-user-tag"></i> ${uso}</span>
             </div>
 
-            <!-- Edición rápida de Honorario y Stock -->
+            <!-- Edición rápida de Precio y Stock con 0 ms Local-First -->
             <div class="pr-quick-edit-row">
               <div class="pr-quick-field">
-                <span class="pr-quick-label">Honorario / Precio</span>
+                <span class="pr-quick-label">Precio Oficial</span>
                 <div class="pr-quick-input-wrap">
                   <span class="pr-quick-prefix">S/</span>
                   <input
-                    type="number"
-                    step="1"
-                    min="0"
+                    type="text"
+                    inputmode="decimal"
                     class="pr-quick-input pr-quick-precio"
                     data-id="${p.id}"
                     value="${precio}"
-                    title="Modificar precio"
+                    title="Modificar precio oficial"
                   />
                 </div>
               </div>
@@ -147,12 +149,11 @@ export function inicializarProductos() {
                 <div class="pr-quick-input-wrap">
                   <span class="pr-quick-prefix"><i class="fa-solid fa-boxes-stacked" style="font-size: 0.75rem; color: var(--muted, #94a3b8);"></i></span>
                   <input
-                    type="number"
-                    step="1"
-                    min="0"
+                    type="text"
+                    inputmode="numeric"
                     class="pr-quick-input pr-quick-stock"
                     data-id="${p.id}"
-                    value="${p.stock ?? (p.tipoCategoria === 'accesorio' || (p.id && p.id.includes('valvula')) ? 35 : 50)}"
+                    value="${stock}"
                     title="Modificar stock disponible"
                   />
                 </div>
@@ -163,7 +164,7 @@ export function inicializarProductos() {
               <button type="button" class="pr-btn-edit" data-id="${p.id}">
                 <i class="fa-solid fa-pen-to-square"></i> Editar Ficha
               </button>
-              <button type="button" class="pr-btn-del" data-id="${p.id}" title="Eliminar servicio">
+              <button type="button" class="pr-btn-del" data-id="${p.id}" title="Eliminar producto">
                 <i class="fa-solid fa-trash"></i>
               </button>
             </footer>
@@ -197,15 +198,15 @@ export function inicializarProductos() {
     });
   }
 
-  // Sincronizar con Firestore (Resembrado limpio en 1ra persona)
+  // Sincronizar con Firestore (Reflejo seguro sin sobrescribir con semillas)
   if (prBtnSincronizar) {
     prBtnSincronizar.addEventListener('click', async () => {
       prBtnSincronizar.disabled = true;
       wiSpin(prBtnSincronizar, true);
       try {
-        const res = await sincronizarProductosFirestore({ forzarSemilla: true });
+        const res = await sincronizarProductosFirestore({ forzarSemilla: false });
         renderizar(res.datos || obtenerProductosLocal());
-        Notificacion('Catálogo oficial sincronizado y sembrado en Firestore.', 'success', 3500);
+        Notificacion('Catálogo sincronizado exitosamente con Firestore.', 'success', 3500);
       } catch (err) {
         Notificacion('Error al sincronizar con Firestore.', 'error', 3500);
       } finally {
@@ -238,25 +239,32 @@ export function inicializarProductos() {
       }
     });
 
-    // Edición rápida de precio y stock (onChange)
+    // Edición rápida de precio y stock (0 ms Local-First + Feedback visual verde)
     prGrid.addEventListener('change', async (e) => {
       if (e.target.classList.contains('pr-quick-precio')) {
         const id = e.target.getAttribute('data-id');
-        const nuevoPrecio = Number(e.target.value || 0);
+        const nuevoPrecio = parseFloat(String(e.target.value).replace(/[^0-9.]/g, '')) || 0;
+        e.target.value = nuevoPrecio;
         const lista = obtenerProductosLocal();
         const item = lista.find(p => p.id === id);
         if (item) {
-          item.precioPEN = nuevoPrecio;
           item.precio = nuevoPrecio;
+          const input = e.target;
+          input.classList.add('pr-input-saved');
+          setTimeout(() => input.classList.remove('pr-input-saved'), 900);
           await guardarProductoFirestore(item);
         }
       } else if (e.target.classList.contains('pr-quick-stock')) {
         const id = e.target.getAttribute('data-id');
-        const nuevoStock = Number(e.target.value || 0);
+        const nuevoStock = parseInt(String(e.target.value).replace(/[^0-9]/g, ''), 10) || 0;
+        e.target.value = nuevoStock;
         const lista = obtenerProductosLocal();
         const item = lista.find(p => p.id === id);
         if (item) {
           item.stock = nuevoStock;
+          const input = e.target;
+          input.classList.add('pr-input-saved');
+          setTimeout(() => input.classList.remove('pr-input-saved'), 900);
           await guardarProductoFirestore(item);
         }
       }
@@ -280,7 +288,7 @@ export function inicializarProductos() {
         const nombre = typeof item?.nombre === 'object' ? item.nombre.es : (item?.nombre || id);
 
         wiConfirmar({
-          titulo: '¿Eliminar servicio?',
+          titulo: '¿Eliminar producto?',
           mensaje: `¿Estás seguro de que deseas eliminar permanentemente "${nombre}" del catálogo?`,
           textoConfirmar: 'Sí, eliminar',
           tipo: 'danger'
@@ -288,7 +296,7 @@ export function inicializarProductos() {
           if (confirmado) {
             await eliminarProductoFirestore(id);
             renderizar();
-            Notificacion(`Servicio "${nombre}" eliminado.`, 'info', 3000);
+            Notificacion(`Producto "${nombre}" eliminado.`, 'info', 3000);
           }
         });
       }
@@ -298,6 +306,23 @@ export function inicializarProductos() {
   // Escuchar evento personalizado tras guardar desde el modal
   window.addEventListener('producto-guardado', () => {
     renderizar();
+  });
+
+  // Escuchar actualizaciones globales de productos en 0 ms
+  window.addEventListener('wi:productos-actualizado', (e) => {
+    if (Array.isArray(e.detail) && e.detail.length > 0) {
+      renderizar(e.detail);
+    } else {
+      renderizar();
+    }
+  });
+
+  window.addEventListener('gaswii:productos-actualizado', (e) => {
+    if (Array.isArray(e.detail) && e.detail.length > 0) {
+      renderizar(e.detail);
+    } else {
+      renderizar();
+    }
   });
 
   // Render inicial

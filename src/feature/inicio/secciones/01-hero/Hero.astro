@@ -17,7 +17,7 @@ const t = resolverIdioma({ es, en }, idioma);
 const distritos = datosNegocio.distritos || [];
 const primerDistrito = distritos[0] || { id: '', nombre: '', tiempo: '' };
 const primerProducto = datosNegocio.productos[0];
-const precioPrimerBalon = primerProducto ? primerProducto.precioPEN.toFixed(2) : '';
+const precioPrimerBalon = primerProducto ? Number(primerProducto.precio ?? primerProducto.precioPEN ?? 65).toFixed(2) : '65.00';
 const direccionSede = datosNegocio.direccionSede;
 const mapsUrl = datosNegocio.mapsUrl || '#';
 

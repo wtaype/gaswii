@@ -4,7 +4,7 @@
 // Integrado con @widev, Firebase SDK y solicitarActualizacionWeb
 
 import { savels, getls } from '@widev';
-import { db } from '@core/servicios/firebase.js';
+import { db, auth } from '@core/servicios/firebase.js';
 import {
   collection,
   doc,
@@ -35,70 +35,74 @@ export function generarSlug(texto = '') {
     .replace(/(^-|-$)+/g, '');
 }
 
-// Normalizador neutro de estructura de Servicio / Asesoría
+/**
+ * Normalizador canónico de estructura de Producto / Accesorio
+ * Alineado estrictamente con el esquema oficial de Firestore y sin campos obsoletos
+ */
 export function normalizarProducto(p = {}) {
   const prod = p && typeof p === 'object' ? p : {};
   const nombreEs = prod.nombre?.es || (typeof prod.nombre === 'string' ? prod.nombre : '');
-  const idDefault = prod.id || (nombreEs ? generarSlug(nombreEs) : `srv-${Date.now()}`);
+  const idDefault = prod.id || (nombreEs ? generarSlug(nombreEs) : `prod-${Date.now()}`);
 
-  const tipo = (prod.tipo === 'asesoria' || prod.tipo === 'taller') ? 'asesoria' : 'servicio';
+  const tipo = (prod.tipo === 'asesoria' || prod.tipo === 'accesorio' || prod.tipoCategoria === 'accesorio') ? 'asesoria' : 'servicio';
+  const tipoCategoria = prod.tipoCategoria || (tipo === 'asesoria' ? 'accesorio' : 'gas');
 
   // Garantías bilingües
   const garantiasEs = Array.isArray(prod.garantias?.es)
     ? prod.garantias.es
-    : (Array.isArray(prod.garantias) ? prod.garantias : []);
+    : (Array.isArray(prod.garantias) ? prod.garantias : (Array.isArray(prod.caracteristicas) ? prod.caracteristicas : []));
   const garantiasEn = Array.isArray(prod.garantias?.en)
     ? prod.garantias.en
-    : (Array.isArray(prod.garantiasEn) ? prod.garantiasEn : []);
+    : (Array.isArray(prod.garantiasEn) ? prod.garantiasEn : (Array.isArray(prod.caracteristicasEn) ? prod.caracteristicasEn : []));
 
-  // Duración bilingüe
-  const duracionEs = typeof prod.duracion === 'object' && prod.duracion !== null
-    ? (prod.duracion.es || '')
-    : (prod.duracion || '');
-  const duracionEn = typeof prod.duracion === 'object' && prod.duracion !== null
-    ? (prod.duracion.en || '')
-    : (prod.duracionEn || '');
-
-  // Modalidad bilingüe
-  const modalidadEs = typeof prod.modalidad === 'object' && prod.modalidad !== null
-    ? (prod.modalidad.es || '')
-    : (prod.modalidad || '');
-  const modalidadEn = typeof prod.modalidad === 'object' && prod.modalidad !== null
-    ? (prod.modalidad.en || '')
-    : (prod.modalidadEn || '');
-
-  // Público bilingüe
+  // Público bilingüe (Dirigido a / Uso: Hogar, Ahorro, Negocio, Seguridad)
   const publicoEs = typeof prod.publico === 'object' && prod.publico !== null
     ? (prod.publico.es || '')
-    : (prod.publico || '');
+    : (prod.publico || prod.tipoUso || '');
   const publicoEn = typeof prod.publico === 'object' && prod.publico !== null
     ? (prod.publico.en || '')
-    : (prod.publicoEn || '');
+    : (prod.publicoEn || prod.tipoUsoEn || '');
 
-  // Badge bilingüe
+  // Badge bilingüe (Más Pedido, Económico, Comercial, Antifugas)
   const badgeEs = typeof prod.badge === 'object' && prod.badge !== null
     ? (prod.badge.es || '')
-    : (prod.badge || (prod.pin ? 'Recomendado' : ''));
+    : (prod.badge || (prod.pin ? 'Más Pedido' : ''));
   const badgeEn = typeof prod.badge === 'object' && prod.badge !== null
     ? (prod.badge.en || '')
-    : (prod.badgeEn || (prod.pin ? 'Recommended' : ''));
+    : (prod.badgeEn || (prod.pin ? 'Most Popular' : ''));
 
-  const precio = Number(prod.precioPEN ?? prod.precio ?? prod.price ?? 0);
+  const valvulaEs = typeof prod.valvula === 'object' && prod.valvula !== null
+    ? (prod.valvula.es || '')
+    : (prod.valvula || 'Click-On');
+  const valvulaEn = typeof prod.valvula === 'object' && prod.valvula !== null
+    ? (prod.valvula.en || '')
+    : (prod.valvulaEn || valvulaEs || 'Click-On');
+
+  const precio = Number(prod.precio ?? prod.precioPEN ?? prod.price ?? 0);
+  const stock = Number(prod.stock ?? (tipoCategoria === 'accesorio' ? 35 : 50));
 
   return {
     id: String(idDefault),
     slug: String(prod.slug || idDefault),
     tipo,
+    tipoCategoria,
     estado: (prod.estado === 'pausado' || prod.activo === false) ? 'pausado' : 'activo',
-    activo: prod.estado === 'pausado' || prod.activo === false ? false : true,
+    activo: !(prod.estado === 'pausado' || prod.activo === false),
     pin: Boolean(prod.pin),
     orden: Number(prod.orden ?? 1),
-    precioPEN: precio,
-    precio: precio,
-    enfoque: String(prod.enfoque || ''),
+    precio,
+    stock,
     imagen: String(prod.imagen || ''),
     badgeIcon: String(prod.badgeIcon || 'fa-solid fa-star'),
-    tagClase: String(prod.tagClase || 'badge-serenidad'),
+    tagClase: String(prod.tagClase || 'badge-fire'),
+    valvula: String(valvulaEs),
+    valvulaEn: String(valvulaEn),
+    peso: String(prod.peso || '10 kg'),
+    delivery: String(prod.delivery || 'Despacho en puerta'),
+    seguridad: String(prod.seguridad || 'Precinto verificado'),
+    userId: String(prod.userId || ''),
+    fecha: String(prod.fecha || new Date().toISOString().slice(0, 10)),
+    creado: prod.creado || null,
     actualizado: prod.actualizado || null,
 
     // Mapas Bilingües Oficiales
@@ -110,21 +114,13 @@ export function normalizarProducto(p = {}) {
       es: String(prod.descripcion?.es || (typeof prod.descripcion === 'string' ? prod.descripcion : '')),
       en: String(prod.descripcion?.en || prod.descripcionEn || '')
     },
-    duracion: {
-      es: duracionEs,
-      en: duracionEn
-    },
-    modalidad: {
-      es: modalidadEs,
-      en: modalidadEn
-    },
     publico: {
-      es: publicoEs,
-      en: publicoEn
+      es: String(publicoEs),
+      en: String(publicoEn)
     },
     badge: {
-      es: badgeEs,
-      en: badgeEn
+      es: String(badgeEs),
+      en: String(badgeEn)
     },
     garantias: {
       es: garantiasEs,
@@ -134,7 +130,7 @@ export function normalizarProducto(p = {}) {
 }
 
 /**
- * Aplana un servicio bilingüe a un solo idioma para consumo directo en vistas
+ * Aplana un producto bilingüe a un solo idioma para consumo directo en vistas
  */
 export function aplanarProducto(prod, idioma = 'es') {
   if (!prod) return null;
@@ -145,10 +141,9 @@ export function aplanarProducto(prod, idioma = 'es') {
     ...p,
     nombre: p.nombre[lang] || p.nombre.es || '',
     descripcion: p.descripcion[lang] || p.descripcion.es || '',
-    duracion: p.duracion[lang] || p.duracion.es || '',
-    modalidad: p.modalidad[lang] || p.modalidad.es || '',
     publico: p.publico[lang] || p.publico.es || '',
     badge: p.badge[lang] || p.badge.es || '',
+    valvula: lang === 'en' ? (p.valvulaEn || p.valvula) : p.valvula,
     garantias: (p.garantias[lang] && p.garantias[lang].length > 0) ? p.garantias[lang] : p.garantias.es
   };
 }
@@ -156,16 +151,18 @@ export function aplanarProducto(prod, idioma = 'es') {
 let _memoriaProductos = null;
 
 export function getUsuarioActivo() {
-  const u = getls('wiSmile') || {};
+  const authUser = (typeof auth !== 'undefined' && auth?.currentUser) ? auth.currentUser : null;
+  const u = getls('wiSmile') || getls('gaswii_user') || {};
+  const uid = authUser?.uid || u.uid || u.id || u.userId || '';
   return {
-    userId: u.uid || u.id || 'admin',
-    email: u.email || '',
-    autor: u.nombre || u.usuario || 'Usuario'
+    userId: uid,
+    email: authUser?.email || u.email || '',
+    autor: authUser?.displayName || u.nombre || u.usuario || 'Usuario'
   };
 }
 
 /**
- * Obtiene los servicios almacenados en memoria, localStorage o semilla (Prioridad 1° Local / Firestore, 2° Semilla)
+ * Obtiene los productos almacenados en memoria, localStorage o semilla (Prioridad 1° Local / Firestore, 2° Semilla)
  */
 export function obtenerProductosLocal() {
   if (_memoriaProductos && Array.isArray(_memoriaProductos) && _memoriaProductos.length > 0) {
@@ -210,7 +207,7 @@ export function guardarProductosLocal(lista = []) {
 }
 
 /**
- * Sincroniza desde Firestore hacia Local-First o siembra la semilla si está vacía
+ * Sincroniza desde Firestore hacia Local-First o siembra la semilla si la colección está vacía
  */
 export async function sincronizarProductosFirestore(opciones = {}) {
   try {
@@ -233,9 +230,6 @@ export async function sincronizarProductosFirestore(opciones = {}) {
 
     const remotos = snap.docs.map(d => {
       const data = d.data();
-      delete data.userId;
-      delete data.email;
-      delete data.creado;
       return normalizarProducto({ id: d.id, ...data });
     });
 
@@ -256,12 +250,9 @@ export async function resembrarProductosDesdeSemilla() {
     for (const item of semillas) {
       try {
         const payload = { ...item };
-        delete payload.userId;
-        delete payload.email;
-        delete payload.creado;
-
         await setDoc(doc(db, COLECCION_PRODUCTOS, item.id), {
           ...payload,
+          creado: serverTimestamp(),
           actualizado: serverTimestamp()
         });
       } catch (err) {
@@ -278,19 +269,22 @@ export async function resembrarProductosDesdeSemilla() {
 export const resembrarServiciosDesdeSemilla = resembrarProductosDesdeSemilla;
 
 /**
- * Guarda o actualiza un producto en Firestore y en local (100% limpio sin email ni userId)
+ * Guarda o actualiza un producto en Firestore y en local
  * Motor Central Zero-Waste: Local-First (0 ms) + Dirty Checking + Cloudflare Deploy en Segundo Plano
  */
 export async function guardarProductoFirestore(productoRaw = {}) {
+  const activeUser = getUsuarioActivo();
   const normalizado = normalizarProducto(productoRaw);
 
   const prodFinal = {
     ...normalizado,
+    userId: normalizado.userId || activeUser.userId || '',
+    fecha: normalizado.fecha || new Date().toISOString().slice(0, 10),
     actualizado: new Date().toISOString()
   };
-  delete prodFinal.userId;
-  delete prodFinal.email;
-  delete prodFinal.creado;
+  if (!prodFinal.creado) {
+    prodFinal.creado = new Date().toISOString();
+  }
 
   // 1. Preparar lista para Local-First
   const actuales = obtenerProductosLocal();

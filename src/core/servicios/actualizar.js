@@ -692,10 +692,14 @@ export async function actualizarCentral({
   try {
     if (db) {
       const docRef = doc(db, coleccion, docId);
-      await setDoc(docRef, {
+      const firestorePayload = {
         ...datos,
         actualizado: serverTimestamp()
-      }, { merge: true });
+      };
+      if (!datos.creado) {
+        firestorePayload.creado = serverTimestamp();
+      }
+      await setDoc(docRef, firestorePayload, { merge: true });
     }
   } catch (err) {
     console.warn(`[actualizarCentral] Error silencioso al escribir en ${coleccion}/${docId}:`, err?.message || err);

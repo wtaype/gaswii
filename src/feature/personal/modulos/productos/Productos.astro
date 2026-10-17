@@ -141,7 +141,7 @@ const grupo2 = term.grupo2Titulo || 'Categoría 2';
 
       <!-- ── COLUMNA IZQUIERDA: COMERCIAL, FOTO Y PARÁMETROS BASE ── -->
       <div class="pr-col-comercial">
-        <!-- Vista previa de imagen -->
+        <!-- Vista previa de imagen interactiva -->
         <div class="pr-modal-preview-box">
           <img id="prModalPreviewImg" src="/imgwii/productos/BALON-10KG.webp" alt="Vista previa del ítem" class="pr-modal-preview-img" />
           <div id="prModalPreviewEmpty" class="pr-modal-preview-empty" style="display: none;">
@@ -150,56 +150,74 @@ const grupo2 = term.grupo2Titulo || 'Categoría 2';
           </div>
         </div>
 
+        <!-- Input de link completo para copiar o reemplazar más fácil -->
         <div class="pr-f-field">
-          <label class="pr-f-label" for="prFormImagen">Ruta de Imagen (Local o WebP)</label>
-          <input type="text" id="prFormImagen" class="pr-f-input" placeholder="/imgwii/productos/BALON-10KG.webp" />
-          <span class="pr-f-help">Ruta en /imgwii/productos/ o URL externa</span>
+          <label class="pr-f-label" for="prFormImagen">Ruta de Imagen (URL Completa o WebP)</label>
+          <input type="text" id="prFormImagen" class="pr-f-input pr-f-input-url" placeholder="http://... o /imgwii/productos/BALON-10KG.webp" />
         </div>
 
+        <!-- Fila 1: Precio(s/) - Stock - Orden -->
+        <div class="pr-f-grid-3">
+          <div class="pr-f-field">
+            <label class="pr-f-label" for="prFormPrecio">Precio (S/) *</label>
+            <input type="text" inputmode="decimal" id="prFormPrecio" class="pr-f-input" placeholder="65" required />
+          </div>
+          <div class="pr-f-field">
+            <label class="pr-f-label" for="prFormStock">Stock *</label>
+            <input type="text" inputmode="numeric" id="prFormStock" class="pr-f-input" placeholder="50" required />
+          </div>
+          <div class="pr-f-field">
+            <label class="pr-f-label" for="prFormOrden">Orden</label>
+            <input type="text" inputmode="numeric" id="prFormOrden" class="pr-f-input" placeholder="1" />
+          </div>
+        </div>
+
+        <!-- Fila 2: Peso - Categoría -->
         <div class="pr-f-grid-2">
           <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormCategoria">Tipo de Categoría *</label>
+            <label class="pr-f-label" for="prFormPeso">Peso / Capacidad</label>
+            <input type="text" id="prFormPeso" class="pr-f-input" placeholder="Ej: 10 kg, 45 kg, Regulador" />
+          </div>
+          <div class="pr-f-field">
+            <label class="pr-f-label" for="prFormCategoria">Categoría *</label>
             <select id="prFormCategoria" class="pr-f-select" required>
               <option value="servicio">{grupo1}</option>
               <option value="asesoria">{grupo2}</option>
             </select>
           </div>
+        </div>
+
+        <!-- Fila 3: Icono - Badge Texto -->
+        <div class="pr-f-grid-2">
           <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormEstado">Estado</label>
+            <label class="pr-f-label" for="prFormBadgeIcon">Icono</label>
+            <div class="pr-icon-input-wrap">
+              <span class="pr-icon-preview" id="prBadgeIconPreview"><i class="fa-solid fa-star"></i></span>
+              <input type="text" id="prFormBadgeIcon" class="pr-f-input" placeholder="fa-solid fa-star" value="fa-solid fa-star" />
+            </div>
+          </div>
+          <div class="pr-f-field">
+            <label class="pr-f-label" for="prFormBadgeTexto">Badge Texto</label>
+            <input type="text" id="prFormBadgeTexto" class="pr-f-input" placeholder="Ej: Más Pedido" />
+          </div>
+        </div>
+
+        <!-- Fila 4: Estado (Activo) - Estilo del Badge -->
+        <div class="pr-f-grid-2">
+          <div class="pr-f-field">
+            <label class="pr-f-label" for="prFormEstado">Estado (Activo)</label>
             <select id="prFormEstado" class="pr-f-select">
-              <option value="activo">Activo (Visible en Web)</option>
+              <option value="activo">Activo (Visible en Catálogo)</option>
               <option value="pausado">Pausado (Oculto)</option>
             </select>
           </div>
-        </div>
-
-        <div class="pr-f-grid-2">
           <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormPrecio">Precio Oficial (S/) *</label>
-            <input type="number" id="prFormPrecio" class="pr-f-input" step="1" min="0" placeholder="65" required />
-          </div>
-          <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormOrden">Orden de Aparición</label>
-            <input type="number" id="prFormOrden" class="pr-f-input" min="1" placeholder="1" />
-          </div>
-        </div>
-
-        <div class="pr-f-field">
-          <label class="pr-f-label" for="prFormEnfoque">Enfoque / Característica Destacada</label>
-          <input type="text" id="prFormEnfoque" class="pr-f-input" placeholder="Ej: Pesaje exacto con balanza digital" />
-        </div>
-
-        <div class="pr-f-grid-2">
-          <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormBadgeEs">Badge Destacado (ES)</label>
-            <input type="text" id="prFormBadgeEs" class="pr-f-input" placeholder="Más Pedido / Recomendado" />
-          </div>
-          <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormTagClase">Estilo Visual Badge</label>
+            <label class="pr-f-label" for="prFormTagClase">Estilo del Badge</label>
             <select id="prFormTagClase" class="pr-f-select">
-              <option value="badge-serenidad">Serenidad (Bronce / Naranja)</option>
-              <option value="badge-azul">Azul Profesional</option>
-              <option value="badge-verde">Verde Éxito</option>
+              <option value="badge-fire">Naranja Destacado</option>
+              <option value="badge-emerald">Verde Económico</option>
+              <option value="badge-blue">Azul Comercial</option>
+              <option value="badge-gold">Dorado Seguridad</option>
             </select>
           </div>
         </div>
@@ -209,78 +227,73 @@ const grupo2 = term.grupo2Titulo || 'Categoría 2';
       <div class="pr-col-ficha">
         <div class="pr-modal-tabs">
           <button type="button" class="pr-modal-tab-btn active" data-target="pane-es">
-            <i class="fa-solid fa-language"></i> Español [ES]
+            <i class="fa-solid fa-language"></i> Español
           </button>
           <button type="button" class="pr-modal-tab-btn" data-target="pane-en">
-            <i class="fa-solid fa-globe"></i> English [EN]
+            <i class="fa-solid fa-globe"></i> English
           </button>
         </div>
 
         <!-- PESTAÑA ESPAÑOL -->
         <div class="pr-lang-pane active" id="pane-es">
           <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormNombreEs">Nombre Oficial (ES) *</label>
-            <input type="text" id="prFormNombreEs" class="pr-f-input" placeholder="Ej: Nombre Oficial del Producto o Servicio" required />
+            <label class="pr-f-label" for="prFormNombreEs">Nombre Oficial *</label>
+            <input type="text" id="prFormNombreEs" class="pr-f-input" placeholder="Ej: Balón SOLGAS Premium 10 kg" required />
           </div>
 
           <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormDescEs">Descripción Detallada (ES) *</label>
-            <textarea id="prFormDescEs" class="pr-f-textarea" rows="3" placeholder="Descripción detallada de características, especificaciones y beneficios..." required></textarea>
+            <label class="pr-f-label" for="prFormDescEs">Descripción Detallada *</label>
+            <textarea id="prFormDescEs" class="pr-f-textarea" rows="3" placeholder="Descripción detallada de características y especificaciones..." required></textarea>
           </div>
 
           <div class="pr-f-grid-2">
             <div class="pr-f-field">
-              <label class="pr-f-label" for="prFormDuracionEs">Tiempo de Entrega / Duración (ES)</label>
-              <input type="text" id="prFormDuracionEs" class="pr-f-input" placeholder="15 a 20 min / Inmediato" />
+              <label class="pr-f-label" for="prFormValvulaEs">Tipo de Válvula</label>
+              <input type="text" id="prFormValvulaEs" class="pr-f-input" placeholder="Ej: Click-On, Rosca tradicional" />
             </div>
             <div class="pr-f-field">
-              <label class="pr-f-label" for="prFormModalidadEs">Modalidad de Despacho (ES)</label>
-              <input type="text" id="prFormModalidadEs" class="pr-f-input" placeholder="Delivery Express / Atención Presencial" />
+              <label class="pr-f-label" for="prFormPublicoEs">Dirigido a / Uso</label>
+              <input type="text" id="prFormPublicoEs" class="pr-f-input" placeholder="Ej: Hogar, Negocios, Ahorro" />
             </div>
-          </div>
-
-          <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormPublicoEs">Dirigido a / Uso (ES)</label>
-            <input type="text" id="prFormPublicoEs" class="pr-f-input" placeholder="Público General / Empresas / Especializado" />
           </div>
 
           <div class="pr-f-field">
             <label class="pr-f-label" for="prFormGarantiasEs">Puntos Clave / Garantías (Una por línea)</label>
-            <textarea id="prFormGarantiasEs" class="pr-f-textarea" rows="3" placeholder="Garantía de calidad comprobada&#10;Atención rápida y personalizada&#10;Soporte técnico certificado"></textarea>
+            <textarea id="prFormGarantiasEs" class="pr-f-textarea" rows="4" placeholder="Misma garantía de peso exacto de origen y base&#10;Llama azul constante y duradera&#10;Cilindro inspeccionado libre de corrosión&#10;Entrega inmediata sin costo de flete"></textarea>
           </div>
         </div>
 
         <!-- PESTAÑA INGLÉS -->
         <div class="pr-lang-pane" id="pane-en">
           <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormNombreEn">Item Name (EN)</label>
-            <input type="text" id="prFormNombreEn" class="pr-f-input" placeholder="Ex: Official Product or Service Name" />
+            <label class="pr-f-label" for="prFormNombreEn">Official Name</label>
+            <input type="text" id="prFormNombreEn" class="pr-f-input" placeholder="Ex: SOLGAS Premium 10 kg Gas Cylinder" />
           </div>
 
           <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormDescEn">Description (EN)</label>
-            <textarea id="prFormDescEn" class="pr-f-textarea" rows="3" placeholder="Clear explanation of the item features and benefits..."></textarea>
+            <label class="pr-f-label" for="prFormDescEn">Detailed Description</label>
+            <textarea id="prFormDescEn" class="pr-f-textarea" rows="3" placeholder="Clear technical and commercial explanation..."></textarea>
           </div>
 
           <div class="pr-f-grid-2">
             <div class="pr-f-field">
-              <label class="pr-f-label" for="prFormDuracionEn">Delivery Time (EN)</label>
-              <input type="text" id="prFormDuracionEn" class="pr-f-input" placeholder="15 to 20 min / Express" />
+              <label class="pr-f-label" for="prFormValvulaEn">Valve Type</label>
+              <input type="text" id="prFormValvulaEn" class="pr-f-input" placeholder="Ex: Click-On, Screw thread" />
             </div>
             <div class="pr-f-field">
-              <label class="pr-f-label" for="prFormModalidadEn">Dispatch Modality (EN)</label>
-              <input type="text" id="prFormModalidadEn" class="pr-f-input" placeholder="Express Home Delivery" />
+              <label class="pr-f-label" for="prFormPublicoEn">Target Audience / Use</label>
+              <input type="text" id="prFormPublicoEn" class="pr-f-input" placeholder="Ex: Household, Business, Savings" />
             </div>
           </div>
 
           <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormPublicoEn">Target Audience (EN)</label>
-            <input type="text" id="prFormPublicoEn" class="pr-f-input" placeholder="Households & Businesses" />
+            <label class="pr-f-label" for="prFormBadgeTextoEn">Badge Text (EN)</label>
+            <input type="text" id="prFormBadgeTextoEn" class="pr-f-input" placeholder="Ex: Most Popular, Economy" />
           </div>
 
           <div class="pr-f-field">
-            <label class="pr-f-label" for="prFormGarantiasEn">Key Benefits (One line per bullet point)</label>
-            <textarea id="prFormGarantiasEn" class="pr-f-textarea" rows="3" placeholder="Exact certified weight on doorstep&#10;Constant and long-lasting blue flame&#10;Express delivery"></textarea>
+            <label class="pr-f-label" for="prFormGarantiasEn">Key Highlights / Guarantees (One per line)</label>
+            <textarea id="prFormGarantiasEn" class="pr-f-textarea" rows="4" placeholder="Same guarantee of exact weight from origin&#10;Constant and long-lasting blue flame&#10;Corrosion-free inspected cylinder&#10;Immediate delivery with no freight charge"></textarea>
           </div>
         </div>
       </div>

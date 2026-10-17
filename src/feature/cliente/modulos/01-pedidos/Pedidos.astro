@@ -75,7 +75,7 @@ const productosCatalogo = prodsFiltrados.length > 0 ? prodsFiltrados.map((p, idx
   const badgeRaw = extraerTexto(p.badge, '');
   const badge = badgeRaw || (idx === 0 ? 'MÁS PEDIDO' : (p.tipoCategoria === 'gas' ? 'GLP SEGURO' : 'ORIGINAL'));
   const tagClase = p.tagClase || (idx === 0 ? 'badge-fire' : 'badge-blue');
-  const precioPEN = Number(p.precioPEN ?? (p.precio ?? 0));
+  const precioPEN = Number(p.precio ?? p.precioPEN ?? 0);
   const imagen = p.imagen || '/imgwii/productos/BALON-10KG.webp';
   const modalidad = extraerTexto(p.delivery || p.modalidad, term.modalidadLabel || 'Delivery Express (15-20 min)');
   const fallbackEnfoque = term.enfoqueDefecto || 'Peso exacto comprobado con balanza digital';

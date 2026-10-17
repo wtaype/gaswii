@@ -108,7 +108,7 @@ const whatsappNumero = datosNegocio.whatsapp;
           const guaranteeHeader = `${nombreMarca} ${t.garantia_titulo.toUpperCase()}`;
 
           // Mensaje de WhatsApp con atribución inteligente
-          const precioActual = p.precioPEN || p.precio || null;
+          const precioActual = p.precio ?? p.precioPEN ?? null;
           const wsLink = crearEnlaceWhatsApp({
             origen: `Web Inicio - Card ${nombre}`,
             producto: nombre,
@@ -186,7 +186,7 @@ const whatsappNumero = datosNegocio.whatsapp;
                     <span class="card-price-caption">{precioCaption}</span>
                     <div class="producto-price-val card-price-value">
                       <span class="card-price-curr">S/</span>
-                      <span data-price-id={p.id}>{p.precioPEN ? p.precioPEN.toFixed(2) : (p.precio ? Number(p.precio).toFixed(2) : '0.00')}</span>
+                      <span data-price-id={p.id}>{p.precio ? Number(p.precio).toFixed(2) : (p.precioPEN ? Number(p.precioPEN).toFixed(2) : '0.00')}</span>
                     </div>
                   </div>
 

@@ -271,41 +271,35 @@ export function normalizarProductoFirestore(docRaw = {}) {
     nombreEn: getTxtEn(item.nombre, item.nombreEn),
     descripcion: getTxt(item.descripcion),
     descripcionEn: getTxtEn(item.descripcion, item.descripcionEn),
-    precioPEN: precio,
-    precio: precio,
-    precioEnvase: Number(item.precioEnvase ?? 0),
+    precio,
     stock: Number(item.stock ?? 50),
-    stockMin: Number(item.stockMin ?? 5),
     estado: item.estado || 'activo',
-    tipoCategoria: item.tipoCategoria || 'general',
-    tipo: getTxt(item.tipo),
-    tipoEn: getTxtEn(item.tipo, item.tipoEn),
-    tipoUso: getTxt(item.tipoUso),
-    tipoUsoEn: getTxtEn(item.tipoUso, item.tipoUsoEn),
-    valvula: getTxt(item.valvula),
-    valvulaEn: getTxtEn(item.valvula, item.valvulaEn),
-    peso: getTxt(item.peso),
-    pesoEn: getTxtEn(item.peso, item.pesoEn),
-    pesoFull: getTxt(item.pesoFull),
-    pesoFullEn: getTxtEn(item.pesoFull, item.pesoFullEn),
+    activo: item.activo !== false && item.estado !== 'pausado',
+    tipoCategoria: item.tipoCategoria || 'gas',
+    tipo: getTxt(item.tipo) || 'servicio',
+    tipoEn: getTxtEn(item.tipo, item.tipoEn) || 'Cylinder',
+    publico: getTxt(item.publico) || getTxt(item.tipoUso) || 'Hogar',
+    publicoEn: getTxtEn(item.publico, item.publicoEn) || getTxtEn(item.tipoUso, item.tipoUsoEn) || 'Household',
+    valvula: getTxt(item.valvula) || 'Click-On',
+    valvulaEn: getTxtEn(item.valvula, item.valvulaEn) || 'Click-On',
+    peso: getTxt(item.peso) || '10 kg',
+    pesoEn: getTxtEn(item.peso, item.pesoEn) || '10 kg',
     nombreCorto: getTxt(item.nombreCorto) || getTxt(item.nombre),
-    modalidad: getTxt(item.modalidad) || getTxt(item.delivery),
-    enfoque: getTxt(item.enfoque),
-    caracteristicas: Array.isArray(item.garantias?.es) ? item.garantias.es : (Array.isArray(item.caracteristicas) ? item.caracteristicas : []),
-    caracteristicasEn: Array.isArray(item.garantias?.en) ? item.garantias.en : (Array.isArray(item.caracteristicasEn) ? item.caracteristicasEn : []),
     garantias: Array.isArray(item.garantias?.es) ? item.garantias.es : (Array.isArray(item.garantias) ? item.garantias : (Array.isArray(item.caracteristicas) ? item.caracteristicas : [])),
     garantiasEn: Array.isArray(item.garantias?.en) ? item.garantias.en : (Array.isArray(item.garantiasEn) ? item.garantiasEn : (Array.isArray(item.caracteristicasEn) ? item.caracteristicasEn : [])),
-    delivery: getTxt(item.delivery),
-    deliveryEn: getTxtEn(item.delivery, item.deliveryEn),
-    seguridad: getTxt(item.seguridad),
-    seguridadEn: getTxtEn(item.seguridad, item.seguridadEn),
-    imagen: item.imagen || '/smile.avif',
-    badge: getTxt(item.badge) || (item.tagClase === 'badge-fire' ? 'Destacado' : ''),
-    badgeEn: getTxtEn(item.badge, item.badgeEn) || (item.tagClase === 'badge-fire' ? 'Featured' : ''),
+    delivery: getTxt(item.delivery) || 'Despacho en puerta',
+    deliveryEn: getTxtEn(item.delivery, item.deliveryEn) || 'Doorstep delivery',
+    seguridad: getTxt(item.seguridad) || 'Precinto verificado',
+    seguridadEn: getTxtEn(item.seguridad, item.seguridadEn) || 'Verified seal',
+    imagen: item.imagen || '/imgwii/productos/BALON-10KG.webp',
+    badge: getTxt(item.badge) || 'Más Pedido',
+    badgeEn: getTxtEn(item.badge, item.badgeEn) || 'Most Popular',
     badgeIcon: item.badgeIcon || 'fa-solid fa-star',
     tagClase: item.tagClase || 'badge-fire',
     orden: Number(item.orden ?? 1),
-    pin: Boolean(item.pin)
+    pin: Boolean(item.pin),
+    userId: String(item.userId || ''),
+    fecha: String(item.fecha || '')
   };
 }
 
@@ -531,7 +525,21 @@ export const datosNegocio = {
   },
 
   get config() { return configurarSistema; },
-  get productos() { return _productosBuildFirestore; },
+  get productos() {
+    if (typeof window !== 'undefined') {
+      try {
+        const local = localStorage.getItem(STORAGE_KEY_PRODUCTOS) || localStorage.getItem(OLD_STORAGE_KEY_PRODUCTOS);
+        if (local) {
+          const parsed = JSON.parse(local);
+          const lista = Array.isArray(parsed) ? parsed : (parsed?.value || null);
+          if (Array.isArray(lista) && lista.length > 0) {
+            return lista;
+          }
+        }
+      } catch (e) {}
+    }
+    return _productosBuildFirestore;
+  },
   get servicios() { return this.productos; },
   get blogs() { return _blogsBuildFirestore; },
   get asesorias() { return []; },
@@ -549,6 +557,17 @@ if (typeof window !== 'undefined') {
   };
   window.addEventListener('wi:negocio-actualizado', (e) => actualizarMemoria(e.detail));
   window.addEventListener('gaswii:negocio-actualizado', (e) => actualizarMemoria(e.detail));
+
+  window.addEventListener('wi:productos-actualizado', (e) => {
+    if (Array.isArray(e.detail) && e.detail.length > 0) {
+      _productosBuildFirestore = e.detail;
+    }
+  });
+  window.addEventListener('gaswii:productos-actualizado', (e) => {
+    if (Array.isArray(e.detail) && e.detail.length > 0) {
+      _productosBuildFirestore = e.detail;
+    }
+  });
 }
 
 export default datosNegocio;
