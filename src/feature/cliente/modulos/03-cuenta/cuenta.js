@@ -110,7 +110,7 @@ export function poblarDatosUI(datos) {
   if (inpApe) inpApe.value = datos.apellidos || '';
   if (inpAvatar) {
     const rawAv = datos.avatar;
-    inpAvatar.value = (!rawAv || rawAv.includes('smile.webp')) ? 'https://imgwii.web.app/smile.avif' : rawAv;
+    inpAvatar.value = (!rawAv || rawAv.includes('smile.webp')) ? '/smile.avif' : rawAv;
   }
   if (inpIniciales) inpIniciales.value = datos.iniciales || avatar(nombreCompleto);
   if (inpCel) inpCel.value = datos.celular || '';

@@ -43,7 +43,7 @@ export function normalizarMiembro(p = {}) {
 
   let avatar = p.avatar || '';
   if (!avatar || avatar.includes('smile.webp') || avatar.includes('hero.webp')) {
-    avatar = 'https://imgwii.web.app/smile.avif';
+    avatar = '/smile.avif';
   }
 
   return {
@@ -136,7 +136,7 @@ export async function guardarMiembroPersonal(data) {
         documentoTipo: 'DNI',
         cargo: normalizado.cargo,
         rol: normalizado.rol,
-        avatar: normalizado.avatar || 'https://imgwii.web.app/smile.avif',
+        avatar: normalizado.avatar || '/smile.avif',
         activo: normalizado.activo,
         estado: normalizado.activo ? 'activo' : 'inactivo',
         cumpleanos: normalizado.cumpleanos,

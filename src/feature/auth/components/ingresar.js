@@ -12,7 +12,7 @@ export const getLogoFull = () => datosNegocio.logoFull || datosNegocio.logo || '
 export const getLogoSquare = () => datosNegocio.logo || '/imgwii/logo.webp';
 export const getRutaTerminos = () => configurarSistema?.rutas?.terminos || '/terminos';
 export const getColeccionUsuarios = () => configurarSistema?.colecciones?.usuarios || 'smiles';
-export const getAvatarDefault = () => datosNegocio?.avatarDefault || 'https://imgwii.web.app/smile.avif';
+export const getAvatarDefault = () => datosNegocio?.avatarDefault || '/smile.avif';
 
 // Mapeo de errores Firebase — claves del JSON, sin exponer códigos internos
 export const mapearErrorAuth = (e) => {

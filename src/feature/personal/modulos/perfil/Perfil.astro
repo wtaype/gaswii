@@ -122,7 +122,7 @@ const { esActivo = false } = Astro.props;
         </div>
 
         <div class="pf-id-body">
-          <img src="https://imgwii.web.app/smile.avif" alt="Avatar" class="pf-id-avatar" id="pfIdAvatar" />
+          <img src="/smile.avif" alt="Avatar" class="pf-id-avatar" id="pfIdAvatar" />
           <h3 class="pf-id-name" id="pfIdNombre">{datosNegocio.identidad?.especialista || datosNegocio.identidad?.nombre || 'Administrador'}</h3>
           <p class="pf-id-handle" id="pfIdHandle">@{datosNegocio.nombreCorto ? datosNegocio.nombreCorto.toLowerCase().replace(/\s+/g, '') : 'admin'}</p>
         </div>

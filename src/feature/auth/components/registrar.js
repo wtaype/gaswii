@@ -13,7 +13,7 @@ import { datosNegocio, configurarSistema } from '@/negocio.js';
 const getLogoFull = () => datosNegocio.logoFull || datosNegocio.logo || '/imgwii/logo_full.webp';
 const getRutaTerminos = () => configurarSistema?.rutas?.terminos || '/terminos';
 const getColeccionUsuarios = () => configurarSistema?.colecciones?.usuarios || 'smiles';
-const getAvatarDefault = () => datosNegocio?.avatarDefault || 'https://imgwii.web.app/smile.avif';
+const getAvatarDefault = () => datosNegocio?.avatarDefault || '/smile.avif';
 
 // --- SANITIZACIÓN ESTRICTA ---
 export const sanName      = v => v.replace(/[<>="'`;/\\$}{]/g, '').replace(/\s{2,}/g, ' ');

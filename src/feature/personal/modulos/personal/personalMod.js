@@ -177,7 +177,7 @@ export function inicializarModuloPersonal() {
     const estaActivo = p.activo !== false;
 
     if (peEditId) peEditId.value = p.id;
-    if (peEditAvatarImg) peEditAvatarImg.src = p.avatar || 'https://imgwii.web.app/smile.avif';
+    if (peEditAvatarImg) peEditAvatarImg.src = p.avatar || '/smile.avif';
     if (peEditNombreTitle) peEditNombreTitle.textContent = nombreCompleto;
     if (peEditUsuarioTag) peEditUsuarioTag.textContent = `@${p.usuario || (p.nombre ? p.nombre.toLowerCase().replace(/\s+/g, '') : 'personal')}`;
 
@@ -258,7 +258,7 @@ export function inicializarModuloPersonal() {
         fechaIngreso,
         experiencia,
         rol: rolSeleccionado,
-        avatar: miembroExistente.avatar || 'https://imgwii.web.app/smile.avif',
+        avatar: miembroExistente.avatar || '/smile.avif',
         colegiatura: estaActivo ? 'Habilitado/a' : 'Inactivo/a',
         activo: estaActivo
       });
@@ -304,7 +304,7 @@ export function inicializarModuloPersonal() {
 
     driversGrid.innerHTML = lista.map(p => {
       const nombre = p.nombreCompleto || `${p.nombre || ''} ${p.apellidos || ''}`.trim() || 'Colaborador';
-      const avatar = p.avatar || 'https://imgwii.web.app/smile.avif';
+      const avatar = p.avatar || '/smile.avif';
       const cargo = p.cargo || (p.rol === 'gestor' ? 'Gestor de Operaciones' : 'Técnico Despachador');
       const estaActivo = p.activo !== false;
       const statusBadge = estaActivo
@@ -331,7 +331,7 @@ export function inicializarModuloPersonal() {
       return `
         <div class="pe-driver-card" data-id="${p.id}">
           <div class="pe-driver-head">
-            <img src="${avatar}" alt="${nombre}" class="pe-driver-avatar" onerror="this.src='https://imgwii.web.app/smile.avif'" />
+            <img src="${avatar}" alt="${nombre}" class="pe-driver-avatar" onerror="this.src='/smile.avif'" />
             <div class="pe-driver-meta">
               <span class="pe-driver-name">${nombre}</span>
               <span class="pe-driver-cargo" style="${p.rol === 'gestor' ? 'color: var(--mco, var(--brand-primary, #ff6600)); font-weight: 700;' : ''}">${cargo}</span>
@@ -462,7 +462,7 @@ export function inicializarModuloPersonal() {
         cumpleanos,
         fechaIngreso,
         experiencia,
-        avatar: 'https://imgwii.web.app/smile.avif',
+        avatar: '/smile.avif',
         rol: rol,
         activo: true
       });

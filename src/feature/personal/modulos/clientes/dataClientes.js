@@ -26,7 +26,7 @@ export function normalizarCliente(c = {}) {
 
   let avatar = c.avatar || '';
   if (!avatar || avatar.includes('smile.webp') || avatar.includes('hero.webp')) {
-    avatar = 'https://imgwii.web.app/smile.avif';
+    avatar = '/smile.avif';
   }
 
   let direccion = c.direccion || '';

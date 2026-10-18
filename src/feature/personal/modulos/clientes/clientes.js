@@ -140,7 +140,7 @@ export function inicializarModuloClientes() {
       const regimen = c.regimenTributario || 'MYPE';
 
         const avatarHtml = c.avatar 
-          ? `<img src="${c.avatar}" alt="${c.nombre}" class="cl-user-avatar" onerror="this.src='https://imgwii.web.app/smile.avif'" />`
+          ? `<img src="${c.avatar}" alt="${c.nombre}" class="cl-user-avatar" onerror="this.src='/smile.avif'" />`
           : `<div class="cl-user-avatar-tag">${c.nombre.charAt(0).toUpperCase()}</div>`;
 
         return `
@@ -243,7 +243,7 @@ export function inicializarModuloClientes() {
         crmAvatarImg.src = c.avatar;
         crmAvatarImg.style.display = 'block';
         crmAvatarImg.onerror = () => {
-          crmAvatarImg.src = 'https://imgwii.web.app/smile.avif';
+          crmAvatarImg.src = '/smile.avif';
         };
       }
       if (crmAvatarLetter) crmAvatarLetter.style.display = 'none';

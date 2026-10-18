@@ -129,7 +129,7 @@ export const sincronizarSmile = async (user, extraData = {}) => {
   let docSnap = null;
   try { docSnap = await getDoc(docRef); } catch (e) { console.warn('Firestore offline:', e); }
 
-  const imgEmail = 'https://imgwii.web.app/smile.avif';
+  const imgEmail = '/smile.avif';
   const { avatar: calcIniciales } = await import('../../core/widev/nombre.js');
 
   let smileData;
